@@ -24,8 +24,10 @@ MIN_SQRT = 4295128739
 MAX_SQRT = 1461446703485210103287273052203988822378723970342
 Q96 = 1 << 96
 LOWER, UPPER = -887272, 887272
-STEPS = ('seed', 'approveV3', 'approvePermit2', 'permitV4LP', 'permitRouter',
-         'mintV3', 'mintV4', 'v3Forward', 'v3Reverse', 'v4Forward', 'v4Reverse')
+# Install the short-lived router allowance immediately before its first use.
+# Read/proof latency must not consume its lifetime during pool creation.
+STEPS = ('seed', 'approveV3', 'approvePermit2', 'permitV4LP', 'mintV3', 'mintV4',
+         'v3Forward', 'permitRouter', 'v3Reverse', 'v4Forward', 'v4Reverse')
 
 
 def require(condition, message):
