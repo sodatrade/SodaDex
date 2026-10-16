@@ -3,6 +3,7 @@ import { cleanup } from '@testing-library/react'
 import { afterEach, beforeEach } from 'vitest'
 beforeEach(() => {
   localStorage.clear()
+  window.history.replaceState(null, '', '/')
 })
 
 Object.defineProperty(HTMLDialogElement.prototype, 'showModal', {

@@ -1,10 +1,11 @@
 import type { ReactElement } from 'react'
 import { shortenAddress } from '../domain/assets'
+import { dataMessages } from '../i18n/data'
 import type { WalletController } from '../lib/useWallet'
 import { usePreferences } from '../preferences/context'
 import { Button, Icon, NetworkIcon, SodaMark } from './primitives'
 
-export type Page = 'swap' | 'assets' | 'pools'
+export type Page = 'swap' | 'assets' | 'pools' | 'market' | 'history'
 
 interface HeaderProps {
   page: Page
@@ -16,11 +17,14 @@ interface HeaderProps {
 }
 
 export function Header({ page, onPageChange, wallet, onWallet, onSearch, onPreferences }: HeaderProps): ReactElement {
-  const { t } = usePreferences()
+  const { t, locale } = usePreferences()
+  const m = dataMessages(locale)
   const pages: { id: Page; name: string }[] = [
     { id: 'swap', name: t('navSwap') },
     { id: 'assets', name: t('navAssets') },
     { id: 'pools', name: t('navPools') },
+    { id: 'market', name: m.market },
+    { id: 'history', name: m.history },
   ]
   return (
     <header className="site-header">

@@ -335,7 +335,7 @@ html[lang="en"] .hero-copy h1 { font-size: clamp(30px, 3.2vw, 44px); }
   .header-tool > svg { width: 18px; }
   .header-connect { font-size: 10px; padding: 8px; gap: 5px; }
   .header-actions { gap: 2px; }
-  .main-nav { width: 100%; order: 3; justify-content: center; gap: 36px; min-height: 46px; padding-top: 5px; margin-top: 9px; }
+  .main-nav { width: 100%; order: 3; justify-content: center; flex-wrap: wrap; gap: 12px; min-height: 46px; padding-top: 5px; margin-top: 9px; }
   .main-nav button { font-size: 12px; padding: 6px 4px; }
   .main-nav button.active::after { bottom: 0; }
   .test-notice { padding: 10px 16px; gap: 8px; font-size: 11px; }

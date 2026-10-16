@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { useState, type ReactElement } from 'react'
+import { useEffect, useState, type ReactElement } from 'react'
 import { AssetPage, type AssetSelection } from './components/AssetPage'
 import { GlobalSearchDialog } from './components/GlobalSearchDialog'
 import { Header, type Page } from './components/Header'
@@ -9,6 +9,8 @@ import { Button, Icon, SodaMark } from './components/primitives'
 import { SwapCard } from './components/SwapCard'
 import { WalletDialog } from './components/WalletDialog'
 import { CHAIN_ID } from './domain/assets'
+import { HistoryPage } from './features/history/HistoryPage'
+import { MarketPage } from './features/market/MarketPage'
 import { getBalances, getNetworkStatus } from './lib/rpc'
 import { useWallet } from './lib/useWallet'
 import { usePreferences } from './preferences/context'
@@ -24,7 +26,11 @@ export function App(): ReactElement {
 }
 
 function AppContent(): ReactElement {
-  const [page, setPage] = useState<Page>('swap')
+  const fromHash = (): Page => {
+    const hash = window.location.hash.slice(1)
+    return ['swap', 'assets', 'pools', 'market', 'history'].includes(hash) ? hash as Page : 'swap'
+  }
+  const [page, setPage] = useState<Page>(fromHash)
   const [walletOpen, setWalletOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [preferencesOpen, setPreferencesOpen] = useState(false)
@@ -47,6 +53,15 @@ function AppContent(): ReactElement {
   })
   const correctChain = wallet.session?.chainId === CHAIN_ID
   const currentBalances = correctChain ? balances.data : undefined
+  const navigate = (next: Page): void => {
+    setPage(next)
+    window.history.replaceState(null, '', `#${next}`)
+  }
+  useEffect(() => {
+    const changed = (): void => setPage(fromHash())
+    window.addEventListener('hashchange', changed)
+    return () => window.removeEventListener('hashchange', changed)
+  }, [])
 
   return (
     <div className="app-shell">
@@ -59,7 +74,7 @@ function AppContent(): ReactElement {
       </div>
       <Header
         page={page}
-        onPageChange={setPage}
+        onPageChange={navigate}
         wallet={wallet}
         onWallet={() => setWalletOpen(true)}
         onSearch={() => setSearchOpen(true)}
@@ -131,7 +146,11 @@ function AppContent(): ReactElement {
             selected={selectedAsset}
           />
         ) : page === 'pools' ? (
-          <PoolsPage onSwap={() => setPage('swap')} />
+          <PoolsPage onSwap={() => navigate('swap')} />
+        ) : page === 'market' ? (
+          <MarketPage />
+        ) : page === 'history' ? (
+          <HistoryPage wallet={wallet} onConnect={() => setWalletOpen(true)} />
         ) : null}
       </main>
       <footer className="site-footer">
@@ -169,12 +188,12 @@ function AppContent(): ReactElement {
         <GlobalSearchDialog
           onClose={() => setSearchOpen(false)}
           onPool={() => {
-            setPage('pools')
+            navigate('pools')
             setSearchOpen(false)
           }}
           onAsset={(asset) => {
             setSelectedAsset({ id: asset })
-            setPage('assets')
+            navigate('assets')
             setSearchOpen(false)
           }}
         />

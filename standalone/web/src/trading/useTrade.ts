@@ -1,5 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
+import { CHAIN_ID } from '../domain/assets'
+import { recordTransaction, updateTransaction } from '../features/history/journal'
 import { rpc } from '../lib/rpc'
 import type { WalletController } from '../lib/useWallet'
 import { executeTrade } from './execution'
@@ -40,7 +42,12 @@ export function useTrade(wallet: WalletController, formRevision: { current: numb
         getIdentity: wallet.getIdentity,
         isCurrentForm: () => run.current === currentRun && formRevision.current === revision,
         onProgress: (next) => {
-          if (next.hash) setLastSubmitted(next)
+          if (next.hash) {
+            setLastSubmitted(next)
+            if (next.to) recordTransaction({ chainId: CHAIN_ID, hash: next.hash, account: identity.address,
+              to: next.to, kind: next.kind ?? 'swap', submittedAt: Date.now(), status: 'pending' })
+            if (next.stage === 'tradeSucceeded') updateTransaction(next.hash, 'success')
+          }
           setProgress(next)
         },
       })
@@ -61,6 +68,7 @@ export function useTrade(wallet: WalletController, formRevision: { current: numb
       const status = await receiptStatus(rpc, progress.hash, identity.address, progress.to)
       if (status === 'pending') setError('tradePending')
       else {
+        updateTransaction(progress.hash, 'success')
         setError(progress.kind === 'approval' ? 'tradeReviewAgain' : undefined)
         setProgress({
           ...progress,
@@ -73,7 +81,10 @@ export function useTrade(wallet: WalletController, formRevision: { current: numb
       const code = tradeError(cause)
       setError(code)
       // A proven onchain revert is terminal; transport failure keeps the submitted hash locked.
-      if (code === 'tradeReverted') setProgress({ ...progress, stage: 'tradePreparing' })
+      if (code === 'tradeReverted') {
+        updateTransaction(progress.hash, 'reverted')
+        setProgress({ ...progress, stage: 'tradePreparing' })
+      }
     } finally {
       setChecking(false)
     }
