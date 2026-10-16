@@ -13,8 +13,8 @@
   "chainId": 196,
   "rpcUrl": "https://rpc.ignix.bot/rpc/196",
   "browserRpcPath": "/api/rpc",
-  "contractStatus": "not-deployed",
-  "tradingStatus": "disabled; contracts, liquidity and quotes pending",
+  "contractStatus": "deployed-and-verified; frontend integration pending",
+  "tradingStatus": "disabled; liquidity, quotes and transaction integration pending",
   "validation": {
     "webTestsPassed": 35,
     "workerTestsPassed": 17,

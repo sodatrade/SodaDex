@@ -1,7 +1,7 @@
 {
   "name": "SodaDex Test",
   "phase": "test",
-  "status": "not-deployed",
+  "status": "deployed-and-verified",
   "chainId": 196,
   "network": "X Layer mainnet",
   "rpcUrl": "https://rpc.ignix.bot/rpc/196",
@@ -26,9 +26,22 @@
     "v4Periphery": "545a5d2a87228167edde48f3b9eda122d1e3c4d6",
     "v4Core": "59d3ecf53afa9264a16bba0e38f4c5d2231f80bc"
   },
-  "contracts": {},
+  "contracts": {
+    "v3Factory": "0xa6109B7F4237d2aC28B8009FbD21B88cff194cFe",
+    "v3NFTDescriptor": "0xBDE586B47373676aFbDF9669CAa40E932d45Dafe",
+    "v3TokenDescriptor": "0xD89f1293DEb12AB050531BcBa4a465b7847beE7D",
+    "v3PositionManager": "0x484C58d937387eC34c5AE01ad796f0c5f801Fd72",
+    "v3Quoter": "0x98F4DFBfAb6fC37e59e00d6881E779B33b23b009",
+    "v4PoolManager": "0x6B5C32aD97EB42230138e02a21B0E6d811FD713D",
+    "v4Descriptor": "0xAd6e6bd6FeecD3EF77eAd8779FfcF5D52521abcA",
+    "v4PositionManager": "0xfe32078E62a43D88F65731da693950E6E221FE0B",
+    "v4Quoter": "0x7a188D4C46C9FE045A5875FecaeF9Bf00e4521fF",
+    "v4StateView": "0x7991D4a8493b9709365cD079DfFc75e790007874",
+    "unsupportedProtocol": "0x68Eca93437dF07bE4b2C3A67956ACe2dC87d2F39",
+    "universalRouter": "0x9206a7fac11948efDB391FC1DFA310F8b09D3aFa"
+  },
   "pool": null,
-  "applicationIntegration": "pending; the upstream application still uses official Uniswap services and deployments",
+  "applicationIntegration": "standalone interface remains read-only; pools, liquidity, quotes and transaction integration pending",
   "productionDeployment": "deferred",
   "artifactBytecodeSha256": {
     "UniswapV3Factory": "597622608d56a37995be202df633ea0246c5e2fc8b107aceefadf100caab4910",
@@ -46,5 +59,9 @@
     "UnsupportedProtocol": "5be1547e43fe7795f859078d04e2b0d0c5bf81675f1ecfab0322c3a4509ba067"
   },
   "gasBudgetOKB": "0.001",
-  "gasBudgetStatus": "user-approved; awaiting funding"
+  "gasBudgetStatus": "completed-within-budget",
+  "gasSpentOKB": "0.000878811864",
+  "deployedOn": "2026-10-16",
+  "deploymentRecord": "receipts.json",
+  "addressHandoff": "ADDRESSES.md"
 }
