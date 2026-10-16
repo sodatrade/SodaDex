@@ -38,6 +38,19 @@ globalThis.fetch = async (input, init) => {
   owned()
   return originalFetch(nodeUrl, init)
 }
+// Node does not provide Workers' Cache API. Keep cursor checkpoints in this
+// disposable process so the compiled pagination code runs with the same API.
+const cursorCache = new Map()
+globalThis.caches = { default: {
+  async match(request) {
+    const entry = cursorCache.get(request.url)
+    if (!entry || entry.expiresAt <= Date.now()) { cursorCache.delete(request.url); return undefined }
+    return entry.response.clone()
+  },
+  async put(request, response) {
+    cursorCache.set(request.url, { response: response.clone(), expiresAt: Date.now() + 3_600_000 })
+  },
+} }
 const worker = (await import(pathToFileURL(resolve(bundle)).href)).default
 const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.png': 'image/png', '.svg': 'image/svg+xml', '.woff2': 'font/woff2' }
 const env = { ASSETS: { async fetch(request) {
