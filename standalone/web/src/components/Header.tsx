@@ -1,7 +1,8 @@
 import type { ReactElement } from 'react'
 import { shortenAddress } from '../domain/assets'
 import type { WalletController } from '../lib/useWallet'
-import { Button, Icon, SodaMark } from './primitives'
+import { usePreferences } from '../preferences/context'
+import { Button, Icon, NetworkIcon, SodaMark } from './primitives'
 
 export type Page = 'swap' | 'assets' | 'pools'
 
@@ -10,26 +11,27 @@ interface HeaderProps {
   onPageChange: (page: Page) => void
   wallet: WalletController
   onWallet: () => void
-  theme: 'dark' | 'light'
-  onTheme: () => void
+  onSearch: () => void
+  onPreferences: () => void
 }
 
-export function Header({ page, onPageChange, wallet, onWallet, theme, onTheme }: HeaderProps): ReactElement {
+export function Header({ page, onPageChange, wallet, onWallet, onSearch, onPreferences }: HeaderProps): ReactElement {
+  const { t } = usePreferences()
   const pages: { id: Page; name: string }[] = [
-    { id: 'swap', name: '兑换' },
-    { id: 'assets', name: '资产' },
-    { id: 'pools', name: '流动性' },
+    { id: 'swap', name: t('navSwap') },
+    { id: 'assets', name: t('navAssets') },
+    { id: 'pools', name: t('navPools') },
   ]
   return (
     <header className="site-header">
-      <button className="brand" onClick={() => onPageChange('swap')} aria-label="SodaDex 首页">
+      <button className="brand" onClick={() => onPageChange('swap')} aria-label={t('home')}>
         <SodaMark decorative />
         <span>
           Soda<span className="brand-dex">Dex</span>
         </span>
         <span className="test-tag">TEST</span>
       </button>
-      <nav aria-label="主导航" className="main-nav">
+      <nav aria-label={t('mainNavigation')} className="main-nav">
         {pages.map((item) => (
           <button
             key={item.id}
@@ -43,22 +45,35 @@ export function Header({ page, onPageChange, wallet, onWallet, theme, onTheme }:
       </nav>
       <div className="header-actions">
         <span className="network-badge">
-          <span className="xlayer-mark" aria-hidden="true">
-            ×
-          </span>
+          <NetworkIcon />
           <span>X Layer</span>
         </span>
         <Button
           appearance="icon"
-          className="theme-button"
-          aria-label={theme === 'dark' ? '切换浅色外观' : '切换深色外观'}
-          onClick={onTheme}
+          className="header-tool"
+          aria-label={t('globalSearch')}
+          aria-haspopup="dialog"
+          onClick={onSearch}
         >
-          <Icon name={theme === 'dark' ? 'sun' : 'moon'} />
+          <Icon name="search" />
         </Button>
-        <Button appearance="primary" className="header-connect" onClick={onWallet}>
+        <Button
+          appearance="primary"
+          className="header-connect"
+          onClick={onWallet}
+          aria-label={wallet.session ? shortenAddress(wallet.session.address) : t('connectWallet')}
+        >
           <Icon name="wallet" size={17} />
-          <span>{wallet.session ? shortenAddress(wallet.session.address) : '连接钱包'}</span>
+          <span>{wallet.session ? shortenAddress(wallet.session.address) : t('headerConnect')}</span>
+        </Button>
+        <Button
+          appearance="icon"
+          className="header-tool"
+          aria-label={t('preferences')}
+          aria-haspopup="dialog"
+          onClick={onPreferences}
+        >
+          <Icon name="more" />
         </Button>
       </div>
     </header>

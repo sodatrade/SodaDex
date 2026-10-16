@@ -1,13 +1,15 @@
 import type { ReactElement } from 'react'
+import { usePreferences } from '../preferences/context'
 import { Button, Icon, Surface } from './primitives'
 
 export function PoolsPage({ onSwap }: { onSwap: () => void }): ReactElement {
+  const { t } = usePreferences()
   return (
     <section className="content-page" aria-labelledby="pools-title">
       <div className="page-heading">
-        <span className="eyebrow">LIQUIDITY / TEST</span>
-        <h1 id="pools-title">为流动，留出更多可能。</h1>
-        <p>低费率 V3 / V4 测试池准备中。</p>
+        <span className="eyebrow">{t('poolsEyebrow')}</span>
+        <h1 id="pools-title">{t('poolsTitle')}</h1>
+        <p>{t('poolsDescription')}</p>
       </div>
       <Surface className="pools-surface">
         <div className="pool-illustration" aria-hidden="true">
@@ -15,34 +17,30 @@ export function PoolsPage({ onSwap }: { onSwap: () => void }): ReactElement {
           <Icon name="layers" size={42} />
           <span />
         </div>
-        <h2>首批测试池即将准备就绪</h2>
-        <p>
-          合约部署及初始流动性完成后，
-          <br />
-          这里将展示可用的池子与添加流动性入口。
-        </p>
+        <h2>{t('poolsEmptyTitle')}</h2>
+        <p>{t('poolsEmptyDescription')}</p>
         <div className="pool-fees">
           <div>
-            <span>V3 计划费率</span>
+            <span>{t('v3PlannedFee')}</span>
             <strong>
               0.01<span>%</span>
             </strong>
           </div>
           <div>
-            <span>V4 计划费率</span>
+            <span>{t('v4PlannedFee')}</span>
             <strong>
               0<span>%</span>
             </strong>
           </div>
           <div>
-            <span>平台费 / 协议费</span>
+            <span>{t('platformProtocolFee')}</span>
             <strong>
               0<span>%</span>
             </strong>
           </div>
         </div>
         <Button onClick={onSwap}>
-          返回兑换
+          {t('backToSwap')}
           <Icon name="arrow" size={16} />
         </Button>
       </Surface>

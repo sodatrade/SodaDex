@@ -1,19 +1,34 @@
 import { useQuery } from '@tanstack/react-query'
-import { useEffect, useState, type ReactElement } from 'react'
-import { AssetPage } from './components/AssetPage'
+import { useState, type ReactElement } from 'react'
+import { AssetPage, type AssetSelection } from './components/AssetPage'
+import { GlobalSearchDialog } from './components/GlobalSearchDialog'
 import { Header, type Page } from './components/Header'
 import { PoolsPage } from './components/PoolsPage'
+import { PreferencesDialog } from './components/PreferencesDialog'
 import { Button, Icon, SodaMark } from './components/primitives'
 import { SwapCard } from './components/SwapCard'
 import { WalletDialog } from './components/WalletDialog'
 import { CHAIN_ID } from './domain/assets'
 import { getBalances, getNetworkStatus } from './lib/rpc'
 import { useWallet } from './lib/useWallet'
+import { usePreferences } from './preferences/context'
+import { PreferencesProvider } from './preferences/PreferencesProvider'
 
 export function App(): ReactElement {
+  return (
+    <PreferencesProvider>
+      <AppContent />
+    </PreferencesProvider>
+  )
+}
+
+function AppContent(): ReactElement {
   const [page, setPage] = useState<Page>('swap')
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
   const [walletOpen, setWalletOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [preferencesOpen, setPreferencesOpen] = useState(false)
+  const [selectedAsset, setSelectedAsset] = useState<AssetSelection>()
+  const { t } = usePreferences()
   const wallet = useWallet()
   const network = useQuery({
     queryKey: ['network', CHAIN_ID],
@@ -32,14 +47,10 @@ export function App(): ReactElement {
   const correctChain = wallet.session?.chainId === CHAIN_ID
   const currentBalances = correctChain ? balances.data : undefined
 
-  useEffect(() => {
-    document.documentElement.dataset.theme = theme
-  }, [theme])
-
   return (
     <div className="app-shell">
       <a className="skip-link" href="#main">
-        跳转至主要内容
+        {t('skipMain')}
       </a>
       <div className="ambient" aria-hidden="true">
         <div className="ambient-halo" />
@@ -50,14 +61,12 @@ export function App(): ReactElement {
         onPageChange={setPage}
         wallet={wallet}
         onWallet={() => setWalletOpen(true)}
-        theme={theme}
-        onTheme={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+        onSearch={() => setSearchOpen(true)}
+        onPreferences={() => setPreferencesOpen(true)}
       />
       <div className="test-notice">
-        <span className="test-notice-label">测试体验</span>
-        <p>
-          X Layer 主网 <span className="notice-chain-id">196</span> · 使用真实 OKB · 兑换暂未开放
-        </p>
+        <span className="test-notice-label">{t('testExperience')}</span>
+        <p>{t('testNotice')}</p>
       </div>
       <main id="main" tabIndex={-1}>
         {page === 'swap' ? (
@@ -65,22 +74,22 @@ export function App(): ReactElement {
             <section className="hero-copy" aria-labelledby="hero-heading">
               <div className="eyebrow">
                 <span />
-                BUILT FOR X LAYER
+                {t('builtFor')}
               </div>
               <h1 id="hero-heading">
-                让流动发生<span className="hero-period">。</span>
+                {t('heroFirst')}
                 <br />
-                <span className="hero-line-two">让交易轻盈。</span>
+                <span className="hero-line-two">{t('heroSecond')}</span>
               </h1>
               <p className="hero-description">
-                属于 SodaDex 的全新链上体验。
+                {t('heroDescriptionFirst')}
                 <br />
-                从连接钱包开始，简单、直接。
+                {t('heroDescriptionSecond')}
               </p>
               <div className="hero-details">
-                <span>原生 OKB</span>
+                <span>{t('nativeOKB')}</span>
                 <span>V3 + V4</span>
-                <span>低费率测试</span>
+                <span>{t('lowFeeTest')}</span>
               </div>
               <div className="soda-art" aria-hidden="true">
                 <div className="art-orbit orbit-one" />
@@ -94,7 +103,8 @@ export function App(): ReactElement {
             <div className="trade-workspace">
               <div className="workspace-eyebrow">
                 <span className="live-dot" />
-                一切，从一笔流动开始<span>01 / SWAP</span>
+                {t('flowStarts')}
+                <span>{t('swapIndex')}</span>
               </div>
               <SwapCard
                 wallet={wallet}
@@ -106,9 +116,9 @@ export function App(): ReactElement {
               <div className="trade-meta">
                 <span>
                   <Icon name="layers" size={15} />
-                  V3 / V4 测试部署准备中
+                  {t('deploymentPending')}
                 </span>
-                <span>平台费 0%</span>
+                <span>{t('platformZero')}</span>
               </div>
             </div>
           </div>
@@ -118,6 +128,7 @@ export function App(): ReactElement {
             connected={!!wallet.session && correctChain}
             loading={balances.isFetching && !balances.data}
             error={!!wallet.session && (balances.isError || network.isError)}
+            selected={selectedAsset}
           />
         ) : (
           <PoolsPage onSwap={() => setPage('swap')} />
@@ -126,19 +137,25 @@ export function App(): ReactElement {
       <footer className="site-footer">
         <div className={`rpc-status${network.isError ? ' status-error' : ''}`} role="status">
           <span className="status-dot" />
-          <span>{network.isPending ? '正在连接 X Layer…' : network.isError ? '节点暂不可用' : 'X Layer 已连接'}</span>
+          <span>
+            {network.isPending
+              ? t('networkLoading')
+              : network.isError
+                ? t('networkUnavailable')
+                : t('networkConnected')}
+          </span>
           {network.data && <span className="block-number">#{network.data.block.toString()}</span>}
           {network.isError && (
             <Button appearance="ghost" onClick={() => void network.refetch()} disabled={network.isFetching}>
               <Icon name="refresh" size={14} />
-              重试
+              {t('retry')}
             </Button>
           )}
         </div>
         <div className="footer-brand">
           <SodaMark decorative />
           <span>
-            SodaDex <span>·</span> A little more flow.
+            SodaDex <span>·</span> {t('footerFlow')}
           </span>
         </div>
         <a href="https://github.com/sodatrade/SodaDex" target="_blank" rel="noreferrer">
@@ -147,6 +164,17 @@ export function App(): ReactElement {
         </a>
       </footer>
       {walletOpen && <WalletDialog wallet={wallet} onClose={() => setWalletOpen(false)} />}
+      {preferencesOpen && <PreferencesDialog onClose={() => setPreferencesOpen(false)} />}
+      {searchOpen && (
+        <GlobalSearchDialog
+          onClose={() => setSearchOpen(false)}
+          onAsset={(asset) => {
+            setSelectedAsset({ id: asset })
+            setPage('assets')
+            setSearchOpen(false)
+          }}
+        />
+      )}
     </div>
   )
 }

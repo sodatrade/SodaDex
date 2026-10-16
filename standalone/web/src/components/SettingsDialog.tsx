@@ -1,5 +1,6 @@
 import type { ReactElement } from 'react'
-import { PROTOCOL_NAMES, type Protocol } from '../domain/assets'
+import { type Protocol } from '../domain/assets'
+import { usePreferences } from '../preferences/context'
 import { Dialog } from './Dialog'
 import { Icon } from './primitives'
 
@@ -13,10 +14,11 @@ export function SettingsDialog({
   onClose: () => void
 }): ReactElement {
   const choices: Protocol[] = ['auto', 'v3', 'v4']
+  const { t } = usePreferences()
   return (
-    <Dialog title="兑换设置" description="选择后续兑换时优先使用的协议。" onClose={onClose}>
+    <Dialog title={t('swapSettings')} description={t('settingsDescription')} onClose={onClose}>
       <fieldset className="protocol-options">
-        <legend>协议偏好</legend>
+        <legend>{t('protocolPreference')}</legend>
         {choices.map((choice) => (
           <label key={choice} className={`protocol-option${protocol === choice ? ' selected' : ''}`}>
             <input
@@ -27,13 +29,9 @@ export function SettingsDialog({
               onChange={() => onChange(choice)}
             />
             <span>
-              <strong>{PROTOCOL_NAMES[choice]}</strong>
+              <strong>{choice === 'auto' ? t('protocolAuto') : choice.toUpperCase()}</strong>
               <span>
-                {choice === 'auto'
-                  ? '开放后根据可用路由报价'
-                  : choice === 'v3'
-                    ? '测试池费率计划 0.01%'
-                    : '测试池费率计划 0%'}
+                {choice === 'auto' ? t('autoRouteDescription') : choice === 'v3' ? t('v3FeePlan') : t('v4FeePlan')}
               </span>
             </span>
             {protocol === choice && <Icon name="check" />}
@@ -41,10 +39,10 @@ export function SettingsDialog({
         ))}
       </fieldset>
       <div className="settings-summary">
-        <span>平台费 / 协议费</span>
+        <span>{t('platformProtocolFee')}</span>
         <strong>0% / 0%</strong>
       </div>
-      <p className="dialog-note">当前为测试部署配置。合约与流动性准备完成后才会开放报价和兑换。</p>
+      <p className="dialog-note">{t('settingsNote')}</p>
     </Dialog>
   )
 }

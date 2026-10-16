@@ -1,33 +1,55 @@
-import type { ReactElement } from 'react'
+import { useEffect, type ReactElement } from 'react'
 import { formatBalance } from '../domain/amount'
 import { ASSETS, EXPLORER_URL, shortenAddress, type AssetId } from '../domain/assets'
+import { usePreferences } from '../preferences/context'
+import { CURRENCY_SYMBOLS } from '../preferences/model'
 import { AssetIcon, Icon, Surface } from './primitives'
+
+export interface AssetSelection {
+  id: AssetId
+}
 
 export function AssetPage({
   balances,
   connected,
   loading,
   error,
+  selected,
 }: {
   balances: Record<AssetId, bigint> | undefined
   connected: boolean
   loading: boolean
   error: boolean
+  selected?: AssetSelection
 }): ReactElement {
+  const { t, currency } = usePreferences()
+  useEffect(() => {
+    if (selected) {
+      document.getElementById(`asset-${selected.id}`)?.focus()
+    }
+  }, [selected])
   return (
     <section className="content-page" aria-labelledby="assets-title">
       <div className="page-heading">
-        <span className="eyebrow">YOUR ASSETS / X LAYER</span>
-        <h1 id="assets-title">认识你的链上资产。</h1>
-        <p>从原生 OKB 开始，保持每一步清晰。</p>
+        <span className="eyebrow">{t('assetsEyebrow')}</span>
+        <h1 id="assets-title">{t('assetsTitle')}</h1>
+        <p>{t('assetsDescription')}</p>
       </div>
       <Surface className="assets-surface">
         <div className="asset-table-head">
-          <span>资产</span>
-          <span>钱包余额</span>
+          <span>{t('navAssets')}</span>
+          <span>{t('priceIn', { currency })}</span>
+          <span>{t('walletBalance')}</span>
         </div>
         {ASSETS.map((asset) => (
-          <div className="asset-table-row" key={asset.id}>
+          <div
+            role="group"
+            className={`asset-table-row${asset.id === selected?.id ? ' is-selected' : ''}`}
+            key={asset.id}
+            id={`asset-${asset.id}`}
+            tabIndex={asset.id === selected?.id ? -1 : undefined}
+            aria-label={asset.id === selected?.id ? t('selectedAsset', { symbol: asset.symbol }) : asset.symbol}
+          >
             <AssetIcon wrapped={asset.id === 'wokb'} />
             <div className="asset-table-name">
               <strong>{asset.symbol}</strong>
@@ -38,21 +60,31 @@ export function AssetPage({
                   <Icon name="external" size={12} />
                 </a>
               ) : (
-                <span className="native-label">X Layer 原生资产</span>
+                <span className="native-label">{t('nativeAsset')}</span>
               )}
             </div>
+            <span
+              className="asset-price"
+              title={t('pricePending')}
+              aria-label={`${t('priceIn', { currency })} · ${t('pricePending')}`}
+            >
+              {CURRENCY_SYMBOLS[currency]} —
+            </span>
             <div className="asset-balance">
               <strong>
-                {loading ? '读取中…' : error ? '暂不可用' : balances ? formatBalance(balances[asset.id]) : '—'}
+                {loading ? t('reading') : error ? t('unavailable') : balances ? formatBalance(balances[asset.id]) : '—'}
               </strong>
-              <span>{connected ? asset.symbol : '连接钱包查看'}</span>
+              <span>{connected ? asset.symbol : t('connectToView')}</span>
             </div>
           </div>
         ))}
       </Surface>
       <p className="asset-page-note">
         <Icon name="layers" size={17} />
-        V3 使用 WOKB 参与 ERC-20 交易；V4 可支持原生 OKB。当前不执行包装或兑换。
+        {t('assetPageNote')}
+      </p>
+      <p className="asset-page-note">
+        {t('pricePending')} · {t('currencyNote')}
       </p>
     </section>
   )

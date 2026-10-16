@@ -1,4 +1,10 @@
-export type AmountResult = { kind: 'empty' } | { kind: 'invalid'; message: string } | { kind: 'valid'; units: bigint }
+export type AmountError =
+  | { code: 'amountInvalid' | 'amountZero' | 'amountTooLarge' | 'amountInsufficient' }
+  | { code: 'amountPrecision'; decimals: number }
+export type AmountResult =
+  | { kind: 'empty' }
+  | { kind: 'invalid'; error: AmountError }
+  | { kind: 'valid'; units: bigint }
 
 /** Decimal strings stay exact: balances and input never pass through floating point. */
 export function parseAmount(value: string, decimals = 18): AmountResult {
@@ -6,18 +12,18 @@ export function parseAmount(value: string, decimals = 18): AmountResult {
     return { kind: 'empty' }
   }
   if (!/^\d*(\.\d*)?$/.test(value) || !/\d/.test(value)) {
-    return { kind: 'invalid', message: '请输入有效的资产数量' }
+    return { kind: 'invalid', error: { code: 'amountInvalid' } }
   }
   const [whole = '0', fraction = ''] = value.split('.')
   if (fraction.length > decimals) {
-    return { kind: 'invalid', message: `最多支持 ${decimals} 位小数` }
+    return { kind: 'invalid', error: { code: 'amountPrecision', decimals } }
   }
   const units = BigInt(whole || '0') * 10n ** BigInt(decimals) + BigInt(fraction.padEnd(decimals, '0') || '0')
   if (units === 0n) {
-    return { kind: 'invalid', message: '数量需要大于 0' }
+    return { kind: 'invalid', error: { code: 'amountZero' } }
   }
   if (units >= 2n ** 256n) {
-    return { kind: 'invalid', message: '输入数量超出支持范围' }
+    return { kind: 'invalid', error: { code: 'amountTooLarge' } }
   }
   return { kind: 'valid', units }
 }
@@ -35,13 +41,13 @@ export function formatBalance(units: bigint, decimals = 18): string {
   return fraction ? `${whole}.${fraction}` : whole.toString()
 }
 
-export function amountError(value: string, balance?: bigint): string | undefined {
+export function amountError(value: string, balance?: bigint): AmountError | undefined {
   const amount = parseAmount(value)
   if (amount.kind === 'invalid') {
-    return amount.message
+    return amount.error
   }
   if (amount.kind === 'valid' && balance !== undefined && amount.units > balance) {
-    return '可用余额不足'
+    return { code: 'amountInsufficient' }
   }
   return undefined
 }

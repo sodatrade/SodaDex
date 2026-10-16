@@ -1,9 +1,10 @@
 import { useState, type ReactElement } from 'react'
 import { amountError, formatBalance } from '../domain/amount'
-import { CHAIN_ID, PROTOCOL_NAMES, getAsset, type AssetId, type Protocol } from '../domain/assets'
+import { CHAIN_ID, getAsset, type AssetId, type Protocol } from '../domain/assets'
 import type { WalletController } from '../lib/useWallet'
+import { usePreferences } from '../preferences/context'
 import { AssetDialog } from './AssetDialog'
-import { AssetIcon, Button, Icon, Surface } from './primitives'
+import { AssetIcon, Button, Icon, NetworkIcon, Surface } from './primitives'
 import { SettingsDialog } from './SettingsDialog'
 
 interface SwapCardProps {
@@ -21,6 +22,7 @@ export function SwapCard({ wallet, balances, balancesLoading, balancesError, onC
   const [selector, setSelector] = useState<'from' | 'to'>()
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [protocol, setProtocol] = useState<Protocol>('auto')
+  const { t } = usePreferences()
   const from = getAsset(fromId)
   const to = getAsset(toId)
   const error = amountError(amount, balances?.[fromId])
@@ -51,15 +53,15 @@ export function SwapCard({ wallet, balances, balancesLoading, balancesError, onC
 
   const balanceText = (id: AssetId): string => {
     if (!wallet.session || wrongChain) {
-      return '余额 —'
+      return t('balanceEmpty')
     }
     if (balancesLoading) {
-      return '读取余额…'
+      return t('balanceLoading')
     }
     if (balancesError) {
-      return '余额暂不可用'
+      return t('balanceUnavailable')
     }
-    return balances ? `余额 ${formatBalance(balances[id])}` : '余额 —'
+    return balances ? t('balanceValue', { amount: formatBalance(balances[id]) }) : t('balanceEmpty')
   }
 
   const primaryAction = (): void => {
@@ -72,19 +74,19 @@ export function SwapCard({ wallet, balances, balancesLoading, balancesError, onC
 
   return (
     <>
-      <Surface className="swap-card" aria-label="资产兑换">
+      <Surface className="swap-card" aria-label={t('swapRegion')}>
         <div className="swap-card-heading">
           <div>
-            <h2>兑换</h2>
-            <span className="card-caption">简单一点，流动起来。</span>
+            <h2>{t('navSwap')}</h2>
+            <span className="card-caption">{t('swapCaption')}</span>
           </div>
-          <Button appearance="icon" aria-label="兑换设置" onClick={() => setSettingsOpen(true)}>
+          <Button appearance="icon" aria-label={t('swapSettings')} onClick={() => setSettingsOpen(true)}>
             <Icon name="settings" />
           </Button>
         </div>
         <div className={`amount-panel${error ? ' has-error' : ''}`}>
           <div className="amount-label">
-            <label htmlFor="sell-amount">支付</label>
+            <label htmlFor="sell-amount">{t('pay')}</label>
             <span>{balanceText(fromId)}</span>
           </div>
           <div className="amount-row">
@@ -101,20 +103,20 @@ export function SwapCard({ wallet, balances, balancesLoading, balancesError, onC
             <button
               className="token-selector"
               onClick={() => setSelector('from')}
-              aria-label={`选择支付资产，当前 ${from.symbol}`}
+              aria-label={t('choosePay', { symbol: from.symbol })}
             >
               <AssetIcon wrapped={fromId === 'wokb'} small />
               <strong>{from.symbol}</strong>
               <Icon name="chevron" size={16} />
             </button>
           </div>
-          <span className="amount-hint">{from.description}</span>
+          <span className="amount-hint">{t(fromId === 'okb' ? 'nativeAsset' : 'wrappedAsset')}</span>
         </div>
         <div className="direction-row">
           <Button
             appearance="icon"
             className="direction-button"
-            aria-label="切换支付与接收资产"
+            aria-label={t('changeDirection')}
             onClick={changeDirection}
           >
             <Icon name="arrow" size={19} />
@@ -122,36 +124,36 @@ export function SwapCard({ wallet, balances, balancesLoading, balancesError, onC
         </div>
         <div className="amount-panel receive-panel">
           <div className="amount-label">
-            <span>接收</span>
+            <span>{t('receive')}</span>
             <span>{balanceText(toId)}</span>
           </div>
           <div className="amount-row">
-            <output className="receive-amount" aria-label="预计接收数量">
+            <output className="receive-amount" aria-label={t('receiveAmount')}>
               —
             </output>
             <button
               className="token-selector"
               onClick={() => setSelector('to')}
-              aria-label={`选择接收资产，当前 ${to.symbol}`}
+              aria-label={t('chooseReceive', { symbol: to.symbol })}
             >
               <AssetIcon wrapped={toId === 'wokb'} small />
               <strong>{to.symbol}</strong>
               <Icon name="chevron" size={16} />
             </button>
           </div>
-          <span className="amount-hint">等待测试兑换开放后报价</span>
+          <span className="amount-hint">{t('quotePending')}</span>
         </div>
         {error && (
           <p id="amount-error" className="amount-error" role="alert">
-            {error}
+            {error.code === 'amountPrecision' ? t(error.code, { decimals: error.decimals }) : t(error.code)}
           </p>
         )}
         <div className="route-summary">
           <span>
-            <span className="small-spark" />X Layer
+            <NetworkIcon small />X Layer
           </span>
           <button onClick={() => setSettingsOpen(true)}>
-            路由 · {PROTOCOL_NAMES[protocol]}
+            {t('route', { protocol: protocol === 'auto' ? t('protocolAuto') : protocol.toUpperCase() })}
             <Icon name="chevron" size={14} />
           </button>
         </div>
@@ -161,16 +163,22 @@ export function SwapCard({ wallet, balances, balancesLoading, balancesError, onC
           disabled={busy || (!!wallet.session && !wrongChain)}
           onClick={primaryAction}
         >
-          {busy ? '等待钱包确认…' : !wallet.session ? '连接钱包' : wrongChain ? '切换到 X Layer' : '测试合约准备中'}
+          {busy
+            ? t('waitingWallet')
+            : !wallet.session
+              ? t('connectWallet')
+              : wrongChain
+                ? t('switchNetwork')
+                : t('contractsPending')}
           {!wallet.session && <Icon name="wallet" size={19} />}
         </Button>
         <p className="swap-footnote">
           <span className="status-dot" />
-          当前仅开放连接与余额查询，暂不发起兑换。
+          {t('swapReadOnly')}
         </p>
         {wallet.error && (
           <p className="error-text" role="alert">
-            {wallet.error}
+            {t(wallet.error)}
           </p>
         )}
       </Surface>

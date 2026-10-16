@@ -28,6 +28,7 @@ type IconName =
   | 'copy'
   | 'check'
   | 'search'
+  | 'more'
   | 'sun'
   | 'moon'
   | 'layers'
@@ -36,6 +37,13 @@ type IconName =
 
 export function Icon({ name, size = 20 }: { name: IconName; size?: number }): ReactElement {
   const paths: Record<IconName, ReactElement> = {
+    more: (
+      <>
+        <circle cx="5" cy="12" r="1" />
+        <circle cx="12" cy="12" r="1" />
+        <circle cx="19" cy="12" r="1" />
+      </>
+    ),
     arrow: (
       <>
         <path d="M12 4v16m-6-6 6 6 6-6" />
@@ -137,13 +145,21 @@ export function SodaMark({ decorative = false }: { decorative?: boolean }): Reac
 export function AssetIcon({ wrapped = false, small = false }: { wrapped?: boolean; small?: boolean }): ReactElement {
   return (
     <span className={`asset-icon${wrapped ? ' wrapped' : ''}${small ? ' small' : ''}`} aria-hidden="true">
-      <span className="okb-mark">
-        <i />
-        <i />
-        <i />
-        <i />
-      </span>
-      {wrapped && <span className="wrap-badge">w</span>}
+      <img src={wrapped ? '/assets/wokb.png' : '/assets/okb.png'} alt="" width="42" height="42" />
+      {wrapped && <span className="wrap-badge">W</span>}
     </span>
+  )
+}
+
+export function NetworkIcon({ small = false }: { small?: boolean }): ReactElement {
+  return (
+    <img
+      className={`network-icon${small ? ' small' : ''}`}
+      src="/assets/xlayer.svg"
+      alt=""
+      aria-hidden="true"
+      width={small ? 14 : 22}
+      height={small ? 14 : 22}
+    />
   )
 }

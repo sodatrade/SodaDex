@@ -8,13 +8,14 @@ import {
   walletError,
   type WalletOption,
   type WalletSession,
+  type WalletErrorCode,
 } from './wallet'
 
 export interface WalletController {
   options: WalletOption[]
   session: WalletSession | undefined
   status: 'idle' | 'connecting' | 'switching'
-  error: string | undefined
+  error: WalletErrorCode | undefined
   connect: (option: WalletOption) => Promise<void>
   switchChain: () => Promise<void>
   disconnect: () => void
@@ -25,7 +26,7 @@ export function useWallet(): WalletController {
   const [options, setOptions] = useState<WalletOption[]>([])
   const [session, setSession] = useState<WalletSession>()
   const [status, setStatus] = useState<WalletController['status']>('idle')
-  const [error, setError] = useState<string>()
+  const [error, setError] = useState<WalletErrorCode>()
   const attempt = useRef(0)
   const subscription = useRef(0)
   const chainEventRevision = useRef(0)

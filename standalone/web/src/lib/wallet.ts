@@ -78,13 +78,14 @@ export async function switchToXLayer(provider: Eip1193Provider): Promise<number>
   return chainId
 }
 
-export function walletError(error: unknown): string {
+export type WalletErrorCode = 'walletRejected' | 'walletPending' | 'walletFailed'
+export function walletError(error: unknown): WalletErrorCode {
   const code = typeof error === 'object' && error !== null && 'code' in error ? error.code : undefined
   if (code === 4001) {
-    return '已取消钱包请求，可以重新连接。'
+    return 'walletRejected'
   }
   if (code === -32002) {
-    return '钱包已有待处理请求，请先打开钱包完成操作。'
+    return 'walletPending'
   }
-  return '钱包请求未完成，请检查钱包后重试。'
+  return 'walletFailed'
 }

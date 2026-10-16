@@ -10,7 +10,7 @@ describe('exact asset amounts', () => {
     expect(parseAmount(value).kind).toBe('invalid')
   })
   it('compares exact balances and does not invent an error before balance arrives', () => {
-    expect(amountError('1.000000000000000001', 1_000_000_000_000_000_000n)).toBe('可用余额不足')
+    expect(amountError('1.000000000000000001', 1_000_000_000_000_000_000n)).toEqual({ code: 'amountInsufficient' })
     expect(amountError('1', 1_000_000_000_000_000_000n)).toBeUndefined()
     expect(amountError('1')).toBeUndefined()
     expect(parseAmount('')).toEqual({ kind: 'empty' })

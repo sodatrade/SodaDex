@@ -1,6 +1,9 @@
 import '@testing-library/jest-dom/vitest'
 import { cleanup } from '@testing-library/react'
-import { afterEach } from 'vitest'
+import { afterEach, beforeEach } from 'vitest'
+beforeEach(() => {
+  localStorage.clear()
+})
 
 Object.defineProperty(HTMLDialogElement.prototype, 'showModal', {
   value: function showModal(this: HTMLDialogElement): void {

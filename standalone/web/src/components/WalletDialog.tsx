@@ -1,12 +1,14 @@
 import { useState, type ReactElement } from 'react'
 import { CHAIN_ID, EXPLORER_URL, shortenAddress } from '../domain/assets'
 import type { WalletController } from '../lib/useWallet'
+import { usePreferences } from '../preferences/context'
 import { Dialog } from './Dialog'
 import { Button, Icon } from './primitives'
 
 export function WalletDialog({ wallet, onClose }: { wallet: WalletController; onClose: () => void }): ReactElement {
   const [copied, setCopied] = useState(false)
   const [copyError, setCopyError] = useState(false)
+  const { t } = usePreferences()
   const session = wallet.session
   const busy = wallet.status !== 'idle'
 
@@ -25,8 +27,10 @@ export function WalletDialog({ wallet, onClose }: { wallet: WalletController; on
 
   return (
     <Dialog
-      title={session ? '我的钱包' : '连接钱包'}
-      description={session ? session.name : '使用你已安装的浏览器钱包连接 SodaDex。'}
+      title={session ? t('walletTitle') : t('connectWallet')}
+      description={
+        session ? (session.id === 'injected' ? t('browserWallet') : session.name) : t('walletConnectDescription')
+      }
       onClose={onClose}
     >
       {session ? (
@@ -36,12 +40,12 @@ export function WalletDialog({ wallet, onClose }: { wallet: WalletController; on
           </span>
           <strong className="wallet-address">{shortenAddress(session.address)}</strong>
           <span className="subtle">
-            {session.chainId === CHAIN_ID ? 'X Layer · 已连接' : `当前网络 ID ${session.chainId}`}
+            {session.chainId === CHAIN_ID ? t('walletConnected') : t('walletNetwork', { chainId: session.chainId })}
           </span>
           <div className="wallet-actions">
             <Button onClick={() => void copyAddress()}>
               <Icon name={copied ? 'check' : 'copy'} />
-              {copied ? '已复制' : '复制地址'}
+              {copied ? t('copied') : t('copyAddress')}
             </Button>
             <a
               className="button button-secondary"
@@ -50,20 +54,20 @@ export function WalletDialog({ wallet, onClose }: { wallet: WalletController; on
               rel="noreferrer"
             >
               <Icon name="external" />
-              区块浏览器
+              {t('explorer')}
             </a>
           </div>
           <p className="sr-only" role="status">
-            {copied ? '钱包地址已复制' : ''}
+            {copied ? t('addressCopied') : ''}
           </p>
           {copyError && (
             <p role="alert" className="error-text">
-              复制未完成，可在钱包中查看完整地址。
+              {t('copyFailed')}
             </p>
           )}
           {session.chainId !== CHAIN_ID && (
             <Button appearance="primary" disabled={busy} onClick={() => void wallet.switchChain()}>
-              {wallet.status === 'switching' ? '等待钱包确认…' : '切换到 X Layer'}
+              {wallet.status === 'switching' ? t('waitingWallet') : t('switchNetwork')}
             </Button>
           )}
           <Button
@@ -74,7 +78,7 @@ export function WalletDialog({ wallet, onClose }: { wallet: WalletController; on
               onClose()
             }}
           >
-            断开连接
+            {t('disconnect')}
           </Button>
         </div>
       ) : (
@@ -89,9 +93,9 @@ export function WalletDialog({ wallet, onClose }: { wallet: WalletController; on
               <span className="wallet-option-icon">
                 <Icon name="wallet" />
               </span>
-              <strong>{option.name}</strong>
+              <strong>{option.id === 'injected' ? t('browserWallet') : option.name}</strong>
               <span className="subtle">
-                {busy ? '等待确认…' : '连接'}
+                {busy ? t('waitingConfirmation') : t('connect')}
                 <Icon name="chevron" size={16} />
               </span>
             </button>
@@ -99,18 +103,18 @@ export function WalletDialog({ wallet, onClose }: { wallet: WalletController; on
           {wallet.options.length === 0 && (
             <div className="wallet-empty">
               <Icon name="wallet" size={32} />
-              <h3>尚未检测到浏览器钱包</h3>
-              <p>请先安装或启用支持以太坊的浏览器钱包，再刷新页面。手机上可在钱包的 DApp 浏览器中打开本站。</p>
+              <h3>{t('walletEmptyTitle')}</h3>
+              <p>{t('walletEmptyDescription')}</p>
             </div>
           )}
         </div>
       )}
       {wallet.error && (
         <p className="error-text" role="alert">
-          {wallet.error}
+          {t(wallet.error)}
         </p>
       )}
-      <p className="dialog-note">连接只用于读取公开地址和余额，不会发起交易。</p>
+      <p className="dialog-note">{t('walletReadOnly')}</p>
     </Dialog>
   )
 }

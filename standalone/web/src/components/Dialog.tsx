@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, type ReactElement, type ReactNode } from 'react'
+import { usePreferences } from '../preferences/context'
 import { Button, Icon } from './primitives'
 
 interface DialogProps {
@@ -6,11 +7,13 @@ interface DialogProps {
   description?: string
   children: ReactNode
   onClose: () => void
+  onEscape?: () => boolean
 }
 
-export function Dialog({ title, description, children, onClose }: DialogProps): ReactElement {
+export function Dialog({ title, description, children, onClose, onEscape }: DialogProps): ReactElement {
   const ref = useRef<HTMLDialogElement>(null)
   const id = useId()
+  const { t } = usePreferences()
 
   useEffect(() => {
     const dialog = ref.current
@@ -36,11 +39,16 @@ export function Dialog({ title, description, children, onClose }: DialogProps): 
           onClose()
         }
       }}
+      onCancel={(event) => {
+        if (onEscape?.()) {
+          event.preventDefault()
+        }
+      }}
     >
       <div className="soda-dialog-body">
         <header className="dialog-header">
           <h2 id={`${id}-title`}>{title}</h2>
-          <Button appearance="icon" aria-label="关闭对话框" onClick={onClose}>
+          <Button appearance="icon" aria-label={t('closeDialog')} onClick={onClose}>
             <Icon name="close" />
           </Button>
         </header>

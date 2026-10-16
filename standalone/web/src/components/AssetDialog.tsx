@@ -1,5 +1,6 @@
 import { useState, type ReactElement } from 'react'
 import { ASSETS, type AssetId } from '../domain/assets'
+import { usePreferences } from '../preferences/context'
 import { Dialog } from './Dialog'
 import { AssetIcon, Icon } from './primitives'
 
@@ -13,20 +14,21 @@ export function AssetDialog({
   onClose: () => void
 }): ReactElement {
   const [search, setSearch] = useState('')
+  const { t } = usePreferences()
   const query = search.trim().toLowerCase()
   const assets = ASSETS.filter((asset) =>
     `${asset.symbol} ${asset.name} ${asset.address ?? ''}`.toLowerCase().includes(query),
   )
 
   return (
-    <Dialog title="选择资产" description="X Layer · 已核对的 OKB 资产" onClose={onClose}>
+    <Dialog title={t('chooseAsset')} description={t('verifiedAssets')} onClose={onClose}>
       <label className="search-field">
         <Icon name="search" />
         <input
           autoFocus
           data-dialog-autofocus
-          aria-label="搜索资产名称或合约地址"
-          placeholder="搜索名称或合约地址"
+          aria-label={t('assetSearchLabel')}
+          placeholder={t('assetSearchPlaceholder')}
           value={search}
           onChange={(event) => setSearch(event.target.value)}
         />
@@ -42,14 +44,14 @@ export function AssetDialog({
             <AssetIcon wrapped={asset.id === 'wokb'} />
             <span className="asset-option-label">
               <strong>{asset.symbol}</strong>
-              <span>{asset.description}</span>
+              <span>{t(asset.id === 'okb' ? 'nativeAsset' : 'wrappedAsset')}</span>
             </span>
             {asset.id === selected && <Icon name="check" />}
           </button>
         ))}
-        {assets.length === 0 && <p className="empty-search">没有匹配的资产。当前仅提供 OKB 与 WOKB。</p>}
+        {assets.length === 0 && <p className="empty-search">{t('noAssets')}</p>}
       </div>
-      <p className="dialog-note">OKB 是原生资产；WOKB 用于兼容 ERC-20 的合约。</p>
+      <p className="dialog-note">{t('assetExplanation')}</p>
     </Dialog>
   )
 }
