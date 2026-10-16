@@ -12,6 +12,7 @@ import subprocess
 import time
 import urllib.parse
 import urllib.request
+import uuid
 
 ROOT = Path(__file__).resolve().parents[2]
 ZERO = '0x' + '00' * 20
@@ -33,12 +34,15 @@ def rpc(url, method, params=(), *, local=False):
             raise ValueError('Local state changes require a 127.0.0.1 endpoint')
     elif method not in READ_METHODS:
         raise ValueError(f'Remote mutation prohibited: {method}')
+    request_id = str(uuid.uuid4())
     request = urllib.request.Request(
-        url, data=json.dumps({'jsonrpc': '2.0', 'id': 1, 'method': method, 'params': list(params)}).encode(),
+        url, data=json.dumps({'jsonrpc': '2.0', 'id': request_id, 'method': method, 'params': list(params)}).encode(),
         headers={'Content-Type': 'application/json', 'User-Agent': 'SodaDex/1.0'},
     )
     with urllib.request.urlopen(request, timeout=30) as response:
         result = json.load(response)
+    if result.get('id') != request_id:
+        raise RuntimeError('RPC response ID mismatch')
     if 'error' in result:
         raise RuntimeError(f"{method}: {result['error'].get('message', 'RPC error')}")
     return result['result']
@@ -79,6 +83,41 @@ def initcode(data, args, libraries):
         raise ValueError('Constructor argument count mismatch')
     encoded = command('cast', 'abi-encode', 'constructor(' + ','.join(abi_type(v) for v in inputs) + ')', *map(str, args)) if inputs else '0x'
     return '0x' + code + encoded.removeprefix('0x')
+
+
+def deployment_steps(config, sources, deploy, execute):
+    """One constructor/dependency plan shared by rehearsal and live validation."""
+    router = sources / 'universal-router-2.1.2'
+    periphery = router / 'lib/v4-periphery'
+    core = periphery / 'lib/v4-core'
+    v3 = sources / 'v3-artifacts'
+    core3 = v3 / 'v3-core-1.0.1/package/artifacts/contracts'
+    periphery3 = v3 / 'v3-periphery-1.4.4/package/artifacts/contracts'
+    deployed, libraries = {}, {}
+
+    def add(name, path, ctor=()):
+        deployed[name] = deploy(name, path, ctor, libraries)
+        return deployed[name]
+
+    wrapped, permit, owner = config['wrappedNative'], config['permit2'], config['owner']
+    label = '0x' + b'OKB'.hex().ljust(64, '0')
+    add('v3Factory', core3 / 'UniswapV3Factory.sol/UniswapV3Factory.json')
+    libraries['NFTDescriptor'] = add('v3NFTDescriptor', periphery3 / 'libraries/NFTDescriptor.sol/NFTDescriptor.json')
+    add('v3TokenDescriptor', periphery3 / 'NonfungibleTokenPositionDescriptor.sol/NonfungibleTokenPositionDescriptor.json', [wrapped, label])
+    add('v3PositionManager', periphery3 / 'NonfungiblePositionManager.sol/NonfungiblePositionManager.json', [deployed['v3Factory'], wrapped, deployed['v3TokenDescriptor']])
+    add('v3Quoter', periphery3 / 'lens/QuoterV2.sol/QuoterV2.json', [deployed['v3Factory'], wrapped])
+    add('v4PoolManager', core / 'out/PoolManager.sol/PoolManager.json', [owner])
+    out4 = periphery / 'foundry-out'
+    add('v4Descriptor', out4 / 'PositionDescriptor.sol/PositionDescriptor.json', [deployed['v4PoolManager'], wrapped, label])
+    add('v4PositionManager', out4 / 'PositionManager.sol/PositionManager.json', [deployed['v4PoolManager'], permit, config['v4UnsubscribeGasLimit'], deployed['v4Descriptor'], wrapped])
+    add('v4Quoter', out4 / 'V4Quoter.sol/V4Quoter.json', [deployed['v4PoolManager']])
+    add('v4StateView', out4 / 'StateView.sol/StateView.json', [deployed['v4PoolManager']])
+    unsupported = add('unsupportedProtocol', router / 'out/UnsupportedProtocol.sol/UnsupportedProtocol.json')
+    params = '(' + ','.join([permit, wrapped, unsupported, deployed['v3Factory'], ZERO32, POOL_HASH, deployed['v4PoolManager'], deployed['v3PositionManager'], deployed['v4PositionManager'], unsupported]) + ')'
+    add('universalRouter', router / 'out/UniversalRouter.sol/UniversalRouter.json', [params])
+    fee = config['requestedFees']
+    execute('enableV3LowFeeTier', command('cast', 'calldata', 'enableFeeAmount(uint24,int24)', str(fee['v3PoolFee']), str(fee['v3TickSpacing'])), deployed['v3Factory'])
+    return deployed
 
 
 def main():
@@ -134,8 +173,7 @@ def main():
         '--fork-url', remote, '--fork-block-number', str(int(block, 16)), '--chain-id', '196',
         '--auto-impersonate', '--gas-price', str(gas_price), '--silent',
     ], stdout=log, stderr=log)
-    transactions, deployed, libraries = [], {}, {}
-    label = '0x' + b'OKB'.hex().ljust(64, '0')
+    transactions, deployed = [], {}
     try:
         def assert_owned_node():
             if process.poll() is not None:
@@ -178,37 +216,24 @@ def main():
             if not receipt or receipt['status'] != '0x1':
                 raise RuntimeError(f'Local deployment failed: {name}')
             address = receipt.get('contractAddress')
+            runtime_hash = None
             if address:
                 deployed[name] = address
-                if rpc(local_url, 'eth_getCode', [address, 'latest'], local=True) == '0x':
+                runtime = rpc(local_url, 'eth_getCode', [address, 'latest'], local=True)
+                if runtime == '0x':
                     raise ValueError(f'Empty deployed code: {name}')
+                runtime_hash = hashlib.sha256(bytes.fromhex(runtime[2:])).hexdigest()
             transactions.append({'name': name, 'unsigned': {**tx, 'chainId': 196},
-                                 'localReceipt': receipt, 'artifact': provenance})
+                                 'localReceipt': receipt, 'artifact': provenance, 'runtimeCodeSha256': runtime_hash})
             print(f'{name}: local gasUsed={int(receipt["gasUsed"], 16)}', flush=True)
             return address
 
-        def deploy(name, path, ctor=()):
+        def deploy(name, path, ctor, libraries):
             source = load_artifact(path)
             return execute(name, initcode(source, ctor, libraries), provenance={k: source[k] for k in ('path', 'sha256')})
 
         wrapped, permit = config['wrappedNative'], config['permit2']
-        deploy('v3Factory', core3 / 'UniswapV3Factory.sol/UniswapV3Factory.json')
-        libraries['NFTDescriptor'] = deploy('v3NFTDescriptor', periphery3 / 'libraries/NFTDescriptor.sol/NFTDescriptor.json')
-        deploy('v3TokenDescriptor', periphery3 / 'NonfungibleTokenPositionDescriptor.sol/NonfungibleTokenPositionDescriptor.json', [wrapped, label])
-        deploy('v3PositionManager', periphery3 / 'NonfungiblePositionManager.sol/NonfungiblePositionManager.json', [deployed['v3Factory'], wrapped, deployed['v3TokenDescriptor']])
-        deploy('v3Quoter', periphery3 / 'lens/QuoterV2.sol/QuoterV2.json', [deployed['v3Factory'], wrapped])
-        deploy('v4PoolManager', core / 'out/PoolManager.sol/PoolManager.json', [owner])
-        out4 = periphery / 'foundry-out'
-        deploy('v4Descriptor', out4 / 'PositionDescriptor.sol/PositionDescriptor.json', [deployed['v4PoolManager'], wrapped, label])
-        deploy('v4PositionManager', out4 / 'PositionManager.sol/PositionManager.json', [deployed['v4PoolManager'], permit, config['v4UnsubscribeGasLimit'], deployed['v4Descriptor'], wrapped])
-        deploy('v4Quoter', out4 / 'V4Quoter.sol/V4Quoter.json', [deployed['v4PoolManager']])
-        deploy('v4StateView', out4 / 'StateView.sol/StateView.json', [deployed['v4PoolManager']])
-        deploy('unsupportedProtocol', router / 'out/UnsupportedProtocol.sol/UnsupportedProtocol.json')
-        unsupported = deployed['unsupportedProtocol']
-        router_params = '(' + ','.join([permit, wrapped, unsupported, deployed['v3Factory'], ZERO32, POOL_HASH, deployed['v4PoolManager'], deployed['v3PositionManager'], deployed['v4PositionManager'], unsupported]) + ')'
-        deploy('universalRouter', router / 'out/UniversalRouter.sol/UniversalRouter.json', [router_params])
-        fee = config['requestedFees']
-        execute('enableV3LowFeeTier', command('cast', 'calldata', 'enableFeeAmount(uint24,int24)', str(fee['v3PoolFee']), str(fee['v3TickSpacing'])), deployed['v3Factory'])
+        deployed = deployment_steps(config, sources, deploy, execute)
 
         def check(address, signature, expected):
             result = rpc(local_url, 'eth_call', [{'to': address, 'data': command('cast', 'calldata', signature)}, 'latest'], local=True)

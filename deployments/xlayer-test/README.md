@@ -71,6 +71,22 @@ python3 scripts/sodadex/rehearse-xlayer-test.py
 
 输出保存在 `.analysis/deployment/xlayer-test-rehearsal.json`，包含本地回执、未签名部署数据、构造参数和费用估算。实际主网部署前需要重新核对 nonce、余额、gas 与链上费用，执行后逐笔读取真实回执，并核对 owner 与各合约绑定地址。保持 `contracts` 为空直到取得真实部署回执。
 
+## 已授权测试部署的执行与恢复
+
+`scripts/sodadex/deploy-xlayer-test.py` 使用同一构造／依赖计划，额外核对签名发送者、chain ID、nonce、calldata、完整 runtime hash、回执及合约绑定。签名通过本机加密 keystore 完成，钱包不进入前端。
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/sodadex -p 'test_*.py'
+PYTHONDONTWRITEBYTECODE=1 python3 scripts/sodadex/rehearse-xlayer-test.py --output .analysis/deployment/xlayer-test-runtime-rehearsal.json
+PYTHONDONTWRITEBYTECODE=1 python3 scripts/sodadex/deploy-xlayer-test.py
+# 仅在用户已授权当前测试计划和预算后执行：
+PYTHONDONTWRITEBYTECODE=1 python3 scripts/sodadex/deploy-xlayer-test.py --broadcast
+```
+
+私有执行日志位于 `~/.local/share/sodadex/deployments/xlayer-test/journal.json`（目录 0700、文件 0600）。每笔签名与 hash 先落盘，再广播；网络响应丢失时按同一命令恢复，先核对已知 hash 的真实回执与 nonce。不要删除日志重新部署；脚本不会自动替换交易或提高 gas 价格。检测到未知 nonce、回执失败、字节码不符或预算超限会停止并保留原日志。
+
+当前预算为 0.001 OKB，逐笔刷新余额和费用，并预留全部剩余交易的执行费上限。目前执行器要求链上 L1 数据费和 operator fee 报价均为 0；费用模型变化时停止重新核算。该读取是当时的链上报价，不保证未来区块费率不变。完成后的公开回执保存在 `receipts.json`，其中不含签名原文。
+
 ## 测试身份与应用接入
 
 网页基础标题、分享元数据与钱包连接显示名已标为 `SodaDex Test`。自有合约接入后，页面顶部还应持续显示“SodaDex 测试版 · X Layer 主网（196）”，交易确认页列出实际测试合约地址并提供浏览器链接；正式版使用另一组部署记录。
