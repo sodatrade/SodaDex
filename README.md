@@ -6,12 +6,14 @@ The application is labelled **SodaDex Test**. A new SodaDex interface is built i
 
 The source baseline is `web/5.166.0`, commit `6f54d9a474a6036e7043ed52f2a9359003c96c9c`. Preserve upstream licences, notices, protocol identifiers, and SDK package names.
 
+Test preview: [sodadex-preview.jsmsdx2025.workers.dev](https://sodadex-preview.jsmsdx2025.workers.dev). Wallet connection and balance reads are available; swaps and liquidity actions remain closed until independent contracts, pools and quotes are integrated. Hosting is published manually, without a custom domain or deployment CI. See the [local runbook](standalone/README.md) and [hosting receipt](deployments/frontend-test.json).
+
 ```bash
 git clone https://github.com/sodatrade/SodaDex.git
 cd SodaDex
 ```
 
-Use the Node and Bun versions in `.nvmrc` and `.bun-version`. The current public upstream snapshot references a missing `tools/uniswap-nx` workspace, so `bun install --frozen-lockfile` fails before installing dependencies. The full application checks have not passed; do not treat this checkout as a validated deployment.
+Use the Node and Bun versions in `.nvmrc` and `.bun-version`. The current public upstream snapshot references a missing `tools/uniswap-nx` workspace, so `bun install --frozen-lockfile` fails before installing dependencies. The upstream monorepo checks remain blocked; independent SodaDex validation and test hosting are documented in the [standalone runbook](standalone/README.md).
 
 ## Upstream documentation
 

@@ -1,0 +1,26 @@
+{
+  "name": "SodaDex Test",
+  "stage": "test",
+  "status": "live-readonly",
+  "url": "https://sodadex-preview.jsmsdx2025.workers.dev",
+  "provider": "Cloudflare Workers Static Assets",
+  "worker": "sodadex-preview",
+  "versionId": "8a1b0a75-6f3c-4510-afa9-e0f10ff4ee84",
+  "sourceCommit": "96b7597be251e46aeb68736e1d6dd005f4e3ffcd",
+  "publishedOn": "2026-10-16",
+  "customDomain": null,
+  "deploymentCi": null,
+  "chainId": 196,
+  "rpcUrl": "https://rpc.ignix.bot/rpc/196",
+  "browserRpcPath": "/api/rpc",
+  "contractStatus": "not-deployed",
+  "tradingStatus": "disabled; contracts, liquidity and quotes pending",
+  "validation": {
+    "webTestsPassed": 23,
+    "workerTestsPassed": 16,
+    "browserAcceptanceChecksPassed": 18,
+    "browserWalletAndRpc": "isolated fixtures; no signing or broadcast",
+    "liveRpcChainId": "0xc4",
+    "liveSiteHttpStatus": 200
+  }
+}

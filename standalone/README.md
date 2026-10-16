@@ -13,7 +13,7 @@ npm --prefix standalone/web run build
 npm --prefix standalone/worker run dev
 ```
 
-访问 Wrangler 输出的本地地址（默认 `http://localhost:8787`）。开发界面可另起一个终端运行 `npm --prefix standalone/web run dev`，保留 Worker 用于 `/api/rpc`。
+访问 Wrangler 输出的本地地址（默认 `http://localhost:8787`）。开发界面也可独立运行 `npm --prefix standalone/web run dev`；Vite 会通过同源开发代理读取指定 RPC，无需同时启动 Worker。
 
 ```sh
 npm --prefix standalone/web run typecheck
@@ -42,6 +42,8 @@ npm --prefix standalone/worker run deploy:test
 ```
 
 Cloudflare 凭证使用本机 Wrangler 登录状态，不进入源码或前端构建。静态资源只从 `web/dist` 上传。
+
+当前测试地址为 [sodadex-preview.jsmsdx2025.workers.dev](https://sodadex-preview.jsmsdx2025.workers.dev)，版本记录保存在 [`../deployments/frontend-test.json`](../deployments/frontend-test.json)。正式域名暂未绑定。
 
 浏览器读取 `/api/rpc`；Worker 用固定地址 `https://rpc.ignix.bot/rpc/196` 查询 X Layer。代理只接受允许的读取方法和已核实 WOKB 的余额、元数据调用，不接受签名、交易广播或任意上游地址。节点失败时前端显示连接失败，不回退到其他节点。
 
