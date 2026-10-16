@@ -13,7 +13,7 @@ import { getBalances, getNetworkStatus } from './lib/rpc'
 import { useWallet } from './lib/useWallet'
 import { usePreferences } from './preferences/context'
 import { PreferencesProvider } from './preferences/PreferencesProvider'
-import { POOLS } from './trading/config'
+import { POOLS, publicSwapsEnabled } from './trading/config'
 
 export function App(): ReactElement {
   return (
@@ -67,7 +67,7 @@ function AppContent(): ReactElement {
       />
       <div className="test-notice">
         <span className="test-notice-label">{t('testExperience')}</span>
-        <p>{t(POOLS.ready ? 'testTradingNotice' : 'testNotice')}</p>
+        <p>{t(!publicSwapsEnabled() ? 'testPausedNotice' : POOLS.ready ? 'testTradingNotice' : 'testNotice')}</p>
       </div>
       <main id="main" tabIndex={-1}>
         <div className="trade-layout" hidden={page !== 'swap'}>

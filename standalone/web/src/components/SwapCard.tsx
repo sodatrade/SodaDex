@@ -5,7 +5,7 @@ import { amountError, formatBalance, parseAmount } from '../domain/amount'
 import { CHAIN_ID, EXPLORER_URL, getAsset, shortenAddress, type AssetId, type Protocol } from '../domain/assets'
 import type { WalletController } from '../lib/useWallet'
 import { usePreferences } from '../preferences/context'
-import { POOLS } from '../trading/config'
+import { POOLS, publicSwapsEnabled } from '../trading/config'
 import { getQuote } from '../trading/quotes'
 import type { Quote, TradeIdentity } from '../trading/types'
 import { useTrade } from '../trading/useTrade'
@@ -36,6 +36,7 @@ export function SwapCard({ wallet, balances, balancesLoading, balancesError, onC
   const from = getAsset(fromId),
     to = getAsset(toId)
   const parsed = parseAmount(amount, from.decimals)
+  const tradingEnabled = publicSwapsEnabled()
   const error =
     amountError(amount, balances?.[fromId], from.decimals) ??
     (parsed.kind === 'valid' && parsed.units >= 2n ** 128n ? { code: 'amountTooLarge' as const } : undefined)
@@ -43,7 +44,7 @@ export function SwapCard({ wallet, balances, balancesLoading, balancesError, onC
   const quote = useQuery({
     queryKey: ['quote', fromId, toId, parsed.kind === 'valid' ? parsed.units.toString() : '', protocol],
     queryFn: () => getQuote({ from: fromId, to: toId, amount: parsed.kind === 'valid' ? parsed.units : 0n }, protocol),
-    enabled: POOLS.ready && supported && parsed.kind === 'valid' && !error,
+    enabled: tradingEnabled && POOLS.ready && supported && parsed.kind === 'valid' && !error,
     refetchInterval: 15_000,
     retry: false,
   })
@@ -92,6 +93,7 @@ export function SwapCard({ wallet, balances, balancesLoading, balancesError, onC
       void wallet.switchChain()
       return
     }
+    if (!tradingEnabled) return
     const identity = wallet.getIdentity()
     if (quote.data && identity) {
       trade.reset()
@@ -101,6 +103,7 @@ export function SwapCard({ wallet, balances, balancesLoading, balancesError, onC
   }
   const disabled =
     walletBusy ||
+    (!tradingEnabled && !locked && !wrongChain) ||
     (!!wallet.session &&
       !wrongChain &&
       !locked &&
@@ -109,11 +112,13 @@ export function SwapCard({ wallet, balances, balancesLoading, balancesError, onC
     ? 'viewTransaction'
     : walletBusy
       ? 'waitingWallet'
-      : !wallet.session
-        ? 'connectWallet'
-        : wrongChain
-          ? 'switchNetwork'
-          : !POOLS.ready
+      : wrongChain
+        ? 'switchNetwork'
+        : !tradingEnabled
+          ? 'tradePaused'
+          : !wallet.session
+            ? 'connectWallet'
+            : !POOLS.ready
             ? 'contractsPending'
             : !supported
               ? 'tradeUnsupported'
@@ -173,20 +178,22 @@ export function SwapCard({ wallet, balances, balancesLoading, balancesError, onC
         </div>
         <SwapAmountPanel
           id={toId}
-          amount={quote.data && supported && !error ? formatUnits(quote.data.amountOut, to.decimals) : '—'}
+          amount={tradingEnabled && quote.data && supported && !error ? formatUnits(quote.data.amountOut, to.decimals) : '—'}
           onSelect={() => setSelector('to')}
           balance={balanceText(toId)}
           disabled={locked}
           hint={t(
-            !POOLS.ready
-              ? 'quotePending'
-              : !supported
-                ? 'tradeUnsupported'
-                : quote.isFetching
-                  ? 'quoteLoading'
-                  : quote.data
-                    ? 'quoteReady'
-                    : 'enterAmount',
+            !tradingEnabled
+              ? 'tradePaused'
+              : !POOLS.ready
+                ? 'quotePending'
+                : !supported
+                  ? 'tradeUnsupported'
+                  : quote.isFetching
+                    ? 'quoteLoading'
+                    : quote.data
+                      ? 'quoteReady'
+                      : 'enterAmount',
           )}
         />
         {error && (
@@ -194,7 +201,7 @@ export function SwapCard({ wallet, balances, balancesLoading, balancesError, onC
             {error.code === 'amountPrecision' ? t(error.code, { decimals: error.decimals }) : t(error.code)}
           </p>
         )}
-        {quote.isError && POOLS.ready && supported && (
+        {quote.isError && tradingEnabled && POOLS.ready && supported && (
           <p className="error-text" role="alert">
             {t('tradeUnavailable')}{' '}
             <button className="text-button" onClick={() => void quote.refetch()}>
@@ -221,7 +228,7 @@ export function SwapCard({ wallet, balances, balancesLoading, balancesError, onC
         </Button>
         <p className="swap-footnote">
           <span className="status-dot" />
-          {t(POOLS.ready ? 'tradeNotice' : 'swapReadOnly')}
+          {t(!tradingEnabled ? 'tradingPausedNote' : POOLS.ready ? 'tradeNotice' : 'swapReadOnly')}
         </p>
         {trade.progress && (
           <p className="trade-status" role="status">

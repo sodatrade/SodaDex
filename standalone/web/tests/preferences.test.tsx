@@ -7,6 +7,7 @@ import { WOKB_ADDRESS } from '../src/domain/assets'
 import type { Eip1193Provider } from '../src/lib/wallet'
 import { PREFERENCES_KEY } from '../src/preferences/model'
 import { POOLS } from '../src/trading/config'
+import * as policy from '../../trading-policy'
 
 const deploymentReady = POOLS.ready
 
@@ -20,6 +21,7 @@ function renderApp(): ReturnType<typeof render> {
 }
 
 beforeEach(() => {
+  vi.spyOn(policy, 'publicSwapsEnabled').mockReturnValue(true)
   // Preference and pending-search fixtures must not depend on live deployment progress.
   POOLS.ready = false
   vi.stubGlobal(

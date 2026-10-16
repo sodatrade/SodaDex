@@ -24,6 +24,7 @@ export type TradeIdentity = WalletIdentity
 export type TradeErrorCode =
   | 'tradeReviewAgain'
   | 'tradeNotReady'
+  | 'tradePaused'
   | 'tradeUnsupported'
   | 'tradeUnavailable'
   | 'tradeIdentityChanged'

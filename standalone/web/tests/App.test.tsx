@@ -7,6 +7,7 @@ import { App } from '../src/App'
 import { STABLE_ADDRESS } from '../src/domain/assets'
 import type { Eip1193Provider } from '../src/lib/wallet'
 import { POOLS } from '../src/trading/config'
+import * as policy from '../../trading-policy'
 
 const address = '0x1111111111111111111111111111111111111111'
 const methods: string[] = []
@@ -24,6 +25,7 @@ function renderApp(): ReturnType<typeof render> {
 }
 
 beforeEach(() => {
+  vi.spyOn(policy, 'publicSwapsEnabled').mockReturnValue(true)
   // These cases exercise the unavailable-pool flow independently of the deployed manifest.
   POOLS.ready = false
   methods.length = 0

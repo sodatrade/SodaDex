@@ -3,7 +3,7 @@ import { CHAIN_ID } from '../domain/assets'
 import { hexQuantity, rpc } from '../lib/rpc'
 import { firstAccount } from '../lib/wallet'
 import { ensureApprovals } from './approvals'
-import { DEADLINE_SECONDS, POOLS } from './config'
+import { DEADLINE_SECONDS, POOLS, publicSwapsEnabled } from './config'
 import { buildSwap } from './encoding'
 import { latestTimestamp, quoteRoute } from './quotes'
 import { transactionHash, waitReceipt } from './receipts'
@@ -42,10 +42,15 @@ export function identityGuard(c: ExecutionContext): () => void {
 }
 /** Every wallet write is preceded by provider identity validation and a same-origin simulation. */
 export async function executeTrade(review: Quote, c: ExecutionContext): Promise<Hex> {
+  if (!publicSwapsEnabled()) throw new TradeError('tradePaused')
   if (!(c.ready ?? POOLS.ready)) throw new TradeError('tradeNotReady')
   const read = c.read ?? rpc
   const wait = c.wait ?? waitReceipt
-  const assertCurrent = identityGuard(c)
+  const assertIdentity = identityGuard(c)
+  const assertCurrent = (): void => {
+    if (!publicSwapsEnabled()) throw new TradeError('tradePaused')
+    assertIdentity()
+  }
   const identity = c.identity
   assertCurrent()
   const checkWallet = async (): Promise<void> => {

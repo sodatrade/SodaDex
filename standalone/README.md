@@ -45,7 +45,7 @@ playwright-cli -s=sodadex-fork-ui run-code --filename=standalone/acceptance/fork
 playwright-cli -s=sodadex-fork-ui close
 ```
 
-脚本从界面连接模拟钱包、分别选择 V3/V4，提交各一次双向兑换。每笔核对成功回执、自有池 Swap 事件、扣除 gas 后的实际余额变化、输入数量、预览最低接收量和零 WOKB 残留。该证据属于本地 fork；真实链部署及兑换以公开回执为准。浏览器脚本限制地址为 `127.0.0.1:4173`，不能对线上网站运行。
+公开交易暂停时，该兑换验收也应被策略阻止。若需要复现历史兑换验收，应在独立本地 fixture 副本中显式启用策略并构建，不能修改当前发布分支的开关。脚本从界面连接模拟钱包、分别选择 V3/V4，提交各一次双向兑换。每笔核对成功回执、自有池 Swap 事件、扣除 gas 后的实际余额变化、输入数量、预览最低接收量和零 WOKB 残留。该证据属于本地 fork；真实链部署及兑换以公开回执为准。浏览器脚本限制地址为 `127.0.0.1:4173`，不能对线上网站运行。
 
 ## 测试发布
 
@@ -63,10 +63,12 @@ Cloudflare 凭证使用本机 Wrangler 登录状态，不进入源码或前端�
 
 ## 当前范围
 
-这是 **X Layer 主网 196 上的测试界面**，OKB 是真实资产。SodaDEX 仓位 NFT 名称和原创 SVG 已部署，V3 WOKB/USD₮0（0.01%）与 V4 原生 OKB/USD₮0（0%）均已创建、注入少量流动性并完成真实双向兑换。当前 `pools.json` 已核验为 `ready`，界面通过自有池报价、有限授权、交易预览、钱包执行与收据查询完成兑换。提供流动性的前端入口尚未开放。报价、价格和池数据不使用虚构数值。前端不读取本机部署钱包。
+这是 **X Layer 主网 196 上的测试界面**，OKB 是真实资产。SodaDEX 仓位 NFT 名称和原创 SVG 已部署，V3 WOKB/USD₮0（0.01%）与 V4 原生 OKB/USD₮0（0%）均已创建、注入少量流动性并完成真实双向兑换。当前 `pools.json` 保持 `ready`，只表示链上测试池已经核验。`standalone/trading-policy.json` 的 `publicSwapsEnabled=false` 独立暂停公开兑换：前端不再请求报价、创建新预览或提交新授权／兑换；已提交交易的链接、等待回执与再次检查回执功能保留。Worker 拒绝正金额授权和 Router 兑换的 `eth_call`／`eth_estimateGas`，余额、代码、allowance、区块和回执读取及现有 ERC-20 `approve(0)` 模拟仍可用。提供流动性的前端入口尚未开放。报价、价格和池数据不使用虚构数值。前端不读取本机部署钱包。
 
 界面支持简体中文、English 与粵語，新访客默认白天主题。语言、外观和 CNY/USD/HKD 展示货币保存在浏览器的 `sodadex.preferences.v1`；存储不可用时使用默认设置。展示货币只影响价格标签，当前没有价格数据，不会把 OKB 余额换算成法币。
 
 `web build` 会生成首帧偏好初始化脚本及 `dist/preferences-script.json`。Worker 构建和检查会读取该脚本的精确 CSP hash，因此必须先构建前端，再检查或发布 Worker；两者应一起发布。
 
 当前前端及 Worker 的合约地址统一读取 [`../deployments/xlayer-test/active.json`](../deployments/xlayer-test/active.json)，池就绪状态读取 `pools.json`。原始 `plan.json` / `receipts.json` 和已经完成的三笔交易记录 `pools-interrupted.json` 保留用于历史核验。当前地址已按品牌更新的真实回执切换；完整地址、NFT 图片及兑换回执见 [`ADDRESSES.md`](../deployments/xlayer-test/ADDRESSES.md)。本应用与保留的上游 `apps/web` 分开构建，独立检查通过不代表整个上游单体仓库检查通过。
+
+重新开放公开兑换需要修改独立交易策略、运行就绪与暂停分支的回归和浏览器验收，再手动发布前端与 Worker。仅修改 `pools.json` 不会解除暂停。暂停前已经进入钱包确认窗口或已广播的交易不能由网站撤回。

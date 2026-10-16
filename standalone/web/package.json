@@ -12,7 +12,7 @@
     "preview": "vite preview --host 127.0.0.1",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "lint": "oxlint --config .oxlintrc.json --deny-warnings src tests tooling vite.config.ts vitest.config.ts"
+    "lint": "cd .. && web/node_modules/.bin/oxlint --config web/.oxlintrc.json --deny-warnings web/src web/tests web/tooling web/vite.config.ts web/vitest.config.ts trading-policy.ts"
   },
   "dependencies": {
     "@tanstack/react-query": "5.90.20",

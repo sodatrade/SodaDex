@@ -2,7 +2,7 @@ import type { ReactElement } from 'react'
 import { formatUnits } from 'viem'
 import { CHAIN_ID, EXPLORER_URL, getAsset, shortenAddress } from '../domain/assets'
 import { usePreferences } from '../preferences/context'
-import { CONTRACTS } from '../trading/config'
+import { CONTRACTS, publicSwapsEnabled } from '../trading/config'
 import type { Quote, TradeIdentity } from '../trading/types'
 import type { useTrade } from '../trading/useTrade'
 import { Dialog } from './Dialog'
@@ -27,6 +27,7 @@ export function TradeConfirmation({
   const from = getAsset(quote.from),
     to = getAsset(quote.to)
   const done = trade.progress?.stage === 'tradeSucceeded'
+  const paused = !publicSwapsEnabled()
   return (
     <Dialog title={t('reviewSwap')} description={t('tradeNotice')} onClose={onClose}>
       <div className="review-pair">
@@ -88,6 +89,7 @@ export function TradeConfirmation({
       </dl>
       <p className="dialog-note">{t(quote.from === 'usdt0' ? 'boundedApprovalNote' : 'nativeRouteNote')}</p>
       <p className="dialog-note">{t('deadlineNote')}</p>
+      {paused && !done && <p role="status">{t('tradingPausedNote')}</p>}
       {trade.progress && (
         <p className="trade-status" role="status">
           {t(trade.progress.stage)}
@@ -117,9 +119,9 @@ export function TradeConfirmation({
           appearance="primary"
           className="swap-action"
           onClick={done ? onClose : onConfirm}
-          disabled={!done && (!current || trade.busy || !!trade.error)}
+          disabled={!done && (paused || !current || trade.busy || !!trade.error)}
         >
-          {t(done ? 'closeDialog' : trade.busy ? 'waitingConfirmation' : 'confirmSwap')}
+          {t(done ? 'closeDialog' : paused ? 'tradePaused' : trade.busy ? 'waitingConfirmation' : 'confirmSwap')}
         </Button>
       )}
     </Dialog>

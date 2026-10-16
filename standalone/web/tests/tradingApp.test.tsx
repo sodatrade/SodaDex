@@ -9,20 +9,26 @@ import type { Eip1193Provider } from '../src/lib/wallet'
 import { PREFERENCES_KEY } from '../src/preferences/model'
 import { v3QuoterAbi, v4QuoterAbi } from '../src/trading/abis'
 import { CONTRACTS, POOLS } from '../src/trading/config'
+import * as policy from '../../trading-policy'
+import * as receipts from '../src/trading/receipts'
+import { TradeError } from '../src/trading/types'
 const owner = '0x1111111111111111111111111111111111111111'
 const hash = `0x${'a'.repeat(64)}` as Hex
 const deploymentReady = POOLS.ready
 let requests: string[] = []
 let listener: ((value: unknown) => void) | undefined
-function renderApp(): void {
+function renderApp(): { rerender: () => void } {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } })
-  render(
+  const tree = () => (
     <QueryClientProvider client={client}>
       <App />
-    </QueryClientProvider>,
+    </QueryClientProvider>
   )
+  const view = render(tree())
+  return { rerender: () => view.rerender(tree()) }
 }
 beforeEach(() => {
+  vi.spyOn(policy, 'publicSwapsEnabled').mockReturnValue(true)
   POOLS.ready = true
   requests = []
   listener = undefined
@@ -84,12 +90,65 @@ afterEach(() => {
 })
 async function connect(): Promise<void> {
   const user = userEvent.setup()
-  await user.click(within(screen.getByRole('region', { name: '资产兑换' })).getByRole('button', { name: '连接钱包' }))
+  await user.click(within(screen.getByRole('banner')).getByRole('button', { name: '连接钱包' }))
   await user.click(screen.getByRole('button', { name: /浏览器钱包.*连接/ }))
   await screen.findByRole('dialog', { name: '我的钱包' })
   await user.click(screen.getByRole('button', { name: '关闭对话框' }))
 }
 describe('ready test pool user flow', () => {
+  it('keeps submitted links and receipt checks available after public trading pauses', async () => {
+    vi.spyOn(receipts, 'waitReceipt').mockRejectedValueOnce(new TradeError('tradePending'))
+    const user = userEvent.setup()
+    const view = renderApp()
+    await connect()
+    await user.type(screen.getByLabelText('支付'), '0.0001')
+    await user.click(await screen.findByRole('button', { name: '预览兑换' }))
+    await user.click(screen.getByRole('button', { name: '确认兑换' }))
+    await screen.findByRole('button', { name: '检查交易回执' })
+    vi.spyOn(policy, 'publicSwapsEnabled').mockReturnValue(false)
+    view.rerender()
+    await user.click(screen.getByRole('button', { name: '关闭对话框' }))
+    expect(screen.getByRole('link', { name: /最近提交/ })).toHaveAttribute('href', `https://www.oklink.com/xlayer/tx/${hash}`)
+    await user.click(screen.getByRole('button', { name: '查看交易' }))
+    await user.click(screen.getByRole('button', { name: '检查交易回执' }))
+    await within(screen.getByRole('dialog')).findByText('兑换已确认，余额已刷新')
+    await user.click(within(screen.getByRole('dialog')).getAllByRole('button', { name: '关闭对话框' })[1])
+    expect(screen.getByRole('button', { name: '公开兑换已暂停' })).toBeDisabled()
+    expect(requests.filter((m) => m === 'eth_sendTransaction')).toHaveLength(1)
+  })
+  it.each([
+    { locale: 'zh-CN', paused: '公开兑换已暂停', pay: '支付', pools: '流动性' },
+    { locale: 'en', paused: 'Public swaps paused', pay: 'Pay', pools: 'Liquidity' },
+    { locale: 'yue-HK', paused: '公開兌換已暫停', pay: '支付', pools: '流動性' },
+  ])('pauses new trades while preserving deployed pool records in $locale', async ({ locale, paused, pay, pools }) => {
+    vi.spyOn(policy, 'publicSwapsEnabled').mockReturnValue(false)
+    localStorage.setItem(PREFERENCES_KEY, JSON.stringify({ locale }))
+    const user = userEvent.setup()
+    renderApp()
+    await user.type(screen.getByLabelText(pay), '1')
+    expect(screen.getByRole('button', { name: paused })).toBeDisabled()
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(POOLS.ready).toBe(true)
+    await user.click(screen.getByRole('button', { name: pools }))
+    expect(screen.getByRole('heading', { name: 'V3 · WOKB / USD₮0 · 0.01%' })).toBeVisible()
+    expect(screen.getByRole('heading', { name: 'V4 · OKB / USD₮0 · 0%' })).toBeVisible()
+    expect(requests).toHaveLength(0)
+    const requestsSent = vi.mocked(fetch).mock.calls.map(([, options]) => JSON.parse(String(options?.body)) as { method: string })
+    expect(requestsSent.some(({ method }) => method === 'eth_call' || method === 'eth_estimateGas')).toBe(false)
+  })
+
+  it('disables an existing review when public trading pauses before final confirmation', async () => {
+    const user = userEvent.setup()
+    const view = renderApp()
+    await connect()
+    await user.type(screen.getByLabelText('支付'), '0.0001')
+    await user.click(await screen.findByRole('button', { name: '预览兑换' }))
+    vi.spyOn(policy, 'publicSwapsEnabled').mockReturnValue(false)
+    view.rerender()
+    expect(screen.getByRole('dialog', { name: '预览兑换' })).toHaveTextContent('公开兑换已暂停')
+    expect(within(screen.getByRole('dialog')).getByRole('button', { name: '公开兑换已暂停' })).toBeDisabled()
+    expect(requests).not.toContain('eth_sendTransaction')
+  })
   it('shows an actual quote and reviewed minimum, then only sends after the final consent and refreshes balances', async () => {
     const user = userEvent.setup()
     renderApp()

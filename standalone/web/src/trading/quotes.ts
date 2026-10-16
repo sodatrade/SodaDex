@@ -2,7 +2,7 @@ import { decodeFunctionResult, encodeFunctionData, type Hex } from 'viem'
 import { CHAIN_ID, STABLE_ADDRESS, WOKB_ADDRESS, type Protocol } from '../domain/assets'
 import { hexQuantity, rpc } from '../lib/rpc'
 import { v3QuoterAbi, v4QuoterAbi } from './abis'
-import { CONTRACTS, POOL_KEY, POOLS } from './config'
+import { CONTRACTS, POOL_KEY, POOLS, publicSwapsEnabled } from './config'
 import { assertPair, minimumOutput } from './encoding'
 import { TradeError, type PublicRpc, type Quote, type RouteProtocol, type TradeForm } from './types'
 
@@ -56,6 +56,7 @@ export async function getQuote(
   read: PublicRpc = rpc,
   ready = POOLS.ready,
 ): Promise<Quote> {
+  if (!publicSwapsEnabled()) throw new TradeError('tradePaused')
   if (!ready) throw new TradeError('tradeNotReady')
   assertPair(form)
   if (hexQuantity(await read('eth_chainId')) !== BigInt(CHAIN_ID)) throw new TradeError('tradeUnavailable')

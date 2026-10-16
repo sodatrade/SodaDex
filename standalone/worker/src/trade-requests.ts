@@ -1,6 +1,7 @@
 import { decodeAbiParameters, decodeFunctionData, encodeAbiParameters, encodeFunctionData, parseAbi, parseAbiParameters, type Hex } from 'viem'
 import deployment from '../../../deployments/xlayer-test/active.json'
 import pools from '../../../deployments/xlayer-test/pools.json'
+import { publicSwapsEnabled } from '../../trading-policy'
 
 const ZERO = '0x0000000000000000000000000000000000000000'
 const ROUTER = deployment.contracts.universalRouter.toLowerCase()
@@ -88,13 +89,14 @@ export function validContractRequest(value: unknown, simulation: boolean): boole
       const decoded = decodeFunctionData({ abi: ERC20, data })
       if (!same(encodeFunctionData({ abi: ERC20, functionName: decoded.functionName, args: decoded.args }), data)) return false
       if (decoded.functionName === 'allowance') return !simulation && same(decoded.args[1], PERMIT2)
-      return typeof value.from === 'string' && same(decoded.args[0], PERMIT2) && (decoded.args[1] === 0n || positive(decoded.args[1]))
+      return typeof value.from === 'string' && same(decoded.args[0], PERMIT2) &&
+        (decoded.args[1] === 0n || (publicSwapsEnabled() && positive(decoded.args[1])))
     }
     if (to === PERMIT2 && amount === 0n) {
       const decoded = decodeFunctionData({ abi: PERMITS, data })
       if (!same(encodeFunctionData({ abi: PERMITS, functionName: decoded.functionName, args: decoded.args }), data)) return false
       if (decoded.functionName === 'allowance') return !simulation && same(decoded.args[1], STABLE) && same(decoded.args[2], ROUTER)
-      return typeof value.from === 'string' && same(decoded.args[0], STABLE) && same(decoded.args[1], ROUTER) && positive(decoded.args[2]) && decoded.args[3] > 0
+      return publicSwapsEnabled() && typeof value.from === 'string' && same(decoded.args[0], STABLE) && same(decoded.args[1], ROUTER) && positive(decoded.args[2]) && decoded.args[3] > 0
     }
     if (!simulation && to === deployment.contracts.v3Quoter.toLowerCase() && amount === 0n) {
       const decoded = decodeFunctionData({ abi: V3_QUOTE, data })
@@ -108,6 +110,6 @@ export function validContractRequest(value: unknown, simulation: boolean): boole
       const [quote] = decoded.args
       return same(encodeFunctionData({ abi: V4_QUOTE, functionName: decoded.functionName, args: decoded.args }), data) && knownKey(quote.poolKey) && positive(quote.exactAmount) && quote.hookData === '0x'
     }
-    return to === ROUTER && typeof value.from === 'string' && validExecute(data, value.from, amount)
+    return publicSwapsEnabled() && to === ROUTER && typeof value.from === 'string' && validExecute(data, value.from, amount)
   } catch { return false }
 }
