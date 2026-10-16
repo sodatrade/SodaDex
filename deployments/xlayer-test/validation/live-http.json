@@ -1,8 +1,9 @@
 {
   "status": "passed",
+  "versionId": "0e5ba92b-e8cc-4334-bd1e-65b8107ee1fb",
+  "sourceCommit": "eb07edc8cfeb5a7888e8bb415f171115b27b90f8",
   "origin": "https://sodadex-preview.jsmsdx2025.workers.dev",
-  "versionId": "364935b1-58d1-4f13-be7b-25fb58e5f4f8",
-  "sourceCommit": "a566c7a4bda6384c0c826e8358ec731ac4880f36",
+  "publicTrading": "paused",
   "assets": [
     {
       "path": "assets/Inter-Regular-Latin-BYtJb7jM.woff2",
@@ -20,9 +21,9 @@
       "sha256": "0111cc681168f228a41d09696f54f7e0a9c5855cb221ad84991e30e57d7a3ea2"
     },
     {
-      "path": "assets/index-DxilXUZv.js",
+      "path": "assets/index-CZEgnMlt.js",
       "status": 200,
-      "sha256": "d9a4aa77c8d0a400a046ba451991ee33d451ecaa8a52a1b2f4f66e0915c57d9b"
+      "sha256": "71e920c4049bde66c8f0a67f9ebba8dd988e057566ffbe8e8dd54c4c2209cb0a"
     },
     {
       "path": "assets/okb.png",
@@ -52,7 +53,7 @@
     {
       "path": "index.html",
       "status": 200,
-      "sha256": "34c500d7850344c47827d04c76cebbf09f27480b3a0be20ac226ff29efe028e6",
+      "sha256": "a3f898ee68851068c5d5af334b758d3a131c9c1758fd0c780beaee957209c2b3",
       "contentSecurityPolicy": "default-src 'self'; script-src 'self' 'sha256-u6rB6SDwiZ9fC315V9ivK/Js5YdlIlZZKXBdNySlmYk='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'"
     },
     {
@@ -61,6 +62,104 @@
       "sha256": "8aabb800ae162745d485e03b7ad5424eac8030e13dcdb1e529102713816763be"
     }
   ],
-  "rpcChainId": "0xc4",
+  "blockedOldClientSimulations": [
+    {
+      "name": "v3Forward",
+      "method": "eth_call",
+      "status": 400,
+      "errorCode": -32600
+    },
+    {
+      "name": "v3Forward",
+      "method": "eth_estimateGas",
+      "status": 400,
+      "errorCode": -32600
+    },
+    {
+      "name": "v3Reverse",
+      "method": "eth_call",
+      "status": 400,
+      "errorCode": -32600
+    },
+    {
+      "name": "v3Reverse",
+      "method": "eth_estimateGas",
+      "status": 400,
+      "errorCode": -32600
+    },
+    {
+      "name": "v4Forward",
+      "method": "eth_call",
+      "status": 400,
+      "errorCode": -32600
+    },
+    {
+      "name": "v4Forward",
+      "method": "eth_estimateGas",
+      "status": 400,
+      "errorCode": -32600
+    },
+    {
+      "name": "v4Reverse",
+      "method": "eth_call",
+      "status": 400,
+      "errorCode": -32600
+    },
+    {
+      "name": "v4Reverse",
+      "method": "eth_estimateGas",
+      "status": 400,
+      "errorCode": -32600
+    },
+    {
+      "name": "approvePermit2",
+      "method": "eth_call",
+      "status": 400,
+      "errorCode": -32600
+    },
+    {
+      "name": "approvePermit2",
+      "method": "eth_estimateGas",
+      "status": 400,
+      "errorCode": -32600
+    },
+    {
+      "name": "permitRouter",
+      "method": "eth_call",
+      "status": 400,
+      "errorCode": -32600
+    },
+    {
+      "name": "permitRouter",
+      "method": "eth_estimateGas",
+      "status": 400,
+      "errorCode": -32600
+    }
+  ],
+  "reads": [
+    {
+      "method": "eth_chainId",
+      "status": 200,
+      "result": "0xc4"
+    },
+    {
+      "method": "eth_getTransactionReceipt",
+      "status": 200,
+      "result": {
+        "hash": "0xf10f9bfbfedb4435153e3cd02eb22cb555071b908852d5891902f2f2e82b513b",
+        "status": "0x1"
+      }
+    },
+    {
+      "method": "eth_getBalance",
+      "status": 200,
+      "result": "0x4107339857ed20"
+    },
+    {
+      "method": "eth_call",
+      "action": "ERC20 approve(0) simulation",
+      "status": 200
+    }
+  ],
   "mainnetWrites": false
 }

@@ -1,55 +1,40 @@
 {
   "status": "passed",
   "origin": "https://sodadex-preview.jsmsdx2025.workers.dev",
-  "quotes": [
+  "publicTrading": "paused",
+  "poolState": "ready",
+  "locales": [
     {
-      "protocol": "V3",
-      "direction": "OKB-to-USDt0",
-      "amount": "0.000001",
-      "pair": "0.000001 OKB\n0.000115 USD₮0",
-      "details": "最低接收\n0.000115 USD₮0\n滑点上限\n0.5%\n协议偏好\nV3 · 0.01%\n平台费 / 协议费\n0%\n网络\nX Layer · 196\n接收钱包\n0x6ecf…0545\n兑换合约\n0xda5B…09FA",
-      "router": "https://www.oklink.com/xlayer/address/0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA"
+      "locale": "zh-CN",
+      "paused": true
     },
     {
-      "protocol": "V3",
-      "direction": "USDt0-to-OKB",
-      "amount": "0.0001",
-      "pair": "0.0001 USD₮0\n0.000000806979534923 OKB",
-      "details": "最低接收\n0.000000802944637249 OKB\n滑点上限\n0.5%\n协议偏好\nV3 · 0.01%\n平台费 / 协议费\n0%\n网络\nX Layer · 196\n接收钱包\n0x6ecf…0545\n兑换合约\n0xda5B…09FA",
-      "router": "https://www.oklink.com/xlayer/address/0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA"
+      "locale": "en",
+      "paused": true
     },
     {
-      "protocol": "V4",
-      "direction": "OKB-to-USDt0",
-      "amount": "0.000001",
-      "pair": "0.000001 OKB\n0.000115 USD₮0",
-      "details": "最低接收\n0.000115 USD₮0\n滑点上限\n0.5%\n协议偏好\nV4 · 0%\n平台费 / 协议费\n0%\n网络\nX Layer · 196\n接收钱包\n0x6ecf…0545\n兑换合约\n0xda5B…09FA",
-      "router": "https://www.oklink.com/xlayer/address/0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA"
-    },
-    {
-      "protocol": "V4",
-      "direction": "USDt0-to-OKB",
-      "amount": "0.0001",
-      "pair": "0.0001 USD₮0\n0.000000822462168389 OKB",
-      "details": "最低接收\n0.000000818349857548 OKB\n滑点上限\n0.5%\n协议偏好\nV4 · 0%\n平台费 / 协议费\n0%\n网络\nX Layer · 196\n接收钱包\n0x6ecf…0545\n兑换合约\n0xda5B…09FA",
-      "router": "https://www.oklink.com/xlayer/address/0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA"
+      "locale": "yue-HK",
+      "paused": true
     }
   ],
+  "viewports": [
+    1440,
+    390
+  ],
+  "quoteRequests": 0,
   "walletMethods": [
     "eth_requestAccounts",
     "eth_chainId"
   ],
-  "scope": "Live published frontend and real RPC quotes; injected read-only public-address wallet; no signing or broadcast",
+  "poolRecordsRetained": true,
+  "balances": [
+    "余额 0.018303",
+    "余额 0.000231"
+  ],
   "mainnetWrites": false,
-  "sourceCommit": "a566c7a4bda6384c0c826e8358ec731ac4880f36",
-  "versionId": "364935b1-58d1-4f13-be7b-25fb58e5f4f8",
+  "scope": "Published UI and real RPC reads with an injected read-only public-address wallet; no signing or broadcast",
+  "sourceCommit": "eb07edc8cfeb5a7888e8bb415f171115b27b90f8",
+  "versionId": "0e5ba92b-e8cc-4334-bd1e-65b8107ee1fb",
   "consoleErrors": 0,
-  "consoleWarnings": 0,
-  "mobile": {
-    "width": 390,
-    "height": 844,
-    "theme": "light",
-    "poolsReady": true,
-    "horizontalOverflow": false
-  }
+  "consoleWarnings": 0
 }
