@@ -1,12 +1,12 @@
 {
   "name": "SodaDEX Test",
   "stage": "test",
-  "status": "live-public-swaps-enabled",
+  "status": "live-core-workspace",
   "url": "https://sodadex-preview.jsmsdx2025.workers.dev",
   "provider": "Cloudflare Workers Static Assets",
   "worker": "sodadex-preview",
-  "versionId": "7a50bf92-3fa3-4fd9-abf0-11ea62e026c8",
-  "sourceCommit": "f6346b2fe4715aa30d2c04e3be801907a5d59180",
+  "versionId": "92aff647-7c0a-4c68-999b-2faa2c2c19a1",
+  "sourceCommit": "713d0db5591ed3d7765d5389ae8d713069332c01",
   "publishedOn": "2026-10-16",
   "customDomain": null,
   "deploymentCi": null,
@@ -14,47 +14,41 @@
   "rpcUrl": "https://rpc.ignix.bot/rpc/196",
   "browserRpcPath": "/api/rpc",
   "contractStatus": "SodaDEX branded V3/V4 test contracts deployed and verified",
-  "tradingStatus": "public swaps enabled for configured V3/V4 test pools; finite approvals, swaps and LP actions require explicit wallet confirmation",
+  "tradingStatus": "public exact-input single-hop swaps in verified own V3/V4 test pools; wrapping, sends and LP actions need explicit wallet confirmation; official Uniswap pools read only",
   "validation": {
-    "webTestsPassed": 114,
-    "webTestFilesPassed": 15,
-    "workerTestsPassed": 51,
-    "workerTestFilesPassed": 9,
-    "criticalAnvilTestsPassed": 5,
+    "webTestsPassed": 210,
+    "webTestFilesPassed": 25,
+    "workerTestsPassed": 87,
+    "workerTestFilesPassed": 13,
+    "criticalAnvilTestsPassed": 15,
     "testsSkipped": 0,
-    "browserAcceptanceChecksPassed": 50,
+    "browserWorkspaceChecksPassed": 19,
     "browserLiquidityForkChecksPassed": 48,
+    "browserRealReadonlyChecksPassed": 28,
+    "liveBrowserChecksPassed": 32,
+    "liveAssetHashesMatched": 38,
     "liveRpcChainId": "0xc4",
     "liveSiteHttpStatus": 200,
-    "liveConsoleErrors": 0,
-    "liveConsoleWarnings": 0,
-    "liveAssetHashesMatched": 13,
+    "liveRuntimeErrors": 0,
     "liveMobileOverflow": false,
-    "liveReadQueriesPassed": 4,
-    "livePoolRecordsRetained": true,
-    "browserEvidence": "xlayer-test/validation/public-open-fork.json",
-    "browserLiquidityEvidence": "xlayer-test/validation/browser-liquidity.json",
-    "coreEvidence": "xlayer-test/validation/public-open-validation.json",
-    "liveBrowserEvidence": "xlayer-test/validation/public-open-browser.json",
-    "liveHttpEvidence": "xlayer-test/validation/public-open-http.json",
+    "liveSwapPreviewsPassed": 2,
+    "liveSwapAndApprovalSimulationsPassed": 8,
+    "liveReferenceReadsPassed": 3,
+    "officialRouterApprovalBlocked": true,
+    "liveNoncanonicalRequestRejected": true,
     "mainnetWritesInThisUpdate": false,
+    "productionContractsModified": false,
+    "coreEvidence": "xlayer-test/validation/workspace-validation.json",
+    "browserEvidence": "xlayer-test/validation/workspace-browser.json",
+    "browserTradingEvidence": "xlayer-test/validation/workspace-fork.json",
+    "browserLiquidityEvidence": "xlayer-test/validation/workspace-liquidity.json",
+    "liveBrowserEvidence": "xlayer-test/validation/workspace-live-browser.json",
+    "liveHttpEvidence": "xlayer-test/validation/workspace-http.json",
     "historicalContractValidation": {
       "mainnetMicroSwapsPassed": 4,
       "record": "xlayer-test/branding-receipts.json",
-      "browserForkSwapsPassed": 4,
-      "scope": "prior enabled-trading code on owned localhost Anvil; not rerun after the public pause",
-      "forkEvidence": "xlayer-test/validation/browser-fork.json"
-    },
-    "liveDataEvidence": "xlayer-test/validation/live-data.json",
-    "livePoolDiscoveryPages": 5,
-    "liveMarketsVerified": 2,
-    "liveHistoricalPricePoints": 4,
-    "browserSwapsPassed": 4,
-    "liveSwapPreviewsPassed": 2,
-    "liveSwapAndApprovalSimulationsPassed": 8,
-    "liveNoncanonicalRequestRejected": true,
-    "browserTradingEvidence": "xlayer-test/validation/public-open-fork.json",
-    "liveBrowserChecksPassed": 6
+      "scope": "Prior branded test-contract deployment. No mainnet broadcasts in this UI release."
+    }
   },
   "features": {
     "locales": [
@@ -68,8 +62,8 @@
       "USD",
       "HKD"
     ],
-    "globalSearch": "verified assets, public addresses and both live test pools",
-    "assetIcons": "local official OKB, X Layer WOKB, USDt0 and network marks; sources in standalone/web/public/assets/SOURCES.md",
+    "globalSearch": "built-in, official-list and imported tokens; discovered own pools; public wallet addresses",
+    "assetIcons": "local official issuer/chain marks for supported X Layer tokens; sources and hashes in standalone/web/public/assets/SOURCES.md",
     "poolFees": {
       "v3": "0.01%",
       "v4": "0%",
@@ -95,7 +89,61 @@
       }
     },
     "market": "on-chain relative price, block-range swap prices, volume and estimated input fees; no fabricated fiat TVL or APR",
-    "history": "paginated own-contract events, wallet filter, public receipt lookup and local submission journal"
+    "history": "paginated own-contract events, wallet filter, public receipt lookup and local submission journal",
+    "navigation": {
+      "primary": [
+        "trade",
+        "explore",
+        "liquidity",
+        "portfolio"
+      ],
+      "explore": [
+        "tokens",
+        "pools",
+        "transactions",
+        "official reference"
+      ],
+      "portfolio": [
+        "overview",
+        "tokens",
+        "position NFTs",
+        "activity"
+      ],
+      "hashNavigation": true
+    },
+    "trading": {
+      "protocols": [
+        "v3",
+        "v4"
+      ],
+      "scope": "registered own test pools only",
+      "route": "best quoted single-hop exact-input",
+      "defaultSlippage": "0.5%, editable",
+      "wrapping": "official WOKB deposit/withdraw, 1:1"
+    },
+    "officialReference": {
+      "protocols": [
+        "v2",
+        "v3",
+        "v4"
+      ],
+      "readOnly": true,
+      "discovery": "configured pair candidates; not a full-chain index",
+      "routerApprovalEnabled": false
+    },
+    "portfolio": "current-wallet known/imported token balances and own position NFTs; no fabricated fiat valuation",
+    "sendReceive": "wallet-confirmed native OKB/ERC20 transfers; receive-address copy",
+    "notIntegrated": [
+      "exact output",
+      "multihop",
+      "limit orders",
+      "fiat onramp/offramp",
+      "token launch and auctions",
+      "rewards",
+      "cross-chain execution",
+      "independent fiat pricing",
+      "full-chain wallet index"
+    ]
   },
   "activeContracts": "xlayer-test/active.json",
   "poolRecord": "xlayer-test/pools.json",
