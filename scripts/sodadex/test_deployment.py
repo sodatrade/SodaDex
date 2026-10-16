@@ -107,16 +107,22 @@ class DeploymentInvariants(unittest.TestCase):
 
     def test_reverted_receipt_never_counts_as_success(self):
         row = self.row()
-        receipt = {'transactionHash': row['hash'], 'from': OWNER, 'status': '0x0'}
-        with patch.object(deploy, 'rpc', return_value=receipt), self.assertRaisesRegex(ValueError, 'reverted'):
+        receipt = {'transactionHash': row['hash'], 'from': OWNER, 'status': '0x0', 'blockNumber': '0x1'}
+        with patch.object(deploy, 'rpc', side_effect=[receipt, '0x3']), self.assertRaisesRegex(ValueError, 'reverted'):
             deploy.check_receipt(row, {'owner': OWNER})
+
+    def test_sequencer_preconfirmation_is_not_a_final_receipt(self):
+        row = self.row()
+        receipt = {'blockNumber': '0x2'}
+        with patch.object(deploy, 'rpc', side_effect=[receipt, '0x2']):
+            self.assertIsNone(deploy.check_receipt(row, {'owner': OWNER}))
 
     def test_reorganized_receipt_never_counts_as_success(self):
         row = {**self.row(), 'localReceipt': {'contractAddress': None}}
         receipt = {'transactionHash': row['hash'], 'from': OWNER, 'status': '0x1', 'to': None,
                    'contractAddress': None, 'gasUsed': '0x32', 'effectiveGasPrice': '0x15',
                    'blockNumber': '0x1', 'blockHash': '0x1111'}
-        with patch.object(deploy, 'rpc', side_effect=[receipt, {'hash': '0x2222'}]), self.assertRaisesRegex(ValueError, 'canonical'):
+        with patch.object(deploy, 'rpc', side_effect=[receipt, '0x3', {'hash': '0x2222'}]), self.assertRaisesRegex(ValueError, 'canonical'):
             deploy.check_receipt(row, {'owner': OWNER})
 
 

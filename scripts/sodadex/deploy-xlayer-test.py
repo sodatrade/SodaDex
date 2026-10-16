@@ -238,6 +238,9 @@ def check_receipt(row, config):
     receipt = rpc('eth_getTransactionReceipt', [row['hash']])
     if not receipt:
         return None
+    # Sequencer preconfirmations can expose a receipt before the block header settles.
+    if quantity(rpc('eth_blockNumber')) < quantity(receipt['blockNumber']) + 2:
+        return None
     require(receipt['transactionHash'].lower() == row['hash'].lower(), 'Receipt transaction hash mismatch')
     require(receipt['from'].lower() == config['owner'].lower(), 'Receipt sender mismatch')
     require(quantity(receipt['status']) == 1, f'{row["name"]} reverted; do not redeploy automatically')
