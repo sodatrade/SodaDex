@@ -108,7 +108,7 @@ describe('ready test pool user flow', () => {
     const user = userEvent.setup()
     const view = renderApp()
     await connect()
-    await user.type(screen.getByLabelText('支付'), '0.0001')
+    await user.type(await screen.findByLabelText('你将支付'), '0.0001')
     await user.click(await screen.findByRole('button', { name: '预览兑换' }))
     await user.click(screen.getByRole('button', { name: '确认兑换' }))
     await screen.findByRole('button', { name: '检查交易回执' })
@@ -124,9 +124,9 @@ describe('ready test pool user flow', () => {
     expect(requests.filter((m) => m === 'eth_sendTransaction')).toHaveLength(1)
   })
   it.each([
-    { locale: 'zh-CN', paused: '公开兑换已暂停', pay: '支付', pools: '流动性', receive: '预计接收数量', note: '测试池参考报价 · 公开兑换已暂停' },
-    { locale: 'en', paused: 'Public swaps paused', pay: 'Pay', pools: 'Liquidity', receive: 'Estimated receive amount', note: 'Test pool reference quote · Public swaps paused' },
-    { locale: 'yue-HK', paused: '公開兌換已暫停', pay: '支付', pools: '流動性', receive: '預計收取數量', note: '測試池參考報價 · 公開兌換已暫停' },
+    { locale: 'zh-CN', paused: '公开兑换已暂停', pay: '你将支付', pools: '流动性', receive: '预计接收数量', note: '测试池参考报价 · 公开兑换已暂停' },
+    { locale: 'en', paused: 'Public swaps paused', pay: 'You pay', pools: 'Liquidity', receive: 'Estimated receive amount', note: 'Test pool reference quote · Public swaps paused' },
+    { locale: 'yue-HK', paused: '公開兌換已暫停', pay: '你會支付', pools: '流動性', receive: '預計收取數量', note: '測試池參考報價 · 公開兌換已暫停' },
   ])('shows read-only quotes but pauses new trades in $locale', async ({ locale, paused, pay, pools, receive, note }) => {
     vi.spyOn(policy, 'publicSwapsEnabled').mockReturnValue(false)
     localStorage.setItem(PREFERENCES_KEY, JSON.stringify({ locale }))
@@ -151,7 +151,7 @@ describe('ready test pool user flow', () => {
     const user = userEvent.setup()
     const view = renderApp()
     await connect()
-    await user.type(screen.getByLabelText('支付'), '0.0001')
+    await user.type(await screen.findByLabelText('你将支付'), '0.0001')
     await user.click(await screen.findByRole('button', { name: '预览兑换' }))
     vi.spyOn(policy, 'publicSwapsEnabled').mockReturnValue(false)
     view.rerender()
@@ -163,8 +163,8 @@ describe('ready test pool user flow', () => {
     const user = userEvent.setup()
     renderApp()
     await connect()
-    const card = screen.getByRole('region', { name: '资产兑换' })
-    await user.type(within(card).getByLabelText('支付'), '0.0001')
+    const card = await screen.findByRole('region', { name: '资产兑换' })
+    await user.type(within(card).getByLabelText('你将支付'), '0.0001')
     await waitFor(() => expect(within(card).getByRole('button', { name: '预览兑换' })).toBeEnabled())
     expect(within(card).getByLabelText('预计接收数量')).toHaveTextContent('1.000001')
     await user.click(within(card).getByRole('button', { name: '预览兑换' }))
@@ -196,8 +196,8 @@ describe('ready test pool user flow', () => {
     const user = userEvent.setup()
     renderApp()
     await connect()
-    const card = screen.getByRole('region', { name: '资产兑换' })
-    await user.type(within(card).getByLabelText('支付'), '0.0001')
+    const card = await screen.findByRole('region', { name: '资产兑换' })
+    await user.type(within(card).getByLabelText('你将支付'), '0.0001')
     await waitFor(() => expect(within(card).getByRole('button', { name: '预览兑换' })).toBeEnabled())
     await user.click(within(card).getByRole('button', { name: '预览兑换' }))
     await user.click(screen.getByRole('button', { name: '确认兑换' }))
@@ -229,7 +229,7 @@ describe('ready test pool user flow', () => {
     const user = userEvent.setup()
     renderApp()
     await connect()
-    await user.type(screen.getByLabelText('支付'), '0.0001')
+    await user.type(await screen.findByLabelText('你将支付'), '0.0001')
     await waitFor(() => expect(screen.getByRole('button', { name: '预览兑换' })).toBeEnabled())
     await user.click(screen.getByRole('button', { name: '预览兑换' }))
     act(() => listener?.(['0x2222222222222222222222222222222222222222']))
@@ -241,7 +241,7 @@ describe('ready test pool user flow', () => {
     const user = userEvent.setup()
     renderApp()
     await user.click(screen.getByRole('button', { name: '切换支付与接收资产' }))
-    await user.type(screen.getByLabelText('支付'), '1.0000001')
+    await user.type(await screen.findByLabelText('你将支付'), '1.0000001')
     expect(screen.getByRole('alert')).toHaveTextContent('最多支持 6 位小数')
     await user.click(screen.getByRole('button', { name: '搜索' }))
     await user.click(screen.getByRole('button', { name: '流动池' }))
@@ -250,8 +250,8 @@ describe('ready test pool user flow', () => {
     expect(requests).toHaveLength(0)
   })
   it.each([
-    { locale: 'en', pay: 'Pay', review: 'Review swap', confirm: 'Confirm swap', minimum: 'Minimum received' },
-    { locale: 'yue-HK', pay: '支付', review: '預覽兌換', confirm: '確認兌換', minimum: '最低收取' },
+    { locale: 'en', pay: 'You pay', review: 'Review swap', confirm: 'Confirm swap', minimum: 'Minimum received' },
+    { locale: 'yue-HK', pay: '你會支付', review: '預覽兌換', confirm: '確認兌換', minimum: '最低收取' },
   ])('localizes real trading review in $locale', async ({ locale, pay, review, confirm, minimum }) => {
     localStorage.setItem(PREFERENCES_KEY, JSON.stringify({ locale, theme: 'light', currency: 'CNY' }))
     const user = userEvent.setup()

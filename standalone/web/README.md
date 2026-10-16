@@ -1,12 +1,20 @@
 # SodaDEX Test web
 
-SodaDEX 的独立前端，保留日间 / 夜间、简体中文 / English / 粵語与 CNY / USD / HKD 展示偏好。钱包、输入数量、资产方向和协议偏好不会因切换语言或外观而重建。没有法币价格来源时仍显示 `—`，不会把资产数量当作法币估值。
+X Layer 196 的独立前端，默认白天主题，支持简体中文、English、粵語及 CNY/USD/HKD 展示偏好。真实金额始终按代币单位显示；未接入独立法币价格，不显示虚构的估值。
 
-兑换仅对 `deployments/xlayer-test/pools.json` 中已就绪且通过校验的 X Layer 196 测试池开放。缺少记录、pending、网络或资产/费用不一致时关闭报价及交易。默认 OKB / USD₮0，USD₮0 使用 6 位小数；WOKB 可查看余额，暂不提供直接交易路径。V3 自动包装 / 解包原生 OKB，V4 直接使用原生 OKB。测试合约位于主网，使用真实资产，网络手续费以真实 OKB 支付。
+## 页面与职责
 
-## 开发与检查
+- **交易**：选币、按地址导入并重新核验元数据、读取自有 V3/V4 池、自动选择报价最优的单池精确输入路径、可调滑点、最低接收和池内价格影响、预览及钱包确认。支持 OKB/WOKB 1:1 包装和解包。
+- **探索**：代币列表及详情、SodaDEX 池行情和事件、官方 Uniswap 候选池只读查询及报价。官方 V2/V3/V4 池不提供授权或提交交易入口，亦不代表全链排名。
+- **流动性**：自助建池与仓位、追加、部分或全部减少、领取资产、NFT 查询。仅使用 SodaDEX 自有 Factory/PoolManager/PositionManager。V3 支持标准费率，V4 支持无 Hook 池。
+- **投资组合**：概览、代币余额、SodaDEX 仓位 NFT、SodaDEX 活动及本浏览器提交记录；钱包发送原生 OKB/ERC20 和接收地址复制。发送先预览再由钱包确认。
+- **搜索与偏好**：代币、池、公开钱包地址搜索；三语、主题和展示货币设置持久化。已知币使用本地官方原链图标，来源及哈希见 `public/assets/SOURCES.md`。
 
-使用仓库 `.nvmrc` 指定的 Node 22.22.2，独立 npm 锁文件绕开上游缺失的私有 `tools/uniswap-nx`：
+限价单、法币买卖、发行/拍卖、奖励、跨链执行、精确输出、多跳路由和完整钱包外部历史尚未接入，不放置假提交入口。X Layer 官方桥作为明确的外部链接提供。
+
+## 本地运行与检查
+
+使用 `.nvmrc` 中的 Node 22.22.2。独立锁文件绕开上游缺失的私有 `tools/uniswap-nx`：
 
 ```sh
 npm --prefix standalone/web ci --workspaces=false
@@ -17,23 +25,20 @@ npm --prefix standalone/web run lint
 npm --prefix standalone/web run build
 ```
 
-Vite 默认 `http://127.0.0.1:5173`，同源 `/api/rpc` 转发到 `http://127.0.0.1:8787` 的 Worker，保留生产环境相同的方法、合约和 calldata 校验。请先按 `../worker/` 的说明启动本地 Worker；不直接连接上游 RPC。Worker 使用用户指定的 `https://rpc.ignix.bot/rpc/196`。钱包写入仅由注入钱包通过 `eth_sendTransaction` 发起，不经过代理，也不读取部署钱包文件。
+Vite 默认 `http://127.0.0.1:5173`，同源 `/api` 转发给本地 Worker（默认 8787）。先按 [运行手册](../README.md) 启动 Worker。固定上游为 `https://rpc.ignix.bot/rpc/196`；节点失败显示失败，不切换其他链或伪造数据。
 
-`tooling/preferences-prepaint.ts` 在 HTML head 生成同步初始化脚本。构建输出 `dist/preferences-script.json.hash`，是 inline 脚本精确的 `sha256-<base64>` CSP 授权。先构建 web，再检查或部署 Worker，确保两者来自同一次构建。
+前端构建生成 `dist/preferences-script.json` 的精确 CSP hash，因此先构建 web，再检查或部署 Worker。
 
-## 兑换数据与状态
+## 状态和资金流
 
-- `src/domain/` 集中定义 OKB、WOKB、USD₮0 与 BigInt 金额规则；官方图标保存在 `public/assets/`，来源和 SHA-256 见 `SOURCES.md`。
-- `src/trading/config.ts` 从部署计划读取固定合约，校验 pool manifest。`quotes.ts` 用 V3 / V4 Quoter 链上调用取得精确输入报价，自动模式比较可用池实际输出。没有报价时不会填充模拟数据。
-- `encoding.ts` 对应锁定的 Universal Router 2.1.2 输入格式。最低接收使用向上取整的 0.5% 滑点保护，避免 6 位小数中的舍入突破上限。V3 费率 0.01%、V4 0%、平台费 0%。
-- `execution.ts` 负责确认后的流程：核对钱包身份及链 → 必要授权并等待回执 → 重新读取同一路由报价 → 保留用户确认的最低接收底线 → 模拟及估算 gas → 再次核对钱包 → 请求钱包发送 → 读取回执。有效期最长 600 秒。输入、账户、provider 或链变化会阻止后续写入。
-- `approvals.ts` 仅对本次精确输入授权：USD₮0 → Permit2，再由 Permit2 → SodaDEX router。已有足额授权跳过；非零但不足的 ERC-20 授权先重置为 0，每一步等待回执并重新读取。新 Permit2 路由授权最长 600 秒，ERC-20 授权本身没有时间字段。
-- `useTrade.ts` 管理用户操作状态。已提交 hash 会先保存再等待回执；超时或节点故障不自动重发，界面锁住重复提交并提供「检查交易回执」。授权回执人工确认后要求重新预览；兑换确认后刷新余额。关闭弹窗会停止尚未发送的后续步骤，无法撤回已发送的交易。卡片保留最近提交的 hash 与浏览器入口，表单或弹窗重置不清除该记录，下一笔实际提交才替换；刷新页面不持久化交易历史。
-- `useWallet.ts` 在 provider 事件到达时同步更新身份 revision，避免 React 尚未重新渲染期间的旧账户 / 旧链继续发送。页面导航保留兑换卡片状态；偏好设置不重挂钱包或交易控制器。
-- `components/TradeConfirmation.tsx` 展示输入、预计输出、最低接收、协议费率、链、接收地址及 router。浏览器钱包会要求用户逐笔确认，页面不会自动签名。
+`src/liquidity/` 负责币种核验、池发现、仓位及 LP 编码；`src/trading/poolTrade*` 负责单池报价、注册验证、有限授权和交易编码；`walletExecution.ts` 负责账户/链身份、模拟、余额/gas、确认和回执。`features/swap`、`features/portfolio` 保存界面操作状态，页面导航和偏好切换保留兑换表单。
 
-搜索支持已知资产名称、代号、合约地址；池就绪后显示对应测试池入口。有效公开地址仅链接到区块浏览器。添加流动性尚未提供前端交易入口。
+交易刷新相同自有池报价，并保留用户确认的最低接收底线。ERC20 只按本次输入有限授权给 Permit2，再授权给自有 Router；不足的非零 allowance 先归零。每笔操作由注入钱包逐笔确认并广播，Worker 只读或模拟，不持有私钥。
 
-## 验证范围
+交易哈希提交后立即写入浏览器 journal；超时保留 hash 并锁住重复提交，刷新恢复后只查回执，不自动续签或重发。清除浏览器数据会移除本设备记录，链上交易仍可通过 hash 查询。导入币只存地址，每次重新读取链上元数据和当前钱包余额。
 
-本地测试覆盖 6 / 18 位小数、路由编码、精确授权 / 零重置、重新报价最低接收、钱包事件竞态、已发送 hash、pending / revert 回执，以及三语确认界面和偏好状态。浏览器 mock 交易用于验证交互与编码，不证明链上交易成功；真实部署、池流动性、RPC 白名单兼容及实际广播由集成环境单独验证。前端不存储私钥。
+合约地址由 `deployments/xlayer-test/active.json` 统一提供，初始两池记录位于 `pools.json`。公开兑换由共享 `standalone/trading-policy.json` 控制，官方池查询没有写入能力。测试合约位于 X Layer 主网，使用真实 OKB 和代币。
+
+## 验证边界
+
+纯逻辑、组件、Worker、真实本地 Anvil 合约生命周期和浏览器验收分别记录。需要完整 fixture 的用例与环境变量见 [运行手册](../README.md)，缺少 fixture 的跳过不算通过。Mock UI 不能证明链上成交，本地 Anvil 成交不能证明主网广播。当前发布源码及证据见 [发布记录](../../deployments/frontend-test.json)。前端独立检查通过不代表上游整个 monorepo 检查通过。

@@ -80,7 +80,7 @@ export function GeneralSwapCard({ wallet, balances, balancesLoading, balancesErr
     const loading = known ? balancesLoading : custom.isFetching, failed = known ? balancesError : custom.isError
     return `${m.balance} ${!account ? '—' : loading ? '…' : failed || value === undefined ? '—' : formatBalance(value, currency.decimals)}`
   }
-  const quoteReady = direction ? parsed.kind === 'valid' && !error : !!quote.data && !quote.isFetching && !error && matches.length > 0
+  const quoteReady = direction ? parsed.kind === 'valid' && !error : !!quote.data && !quote.isFetching && !quote.isError && !error && matches.length > 0
   const action = (): void => {
     if (!wallet.session) { onConnect(); return }
     if (wrongChain) { void wallet.switchChain(); return }
@@ -92,7 +92,7 @@ export function GeneralSwapCard({ wallet, balances, balancesLoading, balancesErr
     if (value) setReview({ value, identity, from, to })
   }
   const output = !error && parsed.kind === 'valid' ? direction ? formatUnits(parsed.units, to.decimals)
-    : quote.data && matches.length ? formatUnits(quote.data.amountOut, to.decimals) : '—' : '—'
+    : quote.data && !quote.isError && matches.length ? formatUnits(quote.data.amountOut, to.decimals) : '—' : '—'
   const current = review && wallet.getIdentity()?.revision === review.identity.revision && wallet.getIdentity()?.provider === review.identity.provider
   const label = wallet.status !== 'idle' ? t('waitingWallet') : wrongChain ? t('switchNetwork') : !wallet.session ? t('connectWallet')
     : !enabled ? m.paused : locked ? m.pending : error ? t(error.code === 'amountPrecision' ? 'amountInvalid' : error.code)
@@ -117,7 +117,7 @@ export function GeneralSwapCard({ wallet, balances, balancesLoading, balancesErr
       {!direction && quote.isError && <p role="alert" className="error-text">{m.noQuote} <button className="text-button" onClick={() => void quote.refetch()}>{m.reload}</button></p>}
       <div className="route-summary"><span><NetworkIcon small />X Layer</span><button onClick={() => setSettings(true)} disabled={locked}>
         {m.route} · {direction ? '1:1' : quote.data?.pool.protocol.toUpperCase() ?? (protocol === 'auto' ? m.auto : protocol.toUpperCase())}<Icon name="chevron" size={14} /></button></div>
-      {quote.data && !direction && matches.length > 0 && !error && <details className="swap-quote-details"><summary>{m.details}<span>{quote.data.pool.fee / 10000}% · {bps !== undefined ? bps / 100 : '—'}%</span></summary>
+      {quote.data && !quote.isError && !direction && matches.length > 0 && !error && <details className="swap-quote-details"><summary>{m.details}<span>{quote.data.pool.fee / 10000}% · {bps !== undefined ? bps / 100 : '—'}%</span></summary>
         <TradeDetails quote={quote.data} /><p className="swap-notice">{m.singleHop}</p><p className="swap-notice">{m.impactNote}</p></details>}
       <Button appearance="primary" className="swap-action" onClick={action} disabled={wallet.status !== 'idle' || (!!wallet.session && !wrongChain && (!enabled || locked || !quoteReady || (!direction && bps === undefined) || fromBalance === undefined))}>{label}</Button>
       <p className="swap-footnote"><span className="status-dot" />{m.test}</p>

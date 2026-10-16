@@ -1,0 +1,61 @@
+:root { --soda-radius-card: 20px; --soda-radius-control: 12px; --soda-page-width: 1240px; }
+:root[data-theme="light"] { --soda-bg: #f7f8f3; --soda-surface: #fffefa; --soda-raised: #f0f3e9; --soda-field: #f2f4ec; --soda-line: #dbe1d1; --soda-line-soft: #e7ebdf; --soda-shadow: 0 12px 36px #28331a09; }
+.app-shell .ambient { display: none; }
+.app-shell .site-header { padding: 17px 28px; min-height: 80px; gap: 36px; }
+.app-shell .main-nav { gap: 28px; }
+.app-shell .main-nav button.active::after { bottom: -17px; width: 100%; height: 2px; }
+.app-shell .brand { font-size: 22px; letter-spacing: -.7px; }
+.app-shell .brand-dex { color: var(--soda-text); font-weight: 500; }
+.app-shell .soda-mark { width: 28px; height: 28px; }
+.app-shell .test-notice { justify-content: flex-start; padding: 9px max(28px, calc((100vw - 1184px) / 2)); font-size: 11px; }
+.app-shell .trade-layout { display: block; max-width: 552px; padding: 40px 20px 64px; margin: auto; }
+.app-shell .trade-layout[hidden] { display: none; }
+.trade-intro { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin: 0 4px 22px; }
+.trade-intro h1 { font-size: 24px; font-weight: 500; letter-spacing: -.6px; margin: 8px 0 0; line-height: 1.3; }
+.bridge-link { display: inline-flex; align-items: center; gap: 6px; color: var(--soda-muted); font-size: 11px; min-height: 36px; }
+.bridge-link:hover { color: var(--soda-text); }
+.app-shell .swap-card { padding: 22px 16px 18px; border-radius: 22px; }
+.app-shell .swap-card::before { display: none; }
+.app-shell .trade-meta { padding: 16px 3px 0; }
+.app-shell .content-page { width: min(1120px, 100%); padding: 40px 28px 64px; }
+.app-shell .page-heading h1 { font-size: 28px; letter-spacing: -.8px; margin: 8px 0 10px; }
+.app-shell .page-heading > p { font-size: 13px; margin-bottom: 24px; }
+.workspace-tabs { display: flex; gap: 24px; align-items: center; border-bottom: 1px solid var(--soda-line); margin: 22px 0 28px; overflow-x: auto; scrollbar-width: thin; }
+.workspace-tabs [role="tab"] { padding: 12px 0 14px; min-height: 44px; background: none; border: 0; border-bottom: 2px solid transparent; white-space: nowrap; font-size: 14px; color: var(--soda-muted); }
+.workspace-tabs [aria-selected="true"] { color: var(--soda-text); border-bottom-color: var(--soda-highlight); }
+.workspace-tabs [role="tab"]:hover { color: var(--soda-text); }
+.address-full { overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.numeric { font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.portfolio-token-table { border: 1px solid var(--soda-line); border-radius: 16px; padding: 0 20px; background: var(--soda-surface); }
+.portfolio-token-head, .portfolio-token-row { display: grid; grid-template-columns: minmax(0,1fr) minmax(90px,180px) 76px; align-items: center; gap: 16px; }
+.portfolio-token-head { color: var(--soda-muted); font-size: 11px; padding: 18px 0; }
+.portfolio-token-row { padding: 18px 0; border-top: 1px solid var(--soda-line-soft); }
+.portfolio-token-row > div { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.portfolio-token-row small, .portfolio-token-row a { font-size: 11px; color: var(--soda-muted); }
+.portfolio-token-row a { display: flex; align-items: center; gap: 5px; }
+.portfolio-token-row > strong { text-align: right; font-size: 16px; font-weight: 500; }
+.app-shell .content-page .content-page { width: 100%; padding: 0; }
+.app-shell .site-footer { padding: 20px 28px; border-top: 1px solid var(--soda-line-soft); }
+.app-shell .footer-brand .soda-mark { width: 18px; height: 18px; }
+@media (max-width: 900px) { .app-shell .site-header { gap: 24px; } .app-shell .main-nav { gap: 18px; } .app-shell .network-badge > span { display: none; } }
+@media (max-width: 700px) {
+  .app-shell .site-header { padding: 14px 16px 0; min-height: 116px; gap: 10px 20px; flex-wrap: wrap; }
+  .app-shell .header-actions { gap: 3px; }
+  .app-shell .brand { font-size: 20px; }
+  .app-shell .header-connect { padding: 10px 12px; }
+  .app-shell .main-nav { display: flex; order: 3; width: 100%; min-height: 44px; overflow-x: auto; gap: 26px; align-self: auto; }
+  .app-shell .main-nav button { min-height: 44px; padding: 10px 0 12px; white-space: nowrap; }
+  .app-shell .main-nav button.active::after { bottom: 0; }
+  .app-shell .network-badge { display: none; }
+  .app-shell .test-notice { padding: 8px 16px; gap: 8px; }
+  .app-shell .content-page { padding: 28px 16px 48px; }
+  .app-shell .trade-layout { padding: 28px 12px 48px; }
+  .workspace-tabs { gap: 22px; margin-top: 16px; }
+  .app-shell .page-heading h1 { font-size: 25px; }
+  .portfolio-token-table { padding: 0 14px; }
+  .portfolio-token-head, .portfolio-token-row { grid-template-columns: minmax(0,1fr) minmax(72px,100px) 54px; gap: 8px; }
+  .portfolio-token-row > strong { font-size: 14px; }
+  .portfolio-token-row .button { padding: 8px 4px; }
+  .app-shell .site-footer { padding: 18px 16px; gap: 14px; flex-wrap: wrap; }
+  .app-shell .footer-brand { display: none; }
+}

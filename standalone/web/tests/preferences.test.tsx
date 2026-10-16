@@ -113,13 +113,13 @@ describe('display preferences', () => {
     ;(window as Window & { ethereum?: Eip1193Provider }).ethereum = { request }
     renderApp()
     await screen.findByText('X Layer 已连接')
-    const card = screen.getByRole('region', { name: '资产兑换' })
+    const card = await screen.findByRole('region', { name: '资产兑换' })
     await user.click(within(card).getByRole('button', { name: '连接钱包' }))
     await user.click(screen.getByRole('button', { name: /浏览器钱包.*连接/ }))
     await screen.findByRole('dialog', { name: '我的钱包' })
     await user.click(screen.getByRole('button', { name: '关闭对话框' }))
     await user.click(within(card).getByRole('button', { name: '切换支付与接收资产' }))
-    await user.type(within(card).getByLabelText('支付'), '0.5')
+    await user.type(within(card).getByLabelText('你将支付'), '0.5')
     await user.click(within(card).getByRole('button', { name: '兑换设置' }))
     await user.click(screen.getByRole('radio', { name: 'V4 V4 测试池费率 0%' }))
     await user.click(screen.getByRole('button', { name: '关闭对话框' }))
@@ -128,7 +128,7 @@ describe('display preferences', () => {
     await user.selectOptions(screen.getByLabelText('Display currency'), 'HKD')
     await user.click(screen.getByRole('radio', { name: 'Night' }))
     await user.click(screen.getByRole('button', { name: 'Close dialog' }))
-    expect(within(card).getByLabelText('Pay')).toHaveValue('0.5')
+    expect(within(card).getByLabelText('You pay')).toHaveValue('0.5')
     expect(within(card).getByRole('button', { name: 'Choose pay asset, currently USD₮0' })).toBeVisible()
     expect(within(card).getByRole('button', { name: 'Route · V4' })).toBeVisible()
     expect(within(card).getByRole('button', { name: 'Test pools in preparation' })).toBeDisabled()
@@ -141,7 +141,7 @@ describe('localized paths', () => {
   it.each([
     {
       locale: 'zh-CN',
-      pay: '支付',
+      pay: '你将支付',
       error: '数量需要大于 0',
       region: '资产兑换',
       connect: '连接钱包',
@@ -150,7 +150,7 @@ describe('localized paths', () => {
     },
     {
       locale: 'en',
-      pay: 'Pay',
+      pay: 'You pay',
       error: 'Amount must be greater than 0',
       region: 'Asset swap',
       connect: 'Connect wallet',
@@ -159,7 +159,7 @@ describe('localized paths', () => {
     },
     {
       locale: 'yue-HK',
-      pay: '支付',
+      pay: '你将支付',
       error: '數量要大過 0',
       region: '資產兌換',
       connect: '連接銀包',
@@ -172,7 +172,7 @@ describe('localized paths', () => {
       localStorage.setItem(PREFERENCES_KEY, JSON.stringify({ locale }))
       const user = userEvent.setup()
       renderApp()
-      const card = screen.getByRole('region', { name: region })
+      const card = await screen.findByRole('region', { name: region })
       await user.type(within(card).getByLabelText(pay), '0')
       expect(within(card).getByRole('alert')).toHaveTextContent(error)
       await user.click(within(card).getByRole('button', { name: connect }))

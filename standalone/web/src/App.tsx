@@ -1,20 +1,24 @@
 import { useQuery } from '@tanstack/react-query'
 import { lazy, Suspense, useEffect, useState, type ReactElement } from 'react'
-import { AssetPage, type AssetSelection } from './components/AssetPage'
+import type { AssetSelection } from './components/AssetPage'
+import type { Address } from 'viem'
+import { workspaceMessages } from './i18n/workspace'
+import { EXPLORE_ROUTES, PORTFOLIO_ROUTES, exploreTab, isPage, portfolioTab, primaryPage } from './features/workspace/navigation'
+import './workspace.css'
 import { GlobalSearchDialog } from './components/GlobalSearchDialog'
 import { Header, type Page } from './components/Header'
 import { PreferencesDialog } from './components/PreferencesDialog'
 import { Button, Icon, SodaMark } from './components/primitives'
-import { SwapCard } from './components/SwapCard'
 import { WalletDialog } from './components/WalletDialog'
 import { CHAIN_ID } from './domain/assets'
-import { HistoryPage } from './features/history/HistoryPage'
-import { MarketPage } from './features/market/MarketPage'
 import { getBalances, getNetworkStatus } from './lib/rpc'
 import { useWallet } from './lib/useWallet'
 import { usePreferences } from './preferences/context'
 import { PreferencesProvider } from './preferences/PreferencesProvider'
 import { POOLS, publicSwapsEnabled } from './trading/config'
+const GeneralSwapCard = lazy(async () => ({ default: (await import('./features/swap/GeneralSwapCard')).GeneralSwapCard }))
+const PortfolioPage = lazy(async () => ({ default: (await import('./features/portfolio/PortfolioPage')).PortfolioPage }))
+const ExplorePage = lazy(async () => ({ default: (await import('./features/explore/ExplorePage')).ExplorePage }))
 const LiquidityPage = lazy(async () => ({ default: (await import('./features/liquidity/LiquidityPage')).LiquidityPage }))
 
 export function App(): ReactElement {
@@ -28,14 +32,16 @@ export function App(): ReactElement {
 function AppContent(): ReactElement {
   const fromHash = (): Page => {
     const hash = window.location.hash.slice(1)
-    return ['swap', 'assets', 'pools', 'market', 'history'].includes(hash) ? hash as Page : 'swap'
+    return isPage(hash) ? hash : 'swap'
   }
   const [page, setPage] = useState<Page>(fromHash)
   const [walletOpen, setWalletOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [preferencesOpen, setPreferencesOpen] = useState(false)
   const [selectedAsset, setSelectedAsset] = useState<AssetSelection>()
-  const { t } = usePreferences()
+  const { t, locale } = usePreferences()
+  const m = workspaceMessages(locale)
+  const [selectedToken, setSelectedToken] = useState<Address>()
   const wallet = useWallet()
   const network = useQuery({
     queryKey: ['network', CHAIN_ID],
@@ -55,14 +61,15 @@ function AppContent(): ReactElement {
   const currentBalances = correctChain ? balances.data : undefined
   const navigate = (next: Page): void => {
     setPage(next)
-    window.history.replaceState(null, '', `#${next}`)
+    if (window.location.hash !== `#${next}`) window.history.pushState(null, '', `#${next}`)
   }
   useEffect(() => {
     const changed = (): void => {
-      if (['swap', 'assets', 'pools', 'market', 'history'].includes(window.location.hash.slice(1))) setPage(fromHash())
+      if (window.location.hash !== '#main') setPage(fromHash())
     }
     window.addEventListener('hashchange', changed)
-    return () => window.removeEventListener('hashchange', changed)
+    window.addEventListener('popstate', changed)
+    return () => { window.removeEventListener('hashchange', changed); window.removeEventListener('popstate', changed) }
   }, [])
 
   return (
@@ -88,48 +95,23 @@ function AppContent(): ReactElement {
       </div>
       <main id="main" tabIndex={-1}>
         <div className="trade-layout" hidden={page !== 'swap'}>
-          <section className="hero-copy" aria-labelledby="hero-heading">
-            <div className="eyebrow">
-              <span />
-              {t('builtFor')}
-            </div>
-            <h1 id="hero-heading">
-              {t('heroFirst')}
-              <br />
-              <span className="hero-line-two">{t('heroSecond')}</span>
-            </h1>
-            <p className="hero-description">
-              {t('heroDescriptionFirst')}
-              <br />
-              {t('heroDescriptionSecond')}
-            </p>
-            <div className="hero-details">
-              <span>{t('nativeOKB')}</span>
-              <span>V3 + V4</span>
-              <span>{t('lowFeeTest')}</span>
-            </div>
-            <div className="soda-art" aria-hidden="true">
-              <div className="art-orbit orbit-one" />
-              <div className="art-orbit orbit-two" />
-              <div className="art-bubble bubble-one" />
-              <div className="art-bubble bubble-two" />
-              <div className="art-bubble bubble-three" />
-              <span className="art-word">soda.</span>
-            </div>
-          </section>
+          <div className="trade-intro">
+            <div><span className="eyebrow">X LAYER · 196</span><h1>{m.trade}</h1></div>
+            <a className="bridge-link" href="https://web3.okx.com/xlayer/bridge" target="_blank" rel="noreferrer" title={m.bridgeNote}>
+              {m.bridge}<Icon name="external" size={14} />
+            </a>
+          </div>
           <div className="trade-workspace">
-            <div className="workspace-eyebrow">
-              <span className="live-dot" />
-              {t('flowStarts')}
-              <span>{t('swapIndex')}</span>
-            </div>
-            <SwapCard
-              wallet={wallet}
-              balances={currentBalances}
-              balancesLoading={balances.isFetching && !balances.data}
-              balancesError={balances.isError || network.isError}
-              onConnect={() => setWalletOpen(true)}
-            />
+            <Suspense fallback={<p role="status">{t('reading')}</p>}>
+              <GeneralSwapCard
+                wallet={wallet}
+                balances={currentBalances}
+                balancesLoading={balances.isFetching && !balances.data}
+                balancesError={balances.isError || network.isError}
+                onConnect={() => setWalletOpen(true)}
+                onCreatePool={() => navigate('pools')}
+              />
+            </Suspense>
             <div className="trade-meta">
               <span>
                 <Icon name="layers" size={15} />
@@ -139,22 +121,21 @@ function AppContent(): ReactElement {
             </div>
           </div>
         </div>
-        {page === 'assets' ? (
-          <AssetPage
-            balances={currentBalances}
-            connected={!!wallet.session && correctChain}
-            loading={balances.isFetching && !balances.data}
-            error={!!wallet.session && (balances.isError || network.isError)}
-            selected={selectedAsset}
-          />
+        {primaryPage(page) === 'portfolio' ? (
+          <Suspense fallback={<p className="content-page" role="status">{t('reading')}</p>}>
+            <PortfolioPage wallet={wallet} onConnect={() => setWalletOpen(true)} onSwap={() => navigate('swap')}
+              onPools={() => navigate('pools')} initialTab={portfolioTab(page)} selectedAsset={page === 'assets' ? selectedAsset : undefined}
+              onTabChange={(tab) => navigate(PORTFOLIO_ROUTES[tab])} />
+          </Suspense>
         ) : page === 'pools' ? (
           <Suspense fallback={<p className="content-page" role="status">{t('reading')}</p>}>
             <LiquidityPage wallet={wallet} onConnect={() => setWalletOpen(true)} onSwap={() => navigate('swap')} />
           </Suspense>
-        ) : page === 'market' ? (
-          <MarketPage />
-        ) : page === 'history' ? (
-          <HistoryPage wallet={wallet} onConnect={() => setWalletOpen(true)} />
+        ) : primaryPage(page) === 'explore' ? (
+          <Suspense fallback={<p className="content-page" role="status">{t('reading')}</p>}>
+            <ExplorePage wallet={wallet} onConnect={() => setWalletOpen(true)} onSwap={() => navigate('swap')}
+              initialTab={exploreTab(page)} selectedToken={selectedToken} onTabChange={(tab) => navigate(EXPLORE_ROUTES[tab])} />
+          </Suspense>
         ) : null}
       </main>
       <footer className="site-footer">
@@ -195,6 +176,8 @@ function AppContent(): ReactElement {
             navigate('pools')
             setSearchOpen(false)
           }}
+          onToken={(address) => { setSelectedToken(address); navigate('explore'); setSearchOpen(false) }}
+          onReference={() => { navigate('reference'); setSearchOpen(false) }}
           onAsset={(asset) => {
             setSelectedAsset({ id: asset })
             navigate('assets')

@@ -1,11 +1,12 @@
 import type { ReactElement } from 'react'
 import { shortenAddress } from '../domain/assets'
-import { dataMessages } from '../i18n/data'
+import { workspaceMessages } from '../i18n/workspace'
+import { primaryPage, type Page } from '../features/workspace/navigation'
 import type { WalletController } from '../lib/useWallet'
 import { usePreferences } from '../preferences/context'
 import { Button, Icon, NetworkIcon, SodaMark } from './primitives'
 
-export type Page = 'swap' | 'assets' | 'pools' | 'market' | 'history'
+export type { Page } from '../features/workspace/navigation'
 
 interface HeaderProps {
   page: Page
@@ -18,20 +19,20 @@ interface HeaderProps {
 
 export function Header({ page, onPageChange, wallet, onWallet, onSearch, onPreferences }: HeaderProps): ReactElement {
   const { t, locale } = usePreferences()
-  const m = dataMessages(locale)
+  const m = workspaceMessages(locale)
+  const group = primaryPage(page)
   const pages: { id: Page; name: string }[] = [
-    { id: 'swap', name: t('navSwap') },
-    { id: 'assets', name: t('navAssets') },
+    { id: 'swap', name: m.trade },
+    { id: 'explore', name: m.explore },
     { id: 'pools', name: t('navPools') },
-    { id: 'market', name: m.market },
-    { id: 'history', name: m.history },
+    { id: 'portfolio', name: m.portfolio },
   ]
   return (
     <header className="site-header">
       <button className="brand" onClick={() => onPageChange('swap')} aria-label={t('home')}>
         <SodaMark decorative />
         <span>
-          Soda<span className="brand-dex">Dex</span>
+          Soda<span className="brand-dex">DEX</span>
         </span>
         <span className="test-tag">TEST</span>
       </button>
@@ -39,8 +40,8 @@ export function Header({ page, onPageChange, wallet, onWallet, onSearch, onPrefe
         {pages.map((item) => (
           <button
             key={item.id}
-            className={page === item.id ? 'active' : ''}
-            aria-current={page === item.id ? 'page' : undefined}
+            className={group === item.id ? 'active' : ''}
+            aria-current={group === item.id ? 'page' : undefined}
             onClick={() => onPageChange(item.id)}
           >
             {item.name}

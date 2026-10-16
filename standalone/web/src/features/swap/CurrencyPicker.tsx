@@ -2,8 +2,9 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { useEffect, useRef, useState, type ReactElement } from 'react'
 import { isAddress } from 'viem'
 import { Dialog } from '../../components/Dialog'
-import { AssetIcon, Button, Icon } from '../../components/primitives'
-import { shortenAddress, STABLE_ADDRESS, WOKB_ADDRESS } from '../../domain/assets'
+import { Button, Icon } from '../../components/primitives'
+import { TokenIcon } from '../../components/TokenIcon'
+import { shortenAddress } from '../../domain/assets'
 import { tradeMessages } from '../../i18n/trade'
 import { importCurrency } from '../../liquidity'
 import type { Currency } from '../../liquidity/types'
@@ -11,9 +12,7 @@ import { usePreferences } from '../../preferences/context'
 import { referenceTokens } from './referenceTokens'
 import { currencyKey, sameCurrency } from './routes'
 export function CurrencyIcon({ currency }: { currency: Currency }): ReactElement {
-  const address = currency.address.toLowerCase()
-  const known = currency.native ? 'okb' : address === WOKB_ADDRESS.toLowerCase() ? 'wokb' : address === STABLE_ADDRESS.toLowerCase() ? 'usdt0' : undefined
-  return known ? <AssetIcon assetId={known} small /> : <span className="swap-token-initial" aria-hidden="true">{currency.symbol.slice(0, 2).toUpperCase()}</span>
+  return <TokenIcon address={currency.address} symbol={currency.symbol} native={currency.native} small />
 }
 export function CurrencyPicker({ currencies, selected, onSelect, onClose }: {
   currencies: Currency[]; selected: Currency; onSelect: (currency: Currency) => void; onClose: () => void

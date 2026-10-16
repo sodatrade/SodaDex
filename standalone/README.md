@@ -77,7 +77,7 @@ Cloudflare 凭证使用本机 Wrangler 登录状态，不进入源码或前端�
 
 ## 当前范围
 
-这是 **X Layer 主网 196 上的测试界面**，OKB 是真实资产。SodaDEX 仓位 NFT 名称和原创 SVG 已部署，V3 WOKB/USD₮0（0.01%）与 V4 原生 OKB/USD₮0（0%）均已创建、注入少量流动性并完成真实双向兑换。当前 `pools.json` 保持 `ready`，只表示链上测试池已经核验。`standalone/trading-policy.json` 的 `publicSwapsEnabled=true` 已开放两个已核验测试池的公开兑换：用户可以读取实际报价、预览最低接收量，并在钱包中逐笔确认有限授权及兑换。Worker 接受符合固定交易对、收款地址与参数约束的 Router／Permit2 模拟；真实广播仍由用户钱包完成。已提交交易的链接、等待回执与再次检查回执功能保留。LP 使用的有限 ERC-20／Permit2 授权独立开放。流动性页面支持自助创建池／仓位、追加、部分／全部减少和领取资产，所有写入均须用户钱包确认。V3 支持标准费率，V4 支持无 Hook 池。待领取资产可能包含已减仓本金，不冒称全部是手续费。报价、价格和池数据不使用虚构数值。前端不读取本机部署钱包。
+这是 **X Layer 主网 196 上的测试界面**，OKB 是真实资产。SodaDEX 仓位 NFT 名称和原创 SVG 已部署，V3 WOKB/USD₮0（0.01%）与 V4 原生 OKB/USD₮0（0%）均已创建、注入少量流动性并完成真实双向兑换。当前 `pools.json` 保持 `ready`，只表示链上测试池已经核验。`standalone/trading-policy.json` 的 `publicSwapsEnabled=true` 已开放自有 V3/V4 测试池的公开兑换：用户可以读取实际报价、预览最低接收量，并在钱包中逐笔确认有限授权及兑换。Worker 接受符合自有池注册、收款地址与参数约束的 Router／Permit2 模拟；真实广播仍由用户钱包完成。已提交交易的链接、等待回执与再次检查回执功能保留。LP 使用的有限 ERC-20／Permit2 授权独立开放。流动性页面支持自助创建池／仓位、追加、部分／全部减少和领取资产，所有写入均须用户钱包确认。V3 支持标准费率，V4 支持无 Hook 池。待领取资产可能包含已减仓本金，不冒称全部是手续费。报价、价格和池数据不使用虚构数值。前端不读取本机部署钱包。
 
 界面支持简体中文、English 与粵語，新访客默认白天主题。语言、外观和 CNY/USD/HKD 展示货币保存在浏览器的 `sodadex.preferences.v1`；存储不可用时使用默认设置。展示货币只影响价格标签，池内相对价格、指定区块区间的交换轨迹和交易量来自实际链上状态／事件；当前没有独立法币估值，不会把 OKB 余额换算成法币，亦不虚构美元 TVL 或 APR。
 
@@ -89,10 +89,23 @@ Cloudflare 凭证使用本机 Wrangler 登录状态，不进入源码或前端�
 
 ## 核心 DEX 数据与操作
 
-`#swap` 为两个已核验测试池的报价、预览与钱包兑换入口；`#pools` 管理自有 Factory／PoolManager 下的 V3/V4 池与 PositionManager NFT。LP 默认滑点对齐此 fork 的上游源码回退值：一般为 2.5%，含原生币的 V4 为 0.05%，可手动修改；这里不使用 Uniswap 的远程配置或报价服务，因此不宣称复制其动态自动滑点。
+`#swap` 为自有测试池的通用选币、报价、预览与钱包兑换入口；`#pools` 管理自有 Factory／PoolManager 下的 V3/V4 池与 PositionManager NFT。LP 默认滑点对齐此 fork 的上游源码回退值：一般为 2.5%，含原生币的 V4 为 0.05%，可手动修改；这里不使用 Uniswap 的远程配置或报价服务，因此不宣称复制其动态自动滑点。
 
 `#market` 按池查看链上价格、区块区间轨迹、交易量和费用估算；估算费用并非持有人实际可领取收入。V4 PoolManager 的总余额不作为单池资产余额。`#history` 分页扫描合约事件，支持钱包过滤、公开交易哈希回执查询和本浏览器提交记录；扫描游标过期或区块重组时须重启扫描。Cloudflare Cache 只保存可回收的扫描状态，没有永久索引、D1、AWS、自动调度或新增付费资源。
 
 交易公开元数据保存在浏览器 `sodadex.transactions.v1`；LP 另保存最后一笔待确认记录用于刷新恢复。浏览器不保存签名、私钥或 keystore。刷新后只查询回执，不自动续签下一笔授权或重发交易。清除浏览器存储会移除本设备记录，链上事件和哈希查询仍可使用。
 
 SDK 固定版本的传递依赖扫描仍有未提供兼容修补版本的告警；没有使用 `audit fix --force` 更换协议版本。客户端仅使用其数学能力，签名仍由 EIP-1193 钱包完成。此限制不等于已完成独立安全审计。
+
+## 完整本地交易 fixture
+
+通用交易、包装和发送集成用例还需要两种 Quoter runtime，完整运行时同时提供：
+
+```sh
+SODADEX_LP_FORK_STATE=/absolute/path/browser-fork-state.json \
+SODADEX_LP_STATEVIEW_CODE=/absolute/path/lp-stateview.json \
+SODADEX_TRADE_RUNTIMES=/absolute/path/trading-quoter-runtimes.json \
+npm --prefix standalone/web test
+```
+
+这些状态和 runtime 是本地验收输入，不提交 Git。新导航与功能范围见 [web/README.md](web/README.md)。`#explore`/`#market`/`#history`/`#reference` 是探索页子 Tab，`#portfolio`/`#assets`/`#nfts`/`#activity` 是投资组合子 Tab；刷新和浏览器前进后退可恢复对应页面。官方参考池只读，钱包活动仅为 SodaDEX 事件和本浏览器记录，不宣称完整全链资产索引。

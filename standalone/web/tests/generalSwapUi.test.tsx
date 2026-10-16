@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { act, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { zeroAddress, type Hex } from 'viem'
@@ -25,10 +25,10 @@ const pool: LiquidityPool = { protocol: 'v4', id: `0x${'b'.repeat(64)}`, currenc
 let identity: WalletIdentity | undefined
 let wallet: WalletController
 const balances = { okb: 10n ** 18n, wokb: 10n ** 18n, usdt0: 1000000n }
-function mount(): { rerender: () => void } {
+function mount(): { rerender: () => void; client: QueryClient } {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } })
   const tree = () => <QueryClientProvider client={client}><PreferencesProvider><GeneralSwapCard wallet={wallet} balances={balances} balancesLoading={false} balancesError={false} onConnect={vi.fn()} /></PreferencesProvider></QueryClientProvider>
-  const view = render(tree()); return { rerender: () => view.rerender(tree()) }
+  const view = render(tree()); return { rerender: () => view.rerender(tree()), client }
 }
 beforeEach(() => {
   localStorage.setItem(PREFERENCES_KEY, JSON.stringify({ locale: 'en', theme: 'light', currency: 'USD' }))
@@ -56,6 +56,21 @@ describe('main swap interactions', () => {
     await userEvent.click(within(dialog).getByRole('button', { name: 'Confirm swap' }))
     await waitFor(() => expect(trades.executePoolTrade).toHaveBeenCalledTimes(1))
     expect(readTransactions(owner)[0]).toMatchObject({ hash, status: 'success', kind: 'swap' })
+  })
+  it('hides stale output and blocks review after a background quote failure, then recovers', async () => {
+    const view = mount(); await amount()
+    expect(screen.getByLabelText('Estimated receive amount')).toHaveTextContent('0.001')
+    vi.mocked(trades.getPoolTradeQuote).mockRejectedValue(new Error('RPC unavailable'))
+    await act(async () => { await view.client.invalidateQueries({ queryKey: ['swap', 'quote'] }) })
+    await screen.findByText('No route could quote this amount.')
+    expect(screen.getByLabelText('Estimated receive amount')).toHaveTextContent('—')
+    expect(screen.getByRole('button', { name: 'Review swap' })).toBeDisabled()
+    expect(screen.queryByText('Trade details')).not.toBeInTheDocument()
+    expect(trades.executePoolTrade).not.toHaveBeenCalled()
+    vi.mocked(trades.getPoolTradeQuote).mockImplementation(async (p, dir, value, slippageBps = 50) => ({ pool: p, zeroForOne: dir, amount: value, amountOut: 1000n, minimumOut: 995n, slippageBps }))
+    await userEvent.click(screen.getByRole('button', { name: 'Retry' }))
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Review swap' })).toBeEnabled())
+    expect(screen.getByLabelText('Estimated receive amount')).toHaveTextContent('0.001')
   })
   it('selects a token from a newly created pool and quotes its actual fee', async () => {
     vi.mocked(liquidity.listPools).mockResolvedValue([pool, { ...pool, currency1: custom, fee: 500 }])
