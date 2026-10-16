@@ -1,40 +1,61 @@
 {
-  "status": "passed",
+  "kind": "sodadex-live-readonly-browser-acceptance",
+  "ranAt": "2026-10-16",
   "origin": "https://sodadex-preview.jsmsdx2025.workers.dev",
-  "publicTrading": "paused",
-  "poolState": "ready",
-  "locales": [
-    {
-      "locale": "zh-CN",
-      "paused": true
-    },
-    {
-      "locale": "en",
-      "paused": true
-    },
-    {
-      "locale": "yue-HK",
-      "paused": true
-    }
-  ],
-  "viewports": [
-    1440,
-    390
-  ],
-  "quoteRequests": 6,
-  "largeInputReference": "0.005561",
+  "sourceCommit": "5b97994a6d0713f7f7b078a27ec64af547a42e83",
+  "cloudflareVersion": "8548f2c6-ab0b-46a7-b971-a47888081aa1",
+  "status": "passed",
+  "passedChecks": 19,
   "walletMethods": [
     "eth_requestAccounts",
     "eth_chainId"
   ],
-  "poolRecordsRetained": true,
-  "balances": [
-    "余额 0.018303",
-    "余额 0.000231"
-  ],
   "mainnetWrites": false,
-  "scope": "Published UI and real RPC reads with an injected read-only public-address wallet; no signing or broadcast",
-  "versionId": "4b24172c-9477-4ec7-b08c-25e5fffa46ff",
-  "sourceCommit": "ce80183a5c392b19818b0fb67ca5a7d023ca1096",
-  "date": "2026-10-16"
+  "checks": [
+    "both deployed pools read successfully",
+    "pool detail reads direct own-pool quote",
+    "real owner has both branded position NFTs",
+    "Chinese, English and Cantonese LP titles localize correctly",
+    "all three locales fit at 1440, 768 and 390 pixel viewport widths",
+    "wallet uses only public-address and chain queries",
+    "history API returned HTTP 200 and four distinct historical micro-swap hashes"
+  ],
+  "home": {
+    "input": "0.000001 OKB",
+    "observedQuote": "0.000115 USD₮0",
+    "route": "V4",
+    "publicSwapPaused": true,
+    "pausedButtonDisabled": true,
+    "approvalOrSwapSubmitControlPresent": false
+  },
+  "assets": [
+    "assets/index-CFjjLoGp.css",
+    "assets/index-8SBERxst.js",
+    "assets/xlayer.svg",
+    "assets/okb.png",
+    "assets/usdt0.png",
+    "assets/Inter-Regular-Latin-BYtJb7jM.woff2"
+  ],
+  "console": {
+    "errors": 0,
+    "warnings": 0,
+    "networkFinding": "No site-side console error or warning observed during the read-only run."
+  },
+  "limits": [
+    "The run used a mocked public-address provider that rejects every signing and transaction method.",
+    "The test made real RPC and history reads only; it did not sign, broadcast, inspect keystores, or make a production write."
+  ],
+  "versionId": "8548f2c6-ab0b-46a7-b971-a47888081aa1",
+  "publicTrading": "paused",
+  "poolState": "ready",
+  "locales": [
+    "zh-CN",
+    "en",
+    "yue-HK"
+  ],
+  "viewports": [
+    1440,
+    768,
+    390
+  ]
 }

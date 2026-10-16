@@ -47,6 +47,20 @@ playwright-cli -s=sodadex-fork-ui close
 
 公开交易暂停时，该兑换验收也应被策略阻止。若需要复现历史兑换验收，应在独立本地 fixture 副本中显式启用策略并构建，不能修改当前发布分支的开关。脚本从界面连接模拟钱包、分别选择 V3/V4，提交各一次双向兑换。每笔核对成功回执、自有池 Swap 事件、扣除 gas 后的实际余额变化、输入数量、预览最低接收量和零 WOKB 残留。该证据属于本地 fork；真实链部署及兑换以公开回执为准。浏览器脚本限制地址为 `127.0.0.1:4173`，不能对线上网站运行。
 
+## 本地 LP 验收
+
+`web/tests/liquidityFork.test.ts` 包含 5 个真实 Anvil 用例，覆盖两种协议的仓位完整生命周期、新池初始化，以及 V4 待领取费用大于新增本金时的加仓。运行需要 Foundry `anvil` 和此前本地预演产生的 `owned-local-rehearsal` 状态快照；快照及 StateView runtime 是本地验收资料，不进入 Git。显式提供 fixture 后运行：
+
+```sh
+SODADEX_LP_FORK_STATE=/absolute/path/browser-fork-state.json \
+SODADEX_LP_STATEVIEW_CODE=/absolute/path/lp-stateview.json \
+npm --prefix standalone/web test
+```
+
+未提供状态快照时，这 5 项会跳过，不能据此声称完整 LP 集成验收通过。`tests/liquidityForkFixture.ts` 也可单独启动受控 Anvil，配合上文编译后的 Worker 和 `fork-server.mjs`，然后运行 `acceptance/liquidity.js`。浏览器脚本覆盖两个已初始化池的建仓、加仓、部分减仓后立即全部退出；新池初始化由前述 Anvil 用例验证。所有新交易只发生在自有本地进程，不读取部署钱包。
+
+当前已发布源码、构建文件 hash、真实 RPC 读取和分层验收结果见 [`../deployments/frontend-test.json`](../deployments/frontend-test.json) 及其链接的证据文件。
+
 ## 测试发布
 
 `worker/wrangler.jsonc` 只配置 `sodadex-preview` 的 `workers.dev` 地址。没有自定义域名、Cron 或自动发布 CI。人工发布前，先完成上述检查与浏览器验收，再运行：

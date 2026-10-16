@@ -1,0 +1,43 @@
+{
+  "sourceCommit": "5b97994a6d0713f7f7b078a27ec64af547a42e83",
+  "date": "2026-10-16",
+  "status": "passed",
+  "web": {
+    "typecheck": "passed",
+    "lint": "passed",
+    "build": "passed",
+    "testFilesPassed": 15,
+    "testsPassed": 114,
+    "testsSkipped": 0,
+    "anvilCasesPassed": 5,
+    "anvilScope": [
+      "V3/V4 LP lifecycle and stale percentage full withdrawal",
+      "V3/V4 permissionless pool initialization and first NFT",
+      "V4 increase with fee credit exceeding principal"
+    ],
+    "fixtureEnvironment": [
+      "SODADEX_LP_FORK_STATE",
+      "SODADEX_LP_STATEVIEW_CODE"
+    ]
+  },
+  "worker": {
+    "typecheck": "passed",
+    "lint": "passed",
+    "testFilesPassed": 9,
+    "testsPassed": 51,
+    "testsSkipped": 0
+  },
+  "browser": {
+    "mockWalletRpcChecksPassed": 53,
+    "finalCompiledWorkerAnvilLpChecksPassed": 48,
+    "liveReadOnlyChecksPassed": 19,
+    "lpEvidence": "browser-liquidity.json",
+    "liveEvidence": "live-browser.json"
+  },
+  "limits": [
+    "Standalone web/worker validation; upstream monorepo checks are blocked by absent tools/uniswap-nx.",
+    "New LP transactions were exercised only on owned local Anvil; no new mainnet transactions or contract deployments in this update.",
+    "Final browser LP run used initialized pools; new pool initialization is covered by the five-case Anvil integration suite.",
+    "Public swap submission remains paused; existing historical micro-swap receipts are prior evidence, not new transactions."
+  ]
+}

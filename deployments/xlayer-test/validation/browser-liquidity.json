@@ -1,0 +1,49 @@
+{
+  "kind": "sodadex-final-worker-liquidity-browser-acceptance",
+  "ranAt": "2026-10-16",
+  "workerBundle": ".analysis/core-worker-final/index.mjs",
+  "origin": "http://127.0.0.1:4173",
+  "fixture": {
+    "mode": "owned-anvil-fork",
+    "chainId": 196,
+    "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545"
+  },
+  "passedChecks": 48,
+  "protocols": {
+    "v3": {
+      "tokenId": "8",
+      "liquidity": [
+        "108908",
+        "217816",
+        "0"
+      ],
+      "fullExitReceipt": "0x6556418c9adce4d56a98885168e2169351cbb3a21c8d4f0a4c7981dd6975a6fb"
+    },
+    "v4": {
+      "tokenId": "5",
+      "liquidity": [
+        "108905",
+        "217810",
+        "0"
+      ],
+      "fullExitReceipt": "0xd89dd34a7fccc81fb9f234e7d624e7221b0dbc9fe6374301967ef741bce29b69"
+    }
+  },
+  "assertions": [
+    "V3 and V4 existing pools initialized and browseable",
+    "all browser wallet submissions have successful fixture receipts from the connected owner",
+    "minted NFT ownership and liquidity were verified",
+    "increase changes liquidity; partial removal preserves a nonzero NFT position",
+    "without refreshing, full exit after partial removal ends at zero liquidity",
+    "partial and full exits return assets atomically and add no PositionManager residue",
+    "desktop and mobile liquidity views have no horizontal overflow"
+  ],
+  "limits": [
+    "Transactions went only through fixture-wallet, the final compiled Worker gate, and owned local Anvil.",
+    "No private key, public RPC write, production deployment, or real-chain transaction was used.",
+    "This verifies existing initialized pools; permissionless new-pool creation is outside this repeat run."
+  ],
+  "sourceCommit": "5b97994a6d0713f7f7b078a27ec64af547a42e83",
+  "publicTrading": "paused",
+  "mainnetWrites": false
+}

@@ -1,7 +1,7 @@
 {
   "status": "passed",
-  "versionId": "4b24172c-9477-4ec7-b08c-25e5fffa46ff",
-  "sourceCommit": "ce80183a5c392b19818b0fb67ca5a7d023ca1096",
+  "versionId": "8548f2c6-ab0b-46a7-b971-a47888081aa1",
+  "sourceCommit": "5b97994a6d0713f7f7b078a27ec64af547a42e83",
   "origin": "https://sodadex-preview.jsmsdx2025.workers.dev",
   "publicTrading": "paused",
   "assets": [
@@ -11,19 +11,29 @@
       "sha256": "9ebb07cb3efc1bbb2b84342914fdaed9493e4c6b2282fd1e7e4de2f4965a0599"
     },
     {
+      "path": "assets/LiquidityPage-C6F_rClV.css",
+      "status": 200,
+      "sha256": "25d5a705f1f7f47474cb178aec868e3b5fdff59ca04376979207f1c95233f74b"
+    },
+    {
+      "path": "assets/LiquidityPage-a9C5p-4X.js",
+      "status": 200,
+      "sha256": "3aef921b334ba4ae8af8446540de2ae07abe58fe5a868aaaf8fdb1d5aee3de2c"
+    },
+    {
       "path": "assets/SOURCES.md",
       "status": 200,
       "sha256": "a7e33e8850d71be0d33c3734487115221ee55ce71148df389283db945ffc4499"
     },
     {
-      "path": "assets/index-BOCwzmQd.css",
+      "path": "assets/index-8SBERxst.js",
       "status": 200,
-      "sha256": "0111cc681168f228a41d09696f54f7e0a9c5855cb221ad84991e30e57d7a3ea2"
+      "sha256": "0036c4ed35fcd5aa44897097f7edddbcc26685444d7ddc57bb2ea045d28bb289"
     },
     {
-      "path": "assets/index-Cfre4HOD.js",
+      "path": "assets/index-CFjjLoGp.css",
       "status": 200,
-      "sha256": "542274d665ba905852cb9e854623bb40bf45fcbf2b9125967c1f4ce83d9527f7"
+      "sha256": "a99d54b40128afa5b01d46a057c29305074612824d80431d3b909624f5405f90"
     },
     {
       "path": "assets/okb.png",
@@ -53,7 +63,7 @@
     {
       "path": "index.html",
       "status": 200,
-      "sha256": "4a577262c2ab9efa0ea97d19e59de2447dc23c4f0d2ebd3251f191bfcef530c1",
+      "sha256": "fc2351f0232bb3271faccfbcb3df242843ffacfb3907ae17427cd4fee8fb84f9",
       "contentSecurityPolicy": "default-src 'self'; script-src 'self' 'sha256-u6rB6SDwiZ9fC315V9ivK/Js5YdlIlZZKXBdNySlmYk='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'"
     },
     {
@@ -107,18 +117,6 @@
     },
     {
       "name": "v4Reverse",
-      "method": "eth_estimateGas",
-      "status": 400,
-      "errorCode": -32600
-    },
-    {
-      "name": "approvePermit2",
-      "method": "eth_call",
-      "status": 400,
-      "errorCode": -32600
-    },
-    {
-      "name": "approvePermit2",
       "method": "eth_estimateGas",
       "status": 400,
       "errorCode": -32600

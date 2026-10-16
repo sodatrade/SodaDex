@@ -5,8 +5,8 @@
   "url": "https://sodadex-preview.jsmsdx2025.workers.dev",
   "provider": "Cloudflare Workers Static Assets",
   "worker": "sodadex-preview",
-  "versionId": "4b24172c-9477-4ec7-b08c-25e5fffa46ff",
-  "sourceCommit": "ce80183a5c392b19818b0fb67ca5a7d023ca1096",
+  "versionId": "8548f2c6-ab0b-46a7-b971-a47888081aa1",
+  "sourceCommit": "5b97994a6d0713f7f7b078a27ec64af547a42e83",
   "publishedOn": "2026-10-16",
   "customDomain": null,
   "deploymentCi": null,
@@ -14,25 +14,31 @@
   "rpcUrl": "https://rpc.ignix.bot/rpc/196",
   "browserRpcPath": "/api/rpc",
   "contractStatus": "SodaDEX branded V3/V4 test contracts deployed and verified",
-  "tradingStatus": "paused; read-only reference quotes enabled, new reviews/approvals/swaps disabled; deployed pool records and submitted transaction receipt queries retained",
+  "tradingStatus": "public Router swaps paused; real read-only quotes available; self-service pool and LP operations require explicit wallet confirmation",
   "validation": {
-    "webTestsPassed": 64,
-    "workerTestsPassed": 24,
+    "webTestsPassed": 114,
+    "webTestFilesPassed": 15,
+    "workerTestsPassed": 51,
+    "workerTestFilesPassed": 9,
+    "criticalAnvilTestsPassed": 5,
+    "testsSkipped": 0,
     "browserAcceptanceChecksPassed": 53,
-    "browserWalletAndRpc": "isolated mock wallet/RPC for 53 UI checks; live injected read-only public-address wallet for balances and quote/paused-state checks",
+    "browserLiquidityForkChecksPassed": 48,
+    "liveReadOnlyBrowserChecksPassed": 19,
     "liveRpcChainId": "0xc4",
     "liveSiteHttpStatus": 200,
     "liveConsoleErrors": 0,
     "liveConsoleWarnings": 0,
-    "liveAssetHashesMatched": 11,
+    "liveAssetHashesMatched": 13,
     "liveMobileOverflow": false,
-    "browserEvidence": "xlayer-test/validation/browser-acceptance.json",
-    "liveBrowserEvidence": "xlayer-test/validation/live-browser.json",
-    "liveHttpEvidence": "xlayer-test/validation/live-http.json",
-    "liveOldClientSimulationsRejected": 12,
+    "liveRouterSimulationsRejected": 10,
     "liveReadQueriesPassed": 4,
     "livePoolRecordsRetained": true,
-    "livePoolQuoteRequests": 6,
+    "browserEvidence": "xlayer-test/validation/browser-acceptance.json",
+    "browserLiquidityEvidence": "xlayer-test/validation/browser-liquidity.json",
+    "coreEvidence": "xlayer-test/validation/core-validation.json",
+    "liveBrowserEvidence": "xlayer-test/validation/live-browser.json",
+    "liveHttpEvidence": "xlayer-test/validation/live-http.json",
     "mainnetWritesInThisUpdate": false,
     "historicalContractValidation": {
       "mainnetMicroSwapsPassed": 4,
@@ -41,11 +47,10 @@
       "scope": "prior enabled-trading code on owned localhost Anvil; not rerun after the public pause",
       "forkEvidence": "xlayer-test/validation/browser-fork.json"
     },
-    "liveLargeInputReference": {
-      "inputOKB": "0.5",
-      "outputUSDt0": "0.005561",
-      "purpose": "read-only regression; not a fair-price assertion"
-    }
+    "liveDataEvidence": "xlayer-test/validation/live-data.json",
+    "livePoolDiscoveryPages": 5,
+    "liveMarketsVerified": 2,
+    "liveHistoricalPricePoints": 4
   },
   "features": {
     "locales": [
@@ -65,7 +70,28 @@
       "v3": "0.01%",
       "v4": "0%",
       "platform": "0%"
-    }
+    },
+    "liquidity": {
+      "protocols": [
+        "v3",
+        "v4"
+      ],
+      "v4Hooks": false,
+      "operations": [
+        "create pool and position",
+        "increase",
+        "partial or full decrease",
+        "collect assets",
+        "position NFT lookup"
+      ],
+      "defaultLpSlippage": {
+        "general": "2.5%",
+        "v4WithNativeCurrency": "0.05%",
+        "source": "pinned upstream fallback, user editable; remote automatic slippage is not used"
+      }
+    },
+    "market": "on-chain relative price, block-range swap prices, volume and estimated input fees; no fabricated fiat TVL or APR",
+    "history": "paginated own-contract events, wallet filter, public receipt lookup and local submission journal"
   },
   "activeContracts": "xlayer-test/active.json",
   "poolRecord": "xlayer-test/pools.json",
