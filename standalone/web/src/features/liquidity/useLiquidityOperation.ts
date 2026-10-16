@@ -7,6 +7,7 @@ import { executeLiquidity, liquidityError, prepareLiquidity, recheckLiquidityRec
 import type { LiquidityErrorCode, LiquidityOperation, LiquidityPreview, LiquidityProgress } from '../../liquidity/types'
 import { LiquidityError } from '../../liquidity/types'
 import { readRecord, writeRecord, type LiquidityRecord } from './transactionRecord'
+import { recordTransaction } from '../history/journal'
 
 export interface LiquidityOperationController {
   review?: { preview: LiquidityPreview; identity: WalletIdentity }
@@ -49,6 +50,8 @@ export function useLiquidityOperation(wallet: WalletController): LiquidityOperat
     recordRef.current = value
     setRecord(value)
     if (!writeRecord(value)) setStorageFailed(true)
+    recordTransaction({ chainId: 196, hash: value.hash, account: value.from, to: value.to,
+      kind: value.kind, submittedAt: Date.now(), status: value.status })
   }
   const refresh = (): void => {
     void queryClient.invalidateQueries({ queryKey: ['liquidity'] })

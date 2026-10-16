@@ -1,9 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
-import { useEffect, useState, type ReactElement } from 'react'
+import { lazy, Suspense, useEffect, useState, type ReactElement } from 'react'
 import { AssetPage, type AssetSelection } from './components/AssetPage'
 import { GlobalSearchDialog } from './components/GlobalSearchDialog'
 import { Header, type Page } from './components/Header'
-import { PoolsPage } from './components/PoolsPage'
 import { PreferencesDialog } from './components/PreferencesDialog'
 import { Button, Icon, SodaMark } from './components/primitives'
 import { SwapCard } from './components/SwapCard'
@@ -16,6 +15,7 @@ import { useWallet } from './lib/useWallet'
 import { usePreferences } from './preferences/context'
 import { PreferencesProvider } from './preferences/PreferencesProvider'
 import { POOLS, publicSwapsEnabled } from './trading/config'
+const LiquidityPage = lazy(async () => ({ default: (await import('./features/liquidity/LiquidityPage')).LiquidityPage }))
 
 export function App(): ReactElement {
   return (
@@ -148,7 +148,9 @@ function AppContent(): ReactElement {
             selected={selectedAsset}
           />
         ) : page === 'pools' ? (
-          <PoolsPage onSwap={() => navigate('swap')} />
+          <Suspense fallback={<p className="content-page" role="status">{t('reading')}</p>}>
+            <LiquidityPage wallet={wallet} onConnect={() => setWalletOpen(true)} onSwap={() => navigate('swap')} />
+          </Suspense>
         ) : page === 'market' ? (
           <MarketPage />
         ) : page === 'history' ? (

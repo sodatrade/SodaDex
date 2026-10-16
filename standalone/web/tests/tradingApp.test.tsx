@@ -6,6 +6,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { App } from '../src/App'
 import { STABLE_ADDRESS } from '../src/domain/assets'
 import type { Eip1193Provider } from '../src/lib/wallet'
+import * as liquidity from '../src/liquidity'
+import type { LiquidityPool } from '../src/liquidity/types'
 import { PREFERENCES_KEY } from '../src/preferences/model'
 import { v3QuoterAbi, v4QuoterAbi } from '../src/trading/abis'
 import { CONTRACTS, POOLS } from '../src/trading/config'
@@ -32,6 +34,11 @@ beforeEach(() => {
   POOLS.ready = true
   requests = []
   listener = undefined
+  const poolFixture: LiquidityPool = { protocol: 'v4', id: `0x${'b'.repeat(64)}`, currency0: liquidity.KNOWN_CURRENCIES[0],
+    currency1: liquidity.KNOWN_CURRENCIES[2], fee: 0, tickSpacing: 1, sqrtPriceX96: 2n ** 96n, tick: 0, liquidity: 1n, initialized: true }
+  vi.spyOn(liquidity, 'listPools').mockResolvedValue([
+    { ...poolFixture, protocol: 'v3', id: `0x${'c'.repeat(40)}`, fee: 100 }, poolFixture,
+  ])
   const provider: Eip1193Provider = {
     request: vi.fn(async ({ method }) => {
       requests.push(method)
@@ -132,8 +139,8 @@ describe('ready test pool user flow', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
     expect(POOLS.ready).toBe(true)
     await user.click(screen.getByRole('button', { name: pools }))
-    expect(screen.getByRole('heading', { name: 'V3 · WOKB / USD₮0 · 0.01%' })).toBeVisible()
-    expect(screen.getByRole('heading', { name: 'V4 · OKB / USD₮0 · 0%' })).toBeVisible()
+    expect(await screen.findByText('V3 · 0.01%')).toBeVisible()
+    expect(await screen.findByText('V4 · 0%')).toBeVisible()
     expect(requests).toHaveLength(0)
     const requestsSent = vi.mocked(fetch).mock.calls.map(([, options]) => JSON.parse(String(options?.body)) as { method: string })
     expect(requestsSent.some(({ method }) => method === 'eth_call')).toBe(true)
@@ -239,7 +246,7 @@ describe('ready test pool user flow', () => {
     await user.click(screen.getByRole('button', { name: '搜索' }))
     await user.click(screen.getByRole('button', { name: '流动池' }))
     await user.click(screen.getByRole('button', { name: /OKB \/ USD₮0 · V3 \+ V4/ }))
-    expect(screen.getByRole('heading', { name: 'V4 · OKB / USD₮0 · 0%' })).toBeVisible()
+    expect(await screen.findByText('V4 · 0%')).toBeVisible()
     expect(requests).toHaveLength(0)
   })
   it.each([

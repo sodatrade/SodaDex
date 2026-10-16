@@ -71,8 +71,8 @@ describe('SodaDex user paths', () => {
     expect(within(card).getByRole('button', { name: '选择接收资产，当前 USD₮0' })).toBeVisible()
     expect(within(card).getByLabelText('支付')).toHaveValue('')
     await user.click(screen.getByRole('button', { name: '流动性' }))
-    expect(screen.getByRole('heading', { name: '测试池与流动性准备中' })).toBeVisible()
-    expect(screen.getByText('0.01')).toBeVisible()
+    expect(await screen.findByRole('heading', { name: '让资产，为流动出一份力。' })).toBeVisible()
+    expect(screen.getByRole('button', { name: '创建池 / 新仓位' })).toBeVisible()
   })
 
   it('connects with consent, switches to X Layer, reads balances and keeps trade disabled', async () => {

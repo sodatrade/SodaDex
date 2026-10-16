@@ -59,16 +59,26 @@ Cloudflare 凭证使用本机 Wrangler 登录状态，不进入源码或前端�
 
 当前测试地址为 [sodadex-preview.jsmsdx2025.workers.dev](https://sodadex-preview.jsmsdx2025.workers.dev)，版本记录保存在 [`../deployments/frontend-test.json`](../deployments/frontend-test.json)。正式域名暂未绑定。
 
-浏览器读取 `/api/rpc`；Worker 用固定地址 `https://rpc.ignix.bot/rpc/196` 查询 X Layer。代理接受白名单读取，以及固定 V3/V4 交易对的报价、授权和兑换模拟。真实交易由用户的浏览器钱包签名与广播；代理不签名、不广播，也不接受任意上游地址。节点失败时前端显示连接失败，不回退到其他节点。
+浏览器读取 `/api/rpc`；Worker 用固定地址 `https://rpc.ignix.bot/rpc/196` 查询 X Layer。代理接受受限读取、自有 V3/V4 池报价，以及当前 PositionManager 的建池、仓位和有限授权模拟。行情及事件分页接口见 [`worker/API.md`](worker/API.md)。真实交易由用户的浏览器钱包签名与广播；代理不签名、不广播，也不接受任意上游地址。节点失败时前端显示连接失败，不回退到其他节点。
 
 ## 当前范围
 
-这是 **X Layer 主网 196 上的测试界面**，OKB 是真实资产。SodaDEX 仓位 NFT 名称和原创 SVG 已部署，V3 WOKB/USD₮0（0.01%）与 V4 原生 OKB/USD₮0（0%）均已创建、注入少量流动性并完成真实双向兑换。当前 `pools.json` 保持 `ready`，只表示链上测试池已经核验。`standalone/trading-policy.json` 的 `publicSwapsEnabled=false` 独立暂停公开兑换：前端保留只读参考报价和预计接收数量，但不能创建新预览或提交新授权／兑换；已提交交易的链接、等待回执与再次检查回执功能保留。Worker 拒绝正金额授权和 Router 兑换的 `eth_call`／`eth_estimateGas`，余额、代码、allowance、区块和回执读取及现有 ERC-20 `approve(0)` 模拟仍可用。提供流动性的前端入口尚未开放。报价、价格和池数据不使用虚构数值。前端不读取本机部署钱包。
+这是 **X Layer 主网 196 上的测试界面**，OKB 是真实资产。SodaDEX 仓位 NFT 名称和原创 SVG 已部署，V3 WOKB/USD₮0（0.01%）与 V4 原生 OKB/USD₮0（0%）均已创建、注入少量流动性并完成真实双向兑换。当前 `pools.json` 保持 `ready`，只表示链上测试池已经核验。`standalone/trading-policy.json` 的 `publicSwapsEnabled=false` 独立暂停公开兑换：前端保留只读参考报价和预计接收数量，但不能创建新预览或提交新授权／兑换；已提交交易的链接、等待回执与再次检查回执功能保留。Worker 拒绝 Router 兑换及正金额 Router Permit2 授权的 `eth_call`／`eth_estimateGas`；LP 使用的有限 ERC-20／Permit2 授权单独开放。流动性页面支持自助创建池／仓位、追加、部分／全部减少和领取资产，所有写入均须用户钱包确认。V3 支持标准费率，V4 支持无 Hook 池。待领取资产可能包含已减仓本金，不冒称全部是手续费。报价、价格和池数据不使用虚构数值。前端不读取本机部署钱包。
 
-界面支持简体中文、English 与粵語，新访客默认白天主题。语言、外观和 CNY/USD/HKD 展示货币保存在浏览器的 `sodadex.preferences.v1`；存储不可用时使用默认设置。展示货币只影响价格标签，当前没有价格数据，不会把 OKB 余额换算成法币。
+界面支持简体中文、English 与粵語，新访客默认白天主题。语言、外观和 CNY/USD/HKD 展示货币保存在浏览器的 `sodadex.preferences.v1`；存储不可用时使用默认设置。展示货币只影响价格标签，池内相对价格、指定区块区间的交换轨迹和交易量来自实际链上状态／事件；当前没有独立法币估值，不会把 OKB 余额换算成法币，亦不虚构美元 TVL 或 APR。
 
 `web build` 会生成首帧偏好初始化脚本及 `dist/preferences-script.json`。Worker 构建和检查会读取该脚本的精确 CSP hash，因此必须先构建前端，再检查或发布 Worker；两者应一起发布。
 
 当前前端及 Worker 的合约地址统一读取 [`../deployments/xlayer-test/active.json`](../deployments/xlayer-test/active.json)，池就绪状态读取 `pools.json`。原始 `plan.json` / `receipts.json` 和已经完成的三笔交易记录 `pools-interrupted.json` 保留用于历史核验。当前地址已按品牌更新的真实回执切换；完整地址、NFT 图片及兑换回执见 [`ADDRESSES.md`](../deployments/xlayer-test/ADDRESSES.md)。本应用与保留的上游 `apps/web` 分开构建，独立检查通过不代表整个上游单体仓库检查通过。
 
 重新开放公开兑换需要修改独立交易策略、运行就绪与暂停分支的回归和浏览器验收，再手动发布前端与 Worker。仅修改 `pools.json` 不会解除暂停。暂停前已经进入钱包确认窗口或已广播的交易不能由网站撤回。
+
+## 核心 DEX 数据与操作
+
+`#swap` 为两个已核验测试池的参考报价入口，公开兑换继续暂停；`#pools` 管理自有 Factory／PoolManager 下的 V3/V4 池与 PositionManager NFT。LP 默认滑点对齐此 fork 的上游源码回退值：一般为 2.5%，含原生币的 V4 为 0.05%，可手动修改；这里不使用 Uniswap 的远程配置或报价服务，因此不宣称复制其动态自动滑点。
+
+`#market` 按池查看链上价格、区块区间轨迹、交易量和费用估算；估算费用并非持有人实际可领取收入。V4 PoolManager 的总余额不作为单池资产余额。`#history` 分页扫描合约事件，支持钱包过滤、公开交易哈希回执查询和本浏览器提交记录；扫描游标过期或区块重组时须重启扫描。Cloudflare Cache 只保存可回收的扫描状态，没有永久索引、D1、AWS、自动调度或新增付费资源。
+
+交易公开元数据保存在浏览器 `sodadex.transactions.v1`；LP 另保存最后一笔待确认记录用于刷新恢复。浏览器不保存签名、私钥或 keystore。刷新后只查询回执，不自动续签下一笔授权或重发交易。清除浏览器存储会移除本设备记录，链上事件和哈希查询仍可使用。
+
+SDK 固定版本的传递依赖扫描仍有未提供兼容修补版本的告警；没有使用 `audit fix --force` 更换协议版本。客户端仅使用其数学能力，签名仍由 EIP-1193 钱包完成。此限制不等于已完成独立安全审计。
