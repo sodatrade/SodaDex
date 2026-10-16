@@ -22,6 +22,12 @@ const MODIFY = parseAbiParameters('uint256,uint256,uint128,uint128,bytes')
 const PAIR = parseAbiParameters('address,address')
 const TAKE = parseAbiParameters('address,address,address')
 const SWEEP = parseAbiParameters('address,address')
+const CURRENCY = parseAbiParameters('address')
+const V3_SEQUENCES = new Set([
+  'mint', 'mint,refundETH', 'createAndInitializePoolIfNecessary,mint', 'createAndInitializePoolIfNecessary,mint,refundETH',
+  'increaseLiquidity', 'increaseLiquidity,refundETH', 'decreaseLiquidity', 'collect', 'decreaseLiquidity,collect',
+  'collect,unwrapWETH9,sweepToken', 'decreaseLiquidity,collect,unwrapWETH9,sweepToken',
+])
 export function canonicalDecode(abi: Abi, data: Hex): { functionName: string; args: readonly unknown[] } {
   const decoded = decodeFunctionData({ abi, data })
   if (!same(encodeFunctionData({ abi, functionName: decoded.functionName, args: decoded.args }), data)) throw new Error('Noncanonical calldata')
@@ -53,11 +59,15 @@ function v3(data: Hex, sender: string, value: bigint, nested = false): boolean {
       if (['mint', 'increaseLiquidity', 'decreaseLiquidity', 'collect'].includes(name)) substantive++
     }
     const decodedCalls = calls.map((call) => canonicalDecode(V3_LP, call))
+    if (!V3_SEQUENCES.has(decodedCalls.map((call) => call.functionName).join(','))) return false
     const custody = decodedCalls.filter((call) => call.functionName === 'collect' && same((call.args[0] as {recipient: string}).recipient, ZERO))
     if (!custody.length && decodedCalls.some((call) => ['unwrapWETH9', 'sweepToken'].includes(call.functionName))) return false
     if (custody.length && (!decodedCalls.some((call) => call.functionName === 'unwrapWETH9') || !decodedCalls.some((call) => call.functionName === 'sweepToken'))) return false
     if (value > 0n && !decodedCalls.some((call) => call.functionName === 'refundETH')) return false
     const operations = decodedCalls.filter((call) => ['mint', 'increaseLiquidity', 'decreaseLiquidity', 'collect'].includes(call.functionName)).map((call) => call.functionName).join(',')
+    if (operations === 'decreaseLiquidity,collect' &&
+      (decodedCalls.find((call) => call.functionName === 'decreaseLiquidity')!.args[0] as { tokenId: bigint }).tokenId !==
+      (decodedCalls.find((call) => call.functionName === 'collect')!.args[0] as { tokenId: bigint }).tokenId) return false
     if (!['mint', 'increaseLiquidity', 'decreaseLiquidity', 'collect', 'decreaseLiquidity,collect'].includes(operations)) return false
     const initialize = decodedCalls.filter((call) => call.functionName === 'createAndInitializePoolIfNecessary')
     if (initialize.length > 1 || (initialize.length && operations !== 'mint')) return false
@@ -122,17 +132,18 @@ function v4(data: Hex, sender: string, value: bigint, nested = false): boolean {
   if (decoded.functionName !== 'modifyLiquidities' || deadline <= 0n) return false
   const [actions, inputs] = params(ACTIONS, unlock)
   const mint = actions === '0x020d14'
-  const increase = actions === '0x000d14'
+  const increase = actions === '0x00121214'
   const decrease = actions === '0x0111'
-  if ((!mint && !increase && !decrease) || inputs.length !== (decrease ? 2 : 3)) return false
-  const [currency0, currency1] = decrease ? params(TAKE, inputs[1]) : params(PAIR, inputs[1])
+  if ((!mint && !increase && !decrease) || inputs.length !== (decrease ? 2 : increase ? 4 : 3)) return false
+  const [currency0, currency1] = decrease ? params(TAKE, inputs[1]) : increase
+    ? [params(CURRENCY, inputs[1])[0], params(CURRENCY, inputs[2])[0]] : params(PAIR, inputs[1])
   if (!sorted(currency0, currency1)) return false
   if (decrease) {
     const [, , recipient] = params(TAKE, inputs[1])
     const [id, liquidity, , , hookData] = params(MODIFY, inputs[0])
     return id > 0n && liquidity >= 0n && hookData === '0x' && same(recipient, sender) && value === 0n
   }
-  const [sweepToken, recipient] = params(SWEEP, inputs[2])
+  const [sweepToken, recipient] = params(SWEEP, inputs[increase ? 3 : 2])
   if (!same(sweepToken, ZERO) || !same(recipient, sender)) return false
   if (mint) {
     const [key, lower, upper, liquidity, max0, max1, receiver, hookData] = params(MINT, inputs[0])

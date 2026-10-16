@@ -15,6 +15,8 @@ const zh = {
   check: '刷新回执', localEmpty: '此设备暂无已提交交易。其他设备的记录可输入哈希查询。',
   localNote: '仅在本浏览器保存公开交易哈希；清除浏览器数据会删除本设备记录。', wrongChain: '请切换到 X Layer',
   token0: '资产 0', token1: '资产 1', current: '当前数据', priceHistory: '交换后池内价格', chartEmpty: '此扫描区间没有可绘制的交换价格。',
+  fromBlock: '起始区块', toBlock: '结束区块', applyRange: '读取区间', recent: '留空读取最近区间', rangeError: '请填写有效的起止区块，起始区块应早于结束区块。',
+  scanRestart: '区块或扫描游标已更新，请重新扫描此区间。',
 } as const
 type DataMessages = Record<keyof typeof zh, string>
 const en: DataMessages = {
@@ -33,6 +35,8 @@ const en: DataMessages = {
   check: 'Refresh receipt', localEmpty: 'No submitted transactions on this device. Look up a hash from another device.',
   localNote: 'Only public transaction hashes are saved in this browser. Clearing browser data removes these records.', wrongChain: 'Switch to X Layer',
   token0: 'Token 0', token1: 'Token 1', current: 'Current data', priceHistory: 'Pool price after swaps', chartEmpty: 'No swap prices to chart in this scanned range.',
+  fromBlock: 'From block', toBlock: 'To block', applyRange: 'Read range', recent: 'Blank for recent blocks', rangeError: 'Enter valid start and end blocks in ascending order.',
+  scanRestart: 'The chain or scan cursor changed. Restart this range.',
 }
 const yue: DataMessages = {
   ...zh, market: '行情', history: '紀錄', marketTitle: '鏈上每一次流動。', historyTitle: '交易紀錄，隨時查到。',
@@ -50,5 +54,7 @@ const yue: DataMessages = {
   check: '更新回執', localEmpty: '呢個裝置未有提交紀錄。其他裝置嘅交易可以輸入雜湊查詢。',
   localNote: '只喺本瀏覽器儲存公開交易雜湊；清除瀏覽器數據會刪除呢啲紀錄。', wrongChain: '請切換至 X Layer',
   token0: '資產 0', token1: '資產 1', current: '目前數據', priceHistory: '交換後池內價格', chartEmpty: '呢段掃描區間冇可畫出嘅交換價格。',
+  fromBlock: '起始區塊', toBlock: '結束區塊', applyRange: '讀取區間', recent: '留空讀取最近區間', rangeError: '請輸入有效嘅起止區塊，起始區塊要早過結束區塊。',
+  scanRestart: '區塊或者掃描游標更新咗，請重新掃描呢段區間。',
 }
 export function dataMessages(locale: Locale): DataMessages { return ({ 'zh-CN': zh, en, 'yue-HK': yue })[locale] }

@@ -21,9 +21,13 @@ export function MarketPage(): ReactElement {
   const { locale } = usePreferences()
   const m = dataMessages(locale)
   const [selected, setSelected] = useState<string>()
+  const [fromBlock, setFromBlock] = useState('')
+  const [toBlock, setToBlock] = useState('')
+  const [range, setRange] = useState<{ fromBlock: number; toBlock: number }>()
+  const [rangeError, setRangeError] = useState(false)
   const pools = useQuery({ queryKey: ['dex-pools'], queryFn: getPools, retry: false, refetchInterval: 20_000 })
   const pool = pools.data?.pools.find((p) => p.id === selected) ?? pools.data?.pools[0]
-  const market = useQuery({ queryKey: ['dex-market', pool?.id], queryFn: () => getMarket(pool as DexPool),
+  const market = useQuery({ queryKey: ['dex-market', pool?.id, range], queryFn: () => getMarket(pool as DexPool, range),
     enabled: !!pool, retry: false, refetchInterval: 20_000 })
   const d = market.data
   const symbol0 = d?.token0.symbol ?? tokenName(pool?.token0 ?? '')
@@ -42,13 +46,27 @@ export function MarketPage(): ReactElement {
           <Icon name="refresh" size={16} />{m.retry}
         </Button>
       </div>
+      <form className="data-range" onSubmit={(e) => {
+        e.preventDefault()
+        if (!fromBlock && !toBlock) { setRange(undefined); setRangeError(false); return }
+        const from = Number(fromBlock), to = Number(toBlock)
+        if (!/^\d+$/.test(fromBlock) || !/^\d+$/.test(toBlock) || !Number.isSafeInteger(from) || !Number.isSafeInteger(to) || from > to) { setRangeError(true); return }
+        setRangeError(false); setRange({ fromBlock: from, toBlock: to })
+      }}>
+        <label>{m.fromBlock}<input value={fromBlock} onChange={(e) => setFromBlock(e.target.value)} inputMode="numeric" placeholder={m.recent} /></label>
+        <label>{m.toBlock}<input value={toBlock} onChange={(e) => setToBlock(e.target.value)} inputMode="numeric" placeholder={m.recent} /></label>
+        <Button type="submit">{m.applyRange}</Button>
+      </form>
+      {rangeError && <p className="error-text" role="alert">{m.rangeError}</p>}
       {(pools.isPending || (pool && market.isPending)) && <p role="status">{m.loading}</p>}
       {(pools.isError || market.isError) && <p className="error-text" role="alert">{m.unavailable}</p>}
       {d && <>
         <Surface className="market-price-surface">
           <span className="eyebrow">{pool?.protocol.toUpperCase()} · {symbol0} / {symbol1}</span>
           <h2>{m.price}</h2>
-          <p className="market-price">{d.priceToken1PerToken0 === null ? m.noPrice : `1 ${symbol0} = ${d.priceToken1PerToken0} ${symbol1}`}</p>
+          <p className="market-price" title={d.priceToken1PerToken0 ?? undefined}>{d.priceToken1PerToken0 === null ? m.noPrice :
+            `1 ${symbol0} = ${Number(d.priceToken1PerToken0) > 0 && Number.isFinite(Number(d.priceToken1PerToken0))
+              ? new Intl.NumberFormat(locale, { maximumSignificantDigits: 8 }).format(Number(d.priceToken1PerToken0)) : d.priceToken1PerToken0} ${symbol1}`}</p>
           <p className="data-muted">{m.snapshot} #{d.asOf.number} · {new Date(d.asOf.timestamp * 1000).toLocaleString(locale)}</p>
           <PriceChart market={d} />
           <div className="market-stats">

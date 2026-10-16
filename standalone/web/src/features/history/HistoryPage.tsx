@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState, type ReactElement } from 'react'
 import type { Hex } from 'viem'
 import { Button, Icon } from '../../components/primitives'
@@ -6,7 +6,7 @@ import { CHAIN_ID, EXPLORER_URL, shortenAddress } from '../../domain/assets'
 import { dataMessages } from '../../i18n/data'
 import type { WalletController } from '../../lib/useWallet'
 import { usePreferences } from '../../preferences/context'
-import { getEvents, mergeEvents, type EventQuery } from '../market/api'
+import { DataError, getEvents, mergeEvents, type EventQuery } from '../market/api'
 import '../market/data.css'
 import { JOURNAL_CHANGED, readTransactions } from './journal'
 import { ReceiptLookup } from './ReceiptLookup'
@@ -18,6 +18,7 @@ export function HistoryPage({ wallet, onConnect }: { wallet: WalletController; o
   const [, setRevision] = useState(0)
   const [selectedHash, setSelectedHash] = useState<Hex>()
   const account = wallet.session?.chainId === CHAIN_ID ? wallet.session.address : undefined
+  const queryClient = useQueryClient()
   useEffect(() => {
     const refresh = (): void => setRevision((v) => v + 1)
     window.addEventListener(JOURNAL_CHANGED, refresh)
@@ -37,8 +38,9 @@ export function HistoryPage({ wallet, onConnect }: { wallet: WalletController; o
         : { ...request, cursor: undefined, fromBlock: data.coverage.nextFromBlock, toBlock: request.toBlock ?? data.asOf.number },
     enabled: scope === 'all' || (scope === 'mine' && !!account), retry: false,
   })
-  const rows = mergeEvents(events.data?.pages.map((p) => p.data) ?? [])
-  const last = events.data?.pages.at(-1)?.data
+  const restart = events.error instanceof DataError && events.error.code !== 'UNAVAILABLE'
+  const rows = restart ? [] : mergeEvents(events.data?.pages.map((p) => p.data) ?? [])
+  const last = restart ? undefined : events.data?.pages.at(-1)?.data
   const local = account ? readTransactions(account) : []
   return <section className="content-page data-page" aria-labelledby="history-title">
     <div className="page-heading"><span className="eyebrow">ACTIVITY / X LAYER</span>
@@ -59,7 +61,10 @@ export function HistoryPage({ wallet, onConnect }: { wallet: WalletController; o
       </li>)}</ul>
     </> : <>
       {events.isFetching && <p role="status">{m.loading}</p>}
-      {events.isError && <p className="error-text" role="alert">{m.unavailable} <Button onClick={() => void events.refetch()}>{m.retry}</Button></p>}
+      {events.isError && <p className="error-text" role="alert">{restart ? m.scanRestart : m.unavailable} <Button onClick={() => {
+        if (restart) void queryClient.resetQueries({ queryKey: ['dex-events', scope, scope === 'mine' ? account : undefined], exact: true })
+        else void events.refetch()
+      }}>{m.retry}</Button></p>}
       {last && <p className="data-muted">{m.scanned}: #{events.data?.pages[0]?.data.coverage.fromBlock} – #{last.coverage.toBlock}
         {' · '}{events.hasNextPage ? m.partial : m.complete} · {m.snapshot} #{last.asOf.number}</p>}
       {last && rows.length === 0 && <p>{m.noData}</p>}

@@ -10,7 +10,7 @@ export interface DexEvent {
   id: string; protocol: 'v3' | 'v4'; address: string; event: string; blockNumber: number; blockHash: string
   transactionHash: string; logIndex: number; args: Record<string, string | number | boolean>; transactionFrom: string | null
 }
-export interface PoolsResponse { schemaVersion: 1; chainId: 196; asOf: ChainBlock; coverage: Coverage; pools: DexPool[] }
+export interface PoolsResponse { schemaVersion: 1; chainId: 196; asOf: ChainBlock; coverage: Coverage; pools: DexPool[]; nextCursor?: string | null }
 export interface EventsResponse { schemaVersion: 1; chainId: 196; asOf: ChainBlock; coverage: Coverage; events: DexEvent[]; nextCursor: string | null }
 export interface MarketResponse {
   schemaVersion: 1; chainId: 196; asOf: ChainBlock; coverage: Coverage; pool: DexPool; token0: DexToken; token1: DexToken
@@ -26,6 +26,9 @@ const integer = (v: unknown): v is number => typeof v === 'number' && Number.isS
 const hash = (v: unknown): v is string => typeof v === 'string' && /^0x[\da-f]{64}$/i.test(v)
 const address = (v: unknown): v is string => typeof v === 'string' && /^0x[\da-f]{40}$/i.test(v)
 const raw = (v: unknown): boolean => typeof v === 'string' && /^\d+$/.test(v)
+export class DataError extends Error {
+  constructor(public readonly code: 'CHAIN_REORGANIZED' | 'CURSOR_EXPIRED' | 'UNAVAILABLE') { super(code) }
+}
 function envelope(v: unknown): v is Record<string, unknown> {
   if (!record(v) || v.schemaVersion !== 1 || v.chainId !== 196 || !record(v.asOf) || !record(v.coverage)) return false
   return integer(v.asOf.number) && hash(v.asOf.hash) && integer(v.asOf.timestamp) &&
@@ -43,17 +46,34 @@ function token(v: unknown): boolean {
 }
 async function get(path: string): Promise<unknown> {
   const response = await fetch(path, { signal: AbortSignal.timeout(30_000) })
-  if (!response.ok) throw new Error('Data unavailable')
+  if (!response.ok) {
+    const body: unknown = await response.json().catch(() => undefined)
+    throw new DataError(record(body) && (body.code === 'CHAIN_REORGANIZED' || body.code === 'CURSOR_EXPIRED') ? body.code : 'UNAVAILABLE')
+  }
   return response.json() as Promise<unknown>
 }
 export async function getPools(): Promise<PoolsResponse> {
-  const v = await get('/api/dex/pools')
-  if (!envelope(v) || !Array.isArray(v.pools) || !v.pools.every(pool)) throw new Error('Invalid pool data')
-  return v as unknown as PoolsResponse
+  const found = new Map<string, DexPool>()
+  const cursors = new Set<string>()
+  let cursor: string | undefined, firstBlock: number | undefined
+  let result: PoolsResponse
+  do {
+    const v = await get(`/api/dex/pools${cursor ? `?cursor=${encodeURIComponent(cursor)}` : ''}`)
+    if (!envelope(v) || !Array.isArray(v.pools) || !v.pools.every(pool) ||
+      !(v.nextCursor === undefined || v.nextCursor === null || typeof v.nextCursor === 'string')) throw new Error('Invalid pool data')
+    result = v as unknown as PoolsResponse
+    firstBlock ??= result.coverage.fromBlock
+    for (const p of result.pools) found.set(`${p.protocol}:${p.id.toLowerCase()}`, p)
+    cursor = result.nextCursor ?? undefined
+    if (cursor && cursors.has(cursor)) throw new Error('Repeated pool cursor')
+    if (cursor) cursors.add(cursor)
+  } while (cursor)
+  return { ...result, pools: [...found.values()], coverage: { ...result.coverage, fromBlock: firstBlock ?? result.coverage.fromBlock } }
 }
-export async function getMarket(p: DexPool): Promise<MarketResponse> {
+export async function getMarket(p: DexPool, range?: { fromBlock: number; toBlock: number }): Promise<MarketResponse> {
   const params = new URLSearchParams({ pool: p.id, protocol: p.protocol, token0: p.token0, token1: p.token1,
     fee: String(p.fee), tickSpacing: String(p.tickSpacing), hooks: p.hooks })
+  if (range) { params.set('fromBlock', String(range.fromBlock)); params.set('toBlock', String(range.toBlock)) }
   const v = await get(`/api/dex/market?${params}`)
   if (!envelope(v) || !pool(v.pool) || !token(v.token0) || !token(v.token1) ||
     !record(v.volume) || !raw(v.volume.token0Raw) || !raw(v.volume.token1Raw) || !record(v.fees) || !record(v.reserves) ||

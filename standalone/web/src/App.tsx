@@ -58,7 +58,9 @@ function AppContent(): ReactElement {
     window.history.replaceState(null, '', `#${next}`)
   }
   useEffect(() => {
-    const changed = (): void => setPage(fromHash())
+    const changed = (): void => {
+      if (['swap', 'assets', 'pools', 'market', 'history'].includes(window.location.hash.slice(1))) setPage(fromHash())
+    }
     window.addEventListener('hashchange', changed)
     return () => window.removeEventListener('hashchange', changed)
   }, [])

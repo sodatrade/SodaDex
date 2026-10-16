@@ -26,6 +26,13 @@ describe('LP ownership and pool context', () => {
     })
     expect(await validLiquidityContext(deployment.contracts.v4PositionManager, encode(stable), owner, 0n, '0x12345', upstream)).toBe(true)
     expect(await validLiquidityContext(deployment.contracts.v4PositionManager, encode(other), owner, 0n, '0x12345', upstream)).toBe(false)
+    const increase = (token: Address): Hex => encodeFunctionData({ abi: V4_LP, functionName: 'modifyLiquidities', args: [encodeAbiParameters(parseAbiParameters('bytes,bytes[]'), ['0x00121214', [
+      encodeAbiParameters(parseAbiParameters('uint256,uint256,uint128,uint128,bytes'), [1n, 1n, 1n, 1n, '0x']),
+      encodeAbiParameters(parseAbiParameters('address'), [ZERO as Address]), encodeAbiParameters(parseAbiParameters('address'), [token]),
+      encodeAbiParameters(parseAbiParameters('address,address'), [ZERO as Address, owner]),
+    ]]), 2_000_000_000n] })
+    expect(await validLiquidityContext(deployment.contracts.v4PositionManager, increase(stable), owner, 1n, '0x12345', upstream)).toBe(true)
+    expect(await validLiquidityContext(deployment.contracts.v4PositionManager, increase(other), owner, 1n, '0x12345', upstream)).toBe(false)
     expect(upstream.mock.calls.every(([, options]) => (JSON.parse(String(options?.body)) as { params: unknown[] }).params[1] === '0x12345')).toBe(true)
   })
 })

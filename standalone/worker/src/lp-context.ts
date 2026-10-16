@@ -18,7 +18,9 @@ export async function validLiquidityContext(to: string, data: Hex, sender: strin
       const [actions, inputs] = decodeAbiParameters(parseAbiParameters('bytes,bytes[]'), decoded.args[0] as Hex)
       if (actions !== '0x020d14') {
         tokenId = decodeAbiParameters(parseAbiParameters('uint256,uint256,uint128,uint128,bytes'), inputs[0])[0]
-        currencies = decodeAbiParameters(actions === '0x0111' ? parseAbiParameters('address,address,address') : parseAbiParameters('address,address'), inputs[1]).slice(0, 2) as readonly string[]
+        currencies = actions === '0x00121214'
+          ? [decodeAbiParameters(parseAbiParameters('address'), inputs[1])[0], decodeAbiParameters(parseAbiParameters('address'), inputs[2])[0]]
+          : decodeAbiParameters(parseAbiParameters('address,address,address'), inputs[1]).slice(0, 2) as readonly string[]
       }
     }
     if (tokenId === null) continue

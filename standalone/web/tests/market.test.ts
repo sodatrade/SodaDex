@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { getEvents, getPools, mergeEvents, type EventsResponse } from '../src/features/market/api'
+import { DataError, getEvents, getPools, mergeEvents, type EventsResponse } from '../src/features/market/api'
 import { readReceipt } from '../src/features/history/receipts'
 const hash = `0x${'a'.repeat(64)}` as const
 const address = `0x${'1'.repeat(40)}`
@@ -33,5 +33,19 @@ describe('onchain market and history boundary', () => {
     await expect(readReceipt(hash)).rejects.toThrow('Wrong chain')
     expect(fetcher).toHaveBeenCalledTimes(1)
     await expect(readReceipt(hash)).rejects.toThrow('Invalid receipt')
+  })
+  it('finishes pool discovery across server pages and preserves early pools', async () => {
+    const pool = { protocol: 'v3', id: address, address, token0: address, token1: `0x${'2'.repeat(40)}`,
+      fee: 100, tickSpacing: 1, hooks: `0x${'0'.repeat(40)}`, createdBlock: 1, source: 'chain',
+      sqrtPriceX96: '1', tick: 0, liquidity: '1', stateError: null }
+    const fetcher = vi.fn().mockResolvedValueOnce(Response.json({ ...base, pools: [pool], nextCursor: 'opaque+a' }))
+      .mockResolvedValueOnce(Response.json({ ...base, pools: [{ ...pool, id: `0x${'3'.repeat(40)}` }], nextCursor: null }))
+    vi.stubGlobal('fetch', fetcher)
+    expect((await getPools()).pools).toHaveLength(2)
+    expect(fetcher.mock.calls[1]?.[0]).toContain('cursor=opaque%2Ba')
+  })
+  it('surfaces a reorganized or expired scan instead of treating it as empty history', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(Response.json({ code: 'CHAIN_REORGANIZED' }, { status: 409 })))
+    await expect(getEvents({ cursor: 'old' })).rejects.toEqual(new DataError('CHAIN_REORGANIZED'))
   })
 })
