@@ -6,6 +6,7 @@ import {
   providerChainId,
   switchToXLayer,
   walletError,
+  type WalletIdentity,
   type WalletOption,
   type WalletSession,
   type WalletErrorCode,
@@ -19,6 +20,7 @@ export interface WalletController {
   connect: (option: WalletOption) => Promise<void>
   switchChain: () => Promise<void>
   disconnect: () => void
+  getIdentity: () => WalletIdentity | undefined
 }
 
 /** Provider discovery and consent are local UI state; no account access runs on page load. */
@@ -27,6 +29,13 @@ export function useWallet(): WalletController {
   const [session, setSession] = useState<WalletSession>()
   const [status, setStatus] = useState<WalletController['status']>('idle')
   const [error, setError] = useState<WalletErrorCode>()
+  const identity = useRef<WalletIdentity | undefined>(undefined)
+  const revision = useRef(0)
+  const updateSession = (value: WalletSession | undefined): void => {
+    revision.current += 1
+    identity.current = value ? { ...value, revision: revision.current } : undefined
+    setSession(value)
+  }
   const attempt = useRef(0)
   const subscription = useRef(0)
   const chainEventRevision = useRef(0)
@@ -77,6 +86,8 @@ export function useWallet(): WalletController {
     subscription.current += 1
     unsubscribe.current?.()
     unsubscribe.current = undefined
+    revision.current += 1
+    identity.current = undefined
     setSession(undefined)
     setError(undefined)
     setStatus('idle')
@@ -87,6 +98,8 @@ export function useWallet(): WalletController {
       attempt.current += 1
       subscription.current += 1
       unsubscribe.current?.()
+      revision.current += 1
+      identity.current = undefined
     },
     [],
   )
@@ -95,6 +108,8 @@ export function useWallet(): WalletController {
     const currentAttempt = ++attempt.current
     const currentSubscription = ++subscription.current
     unsubscribe.current?.()
+    revision.current += 1
+    identity.current = undefined
     setSession(undefined)
     setStatus('connecting')
     setError(undefined)
@@ -111,7 +126,12 @@ export function useWallet(): WalletController {
         disconnect()
       } else {
         observedAddress = address
-        setSession((current) => (current?.provider === provider ? { ...current, address } : current))
+        revision.current += 1
+        const current = identity.current
+        if (current?.provider === provider) {
+          identity.current = { ...current, address, revision: revision.current }
+          setSession({ ...option, address, chainId: current.chainId })
+        }
       }
     }
     const chainChanged = (value: unknown): void => {
@@ -122,7 +142,12 @@ export function useWallet(): WalletController {
         const chainId = providerChainId(value)
         chainEventRevision.current += 1
         observedChain = chainId
-        setSession((current) => (current?.provider === provider ? { ...current, chainId } : current))
+        revision.current += 1
+        const current = identity.current
+        if (current?.provider === provider) {
+          identity.current = { ...current, chainId, revision: revision.current }
+          setSession({ ...option, address: current.address, chainId })
+        }
       } catch {
         disconnect()
       }
@@ -143,7 +168,7 @@ export function useWallet(): WalletController {
       provider.on?.('disconnect', providerDisconnected)
       const connected = await connectWallet(option)
       if (currentAttempt === attempt.current) {
-        setSession({
+        updateSession({
           ...connected,
           address: observedAddress ?? connected.address,
           chainId: observedChain ?? connected.chainId,
@@ -173,7 +198,7 @@ export function useWallet(): WalletController {
     try {
       const chainId = await switchToXLayer(session.provider)
       if (currentAttempt === attempt.current && eventRevision === chainEventRevision.current) {
-        setSession((current) => (current ? { ...current, chainId } : undefined))
+        updateSession({ ...session, address: identity.current?.address ?? session.address, chainId })
       }
     } catch (cause: unknown) {
       if (currentAttempt === attempt.current) {
@@ -186,5 +211,5 @@ export function useWallet(): WalletController {
     }
   }
 
-  return { options, session, status, error, connect, switchChain, disconnect }
+  return { options, session, status, error, connect, switchChain, disconnect, getIdentity: () => identity.current }
 }

@@ -20,7 +20,7 @@ describe('read-only same-origin data', () => {
     })
     vi.stubGlobal('fetch', fetchMock)
     const address = '0x1111111111111111111111111111111111111111'
-    expect(await getBalances(address)).toEqual({ okb: 2n, wokb: 3n })
+    expect(await getBalances(address)).toEqual({ okb: 2n, wokb: 3n, usdt0: 3n })
     expect(fetchMock.mock.calls.every(([url]) => url === '/api/rpc')).toBe(true)
     const calls = fetchMock.mock.calls.map(([, options]) => JSON.parse(String(options.body)))
     expect(calls[1]).toMatchObject({

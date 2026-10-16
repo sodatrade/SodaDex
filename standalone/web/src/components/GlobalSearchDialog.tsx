@@ -2,7 +2,9 @@ import { useRef, useState, type ReactElement } from 'react'
 import { ASSETS, EXPLORER_URL, shortenAddress, type AssetId } from '../domain/assets'
 import { isAddress } from '../lib/rpc'
 import { usePreferences } from '../preferences/context'
+import { POOLS } from '../trading/config'
 import { Dialog } from './Dialog'
+import { POOL_SEARCH_TEXT } from './PoolRecords'
 import { AssetIcon, Button, Icon } from './primitives'
 
 type Category = 'all' | 'tokens' | 'pools' | 'wallets'
@@ -10,9 +12,11 @@ type Category = 'all' | 'tokens' | 'pools' | 'wallets'
 export function GlobalSearchDialog({
   onClose,
   onAsset,
+  onPool,
 }: {
   onClose: () => void
   onAsset: (id: AssetId) => void
+  onPool: () => void
 }): ReactElement {
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState<Category>('all')
@@ -25,7 +29,8 @@ export function GlobalSearchDialog({
   const address = isAddress(search.trim()) ? search.trim() : undefined
   const showTokens = category === 'all' || category === 'tokens'
   const showAddress = (category === 'all' || category === 'wallets') && !!address
-  const empty = !showAddress && !(showTokens && matches.length > 0)
+  const showPools = POOLS.ready && (category === 'all' || category === 'pools') && POOL_SEARCH_TEXT.includes(query)
+  const empty = !showPools && !showAddress && !(showTokens && matches.length > 0)
   const categories: { id: Category; label: string }[] = [
     { id: 'all', label: t('searchAll') },
     { id: 'tokens', label: t('searchTokens') },
@@ -77,14 +82,29 @@ export function GlobalSearchDialog({
             <h3 className="search-section-heading">{t('knownAssets')}</h3>
             {matches.map((asset) => (
               <button className="asset-option" key={asset.id} onClick={() => onAsset(asset.id)}>
-                <AssetIcon wrapped={asset.id === 'wokb'} />
+                <AssetIcon assetId={asset.id} />
                 <span className="asset-option-label">
                   <strong>{asset.symbol}</strong>
-                  <span>{t(asset.id === 'okb' ? 'nativeAsset' : 'wrappedAsset')}</span>
+                  <span>
+                    {t(asset.id === 'okb' ? 'nativeAsset' : asset.id === 'usdt0' ? 'stableAsset' : 'wrappedAsset')}
+                  </span>
                 </span>
                 <Icon name="chevron" size={16} />
               </button>
             ))}
+          </section>
+        )}
+        {showPools && (
+          <section aria-label={t('searchPools')}>
+            <h3 className="search-section-heading">{t('searchPools')}</h3>
+            <button className="asset-option" onClick={onPool}>
+              <Icon name="layers" />
+              <span className="asset-option-label">
+                <strong>OKB / USD₮0 · V3 + V4</strong>
+                <span>{t('poolsReady')}</span>
+              </span>
+              <Icon name="chevron" size={16} />
+            </button>
           </section>
         )}
         {showAddress && address && (
@@ -111,7 +131,7 @@ export function GlobalSearchDialog({
           <div className="empty-search">
             <p>
               {category === 'pools'
-                ? t('searchNoPools')
+                ? t(POOLS.ready ? 'searchNoResults' : 'searchNoPools')
                 : category === 'wallets'
                   ? t('searchWalletHint')
                   : t('searchNoResults')}

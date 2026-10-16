@@ -120,4 +120,41 @@ describe('wallet event ordering', () => {
     expect(result.current.status).toBe('idle')
     expect(provider.count()).toBe(3)
   })
+  it('preserves a newer account while a chain switch lookup is deferred and invalidates the synchronous trade identity', async () => {
+    let resolveChain: ((value: unknown) => void) | undefined
+    let switching = false
+    const provider = eventProvider(async ({ method }) => {
+      if (method === 'eth_requestAccounts') return [accountA]
+      if (method === 'wallet_switchEthereumChain') {
+        switching = true
+        return null
+      }
+      return switching
+        ? new Promise((resolve) => {
+            resolveChain = resolve
+          })
+        : '0x1'
+    })
+    const { result } = renderHook(() => useWallet())
+    await act(async () => {
+      await result.current.connect(provider.option)
+    })
+    const previous = result.current.getIdentity()?.revision
+    let pending: Promise<void> | undefined
+    act(() => {
+      pending = result.current.switchChain()
+    })
+    await waitFor(() => expect(resolveChain).toBeTypeOf('function'))
+    act(() => {
+      provider.emit('accountsChanged', [accountB])
+      expect(result.current.getIdentity()?.address).toBe(accountB)
+      expect(result.current.getIdentity()?.revision).not.toBe(previous)
+    })
+    await act(async () => {
+      resolveChain?.('0xc4')
+      await pending
+    })
+    expect(result.current.session?.address).toBe(accountB)
+    expect(result.current.session?.chainId).toBe(196)
+  })
 })

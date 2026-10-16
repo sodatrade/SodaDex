@@ -50,7 +50,7 @@ export function AssetPage({
             tabIndex={asset.id === selected?.id ? -1 : undefined}
             aria-label={asset.id === selected?.id ? t('selectedAsset', { symbol: asset.symbol }) : asset.symbol}
           >
-            <AssetIcon wrapped={asset.id === 'wokb'} />
+            <AssetIcon assetId={asset.id} />
             <div className="asset-table-name">
               <strong>{asset.symbol}</strong>
               <span>{asset.name}</span>
@@ -72,7 +72,13 @@ export function AssetPage({
             </span>
             <div className="asset-balance">
               <strong>
-                {loading ? t('reading') : error ? t('unavailable') : balances ? formatBalance(balances[asset.id]) : '—'}
+                {loading
+                  ? t('reading')
+                  : error
+                    ? t('unavailable')
+                    : balances
+                      ? formatBalance(balances[asset.id], asset.decimals)
+                      : '—'}
               </strong>
               <span>{connected ? asset.symbol : t('connectToView')}</span>
             </div>

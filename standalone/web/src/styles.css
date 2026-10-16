@@ -394,3 +394,21 @@ html[lang="en"] .hero-copy h1 { font-size: clamp(30px, 3.2vw, 44px); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+
+[hidden] { display: none !important; }
+.review-pair { display: grid; gap: 12px; padding: 12px 0 20px; }
+.review-pair > div { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.review-pair strong { overflow-wrap: anywhere; font-size: 20px; line-height: 1.4; }
+.review-details { margin: 0; display: grid; gap: 13px; font-size: 13px; }
+.review-details > div { display: flex; justify-content: space-between; gap: 20px; }
+.review-details dt { color: var(--soda-muted); flex-shrink: 0; }
+.review-details dd { margin: 0; text-align: right; overflow-wrap: anywhere; }
+.trade-status { font-size: 13px; color: var(--soda-text); line-height: 1.6; }
+.transaction-link { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 12px; }
+.text-button { background: none; border: 0; color: inherit; text-decoration: underline; cursor: pointer; }
+.pool-record { text-align: left; border: 1px solid var(--soda-line); border-radius: 14px; padding: 16px; margin-bottom: 12px; overflow-wrap: anywhere; }
+.pool-record h3 { margin: 0 0 8px; font-size: 16px; }
+.pool-record p { font-size: 13px; margin: 5px 0; }
+.pool-record code { font-size: 11px; }
+
+.receive-amount { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

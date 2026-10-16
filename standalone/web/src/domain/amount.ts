@@ -41,8 +41,8 @@ export function formatBalance(units: bigint, decimals = 18): string {
   return fraction ? `${whole}.${fraction}` : whole.toString()
 }
 
-export function amountError(value: string, balance?: bigint): AmountError | undefined {
-  const amount = parseAmount(value)
+export function amountError(value: string, balance?: bigint, decimals = 18): AmountError | undefined {
+  const amount = parseAmount(value, decimals)
   if (amount.kind === 'invalid') {
     return amount.error
   }

@@ -41,10 +41,12 @@ export function AssetDialog({
             onClick={() => onSelect(asset.id)}
             aria-pressed={asset.id === selected}
           >
-            <AssetIcon wrapped={asset.id === 'wokb'} />
+            <AssetIcon assetId={asset.id} />
             <span className="asset-option-label">
               <strong>{asset.symbol}</strong>
-              <span>{t(asset.id === 'okb' ? 'nativeAsset' : 'wrappedAsset')}</span>
+              <span>
+                {t(asset.id === 'okb' ? 'nativeAsset' : asset.id === 'usdt0' ? 'stableAsset' : 'wrappedAsset')}
+              </span>
             </span>
             {asset.id === selected && <Icon name="check" />}
           </button>

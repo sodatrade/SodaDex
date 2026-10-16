@@ -18,6 +18,13 @@ export interface WalletSession extends WalletOption {
   chainId: number
 }
 
+export interface WalletIdentity {
+  provider: Eip1193Provider
+  address: `0x${string}`
+  chainId: number
+  revision: number
+}
+
 export function isProvider(value: unknown): value is Eip1193Provider {
   return (
     typeof value === 'object' &&

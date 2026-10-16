@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { StrictMode } from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { App } from '../src/App'
+import { STABLE_ADDRESS } from '../src/domain/assets'
 import type { Eip1193Provider } from '../src/lib/wallet'
 
 const address = '0x1111111111111111111111111111111111111111'
@@ -25,7 +26,7 @@ beforeEach(() => {
   vi.stubGlobal(
     'fetch',
     vi.fn().mockImplementation(async (_url: unknown, options: RequestInit) => {
-      const request = JSON.parse(String(options.body)) as { method: string }
+      const request = JSON.parse(String(options.body)) as { method: string; params?: { to?: string }[] }
       const result =
         request.method === 'eth_chainId'
           ? '0xc4'
@@ -33,7 +34,9 @@ beforeEach(() => {
             ? '0x123456'
             : request.method === 'eth_getBalance'
               ? '0x14d1120d7b160000'
-              : '0x1bc16d674ec80000'
+              : request.params?.[0]?.to === STABLE_ADDRESS
+                ? '0x1e8480'
+                : '0x1bc16d674ec80000'
       return new Response(JSON.stringify({ jsonrpc: '2.0', id: request.method, result }))
     }),
   )
@@ -58,10 +61,10 @@ describe('SodaDex user paths', () => {
     expect(within(dialog).queryByRole('button', { name: /^OKB / })).not.toBeInTheDocument()
     await user.click(within(dialog).getByRole('button', { name: /WOKB/ }))
     expect(within(card).getByRole('button', { name: '选择支付资产，当前 WOKB' })).toBeVisible()
-    expect(within(card).getByRole('button', { name: '选择接收资产，当前 OKB' })).toBeVisible()
+    expect(within(card).getByRole('button', { name: '选择接收资产，当前 USD₮0' })).toBeVisible()
     expect(within(card).getByLabelText('支付')).toHaveValue('')
     await user.click(screen.getByRole('button', { name: '流动性' }))
-    expect(screen.getByRole('heading', { name: '首批测试池即将准备就绪' })).toBeVisible()
+    expect(screen.getByRole('heading', { name: '测试池与流动性准备中' })).toBeVisible()
     expect(screen.getByText('0.01')).toBeVisible()
   })
 
@@ -100,7 +103,7 @@ describe('SodaDex user paths', () => {
     await user.click(within(card).getByRole('button', { name: '切换到 X Layer' }))
     await waitFor(() => expect(within(card).getByText('余额 1.5')).toBeVisible())
     expect(within(card).getByText('余额 2')).toBeVisible()
-    expect(within(card).getByRole('button', { name: '测试合约准备中' })).toBeDisabled()
+    expect(within(card).getByRole('button', { name: '测试池准备中' })).toBeDisabled()
     await user.type(within(card).getByLabelText('支付'), '2')
     expect(within(card).getByRole('alert')).toHaveTextContent('可用余额不足')
     act(() => {

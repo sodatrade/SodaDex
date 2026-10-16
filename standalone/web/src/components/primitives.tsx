@@ -1,5 +1,6 @@
 import { styled } from '@universe/mycelium/styled'
 import type { ReactElement } from 'react'
+import type { AssetId } from '../domain/assets'
 
 // Use the current upstream styled subpath: ui/src no longer exports this factory.
 export const Button = styled('button', {
@@ -142,10 +143,24 @@ export function SodaMark({ decorative = false }: { decorative?: boolean }): Reac
   )
 }
 
-export function AssetIcon({ wrapped = false, small = false }: { wrapped?: boolean; small?: boolean }): ReactElement {
+export function AssetIcon({
+  wrapped = false,
+  small = false,
+  assetId,
+}: {
+  wrapped?: boolean
+  small?: boolean
+  assetId?: AssetId
+}): ReactElement {
+  wrapped = assetId ? assetId === 'wokb' : wrapped
   return (
     <span className={`asset-icon${wrapped ? ' wrapped' : ''}${small ? ' small' : ''}`} aria-hidden="true">
-      <img src={wrapped ? '/assets/wokb.png' : '/assets/okb.png'} alt="" width="42" height="42" />
+      <img
+        src={assetId === 'usdt0' ? '/assets/usdt0.png' : wrapped ? '/assets/wokb.png' : '/assets/okb.png'}
+        alt=""
+        width="42"
+        height="42"
+      />
       {wrapped && <span className="wrap-badge">W</span>}
     </span>
   )

@@ -12,9 +12,8 @@ export default defineConfig({
     fs: { allow: [local('../../')] },
     proxy: {
       '/api/rpc': {
-        target: 'https://rpc.ignix.bot',
+        target: 'http://127.0.0.1:8787',
         changeOrigin: true,
-        rewrite: () => '/rpc/196',
         configure: (proxy) => {
           proxy.on('proxyReq', (request) => {
             request.removeHeader('origin')

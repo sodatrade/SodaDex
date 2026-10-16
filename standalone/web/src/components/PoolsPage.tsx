@@ -1,5 +1,7 @@
 import type { ReactElement } from 'react'
 import { usePreferences } from '../preferences/context'
+import { POOLS } from '../trading/config'
+import { PoolRecords } from './PoolRecords'
 import { Button, Icon, Surface } from './primitives'
 
 export function PoolsPage({ onSwap }: { onSwap: () => void }): ReactElement {
@@ -9,16 +11,22 @@ export function PoolsPage({ onSwap }: { onSwap: () => void }): ReactElement {
       <div className="page-heading">
         <span className="eyebrow">{t('poolsEyebrow')}</span>
         <h1 id="pools-title">{t('poolsTitle')}</h1>
-        <p>{t('poolsDescription')}</p>
+        <p>{t(POOLS.ready ? 'poolReadyNote' : 'poolsDescription')}</p>
       </div>
       <Surface className="pools-surface">
-        <div className="pool-illustration" aria-hidden="true">
-          <span />
-          <Icon name="layers" size={42} />
-          <span />
-        </div>
-        <h2>{t('poolsEmptyTitle')}</h2>
-        <p>{t('poolsEmptyDescription')}</p>
+        {POOLS.ready ? (
+          <PoolRecords />
+        ) : (
+          <>
+            <div className="pool-illustration" aria-hidden="true">
+              <span />
+              <Icon name="layers" size={42} />
+              <span />
+            </div>
+            <h2>{t('poolsEmptyTitle')}</h2>
+            <p>{t('poolsEmptyDescription')}</p>
+          </>
+        )}
         <div className="pool-fees">
           <div>
             <span>{t('v3PlannedFee')}</span>

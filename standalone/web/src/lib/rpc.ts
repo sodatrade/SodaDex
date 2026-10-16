@@ -1,6 +1,15 @@
-import { ASSETS, CHAIN_ID, WOKB_ADDRESS, type AssetId } from '../domain/assets'
+import { ASSETS, CHAIN_ID, type AssetId } from '../domain/assets'
 
-type ReadMethod = 'eth_chainId' | 'eth_blockNumber' | 'eth_getBalance' | 'eth_call'
+export type ReadMethod =
+  | 'eth_chainId'
+  | 'eth_blockNumber'
+  | 'eth_getBalance'
+  | 'eth_call'
+  | 'eth_getBlockByNumber'
+  | 'eth_estimateGas'
+  | 'eth_getTransactionReceipt'
+  | 'eth_gasPrice'
+  | 'eth_getCode'
 
 export function isAddress(value: unknown): value is `0x${string}` {
   return typeof value === 'string' && /^0x[0-9a-fA-F]{40}$/.test(value)
@@ -48,7 +57,7 @@ export async function getBalances(address: string): Promise<Record<AssetId, bigi
         asset.id === 'okb'
           ? await rpc('eth_getBalance', [address, 'latest'])
           : await rpc('eth_call', [
-              { to: WOKB_ADDRESS, data: `0x70a08231${address.slice(2).toLowerCase().padStart(64, '0')}` },
+              { to: asset.address, data: `0x70a08231${address.slice(2).toLowerCase().padStart(64, '0')}` },
               'latest',
             ])
       return [asset.id, hexQuantity(result)] as const

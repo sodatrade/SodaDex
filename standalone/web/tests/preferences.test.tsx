@@ -53,7 +53,7 @@ describe('display preferences', () => {
     await user.click(screen.getByRole('button', { name: 'Close dialog' }))
     await user.click(screen.getByRole('button', { name: 'Assets' }))
     expect(screen.getByText('Price (USD)')).toBeVisible()
-    expect(screen.getAllByText('$ —')).toHaveLength(2)
+    expect(screen.getAllByText('$ —')).toHaveLength(3)
     expect(
       screen.getByText(
         'Price data not available yet · A price display preference only. Quotes are unavailable; token balances are not converted.',
@@ -113,7 +113,7 @@ describe('display preferences', () => {
     await user.click(within(card).getByRole('button', { name: '切换支付与接收资产' }))
     await user.type(within(card).getByLabelText('支付'), '0.5')
     await user.click(within(card).getByRole('button', { name: '兑换设置' }))
-    await user.click(screen.getByRole('radio', { name: 'V4 测试池费率计划 0%' }))
+    await user.click(screen.getByRole('radio', { name: 'V4 V4 测试池费率 0%' }))
     await user.click(screen.getByRole('button', { name: '关闭对话框' }))
     await user.click(screen.getByRole('button', { name: '偏好设置' }))
     await user.selectOptions(screen.getByLabelText('语言'), 'en')
@@ -121,9 +121,9 @@ describe('display preferences', () => {
     await user.click(screen.getByRole('radio', { name: 'Night' }))
     await user.click(screen.getByRole('button', { name: 'Close dialog' }))
     expect(within(card).getByLabelText('Pay')).toHaveValue('0.5')
-    expect(within(card).getByRole('button', { name: 'Choose pay asset, currently WOKB' })).toBeVisible()
+    expect(within(card).getByRole('button', { name: 'Choose pay asset, currently USD₮0' })).toBeVisible()
     expect(within(card).getByRole('button', { name: 'Route · V4' })).toBeVisible()
-    expect(within(card).getByRole('button', { name: 'Test contracts in preparation' })).toBeDisabled()
+    expect(within(card).getByRole('button', { name: 'Test pools in preparation' })).toBeDisabled()
     expect(screen.getByRole('button', { name: '0x1111…1111' })).toBeVisible()
     expect(request.mock.calls.map(([args]) => args.method)).toEqual(['eth_requestAccounts', 'eth_chainId'])
   })

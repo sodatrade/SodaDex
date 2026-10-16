@@ -13,6 +13,7 @@ import { getBalances, getNetworkStatus } from './lib/rpc'
 import { useWallet } from './lib/useWallet'
 import { usePreferences } from './preferences/context'
 import { PreferencesProvider } from './preferences/PreferencesProvider'
+import { POOLS } from './trading/config'
 
 export function App(): ReactElement {
   return (
@@ -66,63 +67,62 @@ function AppContent(): ReactElement {
       />
       <div className="test-notice">
         <span className="test-notice-label">{t('testExperience')}</span>
-        <p>{t('testNotice')}</p>
+        <p>{t(POOLS.ready ? 'testTradingNotice' : 'testNotice')}</p>
       </div>
       <main id="main" tabIndex={-1}>
-        {page === 'swap' ? (
-          <div className="trade-layout">
-            <section className="hero-copy" aria-labelledby="hero-heading">
-              <div className="eyebrow">
-                <span />
-                {t('builtFor')}
-              </div>
-              <h1 id="hero-heading">
-                {t('heroFirst')}
-                <br />
-                <span className="hero-line-two">{t('heroSecond')}</span>
-              </h1>
-              <p className="hero-description">
-                {t('heroDescriptionFirst')}
-                <br />
-                {t('heroDescriptionSecond')}
-              </p>
-              <div className="hero-details">
-                <span>{t('nativeOKB')}</span>
-                <span>V3 + V4</span>
-                <span>{t('lowFeeTest')}</span>
-              </div>
-              <div className="soda-art" aria-hidden="true">
-                <div className="art-orbit orbit-one" />
-                <div className="art-orbit orbit-two" />
-                <div className="art-bubble bubble-one" />
-                <div className="art-bubble bubble-two" />
-                <div className="art-bubble bubble-three" />
-                <span className="art-word">soda.</span>
-              </div>
-            </section>
-            <div className="trade-workspace">
-              <div className="workspace-eyebrow">
-                <span className="live-dot" />
-                {t('flowStarts')}
-                <span>{t('swapIndex')}</span>
-              </div>
-              <SwapCard
-                wallet={wallet}
-                balances={currentBalances}
-                balancesLoading={balances.isFetching && !balances.data}
-                balancesError={balances.isError || network.isError}
-                onConnect={() => setWalletOpen(true)}
-              />
-              <div className="trade-meta">
-                <span>
-                  <Icon name="layers" size={15} />
-                  {t('deploymentPending')}
-                </span>
-                <span>{t('platformZero')}</span>
-              </div>
+        <div className="trade-layout" hidden={page !== 'swap'}>
+          <section className="hero-copy" aria-labelledby="hero-heading">
+            <div className="eyebrow">
+              <span />
+              {t('builtFor')}
+            </div>
+            <h1 id="hero-heading">
+              {t('heroFirst')}
+              <br />
+              <span className="hero-line-two">{t('heroSecond')}</span>
+            </h1>
+            <p className="hero-description">
+              {t('heroDescriptionFirst')}
+              <br />
+              {t('heroDescriptionSecond')}
+            </p>
+            <div className="hero-details">
+              <span>{t('nativeOKB')}</span>
+              <span>V3 + V4</span>
+              <span>{t('lowFeeTest')}</span>
+            </div>
+            <div className="soda-art" aria-hidden="true">
+              <div className="art-orbit orbit-one" />
+              <div className="art-orbit orbit-two" />
+              <div className="art-bubble bubble-one" />
+              <div className="art-bubble bubble-two" />
+              <div className="art-bubble bubble-three" />
+              <span className="art-word">soda.</span>
+            </div>
+          </section>
+          <div className="trade-workspace">
+            <div className="workspace-eyebrow">
+              <span className="live-dot" />
+              {t('flowStarts')}
+              <span>{t('swapIndex')}</span>
+            </div>
+            <SwapCard
+              wallet={wallet}
+              balances={currentBalances}
+              balancesLoading={balances.isFetching && !balances.data}
+              balancesError={balances.isError || network.isError}
+              onConnect={() => setWalletOpen(true)}
+            />
+            <div className="trade-meta">
+              <span>
+                <Icon name="layers" size={15} />
+                {t(POOLS.ready ? 'poolsReady' : 'deploymentPending')}
+              </span>
+              <span>{t('platformZero')}</span>
             </div>
           </div>
-        ) : page === 'assets' ? (
+        </div>
+        {page === 'assets' ? (
           <AssetPage
             balances={currentBalances}
             connected={!!wallet.session && correctChain}
@@ -130,9 +130,9 @@ function AppContent(): ReactElement {
             error={!!wallet.session && (balances.isError || network.isError)}
             selected={selectedAsset}
           />
-        ) : (
+        ) : page === 'pools' ? (
           <PoolsPage onSwap={() => setPage('swap')} />
-        )}
+        ) : null}
       </main>
       <footer className="site-footer">
         <div className={`rpc-status${network.isError ? ' status-error' : ''}`} role="status">
@@ -168,6 +168,10 @@ function AppContent(): ReactElement {
       {searchOpen && (
         <GlobalSearchDialog
           onClose={() => setSearchOpen(false)}
+          onPool={() => {
+            setPage('pools')
+            setSearchOpen(false)
+          }}
           onAsset={(asset) => {
             setSelectedAsset({ id: asset })
             setPage('assets')
