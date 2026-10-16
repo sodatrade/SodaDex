@@ -5,8 +5,8 @@
   "url": "https://sodadex-preview.jsmsdx2025.workers.dev",
   "provider": "Cloudflare Workers Static Assets",
   "worker": "sodadex-preview",
-  "versionId": "8a1b0a75-6f3c-4510-afa9-e0f10ff4ee84",
-  "sourceCommit": "96b7597be251e46aeb68736e1d6dd005f4e3ffcd",
+  "versionId": "3060fbb3-3d55-48ad-be58-fc9af2ec0ca0",
+  "sourceCommit": "cd2a45d6d7517bfdaef44db446d065c312517d81",
   "publishedOn": "2026-10-16",
   "customDomain": null,
   "deploymentCi": null,
@@ -16,11 +16,28 @@
   "contractStatus": "not-deployed",
   "tradingStatus": "disabled; contracts, liquidity and quotes pending",
   "validation": {
-    "webTestsPassed": 23,
-    "workerTestsPassed": 16,
-    "browserAcceptanceChecksPassed": 18,
+    "webTestsPassed": 35,
+    "workerTestsPassed": 17,
+    "browserAcceptanceChecksPassed": 48,
     "browserWalletAndRpc": "isolated fixtures; no signing or broadcast",
     "liveRpcChainId": "0xc4",
-    "liveSiteHttpStatus": 200
+    "liveSiteHttpStatus": 200,
+    "liveConsoleErrors": 0,
+    "liveConsoleWarnings": 0
+  },
+  "features": {
+    "locales": [
+      "zh-CN",
+      "en",
+      "yue-HK"
+    ],
+    "defaultTheme": "light",
+    "displayCurrencies": [
+      "CNY",
+      "USD",
+      "HKD"
+    ],
+    "globalSearch": "verified assets and public addresses; pools pending deployment",
+    "assetIcons": "local official OKB, X Layer WOKB and network marks; sources in standalone/web/public/assets/SOURCES.md"
   }
 }
