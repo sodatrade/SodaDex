@@ -1,29 +1,39 @@
 {
-  "name": "SodaDex Test",
+  "name": "SodaDEX Test",
   "stage": "test",
-  "status": "live-readonly",
+  "status": "live-test-swaps",
   "url": "https://sodadex-preview.jsmsdx2025.workers.dev",
   "provider": "Cloudflare Workers Static Assets",
   "worker": "sodadex-preview",
-  "versionId": "3060fbb3-3d55-48ad-be58-fc9af2ec0ca0",
-  "sourceCommit": "cd2a45d6d7517bfdaef44db446d065c312517d81",
+  "versionId": "364935b1-58d1-4f13-be7b-25fb58e5f4f8",
+  "sourceCommit": "a566c7a4bda6384c0c826e8358ec731ac4880f36",
   "publishedOn": "2026-10-16",
   "customDomain": null,
   "deploymentCi": null,
   "chainId": 196,
   "rpcUrl": "https://rpc.ignix.bot/rpc/196",
   "browserRpcPath": "/api/rpc",
-  "contractStatus": "deployed-and-verified; frontend integration pending",
-  "tradingStatus": "disabled; liquidity, quotes and transaction integration pending",
+  "contractStatus": "SodaDEX branded V3/V4 test contracts deployed and verified",
+  "tradingStatus": "enabled for verified V3 WOKB/USDt0 and V4 native OKB/USDt0 test pools; adding liquidity in the UI is unavailable",
   "validation": {
-    "webTestsPassed": 35,
-    "workerTestsPassed": 17,
-    "browserAcceptanceChecksPassed": 48,
-    "browserWalletAndRpc": "isolated fixtures; no signing or broadcast",
+    "webTestsPassed": 56,
+    "workerTestsPassed": 22,
+    "browserAcceptanceChecksPassed": 50,
+    "browserWalletAndRpc": "isolated mock wallet/RPC for 50 UI checks; separate live read-only public-address wallet for real quotes",
     "liveRpcChainId": "0xc4",
     "liveSiteHttpStatus": 200,
     "liveConsoleErrors": 0,
-    "liveConsoleWarnings": 0
+    "liveConsoleWarnings": 0,
+    "browserForkSwapsPassed": 4,
+    "browserForkScope": "owned localhost Anvil only; no real-chain writes",
+    "mainnetMicroSwapsPassed": 4,
+    "liveRealQuotesPassed": 4,
+    "liveAssetHashesMatched": 11,
+    "liveMobileOverflow": false,
+    "browserEvidence": "xlayer-test/validation/browser-acceptance.json",
+    "forkEvidence": "xlayer-test/validation/browser-fork.json",
+    "liveBrowserEvidence": "xlayer-test/validation/live-browser.json",
+    "liveHttpEvidence": "xlayer-test/validation/live-http.json"
   },
   "features": {
     "locales": [
@@ -37,7 +47,15 @@
       "USD",
       "HKD"
     ],
-    "globalSearch": "verified assets and public addresses; pools pending deployment",
-    "assetIcons": "local official OKB, X Layer WOKB and network marks; sources in standalone/web/public/assets/SOURCES.md"
-  }
+    "globalSearch": "verified assets, public addresses and both live test pools",
+    "assetIcons": "local official OKB, X Layer WOKB, USDt0 and network marks; sources in standalone/web/public/assets/SOURCES.md",
+    "poolFees": {
+      "v3": "0.01%",
+      "v4": "0%",
+      "platform": "0%"
+    }
+  },
+  "activeContracts": "xlayer-test/active.json",
+  "poolRecord": "xlayer-test/pools.json",
+  "deploymentReceipts": "xlayer-test/branding-receipts.json"
 }
