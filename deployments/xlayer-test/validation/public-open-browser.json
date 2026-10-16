@@ -1,0 +1,37 @@
+{
+  "status": "passed",
+  "origin": "https://sodadex-preview.jsmsdx2025.workers.dev",
+  "publicTrading": "enabled",
+  "checks": [
+    "public swap pause removed",
+    "V3 reaches explicit enabled wallet confirmation",
+    "V4 reaches explicit enabled wallet confirmation",
+    "no signing or transaction request",
+    "no console errors",
+    "no console warnings"
+  ],
+  "quotes": [
+    {
+      "protocol": "V3",
+      "quote": "0.000115",
+      "minimum": "0.000115 USD₮0"
+    },
+    {
+      "protocol": "V4",
+      "quote": "0.000115",
+      "minimum": "0.000115 USD₮0"
+    }
+  ],
+  "walletMethods": [
+    "eth_requestAccounts",
+    "eth_chainId"
+  ],
+  "console": {
+    "errors": [],
+    "warnings": []
+  },
+  "mainnetWrites": false,
+  "scope": "Live quotes and explicit confirmation availability only; confirmation button was not clicked.",
+  "sourceCommit": "f6346b2fe4715aa30d2c04e3be801907a5d59180",
+  "versionId": "7a50bf92-3fa3-4fd9-abf0-11ea62e026c8"
+}
