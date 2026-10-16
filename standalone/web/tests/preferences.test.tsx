@@ -3,6 +3,9 @@ import { fireEvent, render, screen, waitFor, within } from '@testing-library/rea
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { App } from '../src/App'
+import { encodeFunctionResult } from 'viem'
+import * as liquidity from '../src/liquidity'
+import { tokenAbi } from '../src/liquidity/abis'
 import { WOKB_ADDRESS } from '../src/domain/assets'
 import type { Eip1193Provider } from '../src/lib/wallet'
 import { PREFERENCES_KEY } from '../src/preferences/model'
@@ -22,18 +25,21 @@ function renderApp(): ReturnType<typeof render> {
 
 beforeEach(() => {
   vi.spyOn(policy, 'publicSwapsEnabled').mockReturnValue(true)
-  // Preference and pending-search fixtures must not depend on live deployment progress.
+  // Display preferences and empty search do not depend on a live pool index.
   POOLS.ready = false
+  vi.spyOn(liquidity, 'listPools').mockResolvedValue([])
+  vi.spyOn(liquidity, 'listPositions').mockResolvedValue([])
   vi.stubGlobal(
     'fetch',
-    vi.fn().mockImplementation(async (_url: unknown, options: RequestInit) => {
-      const request = JSON.parse(String(options.body)) as { method: string }
+    vi.fn().mockImplementation(async (url: unknown, options?: RequestInit) => {
+      if (String(url).startsWith('/api/reference/')) return new Response(JSON.stringify({ schemaVersion: 1, chainId: 196, source: 'uniswap', readOnly: true, tokens: [] }))
+      const request = JSON.parse(String(options?.body)) as { method: string }
       const result =
         request.method === 'eth_chainId'
           ? '0xc4'
           : request.method === 'eth_blockNumber'
             ? '0x123456'
-            : '0x1bc16d674ec80000'
+            : encodeFunctionResult({ abi: tokenAbi, functionName: 'balanceOf', result: 2000000000000000000n })
       return new Response(JSON.stringify({ jsonrpc: '2.0', id: request.method, result }))
     }),
   )
@@ -59,14 +65,10 @@ describe('display preferences', () => {
     await user.click(screen.getByRole('radio', { name: 'Night' }))
     await user.selectOptions(screen.getByLabelText('Display currency'), 'USD')
     await user.click(screen.getByRole('button', { name: 'Close dialog' }))
-    await user.click(screen.getByRole('button', { name: 'Assets' }))
-    expect(screen.getByText('Price (USD)')).toBeVisible()
-    expect(screen.getAllByText('$ —')).toHaveLength(3)
-    expect(
-      screen.getByText(
-        'Price data not available yet · A price display preference only. Quotes are unavailable; token balances are not converted.',
-      ),
-    ).toBeVisible()
+    await user.click(within(screen.getByRole('navigation', { name: 'Main navigation' })).getByRole('button', { name: 'Explore' }))
+    expect(await screen.findByText('Token units only. Independent fiat values and chain-wide 24-hour rankings are unavailable.')).toBeVisible()
+    expect(screen.queryByText('Price (USD)')).not.toBeInTheDocument()
+    expect(screen.queryByText('$ 0')).not.toBeInTheDocument()
     first.unmount()
     renderApp()
     expect(document.documentElement).toHaveAttribute('lang', 'en')
@@ -121,18 +123,26 @@ describe('display preferences', () => {
     await user.click(within(card).getByRole('button', { name: '切换支付与接收资产' }))
     await user.type(within(card).getByLabelText('你将支付'), '0.5')
     await user.click(within(card).getByRole('button', { name: '兑换设置' }))
-    await user.click(screen.getByRole('radio', { name: 'V4 V4 测试池费率 0%' }))
+    await user.click(screen.getByRole('radio', { name: 'V4' }))
     await user.click(screen.getByRole('button', { name: '关闭对话框' }))
     await user.click(screen.getByRole('button', { name: '偏好设置' }))
     await user.selectOptions(screen.getByLabelText('语言'), 'en')
     await user.selectOptions(screen.getByLabelText('Display currency'), 'HKD')
     await user.click(screen.getByRole('radio', { name: 'Night' }))
     await user.click(screen.getByRole('button', { name: 'Close dialog' }))
+    expect(screen.getByRole('region', { name: 'Asset swap' })).toBe(card)
     expect(within(card).getByLabelText('You pay')).toHaveValue('0.5')
     expect(within(card).getByRole('button', { name: 'Choose pay asset, currently USD₮0' })).toBeVisible()
     expect(within(card).getByRole('button', { name: 'Route · V4' })).toBeVisible()
-    expect(within(card).getByRole('button', { name: 'Test pools in preparation' })).toBeDisabled()
+    expect(within(card).getByText('No initialized SodaDEX pool for this pair.')).toBeVisible()
+    expect(within(card).getByRole('button', { name: 'Review swap' })).toBeDisabled()
     expect(screen.getByRole('button', { name: '0x1111…1111' })).toBeVisible()
+    const nav = within(screen.getByRole('navigation', { name: 'Main navigation' }))
+    await user.click(nav.getByRole('button', { name: 'Explore' })); await screen.findByRole('heading', { name: 'Explore X Layer' })
+    await user.click(nav.getByRole('button', { name: 'Trade' }))
+    expect(screen.getByRole('region', { name: 'Asset swap' })).toBe(card)
+    expect(within(card).getByLabelText('You pay')).toHaveValue('0.5')
+    expect(within(card).getByRole('button', { name: 'Route · V4' })).toBeVisible()
     expect(request.mock.calls.map(([args]) => args.method)).toEqual(['eth_requestAccounts', 'eth_chainId'])
   })
 })
@@ -159,7 +169,7 @@ describe('localized paths', () => {
     },
     {
       locale: 'yue-HK',
-      pay: '你将支付',
+      pay: '你會支付',
       error: '數量要大過 0',
       region: '資產兌換',
       connect: '連接銀包',
@@ -183,7 +193,7 @@ describe('localized paths', () => {
 })
 
 describe('global search', () => {
-  it('finds an asset by name and opens its highlighted asset view', async () => {
+  it('finds a token by name and opens its chain-backed Explore detail', async () => {
     const user = userEvent.setup()
     renderApp()
     await user.click(screen.getByRole('button', { name: '搜索' }))
@@ -191,12 +201,42 @@ describe('global search', () => {
     await user.type(within(dialog).getByLabelText('搜索名称、代号或地址'), 'wrapped')
     await user.click(within(dialog).getByRole('button', { name: /WOKB/ }))
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: '认识你的链上资产。' })).toBeVisible()
-    expect(screen.getByRole('group', { name: '已选资产 WOKB' })).toHaveFocus()
-    await user.click(screen.getByRole('button', { name: '搜索' }))
-    await user.type(screen.getByLabelText('搜索名称、代号或地址'), 'wokb')
-    await user.click(within(screen.getByRole('dialog', { name: '搜索' })).getByRole('button', { name: /WOKB/ }))
-    expect(screen.getByRole('group', { name: '已选资产 WOKB' })).toHaveFocus()
+    expect(await screen.findByRole('heading', { name: 'WOKB' })).toBeVisible()
+    expect(screen.getByRole('heading', { name: '探索 X Layer' })).toBeVisible()
+    expect(window.location.hash).toBe('#explore')
+  })
+
+  it('returns from token search through Swap to Portfolio Overview with consistent hashes', async () => {
+    const user = userEvent.setup()
+    const request = vi.fn(async ({ method }: { method: string }) => method === 'eth_requestAccounts' ? ['0x1111111111111111111111111111111111111111'] : '0xc4')
+    ;(window as Window & { ethereum?: Eip1193Provider }).ethereum = { request }
+    renderApp()
+    await user.click(within(screen.getByRole('banner')).getByRole('button', { name: '连接钱包' }))
+    await user.click(screen.getByRole('button', { name: /浏览器钱包.*连接/ }))
+    await screen.findByRole('dialog', { name: '我的钱包' }); await user.click(screen.getByRole('button', { name: '关闭对话框' }))
+    await user.click(screen.getByRole('button', { name: '搜索' })); await user.type(screen.getByLabelText('搜索名称、代号或地址'), 'wrapped')
+    await user.click(within(screen.getByRole('dialog')).getByRole('button', { name: /WOKB/ }))
+    await screen.findByRole('heading', { name: 'WOKB' }); expect(window.location.hash).toBe('#explore')
+    const nav = within(screen.getByRole('navigation', { name: '主导航' }))
+    await user.click(nav.getByRole('button', { name: '交易' })); expect(window.location.hash).toBe('#swap')
+    await user.click(nav.getByRole('button', { name: '投资组合' }))
+    expect(await screen.findByRole('tab', { name: '概览' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('tab', { name: '代币' })).toHaveAttribute('aria-selected', 'false')
+    expect(window.location.hash).toBe('#portfolio')
+    expect(request.mock.calls.map(([args]) => args.method)).toEqual(['eth_requestAccounts', 'eth_chainId'])
+  })
+
+  it('returns to the swap form when browser Back restores an empty hash', async () => {
+    const user = userEvent.setup()
+    renderApp()
+    const card = await screen.findByRole('region', { name: '资产兑换' })
+    await user.type(within(card).getByLabelText('你将支付'), '0.25')
+    await user.click(screen.getByRole('button', { name: '投资组合' })); expect(window.location.hash).toBe('#portfolio')
+    window.history.back()
+    await waitFor(() => expect(window.location.hash).toBe(''))
+    expect(await screen.findByRole('region', { name: '资产兑换' })).toBeVisible()
+    expect(within(card).getByLabelText('你将支付')).toHaveValue('0.25')
+    expect(screen.getByRole('button', { name: '交易' })).toHaveAttribute('aria-current', 'page')
   })
 
   it('supports filtered empty states, exact addresses, clear and Escape', async () => {
