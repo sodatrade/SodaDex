@@ -1,5 +1,5 @@
 import { encodeAbiParameters, keccak256, zeroAddress, type Address } from 'viem'
-import plan from '../../../../deployments/xlayer-test/plan.json'
+import plan from '../../../../deployments/xlayer-test/active.json'
 import { CHAIN_ID, STABLE_ADDRESS, WOKB_ADDRESS } from '../domain/assets'
 
 export const CONTRACTS = {

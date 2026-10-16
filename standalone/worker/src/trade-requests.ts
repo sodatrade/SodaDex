@@ -1,5 +1,5 @@
 import { decodeAbiParameters, decodeFunctionData, encodeAbiParameters, encodeFunctionData, parseAbi, parseAbiParameters, type Hex } from 'viem'
-import deployment from '../../../deployments/xlayer-test/plan.json'
+import deployment from '../../../deployments/xlayer-test/active.json'
 import pools from '../../../deployments/xlayer-test/pools.json'
 
 const ZERO = '0x0000000000000000000000000000000000000000'

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { encodeAbiParameters, encodeFunctionData, parseAbi, parseAbiParameters, type Address, type Hex } from 'viem'
 import { validContractRequest } from '../src/trade-requests'
-import deployment from '../../../deployments/xlayer-test/plan.json'
+import deployment from '../../../deployments/xlayer-test/active.json'
 import pools from '../../../deployments/xlayer-test/pools.json'
 
 const zero = '0x0000000000000000000000000000000000000000'
