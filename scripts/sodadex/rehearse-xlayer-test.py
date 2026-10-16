@@ -35,7 +35,7 @@ def rpc(url, method, params=(), *, local=False):
         raise ValueError(f'Remote mutation prohibited: {method}')
     request = urllib.request.Request(
         url, data=json.dumps({'jsonrpc': '2.0', 'id': 1, 'method': method, 'params': list(params)}).encode(),
-        headers={'Content-Type': 'application/json'},
+        headers={'Content-Type': 'application/json', 'User-Agent': 'SodaDex/1.0'},
     )
     with urllib.request.urlopen(request, timeout=30) as response:
         result = json.load(response)

@@ -4,7 +4,7 @@
   "status": "not-deployed",
   "chainId": 196,
   "network": "X Layer mainnet",
-  "rpcUrl": "https://rpc.xlayer.tech",
+  "rpcUrl": "https://rpc.ignix.bot/rpc/196",
   "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
   "nativeCurrency": "OKB",
   "wrappedNative": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
