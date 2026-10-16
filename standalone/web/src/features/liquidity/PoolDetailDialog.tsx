@@ -6,6 +6,7 @@ import { EXPLORER_URL } from '../../domain/assets'
 import type { LiquidityText } from '../../i18n/liquidity'
 import type { LiquidityPool } from '../../liquidity/types'
 import { CurrencyLabel } from './CurrencyLabel'
+import { PoolQuotePanel } from './PoolQuotePanel'
 export function PoolDetailDialog({
   pool,
   l,
@@ -48,6 +49,7 @@ export function PoolDetailDialog({
         )}
       </dl>
       <p className="lp-muted">{l(pool.initialized ? 'initialized' : 'notInitialized')}</p>
+      {pool.initialized && <PoolQuotePanel pool={pool} />}
       {pool.initialized && (
         <details className="lp-import">
           <summary>{l('advanced')}</summary>

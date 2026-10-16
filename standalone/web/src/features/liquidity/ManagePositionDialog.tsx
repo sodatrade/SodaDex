@@ -49,6 +49,7 @@ export function ManagePositionDialog({
         kind,
         position,
         liquidity: liquidityForBps(position.liquidity, Number(bps)),
+        liquidityBps: Number(bps),
         slippageBps: Number(slippageBps),
       })
     } catch (cause) {

@@ -74,3 +74,4 @@
 .lp-currency > span { min-width:0; overflow-wrap:anywhere; }
 .lp-pill { max-width:100%; overflow:hidden; text-overflow:ellipsis; }
 .lp-nft-link { max-width:100%; overflow-wrap:anywhere; }
+.lp-quote { border-top: 1px solid var(--soda-line); margin-top: 16px; padding-top: 12px; }

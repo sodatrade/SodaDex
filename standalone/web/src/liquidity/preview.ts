@@ -19,6 +19,13 @@ export async function prepareLiquidity(
     const current = await getPosition(operation.position.protocol, operation.position.tokenId, read)
     if (current.owner.toLowerCase() !== owner.toLowerCase()) throw new LiquidityError('notOwner')
     operation = { ...operation, position: current }
+    // Percentage intent is resolved against the fresh position before the user reviews exact amounts.
+    // Absolute-liquidity callers retain their original bound; execution never silently enlarges a reviewed burn.
+    if (operation.kind === 'decrease' && operation.liquidityBps !== undefined) {
+      if (!Number.isInteger(operation.liquidityBps) || operation.liquidityBps <= 0 || operation.liquidityBps > 10000)
+        throw new LiquidityError('invalidAmount')
+      operation = { ...operation, liquidity: current.liquidity * BigInt(operation.liquidityBps) / 10000n }
+    }
     pool = current.pool
   } else if (!pool.initialized) {
     if (!operation.initialPrice) throw new LiquidityError('invalidPool')

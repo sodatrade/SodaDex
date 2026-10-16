@@ -229,7 +229,7 @@ describe('self-service liquidity UI', () => {
     await user.click(within(dialog).getByRole('button', { name: '预览流动性操作' }))
     await waitFor(() =>
       expect(client.prepareLiquidity).toHaveBeenCalledWith(
-        expect.objectContaining({ kind: 'decrease', liquidity: 2500n }),
+        expect.objectContaining({ kind: 'decrease', liquidity: 2500n, liquidityBps: 2500 }),
         owner,
       ),
     )

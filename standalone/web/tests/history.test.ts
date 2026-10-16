@@ -9,7 +9,7 @@ describe('submitted transaction recovery', () => {
     recordTransaction({ ...entry, submittedAt: 2 })
     expect(readTransactions(entry.account)).toHaveLength(1)
     expect(readTransactions(`0x${'3'.repeat(40)}`)).toEqual([])
-    expect(readTransactions(entry.account)[0]?.submittedAt).toBe(2)
+    expect(readTransactions(entry.account)[0]?.submittedAt).toBe(1)
     updateTransaction(entry.hash, 'success')
     expect(readTransactions(entry.account)[0]?.status).toBe('success')
   })

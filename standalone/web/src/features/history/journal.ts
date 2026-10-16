@@ -41,8 +41,10 @@ export function readTransactions(account?: string): SubmittedTransaction[] {
 export function recordTransaction(value: SubmittedTransaction): void {
   if (!valid(value)) throw new Error('Invalid transaction record')
   try {
-    const entries = readTransactions().filter((entry) => entry.hash.toLowerCase() !== value.hash.toLowerCase())
-    localStorage.setItem(STORAGE_KEY, JSON.stringify([...entries, value]))
+    const all = readTransactions()
+    const previous = all.find((entry) => entry.hash.toLowerCase() === value.hash.toLowerCase())
+    const entries = all.filter((entry) => entry.hash.toLowerCase() !== value.hash.toLowerCase())
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([...entries, { ...value, submittedAt: previous?.submittedAt ?? value.submittedAt }]))
     window.dispatchEvent(new Event(JOURNAL_CHANGED))
   } catch { /* The wallet hash remains visible even when browser storage is unavailable. */ }
 }

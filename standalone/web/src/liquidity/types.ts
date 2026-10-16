@@ -59,7 +59,7 @@ export type LiquidityOperation =
       slippageBps?: number
     }
   | { kind: 'increase'; position: LiquidityPosition; amount0: bigint; amount1: bigint; slippageBps?: number }
-  | { kind: 'decrease'; position: LiquidityPosition; liquidity: bigint; slippageBps?: number }
+  | { kind: 'decrease'; position: LiquidityPosition; liquidity: bigint; liquidityBps?: number; slippageBps?: number }
   | { kind: 'collect'; position: LiquidityPosition }
 export interface LiquidityPreview {
   operation: LiquidityOperation
