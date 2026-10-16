@@ -1,0 +1,42 @@
+{
+  "name": "@sodadex/test-web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "^22.12.0 || ^24.0.0 || >=26.0.0"
+  },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint --config .oxlintrc.json --deny-warnings src tests tooling vite.config.ts vitest.config.ts"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "5.90.20",
+    "class-variance-authority": "0.7.1",
+    "clsx": "2.1.1",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "tailwind-merge": "3.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "4.3.2",
+    "@testing-library/dom": "10.4.1",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "16.3.2",
+    "@testing-library/user-event": "14.6.1",
+    "@types/node": "22.15.30",
+    "@types/react": "19.2.16",
+    "@types/react-dom": "19.0.6",
+    "@vitejs/plugin-react": "5.2.0",
+    "jsdom": "26.1.0",
+    "oxlint": "1.73.0",
+    "tailwindcss": "4.3.2",
+    "typescript": "5.9.3",
+    "vite": "8.1.3",
+    "vitest": "5.0.5"
+  }
+}
