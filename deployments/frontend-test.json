@@ -5,8 +5,8 @@
   "url": "https://sodadex-preview.jsmsdx2025.workers.dev",
   "provider": "Cloudflare Workers Static Assets",
   "worker": "sodadex-preview",
-  "versionId": "0e5ba92b-e8cc-4334-bd1e-65b8107ee1fb",
-  "sourceCommit": "eb07edc8cfeb5a7888e8bb415f171115b27b90f8",
+  "versionId": "4b24172c-9477-4ec7-b08c-25e5fffa46ff",
+  "sourceCommit": "ce80183a5c392b19818b0fb67ca5a7d023ca1096",
   "publishedOn": "2026-10-16",
   "customDomain": null,
   "deploymentCi": null,
@@ -14,12 +14,12 @@
   "rpcUrl": "https://rpc.ignix.bot/rpc/196",
   "browserRpcPath": "/api/rpc",
   "contractStatus": "SodaDEX branded V3/V4 test contracts deployed and verified",
-  "tradingStatus": "paused; new public quotes, reviews, approvals and swaps disabled; deployed pool records and submitted transaction receipt queries retained",
+  "tradingStatus": "paused; read-only reference quotes enabled, new reviews/approvals/swaps disabled; deployed pool records and submitted transaction receipt queries retained",
   "validation": {
     "webTestsPassed": 64,
     "workerTestsPassed": 24,
-    "browserAcceptanceChecksPassed": 51,
-    "browserWalletAndRpc": "isolated mock wallet/RPC for 51 UI checks; live injected read-only public-address wallet for balances and paused-state checks",
+    "browserAcceptanceChecksPassed": 53,
+    "browserWalletAndRpc": "isolated mock wallet/RPC for 53 UI checks; live injected read-only public-address wallet for balances and quote/paused-state checks",
     "liveRpcChainId": "0xc4",
     "liveSiteHttpStatus": 200,
     "liveConsoleErrors": 0,
@@ -32,7 +32,7 @@
     "liveOldClientSimulationsRejected": 12,
     "liveReadQueriesPassed": 4,
     "livePoolRecordsRetained": true,
-    "livePoolQuoteRequests": 0,
+    "livePoolQuoteRequests": 6,
     "mainnetWritesInThisUpdate": false,
     "historicalContractValidation": {
       "mainnetMicroSwapsPassed": 4,
@@ -40,6 +40,11 @@
       "browserForkSwapsPassed": 4,
       "scope": "prior enabled-trading code on owned localhost Anvil; not rerun after the public pause",
       "forkEvidence": "xlayer-test/validation/browser-fork.json"
+    },
+    "liveLargeInputReference": {
+      "inputOKB": "0.5",
+      "outputUSDt0": "0.005561",
+      "purpose": "read-only regression; not a fair-price assertion"
     }
   },
   "features": {

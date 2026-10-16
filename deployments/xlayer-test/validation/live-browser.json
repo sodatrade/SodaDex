@@ -21,7 +21,8 @@
     1440,
     390
   ],
-  "quoteRequests": 0,
+  "quoteRequests": 6,
+  "largeInputReference": "0.005561",
   "walletMethods": [
     "eth_requestAccounts",
     "eth_chainId"
@@ -33,8 +34,7 @@
   ],
   "mainnetWrites": false,
   "scope": "Published UI and real RPC reads with an injected read-only public-address wallet; no signing or broadcast",
-  "sourceCommit": "eb07edc8cfeb5a7888e8bb415f171115b27b90f8",
-  "versionId": "0e5ba92b-e8cc-4334-bd1e-65b8107ee1fb",
-  "consoleErrors": 0,
-  "consoleWarnings": 0
+  "versionId": "4b24172c-9477-4ec7-b08c-25e5fffa46ff",
+  "sourceCommit": "ce80183a5c392b19818b0fb67ca5a7d023ca1096",
+  "date": "2026-10-16"
 }

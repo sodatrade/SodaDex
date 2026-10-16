@@ -1,7 +1,7 @@
 {
   "status": "passed",
-  "versionId": "0e5ba92b-e8cc-4334-bd1e-65b8107ee1fb",
-  "sourceCommit": "eb07edc8cfeb5a7888e8bb415f171115b27b90f8",
+  "versionId": "4b24172c-9477-4ec7-b08c-25e5fffa46ff",
+  "sourceCommit": "ce80183a5c392b19818b0fb67ca5a7d023ca1096",
   "origin": "https://sodadex-preview.jsmsdx2025.workers.dev",
   "publicTrading": "paused",
   "assets": [
@@ -21,9 +21,9 @@
       "sha256": "0111cc681168f228a41d09696f54f7e0a9c5855cb221ad84991e30e57d7a3ea2"
     },
     {
-      "path": "assets/index-CZEgnMlt.js",
+      "path": "assets/index-Cfre4HOD.js",
       "status": 200,
-      "sha256": "71e920c4049bde66c8f0a67f9ebba8dd988e057566ffbe8e8dd54c4c2209cb0a"
+      "sha256": "542274d665ba905852cb9e854623bb40bf45fcbf2b9125967c1f4ce83d9527f7"
     },
     {
       "path": "assets/okb.png",
@@ -53,7 +53,7 @@
     {
       "path": "index.html",
       "status": 200,
-      "sha256": "a3f898ee68851068c5d5af334b758d3a131c9c1758fd0c780beaee957209c2b3",
+      "sha256": "4a577262c2ab9efa0ea97d19e59de2447dc23c4f0d2ebd3251f191bfcef530c1",
       "contentSecurityPolicy": "default-src 'self'; script-src 'self' 'sha256-u6rB6SDwiZ9fC315V9ivK/Js5YdlIlZZKXBdNySlmYk='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'"
     },
     {
