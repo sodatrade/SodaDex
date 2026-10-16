@@ -3,6 +3,8 @@ import deployment from '../../../deployments/xlayer-test/active.json'
 import pools from '../../../deployments/xlayer-test/pools.json'
 
 export { deployment, pools }
+export interface PoolKey { currency0: string; currency1: string; fee: number; tickSpacing: number; hooks: string }
+export type PoolReference = { protocol: 'v3'; tokenIn: string; tokenOut: string; fee: number } | { protocol: 'v4'; key: PoolKey }
 export const ZERO = '0x0000000000000000000000000000000000000000'
 export const FIRST_BLOCK = 73361037 // First canonical receipt in receipts.json; never scan before deployment.
 export const PAGE_BLOCKS = 2000

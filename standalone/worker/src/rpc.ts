@@ -7,8 +7,10 @@ import { deployment, FACTORY_READ, pools, record as isRecord, same, V3_POOL_READ
 import { validLogFilter } from './logs'
 import { validLiquidityContext } from './lp-context'
 import { validLiquidityRequest } from './lp-requests'
-import { quoteRequest, registeredQuote } from './quote-requests'
+import { quoteRequest } from './quote-requests'
+import { registeredPool } from './pool-registration'
 import { validContractRequest } from './trade-requests'
+import { tradeRoute } from './trade-routes'
 const ADDRESS = /^0x[0-9a-fA-F]{40}$/
 const BLOCK = /^(latest|safe|finalized|pending|0x[0-9a-fA-F]+)$/
 const EMPTY_METHODS = new Set(['eth_chainId', 'eth_blockNumber', 'eth_gasPrice'])
@@ -90,9 +92,16 @@ export async function proxyRpc(request: Request, upstreamFetch: typeof fetch = f
   if (!rpc) return rpcError(null, -32600, 'Unsupported read request', 400)
 
   try {
+    if ((rpc.method === 'eth_call' || rpc.method === 'eth_estimateGas') && isRecord(rpc.params[0])) {
+      const tx = rpc.params[0]
+      if (typeof tx.to === 'string' && same(tx.to, deployment.contracts.universalRouter) && typeof tx.data === 'string' && typeof tx.from === 'string') {
+        const route = tradeRoute(tx.data as `0x${string}`, tx.from, BigInt(String(tx.value ?? '0x0')))
+        if (route && !await registeredPool(route, 'trade', String(rpc.params[1] ?? 'latest'), upstreamFetch)) return rpcError(rpc.id, -32600, 'Pool is not registered or initialized', 400)
+      }
+    }
     if (rpc.method === 'eth_call' && isRecord(rpc.params[0]) && typeof rpc.params[0].to === 'string' && typeof rpc.params[0].data === 'string') {
       const quote = quoteRequest(rpc.params[0].to, rpc.params[0].data as `0x${string}`)
-      if (quote && !await registeredQuote(quote, String(rpc.params[1]), upstreamFetch)) return rpcError(rpc.id, -32600, 'Pool is not registered or initialized', 400)
+      if (quote && !await registeredPool(quote, 'quote', String(rpc.params[1]), upstreamFetch)) return rpcError(rpc.id, -32600, 'Pool is not registered or initialized', 400)
     }
     if ((rpc.method === 'eth_call' || rpc.method === 'eth_estimateGas') && isRecord(rpc.params[0])) {
       const tx = rpc.params[0]
