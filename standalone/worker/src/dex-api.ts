@@ -1,7 +1,9 @@
-import { coverage, discover, head, knownPools, snapshot, BadRequest } from './dex-data'
+import { coverage, head, BadRequest } from './dex-data'
 import { events } from './dex-events'
 import { market } from './dex-market'
-export async function dexApi(request: Request, upstreamFetch: typeof fetch = fetch): Promise<Response> {
+import { poolPage } from './dex-pools'
+import { cacheCursorStore, RestartScan, type CursorStore } from './cursors'
+export async function dexApi(request: Request, upstreamFetch: typeof fetch = fetch, cursorStore?: CursorStore): Promise<Response> {
   const headers = { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' }
   if (request.method !== 'GET') return Response.json({ error: 'GET required' }, { status: 405, headers })
   const url = new URL(request.url)
@@ -10,14 +12,12 @@ export async function dexApi(request: Request, upstreamFetch: typeof fetch = fet
   if (!['/api/dex/pools', '/api/dex/events', '/api/dex/market'].includes(url.pathname)) return Response.json({ error: 'Not found' }, { status: 404, headers })
   try {
     const block = await head(upstreamFetch)
-    const range = coverage(url, block, url.pathname !== '/api/dex/events')
-    if (url.pathname === '/api/dex/events') return Response.json(await events(url, block, range, upstreamFetch), { headers })
-    if (url.pathname === '/api/dex/market') return Response.json(await market(url, block, range, upstreamFetch), { headers })
-    const discovered = await discover(range, upstreamFetch)
-    const merged = [...new Map([...knownPools(), ...discovered].map((pool) => [pool.id.toLowerCase(), pool])).values()]
-    const pools = await Promise.all(merged.map((pool, index) => index < 8 ? snapshot(pool, block, upstreamFetch) : { ...pool, stateError: 'Snapshot request limit; open market detail' }))
-    return Response.json({ schemaVersion: 1, chainId: 196, asOf: block, coverage: range, pools }, { headers })
+    const store = cursorStore ?? cacheCursorStore(url.origin)
+    if (url.pathname === '/api/dex/pools') return Response.json(await poolPage(url, block, upstreamFetch, store), { headers })
+    if (url.pathname === '/api/dex/events') return Response.json(await events(url, block, upstreamFetch, store), { headers })
+    return Response.json(await market(url, block, coverage(url, block, true), upstreamFetch), { headers })
   } catch (error) {
+    if (error instanceof RestartScan) return Response.json({ error: error.message, code: error.code, restartFromBlock: error.restartFromBlock }, { status: 409, headers })
     return Response.json({ error: error instanceof BadRequest ? error.message : 'Chain data temporarily unavailable' }, { status: error instanceof BadRequest ? 400 : 502, headers })
   }
 }

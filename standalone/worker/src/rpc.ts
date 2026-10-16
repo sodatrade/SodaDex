@@ -7,6 +7,7 @@ import { deployment, FACTORY_READ, pools, record as isRecord, same, V3_POOL_READ
 import { validLogFilter } from './logs'
 import { validLiquidityContext } from './lp-context'
 import { validLiquidityRequest } from './lp-requests'
+import { quoteRequest, registeredQuote } from './quote-requests'
 import { validContractRequest } from './trade-requests'
 const ADDRESS = /^0x[0-9a-fA-F]{40}$/
 const BLOCK = /^(latest|safe|finalized|pending|0x[0-9a-fA-F]+)$/
@@ -89,6 +90,10 @@ export async function proxyRpc(request: Request, upstreamFetch: typeof fetch = f
   if (!rpc) return rpcError(null, -32600, 'Unsupported read request', 400)
 
   try {
+    if (rpc.method === 'eth_call' && isRecord(rpc.params[0]) && typeof rpc.params[0].to === 'string' && typeof rpc.params[0].data === 'string') {
+      const quote = quoteRequest(rpc.params[0].to, rpc.params[0].data as `0x${string}`)
+      if (quote && !await registeredQuote(quote, String(rpc.params[1]), upstreamFetch)) return rpcError(rpc.id, -32600, 'Pool is not registered or initialized', 400)
+    }
     if ((rpc.method === 'eth_call' || rpc.method === 'eth_estimateGas') && isRecord(rpc.params[0])) {
       const tx = rpc.params[0]
       if (typeof tx.from === 'string' && typeof tx.to === 'string' && typeof tx.data === 'string' && validLiquidityRequest(tx.to, tx.data as `0x${string}`, tx.from, BigInt(String(tx.value ?? '0x0'))) &&

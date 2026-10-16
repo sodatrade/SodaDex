@@ -104,11 +104,11 @@ describe('verified pool RPC boundary', () => {
     expect(validContractRequest(approve(router), true)).toBe(true)
     expect(validContractRequest(approve(owner), true)).toBe(false)
   })
-  it('quotes only the exact V3 fee and V4 key without hook payloads', () => {
+  it('admits canonical own-quoter reads without hook payloads; registry checks occur in the RPC adapter', () => {
     const abi = parseAbi(['function quoteExactInputSingle((address,address,uint256,uint24,uint160)) returns(uint256,uint160,uint32,uint256)'])
     const quote = (fee: number): object => ({ to: deployment.contracts.v3Quoter, data: encodeFunctionData({ abi, functionName: 'quoteExactInputSingle', args: [[stable, deployment.wrappedNative as Address, 100n, fee, 0n]] }) })
     expect(validContractRequest(quote(100), false)).toBe(true)
-    expect(validContractRequest(quote(3000), false)).toBe(false)
+    expect(validContractRequest(quote(3000), false)).toBe(true)
     expect(validContractRequest(quote(100), true)).toBe(false)
     const abi4 = parseAbi(['function quoteExactInputSingle(((address,address,uint24,int24,address),bool,uint128,bytes)) returns(uint256,uint256)'])
     const quote4 = (hooks: Hex): object => ({ to: deployment.contracts.v4Quoter, data: encodeFunctionData({ abi: abi4, functionName: 'quoteExactInputSingle', args: [[key, true, 100n, hooks]] }) })
