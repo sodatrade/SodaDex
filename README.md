@@ -6,7 +6,7 @@ The application is labelled **SodaDEX Test**, for personal learning and noncomme
 
 The source baseline is `web/5.166.0`, commit `6f54d9a474a6036e7043ed52f2a9359003c96c9c`. Preserve upstream licences, notices, protocol identifiers, and SDK package names.
 
-Test preview: [sodadex-preview.jsmsdx2025.workers.dev](https://sodadex-preview.jsmsdx2025.workers.dev). Public swaps and new token approvals are paused through a shared application policy. Wallet connection, balance reads, verified pool records and submitted transaction receipt checks remain available. Adding liquidity through the interface remains unavailable. Hosting is published manually, without a custom domain or deployment CI. See the [local runbook](standalone/README.md) and [hosting receipt](deployments/frontend-test.json).
+Test preview: [sodadex-preview.jsmsdx2025.workers.dev](https://sodadex-preview.jsmsdx2025.workers.dev). Read-only pool quotes remain available; public swap submission and new token approvals are paused through a shared application policy. Wallet connection, balance reads, verified pool records and submitted transaction receipt checks remain available. Adding liquidity through the interface remains unavailable. Hosting is published manually, without a custom domain or deployment CI. See the [local runbook](standalone/README.md) and [hosting receipt](deployments/frontend-test.json).
 
 ```bash
 git clone https://github.com/sodatrade/SodaDex.git

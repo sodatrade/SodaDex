@@ -150,6 +150,7 @@ export const en = {
   enterAmount: 'Enter an amount',
   quoteLoading: 'Fetching onchain quote…',
   quoteReady: 'Onchain quote · Minimum received protected by 0.5% slippage',
+  quoteReadOnly: 'Test pool reference quote · Public swaps paused',
   quoteRetry: 'Refresh quote',
   minimumReceived: 'Minimum received',
   slippageTolerance: 'Slippage tolerance',

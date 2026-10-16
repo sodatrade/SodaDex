@@ -117,15 +117,17 @@ describe('ready test pool user flow', () => {
     expect(requests.filter((m) => m === 'eth_sendTransaction')).toHaveLength(1)
   })
   it.each([
-    { locale: 'zh-CN', paused: '公开兑换已暂停', pay: '支付', pools: '流动性' },
-    { locale: 'en', paused: 'Public swaps paused', pay: 'Pay', pools: 'Liquidity' },
-    { locale: 'yue-HK', paused: '公開兌換已暫停', pay: '支付', pools: '流動性' },
-  ])('pauses new trades while preserving deployed pool records in $locale', async ({ locale, paused, pay, pools }) => {
+    { locale: 'zh-CN', paused: '公开兑换已暂停', pay: '支付', pools: '流动性', receive: '预计接收数量', note: '测试池参考报价 · 公开兑换已暂停' },
+    { locale: 'en', paused: 'Public swaps paused', pay: 'Pay', pools: 'Liquidity', receive: 'Estimated receive amount', note: 'Test pool reference quote · Public swaps paused' },
+    { locale: 'yue-HK', paused: '公開兌換已暫停', pay: '支付', pools: '流動性', receive: '預計收取數量', note: '測試池參考報價 · 公開兌換已暫停' },
+  ])('shows read-only quotes but pauses new trades in $locale', async ({ locale, paused, pay, pools, receive, note }) => {
     vi.spyOn(policy, 'publicSwapsEnabled').mockReturnValue(false)
     localStorage.setItem(PREFERENCES_KEY, JSON.stringify({ locale }))
     const user = userEvent.setup()
     renderApp()
     await user.type(screen.getByLabelText(pay), '1')
+    await waitFor(() => expect(screen.getByLabelText(receive)).toHaveTextContent('1.000001'))
+    expect(screen.getByText(note)).toBeVisible()
     expect(screen.getByRole('button', { name: paused })).toBeDisabled()
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
     expect(POOLS.ready).toBe(true)
@@ -134,7 +136,8 @@ describe('ready test pool user flow', () => {
     expect(screen.getByRole('heading', { name: 'V4 · OKB / USD₮0 · 0%' })).toBeVisible()
     expect(requests).toHaveLength(0)
     const requestsSent = vi.mocked(fetch).mock.calls.map(([, options]) => JSON.parse(String(options?.body)) as { method: string })
-    expect(requestsSent.some(({ method }) => method === 'eth_call' || method === 'eth_estimateGas')).toBe(false)
+    expect(requestsSent.some(({ method }) => method === 'eth_call')).toBe(true)
+    expect(requestsSent.some(({ method }) => method === 'eth_estimateGas')).toBe(false)
   })
 
   it('disables an existing review when public trading pauses before final confirmation', async () => {

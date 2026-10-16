@@ -147,6 +147,7 @@ export const yueHK = {
   enterAmount: '輸入數量',
   quoteLoading: '正在讀取鏈上報價…',
   quoteReady: '鏈上報價 · 最低收取受 0.5% 滑點保護',
+  quoteReadOnly: '測試池參考報價 · 公開兌換已暫停',
   quoteRetry: '重新讀取報價',
   minimumReceived: '最低收取',
   slippageTolerance: '滑點上限',

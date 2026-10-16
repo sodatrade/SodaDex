@@ -146,6 +146,7 @@ export const zhCN = {
   enterAmount: '输入数量',
   quoteLoading: '正在获取链上报价…',
   quoteReady: '链上报价 · 最低接收受 0.5% 滑点保护',
+  quoteReadOnly: '测试池参考报价 · 公开兑换已暂停',
   quoteRetry: '重新获取报价',
   minimumReceived: '最低接收',
   slippageTolerance: '滑点上限',

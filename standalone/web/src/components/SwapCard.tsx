@@ -44,7 +44,7 @@ export function SwapCard({ wallet, balances, balancesLoading, balancesError, onC
   const quote = useQuery({
     queryKey: ['quote', fromId, toId, parsed.kind === 'valid' ? parsed.units.toString() : '', protocol],
     queryFn: () => getQuote({ from: fromId, to: toId, amount: parsed.kind === 'valid' ? parsed.units : 0n }, protocol),
-    enabled: tradingEnabled && POOLS.ready && supported && parsed.kind === 'valid' && !error,
+    enabled: POOLS.ready && supported && parsed.kind === 'valid' && !error,
     refetchInterval: 15_000,
     retry: false,
   })
@@ -178,22 +178,20 @@ export function SwapCard({ wallet, balances, balancesLoading, balancesError, onC
         </div>
         <SwapAmountPanel
           id={toId}
-          amount={tradingEnabled && quote.data && supported && !error ? formatUnits(quote.data.amountOut, to.decimals) : '—'}
+          amount={quote.data && supported && !error ? formatUnits(quote.data.amountOut, to.decimals) : '—'}
           onSelect={() => setSelector('to')}
           balance={balanceText(toId)}
           disabled={locked}
           hint={t(
-            !tradingEnabled
-              ? 'tradePaused'
-              : !POOLS.ready
-                ? 'quotePending'
-                : !supported
-                  ? 'tradeUnsupported'
-                  : quote.isFetching
-                    ? 'quoteLoading'
-                    : quote.data
-                      ? 'quoteReady'
-                      : 'enterAmount',
+            !POOLS.ready
+              ? 'quotePending'
+              : !supported
+                ? 'tradeUnsupported'
+                : quote.isFetching
+                  ? 'quoteLoading'
+                  : quote.data
+                    ? tradingEnabled ? 'quoteReady' : 'quoteReadOnly'
+                    : 'enterAmount',
           )}
         />
         {error && (
@@ -201,7 +199,7 @@ export function SwapCard({ wallet, balances, balancesLoading, balancesError, onC
             {error.code === 'amountPrecision' ? t(error.code, { decimals: error.decimals }) : t(error.code)}
           </p>
         )}
-        {quote.isError && tradingEnabled && POOLS.ready && supported && (
+        {quote.isError && POOLS.ready && supported && (
           <p className="error-text" role="alert">
             {t('tradeUnavailable')}{' '}
             <button className="text-button" onClick={() => void quote.refetch()}>

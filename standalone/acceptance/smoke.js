@@ -131,7 +131,10 @@ async (page) => {
   if (tradingPaused) {
     check(await unavailable.isDisabled(), 'paused public trading cannot start a review with valid input and a connected wallet')
     check(await page.getByRole('button', { name: '预览兑换', exact: true }).count() === 0, 'paused trading exposes no new review action')
-    check(!rpcCalls.some((call) => call.method === 'eth_call' && /^0x(c6a5026a|aa9d21cb)/.test(call.params[0].data)), 'paused UI makes no pool quote calls')
+    await page.getByLabel('预计接收数量', { exact: true }).filter({ hasText: '1' }).waitFor()
+    check(await page.getByLabel('预计接收数量', { exact: true }).textContent() === '1', 'paused trading still displays the read-only expected output')
+    check(await page.getByText('测试池参考报价 · 公开兑换已暂停', { exact: true }).isVisible(), 'paused quotes are explicitly labelled as reference only')
+    check(rpcCalls.some((call) => call.method === 'eth_call' && /^0x(c6a5026a|aa9d21cb)/.test(call.params[0].data)), 'reference quotes use the actual quote read path')
   } else if (poolsReady) {
     await page.getByRole('button', { name: '预览兑换', exact: true }).click()
     await page.getByRole('dialog', { name: '预览兑换' }).waitFor()

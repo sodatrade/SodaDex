@@ -105,8 +105,11 @@ describe('exact test-pool trading', () => {
         identity: f.identity, getIdentity: () => f.identity, isCurrentForm: () => true,
         onProgress: (p) => f.events.push(p), read: f.read, wait: f.wait, ready: true,
       })).rejects.toThrow('tradePaused')
-      await expect(getQuote(review, protocol, f.read, true)).rejects.toThrow('tradePaused')
       expect(f.read).not.toHaveBeenCalled()
+      expect(f.identity.provider.request).not.toHaveBeenCalled()
+      const quote = await getQuote(review, protocol, f.read, true)
+      expect(quote.protocol).toBe(protocol)
+      expect(quote.amountOut).toBeGreaterThan(0n)
       expect(f.identity.provider.request).not.toHaveBeenCalled()
     }
   })

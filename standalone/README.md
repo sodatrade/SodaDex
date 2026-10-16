@@ -63,7 +63,7 @@ Cloudflare 凭证使用本机 Wrangler 登录状态，不进入源码或前端�
 
 ## 当前范围
 
-这是 **X Layer 主网 196 上的测试界面**，OKB 是真实资产。SodaDEX 仓位 NFT 名称和原创 SVG 已部署，V3 WOKB/USD₮0（0.01%）与 V4 原生 OKB/USD₮0（0%）均已创建、注入少量流动性并完成真实双向兑换。当前 `pools.json` 保持 `ready`，只表示链上测试池已经核验。`standalone/trading-policy.json` 的 `publicSwapsEnabled=false` 独立暂停公开兑换：前端不再请求报价、创建新预览或提交新授权／兑换；已提交交易的链接、等待回执与再次检查回执功能保留。Worker 拒绝正金额授权和 Router 兑换的 `eth_call`／`eth_estimateGas`，余额、代码、allowance、区块和回执读取及现有 ERC-20 `approve(0)` 模拟仍可用。提供流动性的前端入口尚未开放。报价、价格和池数据不使用虚构数值。前端不读取本机部署钱包。
+这是 **X Layer 主网 196 上的测试界面**，OKB 是真实资产。SodaDEX 仓位 NFT 名称和原创 SVG 已部署，V3 WOKB/USD₮0（0.01%）与 V4 原生 OKB/USD₮0（0%）均已创建、注入少量流动性并完成真实双向兑换。当前 `pools.json` 保持 `ready`，只表示链上测试池已经核验。`standalone/trading-policy.json` 的 `publicSwapsEnabled=false` 独立暂停公开兑换：前端保留只读参考报价和预计接收数量，但不能创建新预览或提交新授权／兑换；已提交交易的链接、等待回执与再次检查回执功能保留。Worker 拒绝正金额授权和 Router 兑换的 `eth_call`／`eth_estimateGas`，余额、代码、allowance、区块和回执读取及现有 ERC-20 `approve(0)` 模拟仍可用。提供流动性的前端入口尚未开放。报价、价格和池数据不使用虚构数值。前端不读取本机部署钱包。
 
 界面支持简体中文、English 与粵語，新访客默认白天主题。语言、外观和 CNY/USD/HKD 展示货币保存在浏览器的 `sodadex.preferences.v1`；存储不可用时使用默认设置。展示货币只影响价格标签，当前没有价格数据，不会把 OKB 余额换算成法币。
 
