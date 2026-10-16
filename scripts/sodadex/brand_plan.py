@@ -20,6 +20,8 @@ CALLS = ('revokeOldV3', 'approveV3', 'resetPermit2', 'approvePermit2',
          'v3Reverse', 'v4Forward', 'v4Reverse')
 STEPS = DEPLOYS + CALLS
 PRIOR_NAMES = ('seed', 'approveV3', 'approvePermit2')
+MARKET_ROUTER = '0x7c5bee2a8091c3ef39072f64f18fac913060aeaf'
+MARKET_ROUTER_SHA = '4e884ab2966a335f3462791c91acc1819a2209ec2ace1716e3498463ccb0a1ce'
 SOURCE_FILES = ('brand-phase.py', 'brand_plan.py', 'brand_chain.py', 'pool_plan.py',
                 'pool_chain.py', 'deploy-xlayer-test.py', 'rehearse-xlayer-test.py')
 
@@ -91,7 +93,7 @@ def deployment_intent(name, config, artifacts):
             'artifactSha256': source['sha256'], 'expectedAddress': c[name]}
 
 
-def quote_context(payload, config, stable_balance, block, timestamp, *, quote_timestamp):
+def checked_quote(payload):
     require(payload.get('ok') is True and len(payload.get('data', [])) == 1, 'Market quote failed')
     quote = payload['data'][0]
     require(quote.get('action') == 'ok' and not quote.get('reason') and number(quote['chainIndex']) == pool.CHAIN,
@@ -101,6 +103,51 @@ def quote_context(payload, config, stable_balance, block, timestamp, *, quote_ti
             and number(quote['fromToken']['decimal']) == 18
             and quote['toToken']['tokenContractAddress'].lower() == pool.STABLE.lower()
             and number(quote['toToken']['decimal']) == 6, 'Market quote asset/decimal mismatch')
+    return quote
+
+
+def market_call(response, config, block, code_sha):
+    quote, tx = response['routerResult'], response['tx']
+    checked_quote({'ok': True, 'data': [quote]})
+    require(code_sha == MARKET_ROUTER_SHA and tx['to'].lower() == MARKET_ROUTER,
+            'Market reference router changed')
+    require(tx['from'].lower() == config['owner'].lower() and number(tx['value']) == pool.BUY,
+            'Market reference sender/value changed')
+    data = tx['data']
+    require(re.fullmatch(r'0xf2c42696(?:[0-9a-fA-F]{2})+', data) and len(data) >= 10 + 7 * 64,
+            'Unsupported market reference calldata')
+    words = [int(data[10+i*64:10+(i+1)*64], 16) for i in range(7)]
+    require(words[1:4] == [int('ee' * 20, 16), int(pool.STABLE, 16), pool.BUY]
+            and words[4] == number(tx['minReceiveAmount'])
+            and words[4] >= pool.min_output(number(quote['toTokenAmount']))
+            and words[5] > number(block['timestamp']) and words[6] == 224,
+            'Market reference pair/minimum/deadline changed')
+    require(number(quote['contextSlot']) <= number(block['number']), 'Market route block is in the future')
+    return {'from': tx['from'], 'to': tx['to'], 'data': data, 'value': hex(pool.BUY)}
+
+
+def reference_quote(response, config, block, code_sha, result):
+    """A new market observation from a pinned-router eth_call, not an API timestamp rewrite."""
+    call = market_call(response, config, block, code_sha)
+    require(re.fullmatch(r'0x[0-9a-fA-F]{64}', result) is not None, 'Invalid market reference return value')
+    require(re.fullmatch(r'0x[0-9a-fA-F]{64}', block['hash']) is not None, 'Invalid market reference block hash')
+    output = int(result, 16)
+    require(output >= number(response['tx']['minReceiveAmount']) and output > 0, 'Market reference output below minimum')
+    require('onchainReference' not in response['routerResult'], 'Recursive market reference prohibited')
+    quote = copy.deepcopy(response['routerResult'])
+    quote.update(contextSlot=number(block['number']), toTokenAmount=str(output), onchainReference={
+        'source': 'pinned-router-eth_call', 'block': block, 'routerCodeSha256': code_sha,
+        'call': call, 'returnData': result, 'apiResponse': response})
+    return {'ok': True, 'data': [quote]}
+
+
+def quote_context(payload, config, stable_balance, block, timestamp, *, quote_timestamp):
+    quote = checked_quote(payload)
+    if 'onchainReference' in quote:
+        ref = quote['onchainReference']
+        expected = reference_quote(ref['apiResponse'], config, ref['block'], ref['routerCodeSha256'], ref['returnData'])
+        require(payload == expected and number(ref['block']['timestamp']) == quote_timestamp,
+                'On-chain market reference changed')
     require(number(quote['contextSlot']) <= block, 'Market quote block is in the future')
     require(0 <= timestamp - quote_timestamp <= pool.DEADLINE_SECONDS, 'Market quote block is stale')
     require(stable_balance == 11844, 'Seed stable balance changed before new LP allocation')

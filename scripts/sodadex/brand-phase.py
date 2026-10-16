@@ -68,19 +68,29 @@ def latest(chain):
 
 
 def fresh_context(chain, config):
-    result = subprocess.run(['onchainos', 'swap', 'quote', '--from', 'okb', '--to', pool.STABLE,
-                             '--readable-amount', '0.0001', '--chain', '196'], capture_output=True, text=True)
+    # This endpoint only creates unsigned calldata. It never signs or broadcasts;
+    # the value is simulated at an explicit current block, never bought again.
+    result = subprocess.run(['onchainos', 'swap', 'swap', '--from', 'okb', '--to', pool.STABLE.lower(),
+                             '--readable-amount', '0.0001', '--chain', '196', '--wallet', config['owner'].lower(),
+                             '--slippage', '0.49'], capture_output=True, text=True)
     require(result.returncode == 0, 'Read-only market quote command failed')
     try:
         quote = json.loads(result.stdout)
     except ValueError:
         raise ValueError('Read-only market quote is not JSON') from None
-    block, timestamp = latest(chain)
     require(quote.get('ok') is True and len(quote.get('data', [])) == 1, 'Market quote command returned no route')
-    quote_block = chain.rpc('eth_getBlockByNumber', [hex(number(quote['data'][0]['contextSlot'])), False])
-    require(quote_block is not None, 'Market quote block is unavailable')
-    return plan.quote_context(quote, config, chain.snapshot(config)['stable'], block, timestamp,
-                              quote_timestamp=number(quote_block['timestamp']))
+    anchor = chain.rpc('eth_getBlockByNumber', ['latest', False])
+    block = {key: anchor[key] for key in ('number', 'hash', 'timestamp')}
+    code = chain.rpc('eth_getCode', [plan.MARKET_ROUTER, block['number']])
+    code_sha = sha(bytes.fromhex(code[2:]))
+    call = plan.market_call(quote['data'][0], config, block, code_sha)
+    output = chain.rpc('eth_call', [call, block['number']])
+    observed = plan.reference_quote(quote['data'][0], config, block, code_sha, output)
+    require(chain.rpc('eth_getBlockByNumber', [block['number'], False])['hash'] == block['hash'],
+            'Market reference block changed')
+    head, timestamp = latest(chain)
+    return plan.quote_context(observed, config, chain.snapshot(config)['stable'], head, timestamp,
+                              quote_timestamp=number(block['timestamp']))
 
 
 def fresh_intent(chain, name, original, config, artifacts, ctx):

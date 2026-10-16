@@ -54,6 +54,16 @@ def abi_string(data, offset_index=0):
 
 
 class BuildInvariants(unittest.TestCase):
+    def test_complete_compiler_input_does_not_depend_on_checkout_location(self):
+        source = {'language': 'Solidity', 'sources': {'Position.sol': {'content': 'pragma solidity ^0.8.26; contract Position {}'}},
+                  'settings': {'optimizer': {'enabled': True, 'runs': 500}}}
+        one = builder.portable_input({**source, 'basePath': '/checkout/one', 'includePaths': ['/checkout/one'], 'allowPaths': ['/checkout/one/lib']})
+        two = builder.portable_input({**source, 'basePath': '/another/checkout', 'includePaths': ['/another/checkout'], 'allowPaths': ['/another/checkout/lib']})
+        self.assertEqual(one, two)
+        self.assertEqual(one, source)
+        with self.assertRaisesRegex(ValueError, 'every source file'):
+            builder.portable_input({**source, 'sources': {'Position.sol': {'urls': ['file://Position.sol']}}})
+
     def test_original_abi_is_a_strict_subset_with_one_readonly_method(self):
         original = [{'type': 'function', 'name': 'mint', 'inputs': [], 'outputs': [], 'stateMutability': 'payable'}]
         info = {'type': 'function', 'name': 'deploymentInfo', 'inputs': [], 'outputs': [{'type': t} for t in ('string', 'uint256', 'uint256', 'bool')], 'stateMutability': 'view'}

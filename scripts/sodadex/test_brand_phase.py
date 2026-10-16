@@ -33,7 +33,50 @@ def tx(value=0, gas=100, price=21, to=pool.STABLE):
             'gasPrice': hex(price), 'value': hex(value), 'data': '0x1234'}
 
 
+def market_simulation():
+    quote = market()['data'][0]
+    fields = [1, int('ee' * 20, 16), int(pool.STABLE, 16), pool.BUY,
+              pool.min_output(int(quote['toTokenAmount'])), 1800001800, 224]
+    response = {'routerResult': quote, 'tx': {'from': OWNER, 'to': plan.MARKET_ROUTER,
+        'value': str(pool.BUY), 'minReceiveAmount': str(fields[4]),
+        'data': '0xf2c42696' + ''.join(f'{value:064x}' for value in fields)}}
+    block = {'number': hex(101), 'timestamp': hex(1800001200), 'hash': '0x' + 'ab' * 32}
+    return response, block, '0x' + f'{11930:064x}'
+
+
 class ContinuationMathTests(unittest.TestCase):
+    def test_latest_market_simulation_keeps_cached_api_observation_and_uses_actual_output(self):
+        response, block, result = market_simulation()
+        observed = plan.reference_quote(response, CONFIG, block, plan.MARKET_ROUTER_SHA, result)
+        ctx = plan.quote_context(observed, CONFIG, 11844, 102, 1800001201, quote_timestamp=1800001200)
+        self.assertEqual(ctx['marketQuote']['toTokenAmount'], '11930')
+        ref = ctx['marketQuote']['onchainReference']
+        self.assertEqual(ref['apiResponse']['routerResult']['contextSlot'], 100)
+        self.assertEqual(ref['apiResponse']['routerResult']['toTokenAmount'], '11924')
+        self.assertEqual(ref['source'], 'pinned-router-eth_call')
+        plan.validate_context(ctx, CONFIG)
+        with self.assertRaisesRegex(ValueError, 'quote block is stale'):
+            plan.quote_context(observed, CONFIG, 11844, 102, 1800001801, quote_timestamp=1800001200)
+
+    def test_market_reference_binds_router_sender_principal_minimum_and_actual_return(self):
+        response, block, result = market_simulation()
+        mutations = [lambda r: r['tx'].update(to=OWNER), lambda r: r['tx'].update(**{'from': pool.STABLE}),
+                     lambda r: r['tx'].update(value='1'), lambda r: r['tx'].update(minReceiveAmount='1'),
+                     lambda r: r['tx'].update(data='0xdeadbeef'), lambda r: r['routerResult'].update(action='warn')]
+        for mutate in mutations:
+            changed = copy.deepcopy(response)
+            mutate(changed)
+            with self.subTest(mutation=mutate), self.assertRaises(ValueError):
+                plan.reference_quote(changed, CONFIG, block, plan.MARKET_ROUTER_SHA, result)
+        for code_sha, returned in [('changed-code', result), (plan.MARKET_ROUTER_SHA, '0x1'),
+                                   (plan.MARKET_ROUTER_SHA, '0x' + '00' * 32)]:
+            with self.assertRaises(ValueError):
+                plan.reference_quote(response, CONFIG, block, code_sha, returned)
+        observed = plan.reference_quote(response, CONFIG, block, plan.MARKET_ROUTER_SHA, result)
+        observed['data'][0]['onchainReference']['call']['value'] = '0x1'
+        with self.assertRaisesRegex(ValueError, 'reference changed'):
+            plan.quote_context(observed, CONFIG, 11844, 102, 1800001201, quote_timestamp=1800001200)
+
     def test_spent_seed_is_not_bought_again_and_all_gross_caps_still_add_to_original_limit(self):
         self.assertNotIn('seed', plan.STEPS)
         self.assertEqual(len(plan.STEPS), 18)

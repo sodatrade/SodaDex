@@ -36,4 +36,4 @@ V4 固定 `0.8.26+commit.8a97fa7a`，复制原 Foundry 设置：Cancun、via IR�
 
 `build.json.artifacts` 提供六个部署产物的相对路径、文件摘要、creation/runtime 对象摘要、大小和编译设置；`canonicalSources` 使用仓库相对路径和 SHA256。仅本地测试的 harness 放在 `testArtifacts`。`unmodified` 记录旧 Factory/Pool/Router 源码与产物摘要。编译与测试均不连接远端 RPC、不访问钱包、不签名、不部署真实合约。
 
-`compiler-inputs.tar.gz` 包含完整标准 JSON 编译输入和对应依赖的许可证文本，便于公开源码和浏览器验证；`local-test-evidence.json` 记录真实本地部署及元数据 gas 对照，`metadata-evidence/` 保存解码 JSON/SVG。这些生成文件位于忽略目录，不应把本地测试地址当作链上部署地址。提交中的 `compiler-inputs.tar.gz` 是对应源码归档快照，最终部署版本应同时保留其构建 manifest、链接地址和 constructor 参数。
+`compiler-inputs.tar.gz` 包含完整标准 JSON 编译输入和对应依赖的许可证文本，便于公开源码和浏览器验证；归档不含本机绝对路径，相同输入在不同 staging 目录构建的 manifest 与归档摘要一致；`local-test-evidence.json` 记录真实本地部署及元数据 gas 对照，`metadata-evidence/` 保存解码 JSON/SVG。这些生成文件位于忽略目录，不应把本地测试地址当作链上部署地址。提交中的 `compiler-inputs.tar.gz` 是对应源码归档快照，最终部署版本应同时保留其构建 manifest、链接地址和 constructor 参数。

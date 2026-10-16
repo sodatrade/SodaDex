@@ -52,6 +52,15 @@ def write_json(path, value):
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + '\n')
 
 
+def portable_input(value):
+    """Keep complete solc input; Foundry's host-path hints are CLI options."""
+    result = {key: value[key] for key in ('language', 'sources', 'settings')}
+    require(result['language'] == 'Solidity' and result['sources'], 'Incomplete compiler input')
+    require(all(isinstance(source.get('content'), str) for source in result['sources'].values()),
+            'Compiler input must include every source file')
+    return result
+
+
 def fetch(url, path, expected, algorithm='sha256'):
     if not path.exists():
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -240,7 +249,7 @@ return (SodaMetadata.json(string(raw)),SodaMetadata.xml(string(raw))); } }
     stage4 = workspace / 'v4'
     if stage4.exists():
         shutil.rmtree(stage4)
-    shutil.copytree(periphery, stage4, ignore=shutil.ignore_patterns('.git', 'foundry-out', 'out', 'cache', 'node_modules', '.forge-snapshots'))
+    shutil.copytree(periphery, stage4, ignore=shutil.ignore_patterns('.git', 'foundry-out', 'out', 'cache', 'build-info', 'node_modules', '.forge-snapshots'))
     harness = 'pragma solidity ^0.8.26; import {Descriptor} from "./libraries/Descriptor.sol"; contract SodaMetadataHarness { function constructTokenURI(Descriptor.ConstructTokenURIParams calldata p) external pure returns(string memory) { return Descriptor.constructTokenURI(p); } }'
     (stage4 / 'src/SodaMetadataHarness.sol').write_text('// SPDX-License-Identifier: MIT\n' + harness + '\n')
     config = (stage4 / 'foundry.toml').read_text().replace('compilation_restrictions = [', 'compilation_restrictions = [\n  { paths = "src/SodaMetadataHarness.sol", optimizer_runs = 1 },', 1)
@@ -267,8 +276,10 @@ return (SodaMetadata.json(string(raw)),SodaMetadata.xml(string(raw))); } }
     for path in sorted((stage4 / 'build-info').glob('*.json')):
         record = json.loads(path.read_text())
         if 'input' in record:
-            output = workspace / 'inputs' / ('v4-' + path.name)
-            write_json(output, record['input'])
+            value = portable_input(record['input'])
+            digest = sha(json.dumps(value, sort_keys=True).encode())[:16]
+            output = workspace / 'inputs' / ('v4-' + digest + '.json')
+            write_json(output, value)
             build_inputs.append(str(output.relative_to(workspace)))
     require(build_inputs, 'Foundry omitted complete standard JSON inputs')
     artifacts['universalRouter'] = normalize(json.loads((ur / 'out/UniversalRouter.sol/UniversalRouter.json').read_text()))
@@ -290,6 +301,8 @@ return (SodaMetadata.json(string(raw)),SodaMetadata.xml(string(raw))); } }
     require(immutable_hashes == {str(p.relative_to(source_root)): sha(p.read_bytes()) for p in immutable}, 'Existing Factory/Pool/Router sources or artifacts changed during build')
     manifest['unmodified'] = immutable_hashes
     licenses = workspace / 'licenses'
+    if licenses.exists():
+        shutil.rmtree(licenses)
     licenses.mkdir(exist_ok=True)
     for label, folder in [('v3', stage3), ('v4', stage4), ('universal-router', ur)]:
         for p in folder.rglob('*'):
