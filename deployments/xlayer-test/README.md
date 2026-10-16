@@ -14,6 +14,8 @@
 
 owner 的公开地址记录在 `plan.json`。本机加密 keystore 位于 `~/.local/share/sodadex/wallets/xlayer-test-owner/owner`，目录权限为 0700，密钥与本地解锁文件权限为 0600，均在仓库外。预演脚本不读取或解密钱包。
 
+部署 gas 必须是 **X Layer 主网（chain ID 196）的原生 OKB**。同一 owner 地址在 Ethereum 上的 ERC-20 OKB 不会自动成为 X Layer 余额；转账或提币时必须确认所选网络为 X Layer。实际广播前重新读取目标链余额并核算费用，不能把其他网络上的余额计入部署预算。
+
 ## 固定来源与构建
 
 v3 使用官方 npm 发布 artifacts：`@uniswap/v3-core@1.0.1` 和 `@uniswap/v3-periphery@1.4.4`。保留原字节码，使 Pool init code hash 与官方 SDK 一致。完整来源、下载完整性校验及构造 ABI 见本机 `.analysis/v3-deployment-research.json`。
@@ -73,6 +75,6 @@ python3 scripts/sodadex/rehearse-xlayer-test.py
 
 网页基础标题、分享元数据与钱包连接显示名已标为 `SodaDex Test`。自有合约接入后，页面顶部还应持续显示“SodaDex 测试版 · X Layer 主网（196）”，交易确认页列出实际测试合约地址并提供浏览器链接；正式版使用另一组部署记录。
 
-当前前端仍调用上游 Uniswap 服务和官方合约。自有流动性不能仅靠替换交易的 `to` 地址接入；还需接入对应的报价、授权、LP 操作和持仓查询，并按自有 PoolManager 隔离 v4 池数据。完成这些步骤前不能把网页视为已接入 SodaDex 自有流动性。
+保留的上游 `apps/web` 使用 Uniswap 服务；已发布的 `standalone/web` 是独立只读界面，仅使用指定 RPC 查询网络与余额，兑换和 LP 操作尚未开放。自有流动性不能仅靠替换交易的 `to` 地址接入；还需接入对应的报价、授权、LP 操作和持仓查询，并按自有 PoolManager 隔离 v4 池数据。完成这些步骤前不能把网页视为已接入 SodaDex 自有流动性。
 
 本次不创建池或注入流动性。这一步还需要第二种现有资产、初始价格、金额与价格范围。主网部署、真实资产买卖和浏览器交易验收均未完成。
