@@ -9,6 +9,7 @@ import { Context, Next } from 'hono'
 import { encode } from 'html-entities'
 import type { ProtocolVersionLabel } from 'uniswap/src/features/positions/utils'
 import { withTimeout } from 'uniswap/src/utils/polling'
+import { APP_DESCRIPTION, APP_DISPLAY_NAME } from '~/branding'
 import { paths } from '~/pages/paths'
 import { MetaTagInjectorInput } from '~/shared-cloud/metatags'
 
@@ -247,18 +248,17 @@ export async function metaTagInjectionMiddleware(c: Context, next: Next): Promis
     } else if (pathname === '/launches') {
       // English on purpose (like the default card below): crawlers read OG tags once per URL and don't reliably send Accept-Language.
       data = {
-        title: 'Token launches on Uniswap',
+        title: `Token launches on ${APP_DISPLAY_NAME}`,
         image: defaultImageUri(requestURL.origin),
         url: canonicalUrl,
         description: 'Discover and trade new token launches across launchpads, all in one place.',
       }
     } else {
       data = {
-        title: 'Uniswap Interface',
+        title: APP_DISPLAY_NAME,
         image: defaultImageUri(requestURL.origin),
         url: canonicalUrl,
-        description:
-          'Swap crypto on Ethereum, Base, Arbitrum, Polygon, Unichain and more. The DeFi platform trusted by millions.',
+        description: APP_DESCRIPTION,
       }
     }
 

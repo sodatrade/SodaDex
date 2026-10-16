@@ -1,0 +1,50 @@
+{
+  "name": "SodaDex Test",
+  "phase": "test",
+  "status": "not-deployed",
+  "chainId": 196,
+  "network": "X Layer mainnet",
+  "rpcUrl": "https://rpc.xlayer.tech",
+  "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+  "nativeCurrency": "OKB",
+  "wrappedNative": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+  "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+  "requestedFees": {
+    "interfaceFeeBps": 0,
+    "protocolFee": 0,
+    "v3PoolFee": 100,
+    "v3TickSpacing": 1,
+    "v4PoolFee": 0,
+    "v4Hooks": "0x0000000000000000000000000000000000000000"
+  },
+  "v4UnsubscribeGasLimit": 300000,
+  "v4UnsubscribeGasLimitSource": "Official X Layer PositionManager getter at block 73352090; this is a callback limit, not a deployment budget.",
+  "versions": {
+    "v3Core": "@uniswap/v3-core@1.0.1",
+    "v3Periphery": "@uniswap/v3-periphery@1.4.4",
+    "universalRouter": "802fe4c18f47300e0f183e2a42e9146ec2ea9fc3",
+    "v4Periphery": "545a5d2a87228167edde48f3b9eda122d1e3c4d6",
+    "v4Core": "59d3ecf53afa9264a16bba0e38f4c5d2231f80bc"
+  },
+  "contracts": {},
+  "pool": null,
+  "applicationIntegration": "pending; the upstream application still uses official Uniswap services and deployments",
+  "productionDeployment": "deferred",
+  "artifactBytecodeSha256": {
+    "UniswapV3Factory": "597622608d56a37995be202df633ea0246c5e2fc8b107aceefadf100caab4910",
+    "NFTDescriptor": "f8a8133a80dfcc8fc90a0f01ac26f7cf00ef998fbb8e8e841f0c9db1548d1b8c",
+    "NonfungibleTokenPositionDescriptor": "7d333601104170ad1cd9c69e7180302b727191b229bd5f331a640d41caeaeb3a",
+    "NonfungiblePositionManager": "b867ee29e38d88c1c8198ceb73955415c90398a35b4bd9fb66e3369edc54922c",
+    "QuoterV2": "afdd98607396404d3b910774efa80976efe4bdd9116c47e3f05ae2f23269e044",
+    "UniswapV3Pool": "888deca479325b2bdfed6c48f6ced356271fcba13e09d864a2f6986d8097fe43",
+    "PoolManager": "12bd19d9cb4816309444167763bfd7e5c70cf1368aee7d3a9050817066ec44d3",
+    "PositionManager": "d80e9100942ded788c07849abbc0a73a0772eb80094356692872fa1ef9938d5c",
+    "PositionDescriptor": "c87afb658565add37fdb5fefd318fa7fef398bc70ff8e1f4d1221e1e350f0153",
+    "V4Quoter": "f5f81033bf91face570cc4ed47e90108751e1e08c3ab92d20342b1fbbe0185ff",
+    "StateView": "c8e5aa119b9cfaa763082f30ab9702b59dbb4928c761e9201ce4921fcc42e483",
+    "UniversalRouter": "d783a28ee9cb5bbf80fc1a0c741034c867d63850d068d61b8f568ca6a00a8f86",
+    "UnsupportedProtocol": "5be1547e43fe7795f859078d04e2b0d0c5bf81675f1ecfab0322c3a4509ba067"
+  },
+  "gasBudgetOKB": "0.001",
+  "gasBudgetStatus": "user-approved; awaiting funding"
+}

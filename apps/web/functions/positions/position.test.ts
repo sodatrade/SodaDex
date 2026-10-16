@@ -28,7 +28,7 @@ test.each(positions)('should inject metadata for valid positions', async (positi
   expect(body).toContain(`<meta property="twitter:title" content="${position.name} on Uniswap" data-rh="true">`)
   expect(body).toContain(`<meta property="twitter:image" content="${image}" data-rh="true">`)
   // The default fallback card must not win.
-  expect(body).not.toContain('<meta property="og:title" content="Uniswap Interface" data-rh="true">')
+  expect(body).not.toContain('<meta property="og:title" content="SodaDex Test" data-rh="true">')
 })
 
 const invalidPositions = [

@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router'
-import i18n from 'uniswap/src/i18n'
+import { APP_DESCRIPTION, APP_DISPLAY_NAME } from '~/branding'
 import { MetaTagInjectorInput } from '~/shared-cloud/metatags'
 
 const DEFAULT_METATAGS: MetaTagInjectorInput = {
-  title: i18n.t('interface.metatags.title'),
-  description: i18n.t('interface.metatags.description'),
-  image: `https://app.uniswap.com/images/1200x630_Rich_Link_Preview_Image.png`,
-  url: 'https://app.uniswap.com',
+  title: APP_DISPLAY_NAME,
+  description: APP_DESCRIPTION,
+  image: '/images/1200x630_Rich_Link_Preview_Image.png',
+  url: '',
 }
 
 type MetatagAttributes = { property?: string; name?: string; content: string }
@@ -23,10 +23,11 @@ export function useDynamicMetatags(metaTags: MetaTagInjectorInput = DEFAULT_META
   const [metaTagAttributes, setMetaTagAttributes] = useState<MetatagAttributes[]>([])
   const location = useLocation()
   useEffect(() => {
-    metaTags.url = window.location.href
+    const url = window.location.href
+    const image = metaTags.image ? new URL(metaTags.image, window.location.origin).href : undefined
     const attributes: MetatagAttributes[] = [
       { property: 'og:title', content: metaTags.title },
-      { property: 'og:url', content: metaTags.url },
+      { property: 'og:url', content: url },
       { property: 'twitter:title', content: metaTags.title },
     ]
     if (metaTags.description) {
@@ -35,11 +36,11 @@ export function useDynamicMetatags(metaTags: MetaTagInjectorInput = DEFAULT_META
         { name: 'description', content: metaTags.description },
       )
     }
-    if (metaTags.image) {
+    if (image) {
       attributes.push(
-        { property: 'og:image', content: metaTags.image },
+        { property: 'og:image', content: image },
         { property: 'og:image:alt', content: metaTags.title },
-        { property: 'twitter:image', content: metaTags.image },
+        { property: 'twitter:image', content: image },
         { property: 'twitter:image:alt', content: metaTags.title },
       )
     }

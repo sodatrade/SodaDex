@@ -1,4 +1,21 @@
-# Uniswap Labs: Front End Interfaces
+# SodaDex
+
+SodaDex is a fork of [Uniswap/interface](https://github.com/Uniswap/interface), maintained in [sodatrade/SodaDex](https://github.com/sodatrade/SodaDex).
+
+The current application is labelled **SodaDex Test**. The first independent contract deployment is planned for **Uniswap v3/v4 on X Layer mainnet (chain ID 196)**. Contracts have not been deployed or connected to this interface yet. Existing upstream APIs and contract mappings still refer to Uniswap deployments.
+
+The source baseline is `web/5.166.0`, commit `6f54d9a474a6036e7043ed52f2a9359003c96c9c`. Preserve upstream licences, notices, protocol identifiers, and SDK package names.
+
+```bash
+git clone https://github.com/sodatrade/SodaDex.git
+cd SodaDex
+```
+
+Use the Node and Bun versions in `.nvmrc` and `.bun-version`. The current public upstream snapshot references a missing `tools/uniswap-nx` workspace, so `bun install --frozen-lockfile` fails before installing dependencies. The full application checks have not passed; do not treat this checkout as a validated deployment.
+
+## Upstream documentation
+
+### Uniswap Labs: Front End Interfaces
 
 This is the **public** repository for Uniswap Labs’ front-end interfaces, including the Web App, Wallet Mobile App, and Wallet Extension. Uniswap is a protocol for decentralized exchange of Ethereum-based assets.
 

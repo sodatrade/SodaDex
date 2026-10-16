@@ -11,6 +11,7 @@ import { ResetPortfolioChainOnEntryEffect } from '~/app/bootstrap/ResetPortfolio
 import { UserPropertyUpdater } from '~/app/bootstrap/UserPropertyUpdater'
 import { Body } from '~/app/layout/Body'
 import { AppLayout } from '~/app/layout/Layout'
+import { APP_DISPLAY_NAME } from '~/branding'
 import { ErrorBoundary } from '~/components/ErrorBoundary'
 import { useFeatureFlagUrlOverrides } from '~/featureFlags/useFeatureFlagUrlOverrides'
 import { useDynamicMetatags } from '~/pages/metatags'
@@ -41,7 +42,7 @@ export function App() {
   }, [])
 
   const metaTags = useDynamicMetatags()
-  const staticTitle = findRouteByPath(pathname)?.getTitle(pathname) ?? 'Uniswap Interface'
+  const staticTitle = findRouteByPath(pathname)?.getTitle(pathname) ?? APP_DISPLAY_NAME
   const staticDescription = findRouteByPath(pathname)?.getDescription(pathname)
 
   // redirect address to landing pages until implemented

@@ -2,6 +2,7 @@ import type { CreateConnectorFn } from 'wagmi'
 import { walletConnect } from 'wagmi/connectors'
 import {
   INTERFACE_WC_STORAGE_PREFIX,
+  makeWcParams,
   UNISWAP_WALLET_WC_STORAGE_PREFIX,
   uniswapWalletConnect,
 } from '~/connection/walletConnect'
@@ -16,6 +17,14 @@ vi.mock('wagmi/connectors', () => ({
 // active session (INC-316). Both call sites read these constants, so distinctness here is the
 // invariant that keeps the two relay identities isolated.
 describe('WalletConnect connector storage isolation', () => {
+  it('identifies the test app and the actual requesting origin to the wallet', () => {
+    const { metadata } = makeWcParams()
+
+    expect(metadata.name).toBe('SodaDex Test')
+    expect(metadata.url).toBe(window.location.origin)
+    expect(metadata.icons).toEqual([`${window.location.origin}/favicon.png`])
+  })
+
   it('keeps the two web WC connectors on distinct storage prefixes', () => {
     expect(UNISWAP_WALLET_WC_STORAGE_PREFIX).toBeTruthy()
     expect(INTERFACE_WC_STORAGE_PREFIX).toBeTruthy()
