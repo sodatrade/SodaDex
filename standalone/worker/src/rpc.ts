@@ -1,6 +1,12 @@
 // The user-selected node rejects browser Origin headers. Only this server
 // adapter knows the upstream; browsers always request the same-origin /api/rpc.
-export const RPC_URL = 'https://rpc.ignix.bot/rpc/196'
+import { call, RPC_URL } from './upstream'
+export { RPC_URL } from './upstream'
+import { contractReadKind } from './contract-reads'
+import { deployment, FACTORY_READ, pools, record as isRecord, same, V3_POOL_READ } from './contracts'
+import { validLogFilter } from './logs'
+import { validLiquidityContext } from './lp-context'
+import { validLiquidityRequest } from './lp-requests'
 import { validContractRequest } from './trade-requests'
 const ADDRESS = /^0x[0-9a-fA-F]{40}$/
 const BLOCK = /^(latest|safe|finalized|pending|0x[0-9a-fA-F]+)$/
@@ -23,6 +29,7 @@ function validParams(method: string, params: unknown[]): boolean {
   if (EMPTY_METHODS.has(method)) return params.length === 0
   if (method === 'eth_getTransactionReceipt') return params.length === 1 && typeof params[0] === 'string' && /^0x[0-9a-fA-F]{64}$/.test(params[0])
   if (method === 'eth_getBlockByNumber') return params.length === 2 && typeof params[0] === 'string' && BLOCK.test(params[0]) && params[1] === false
+  if (method === 'eth_getLogs') return params.length === 1 && validLogFilter(params[0])
   if (method === 'eth_estimateGas') return params.length === 1 && validContractRequest(params[0], true)
   if (params.length !== 2 || typeof params[1] !== 'string' || !BLOCK.test(params[1])) return false
   if (method === 'eth_getBalance' || method === 'eth_getCode') {
@@ -82,6 +89,19 @@ export async function proxyRpc(request: Request, upstreamFetch: typeof fetch = f
   if (!rpc) return rpcError(null, -32600, 'Unsupported read request', 400)
 
   try {
+    if ((rpc.method === 'eth_call' || rpc.method === 'eth_estimateGas') && isRecord(rpc.params[0])) {
+      const tx = rpc.params[0]
+      if (typeof tx.from === 'string' && typeof tx.to === 'string' && typeof tx.data === 'string' && validLiquidityRequest(tx.to, tx.data as `0x${string}`, tx.from, BigInt(String(tx.value ?? '0x0'))) &&
+        !await validLiquidityContext(tx.to, tx.data as `0x${string}`, tx.from, BigInt(String(tx.value ?? '0x0')), String(rpc.params[1] ?? 'latest'), upstreamFetch)) return rpcError(rpc.id, -32600, 'LP ownership or currencies do not match', 400)
+    }
+    if (rpc.method === 'eth_call' && isRecord(rpc.params[0]) && typeof rpc.params[0].to === 'string' && typeof rpc.params[0].data === 'string' && contractReadKind(rpc.params[0].to, rpc.params[0].data as `0x${string}`) === 'pool') {
+      if (!same(rpc.params[0].to, pools.v3.address)) {
+        const [factory, token0, token1, fee] = await Promise.all(['factory', 'token0', 'token1', 'fee'].map((name) => call(V3_POOL_READ, String((rpc.params[0] as Record<string, unknown>).to), name, [], String(rpc.params[1]), upstreamFetch)))
+        if (typeof factory !== 'string' || !same(factory, deployment.contracts.v3Factory)) return rpcError(rpc.id, -32600, 'Foreign pool', 400)
+        const registered = await call(FACTORY_READ, deployment.contracts.v3Factory, 'getPool', [token0, token1, fee], String(rpc.params[1]), upstreamFetch)
+        if (typeof registered !== 'string' || !same(registered, rpc.params[0].to)) return rpcError(rpc.id, -32600, 'Foreign pool', 400)
+      }
+    }
     const upstream = await upstreamFetch(RPC_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'User-Agent': 'SodaDex/1.0' },

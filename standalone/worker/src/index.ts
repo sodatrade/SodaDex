@@ -1,4 +1,5 @@
 import { proxyRpc } from './rpc'
+import { dexApi } from './dex-api'
 import preferencesScript from '../../web/dist/preferences-script.json'
 
 interface Env {
@@ -8,6 +9,7 @@ interface Env {
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const path = new URL(request.url).pathname
+    if (path.startsWith('/api/dex/')) return dexApi(request)
     if (path === '/api/rpc') return proxyRpc(request)
     if (path.startsWith('/api/')) return Response.json({ error: 'Not found' }, { status: 404 })
     const response = await env.ASSETS.fetch(request)

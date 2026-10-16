@@ -2,6 +2,8 @@ import { decodeAbiParameters, decodeFunctionData, encodeAbiParameters, encodeFun
 import deployment from '../../../deployments/xlayer-test/active.json'
 import pools from '../../../deployments/xlayer-test/pools.json'
 import { publicSwapsEnabled } from '../../trading-policy'
+import { contractReadKind } from './contract-reads'
+import { validLiquidityRequest } from './lp-requests'
 
 const ZERO = '0x0000000000000000000000000000000000000000'
 const ROUTER = deployment.contracts.universalRouter.toLowerCase()
@@ -83,6 +85,15 @@ export function validContractRequest(value: unknown, simulation: boolean): boole
   const to = value.to.toLowerCase(), data = value.data as Hex
   const amount = BigInt((value.value as string | undefined) ?? '0x0')
   try {
+    if (!simulation && amount === 0n && contractReadKind(to, data)) return true
+    if (typeof value.from === 'string' && validLiquidityRequest(to, data, value.from, amount)) return true
+    if (to !== PERMIT2 && amount === 0n) {
+      try {
+        const approval = decodeFunctionData({ abi: ERC20, data })
+        if (approval.functionName === 'approve' && same(encodeFunctionData({ abi: ERC20, functionName: approval.functionName, args: approval.args }), data) && typeof value.from === 'string' &&
+          [PERMIT2, deployment.contracts.v3PositionManager.toLowerCase()].includes(approval.args[0].toLowerCase()) && (approval.args[1] === 0n || positive(approval.args[1]))) return true
+      } catch { /* Other selectors continue through the protocol-specific boundary. */ }
+    }
     if (TOKENS.has(to)) {
       if (amount !== 0n) return false
       if (!simulation && (/^0x(313ce567|95d89b41|06fdde03)$/.test(data) || /^0x70a082310{24}[0-9a-fA-F]{40}$/.test(data))) return true
@@ -95,7 +106,9 @@ export function validContractRequest(value: unknown, simulation: boolean): boole
     if (to === PERMIT2 && amount === 0n) {
       const decoded = decodeFunctionData({ abi: PERMITS, data })
       if (!same(encodeFunctionData({ abi: PERMITS, functionName: decoded.functionName, args: decoded.args }), data)) return false
-      if (decoded.functionName === 'allowance') return !simulation && same(decoded.args[1], STABLE) && same(decoded.args[2], ROUTER)
+      if (decoded.functionName === 'allowance') return !simulation && (same(decoded.args[2], ROUTER) || same(decoded.args[2], deployment.contracts.v4PositionManager))
+      if (typeof value.from === 'string' && same(decoded.args[1], deployment.contracts.v4PositionManager)) return decoded.args[2] === 0n || (positive(decoded.args[2]) && decoded.args[3] > 0)
+      if (typeof value.from === 'string' && same(decoded.args[1], ROUTER) && decoded.args[2] === 0n) return true
       return publicSwapsEnabled() && typeof value.from === 'string' && same(decoded.args[0], STABLE) && same(decoded.args[1], ROUTER) && positive(decoded.args[2]) && decoded.args[3] > 0
     }
     if (!simulation && to === deployment.contracts.v3Quoter.toLowerCase() && amount === 0n) {

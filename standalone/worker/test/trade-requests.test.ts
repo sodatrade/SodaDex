@@ -42,7 +42,6 @@ describe('verified pool RPC boundary', () => {
     const tokenAbi = parseAbi(['function approve(address,uint256)'])
     const permitAbi = parseAbi(['function approve(address,address,uint160,uint48)'])
     const approvals = [
-      { from: owner, to: stable, data: encodeFunctionData({ abi: tokenAbi, functionName: 'approve', args: [deployment.permit2 as Address, 100n] }) },
       { from: owner, to: deployment.permit2, data: encodeFunctionData({ abi: permitAbi, functionName: 'approve', args: [stable, router, 100n, 2_000_000_000] }) },
     ]
     for (const tx of [v3(true), v3(false), v4(true), v4(false), ...approvals]) {
