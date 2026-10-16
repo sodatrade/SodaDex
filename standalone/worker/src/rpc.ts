@@ -90,7 +90,8 @@ export async function proxyRpc(request: Request, upstreamFetch: typeof fetch = f
       headers: { 'Content-Type': 'application/json', 'User-Agent': 'SodaDex/1.0' },
       body: JSON.stringify(rpc),
       signal: AbortSignal.timeout(12_000),
-      redirect: 'error',
+      // Workers supports manual/follow. A redirect is rejected by !upstream.ok.
+      redirect: 'manual',
     })
     if (!upstream.ok) return rpcError(rpc.id, -32000, 'RPC temporarily unavailable', 502)
     const value: unknown = await upstream.json()
@@ -101,7 +102,8 @@ export async function proxyRpc(request: Request, upstreamFetch: typeof fetch = f
       typeof value.error.code !== 'number' || !Number.isInteger(value.error.code) ||
       typeof value.error.message !== 'string'))) return rpcError(rpc.id, -32000, 'Invalid RPC response', 502)
     return Response.json(value, { headers: { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' } })
-  } catch {
+  } catch (error) {
+    console.warn('RPC transport failed:', error instanceof Error ? error.message : 'unknown error')
     return rpcError(rpc.id, -32000, 'RPC temporarily unavailable', 502)
   }
 }

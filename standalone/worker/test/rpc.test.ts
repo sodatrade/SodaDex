@@ -17,7 +17,7 @@ describe('same-origin X Layer read proxy', () => {
     const [url, options] = upstream.mock.calls[0]
     expect(url).toBe(RPC_URL)
     expect(options?.headers).toEqual({ 'Content-Type': 'application/json', 'User-Agent': 'SodaDex/1.0' })
-    expect(options?.redirect).toBe('error')
+    expect(options?.redirect).toBe('manual')
   })
 
   it.each(['eth_sendRawTransaction', 'eth_sendTransaction', 'personal_sign', 'eth_signTypedData_v4', 'debug_traceCall'])('never forwards %s', async (method) => {
@@ -56,6 +56,13 @@ describe('same-origin X Layer read proxy', () => {
       expect(response.status).toBe(502)
       expect(await response.json()).toEqual({ jsonrpc: '2.0', id: 7, error: { code: -32000, message: 'RPC temporarily unavailable' } })
     }
+  })
+
+  it('does not follow an upstream redirect to another node', async () => {
+    const upstream = vi.fn<typeof fetch>().mockResolvedValue(new Response(null, { status: 302, headers: { Location: 'https://other.example' } }))
+    expect((await proxyRpc(request(rpc('eth_chainId')), upstream)).status).toBe(502)
+    expect(upstream).toHaveBeenCalledOnce()
+    expect(upstream.mock.calls[0][1]?.redirect).toBe('manual')
   })
 
   it('rejects foreign origins, malformed parameters and oversized bodies without upstream access', async () => {

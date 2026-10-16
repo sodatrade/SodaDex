@@ -23,6 +23,16 @@ npm --prefix standalone/web run build
 npm --prefix standalone/worker run check
 ```
 
+真实浏览器验收使用本机 `playwright-cli`。先启动本地站点，再在仓库根目录执行：
+
+```sh
+playwright-cli -s=sodadex-acceptance open http://localhost:8787
+playwright-cli -s=sodadex-acceptance run-code --filename=standalone/acceptance/smoke.js
+playwright-cli -s=sodadex-acceptance close
+```
+
+该脚本使用隔离的模拟钱包和模拟 RPC，覆盖 1440/768/390 宽度、资产搜索、协议选择、明暗外观、余额、切链、撤销授权和节点失败。它不会签名或发送链上交易；实际 RPC 连通性需另行验证。
+
 ## 测试发布
 
 `worker/wrangler.jsonc` 只配置 `sodadex-preview` 的 `workers.dev` 地址。没有自定义域名、Cron 或自动发布 CI。人工发布前，先完成上述检查与浏览器验收，再运行：
