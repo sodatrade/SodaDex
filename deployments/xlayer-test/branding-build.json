@@ -1,0 +1,239 @@
+{
+  "project": "SodaDEX",
+  "modificationDate": "2026-10-16",
+  "versions": {
+    "universalRouter": "802fe4c18f47300e0f183e2a42e9146ec2ea9fc3",
+    "v3Periphery": "697c2474757ea89fec12a4e6db16a574fe259610",
+    "v4Periphery": "545a5d2a87228167edde48f3b9eda122d1e3c4d6"
+  },
+  "compilers": {
+    "v3": {
+      "sha256": "a6a8f9f9388c5fcd9222474e00270242c832e936b0f5257c20374d27ee5bd1ab",
+      "version": "0.7.6+commit.7338295f"
+    },
+    "v4": {
+      "sha256": "0ff016aef2396b12d1fc65429d8ea6cf53c2ee4b041bb8925644615ee1c30ab9",
+      "version": "0.8.26+commit.8a97fa7a"
+    }
+  },
+  "v3BaselineExactBytecodeMatches": [
+    "v3NFTDescriptor",
+    "v3TokenDescriptor",
+    "v3PositionManager"
+  ],
+  "canonicalSources": {
+    "contracts/sodadex-branding/common/SodaMetadata.sol": "a55e18882210fcbc26782904c9c9d1e9bc7ae28253b71691b3b4ed33d78bffcd",
+    "contracts/sodadex-branding/common/SodaSVG.sol": "85293f7a0cdcbefe544abb3345d839f42abc68225eb4e755ad523604aa4bad27",
+    "contracts/sodadex-branding/v3/NonfungiblePositionManager.sol": "e77b29466739f534b6f00decaabe5eb936780d0e05ad314b8902ace005824554",
+    "contracts/sodadex-branding/v3/libraries/NFTDescriptor.sol": "d23bf5860d8b91d0aa89de89eb8167273ec45d2beaffbdd52922ecc8c47dffe3",
+    "contracts/sodadex-branding/v3/libraries/NFTSVG.sol": "140334fa4c167b8fd718fa9c613026ff6b870c0fd4d43ebf5f270bc5220a6e71",
+    "contracts/sodadex-branding/v4/PositionManager.sol": "9671b7b9a7b2b2d4e7cb13c803be1509125da422dd07966bf1e37af50c729001",
+    "contracts/sodadex-branding/v4/libraries/Descriptor.sol": "91902a04ec747a84db222f93712b086d7ee007fb429409aaa4e65c372bb6821c",
+    "contracts/sodadex-branding/v4/libraries/SVG.sol": "d166967906e03c99c79e32aebefd41458683b2948553d56329b354488ed10b8e"
+  },
+  "unmodified": {
+    ".analysis/upstream/universal-router-2.1.2/contracts/UniversalRouter.sol": "a5cb4897d7d7218c70ac8bc3f2bfbc88a863914ef98e5311389b0de85ed47441",
+    ".analysis/upstream/universal-router-2.1.2/lib/v4-periphery/lib/v4-core/out/PoolManager.sol/PoolManager.json": "95195456f5e0b40cd739250fba8df57cb9311323153340d79210de8e090cd620",
+    ".analysis/upstream/universal-router-2.1.2/lib/v4-periphery/lib/v4-core/src/PoolManager.sol": "3b6ab111dadf613e3cfd617e4b1c6ab75b5445cd15cbe52d7c6207fc02449717",
+    ".analysis/upstream/universal-router-2.1.2/out/UniversalRouter.sol/UniversalRouter.json": "f1c106bb420e0eb5d28c5a57366e53fffc233e6439586bffbc67fff0bb9eb59d",
+    ".analysis/upstream/v3-artifacts/v3-core-1.0.1/package/artifacts/contracts/UniswapV3Factory.sol/UniswapV3Factory.json": "599479f60ebb056804aff7b2d05bdd0830ddbb1fdfaa0b6c62c02294ca7188b0",
+    ".analysis/upstream/v3-artifacts/v3-core-1.0.1/package/artifacts/contracts/UniswapV3Pool.sol/UniswapV3Pool.json": "204fb2fa7ad1a639b1df5601f035f9924b064b721b97adf60c7d5d4712643e34",
+    ".analysis/upstream/v3-core/contracts/UniswapV3Factory.sol": "a9b78256f8a0ea95d464c96995015103e9681d0e1a144ab4e947d3de8715a38e",
+    ".analysis/upstream/v3-core/contracts/UniswapV3Pool.sol": "d515775b7f3ffe921dd70aca86b8bad16280fa4c122425d82b4dbea4dc564a7a"
+  },
+  "recordType": "public build fingerprint; reproduce executable artifacts with build-branding.py",
+  "buildManifestSha256": "4dd2f0d13658c8f75a67db20d6a405b07851556195b7b79ff3c2b418552b9b73",
+  "sourceCommit": "f9b6f3a65915e925dbe2c7aaa8e899c1b538c334",
+  "sourceBundle": {
+    "path": "../../contracts/sodadex-branding/compiler-inputs.tar.gz",
+    "sha256": "21ec0610c3c95345709810a138d16bc612d7a80df45a59c277be4cfbfa1fdb3b"
+  },
+  "artifacts": {
+    "universalRouter": {
+      "artifactSha256": "089e23bca55b1c02b688a94a63bd0b413828ff162d9bf58da7f80fcfb084f43e",
+      "baselineAbiPreserved": true,
+      "creationBytes": 26238,
+      "creationObjectSha256": "d783a28ee9cb5bbf80fc1a0c741034c867d63850d068d61b8f568ca6a00a8f86",
+      "runtimeBytes": 24380,
+      "runtimeObjectSha256": "1482543379c5db7cf5a9a460a5c53e60a8268e4b5479faea6a5774a9eb4ded72",
+      "settings": {
+        "compilationTarget": {
+          "contracts/UniversalRouter.sol": "UniversalRouter"
+        },
+        "evmVersion": "cancun",
+        "libraries": {},
+        "metadata": {
+          "bytecodeHash": "none"
+        },
+        "optimizer": {
+          "enabled": true,
+          "runs": 3000
+        },
+        "remappings": [
+          "@ensdomains/=lib/v4-periphery/lib/v4-core/node_modules/@ensdomains/",
+          "@openzeppelin/=lib/v4-periphery/lib/v4-core/lib/openzeppelin-contracts/",
+          "@uniswap/v2-core/=node_modules/@uniswap/v2-core/",
+          "@uniswap/v3-core/=node_modules/@uniswap/v3-core/",
+          "@uniswap/v3-periphery/=lib/v3-periphery/",
+          "@uniswap/v4-core/=lib/v4-periphery/lib/v4-core/",
+          "@uniswap/v4-periphery/=lib/v4-periphery/",
+          "ds-test/=lib/solmate/lib/ds-test/src/",
+          "erc4626-tests/=lib/v4-periphery/lib/v4-core/lib/openzeppelin-contracts/lib/erc4626-tests/",
+          "forge-gas-snapshot/=lib/permit2/lib/forge-gas-snapshot/src/",
+          "forge-std/=lib/forge-std/src/",
+          "hardhat/=lib/v4-periphery/lib/v4-core/node_modules/hardhat/",
+          "openzeppelin-contracts/=lib/permit2/lib/openzeppelin-contracts/",
+          "permit2/=lib/permit2/",
+          "solmate/=lib/solmate/",
+          "v3-periphery/=lib/v3-periphery/contracts/",
+          "v4-core/=lib/v4-periphery/lib/v4-core/src/",
+          "v4-periphery/=lib/v4-periphery/"
+        ],
+        "viaIR": true
+      }
+    },
+    "v3NFTDescriptor": {
+      "artifactSha256": "0cae9b286d00c4d7cdb3a5d56d3282fc56c836cf1b36c2bf99d0d1922a559075",
+      "baselineAbiPreserved": true,
+      "creationBytes": 13214,
+      "creationObjectSha256": "938bdd40f0fc4538eda8c594b6ff0611fde5b85bb9b3e9c78cd9b69cfc499731",
+      "runtimeBytes": 13176,
+      "runtimeObjectSha256": "b78b890598e3c35b1f68a7184223e8433a8e683caeb07b1fa297cf9da3790912",
+      "settings": {
+        "compilationTarget": {
+          "contracts/libraries/NFTDescriptor.sol": "NFTDescriptor"
+        },
+        "evmVersion": "istanbul",
+        "libraries": {},
+        "metadata": {
+          "bytecodeHash": "none"
+        },
+        "optimizer": {
+          "enabled": true,
+          "runs": 1000
+        },
+        "remappings": []
+      }
+    },
+    "v3PositionManager": {
+      "artifactSha256": "58791bbeea1f690a704c6a05687acbf2377b6f6f8bb413c5ab163f0098a4eb14",
+      "baselineAbiPreserved": true,
+      "creationBytes": 25497,
+      "creationObjectSha256": "d613925f9ce384987cb35689edb3dc030784ef13a7bfae1b7d7b885fecab0285",
+      "runtimeBytes": 24559,
+      "runtimeObjectSha256": "1a14d06e4db567fe8b1b3b99301aa63e8cacdeba6bbbcc43a5311f99183f420f",
+      "settings": {
+        "compilationTarget": {
+          "contracts/NonfungiblePositionManager.sol": "NonfungiblePositionManager"
+        },
+        "evmVersion": "istanbul",
+        "libraries": {},
+        "metadata": {
+          "bytecodeHash": "none"
+        },
+        "optimizer": {
+          "enabled": true,
+          "runs": 2000
+        },
+        "remappings": []
+      }
+    },
+    "v3TokenDescriptor": {
+      "artifactSha256": "e43ac7a0966f0b73e66f890d5c0b3394b8ab9dd2bbb7b2e158bfaea842bdb1b8",
+      "baselineAbiPreserved": true,
+      "creationBytes": 5504,
+      "creationObjectSha256": "7d333601104170ad1cd9c69e7180302b727191b229bd5f331a640d41caeaeb3a",
+      "runtimeBytes": 5311,
+      "runtimeObjectSha256": "9f95d324505b8b68d42bffd9d1851d8972eec166fa658fefe999bf909f16e61c",
+      "settings": {
+        "compilationTarget": {
+          "contracts/NonfungibleTokenPositionDescriptor.sol": "NonfungibleTokenPositionDescriptor"
+        },
+        "evmVersion": "istanbul",
+        "libraries": {},
+        "metadata": {
+          "bytecodeHash": "none"
+        },
+        "optimizer": {
+          "enabled": true,
+          "runs": 1000
+        },
+        "remappings": []
+      }
+    },
+    "v4Descriptor": {
+      "artifactSha256": "573330224256468b0bf44b2c3e789068b2933e8a298ef97bdd986e582e5cb217",
+      "baselineAbiPreserved": true,
+      "creationBytes": 15057,
+      "creationObjectSha256": "9e03a30f4d1cebf95e9c33bb8dac7fb1579c085e55f13ce4b9cae22b83bb2d91",
+      "runtimeBytes": 14852,
+      "runtimeObjectSha256": "bc4620aa29d5535e7275c98d4400f57a44ba5be2c4cf9faed185ab34bca1ff2f",
+      "settings": {
+        "compilationTarget": {
+          "src/PositionDescriptor.sol": "PositionDescriptor"
+        },
+        "evmVersion": "cancun",
+        "libraries": {},
+        "metadata": {
+          "bytecodeHash": "none"
+        },
+        "optimizer": {
+          "enabled": true,
+          "runs": 1
+        },
+        "remappings": [
+          "@ensdomains/=lib/v4-core/node_modules/@ensdomains/",
+          "@openzeppelin/=lib/v4-core/lib/openzeppelin-contracts/",
+          "@uniswap/v4-core/=lib/v4-core/",
+          "ds-test/=lib/v4-core/lib/forge-std/lib/ds-test/src/",
+          "erc4626-tests/=lib/v4-core/lib/openzeppelin-contracts/lib/erc4626-tests/",
+          "forge-gas-snapshot/=lib/permit2/lib/forge-gas-snapshot/src/",
+          "forge-std/=lib/v4-core/lib/forge-std/src/",
+          "hardhat/=lib/v4-core/node_modules/hardhat/",
+          "openzeppelin-contracts/=lib/v4-core/lib/openzeppelin-contracts/",
+          "permit2/=lib/permit2/",
+          "solmate/=lib/v4-core/lib/solmate/",
+          "v4-core/=lib/v4-core/src/"
+        ],
+        "viaIR": true
+      }
+    },
+    "v4PositionManager": {
+      "artifactSha256": "a1212f69a0e52234a80f48b8ea4dd459fb2f8c6ce4b66eee35e3acfb3f45fcf8",
+      "baselineAbiPreserved": true,
+      "creationBytes": 21452,
+      "creationObjectSha256": "bc93743ec60186fea5d174de450f0bddfe22e27ccd2d2e25bf4127acc1d14161",
+      "runtimeBytes": 20078,
+      "runtimeObjectSha256": "a2243c0403b80ecf981b7934edf0b98594595c38c4dbc788943f8f080fa9996a",
+      "settings": {
+        "compilationTarget": {
+          "src/PositionManager.sol": "PositionManager"
+        },
+        "evmVersion": "cancun",
+        "libraries": {},
+        "metadata": {
+          "bytecodeHash": "none"
+        },
+        "optimizer": {
+          "enabled": true,
+          "runs": 500
+        },
+        "remappings": [
+          "@ensdomains/=lib/v4-core/node_modules/@ensdomains/",
+          "@openzeppelin/=lib/v4-core/lib/openzeppelin-contracts/",
+          "@uniswap/v4-core/=lib/v4-core/",
+          "ds-test/=lib/v4-core/lib/forge-std/lib/ds-test/src/",
+          "erc4626-tests/=lib/v4-core/lib/openzeppelin-contracts/lib/erc4626-tests/",
+          "forge-gas-snapshot/=lib/permit2/lib/forge-gas-snapshot/src/",
+          "forge-std/=lib/v4-core/lib/forge-std/src/",
+          "hardhat/=lib/v4-core/node_modules/hardhat/",
+          "openzeppelin-contracts/=lib/v4-core/lib/openzeppelin-contracts/",
+          "permit2/=lib/permit2/",
+          "solmate/=lib/v4-core/lib/solmate/",
+          "v4-core/=lib/v4-core/src/"
+        ],
+        "viaIR": true
+      }
+    }
+  }
+}

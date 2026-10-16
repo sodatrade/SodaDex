@@ -1,30 +1,42 @@
-# SodaDex V3 / V4 测试合约地址
+# SodaDEX V3 / V4 当前测试合约地址
 
-部署日期：2026-10-16（Asia/Singapore）。网络：**X Layer 主网，Chain ID 196**。以下为本次独立部署的测试合约；生产部署留待后续进行。
+网络：**X Layer 主网 196**。RPC：`https://rpc.ignix.bot/rpc/196`。以下均为已完成回执和代码核验的实际测试部署，生产部署留待后续。
 
-Owner：`0x6ecf746b078d46391f8C425B150153212F7C0545`。RPC：<https://rpc.ignix.bot/rpc/196>。
+Owner：`0x6ecf746b078d46391f8C425B150153212F7C0545`。本轮品牌更新、建池和兑换总 gas **0.000619773462 OKB**（包含此前三笔），上限 0.0007 OKB；总本金按累计发送额计算不超过 0.0002 OKB。
 
-12 个新合约、13 笔成功交易；实际费用 **0.000878811864 OKB**，预算 0.001 OKB。
+| 合约 | 当前地址 | 来源 | 部署交易 |
+| --- | --- | --- | --- |
+| V3 Factory | [0xa6109b7f4237d2ac28b8009fbd21b88cff194cfe](https://www.oklink.com/xlayer/address/0xa6109b7f4237d2ac28b8009fbd21b88cff194cfe) | 复用基础部署 | [0x1c5d2b5a0831077e56133eb5308a86ff0eda38108792b3214e9190c034d18953](https://www.oklink.com/xlayer/tx/0x1c5d2b5a0831077e56133eb5308a86ff0eda38108792b3214e9190c034d18953) |
+| V3 NFTDescriptor 库 | [0x5abe8f32072b46e67816db5991033e06d3b000d1](https://www.oklink.com/xlayer/address/0x5abe8f32072b46e67816db5991033e06d3b000d1) | 本轮品牌更新 | [0x3c442bc4fb66289a77e5f809b8253883aa29548ec08fde4429860bb59ab67691](https://www.oklink.com/xlayer/tx/0x3c442bc4fb66289a77e5f809b8253883aa29548ec08fde4429860bb59ab67691) |
+| V3 TokenDescriptor | [0xe8738389c2027bfcd4ac0dde764df9f170eb9750](https://www.oklink.com/xlayer/address/0xe8738389c2027bfcd4ac0dde764df9f170eb9750) | 本轮品牌更新 | [0x7b1d39d9d638904798b625b4b321f7ad71ab89ad3691832073101ddd0e7f37a0](https://www.oklink.com/xlayer/tx/0x7b1d39d9d638904798b625b4b321f7ad71ab89ad3691832073101ddd0e7f37a0) |
+| SodaDEX V3 PositionManager | [0x2becd78e05fb33b0588e9cf61e65afee9dc7428f](https://www.oklink.com/xlayer/address/0x2becd78e05fb33b0588e9cf61e65afee9dc7428f) | 本轮品牌更新 | [0x9a4fa6bdffb12fa6e5d50fd51afdbb80902322270fa83efff171f1730328b460](https://www.oklink.com/xlayer/tx/0x9a4fa6bdffb12fa6e5d50fd51afdbb80902322270fa83efff171f1730328b460) |
+| V3 QuoterV2 | [0x98f4dfbfab6fc37e59e00d6881e779b33b23b009](https://www.oklink.com/xlayer/address/0x98f4dfbfab6fc37e59e00d6881e779b33b23b009) | 复用基础部署 | [0x007ad495f25e2123f2818b0b3a9037af4b66a9f2742099011ac9bbc190141e7e](https://www.oklink.com/xlayer/tx/0x007ad495f25e2123f2818b0b3a9037af4b66a9f2742099011ac9bbc190141e7e) |
+| V4 PoolManager | [0x6b5c32ad97eb42230138e02a21b0e6d811fd713d](https://www.oklink.com/xlayer/address/0x6b5c32ad97eb42230138e02a21b0e6d811fd713d) | 复用基础部署 | [0x6920add66040fd7af83d2fe8845b2942c4de6f3a1a354d00b70251c6f1e0d0d2](https://www.oklink.com/xlayer/tx/0x6920add66040fd7af83d2fe8845b2942c4de6f3a1a354d00b70251c6f1e0d0d2) |
+| V4 Descriptor | [0x1d59446d84e2470015dc926d9df7d83a2395d264](https://www.oklink.com/xlayer/address/0x1d59446d84e2470015dc926d9df7d83a2395d264) | 本轮品牌更新 | [0x1f585e94e07982fcd872c381c69c9a7f6fb37d9f8a9d56c4772001bb61b3c9a7](https://www.oklink.com/xlayer/tx/0x1f585e94e07982fcd872c381c69c9a7f6fb37d9f8a9d56c4772001bb61b3c9a7) |
+| SodaDEX V4 PositionManager | [0x1f85377930011b701dd2940c526e32fd3adab730](https://www.oklink.com/xlayer/address/0x1f85377930011b701dd2940c526e32fd3adab730) | 本轮品牌更新 | [0x316ed1e3b31d1aa61f7e72f8ff0f62859e32f26a1c98621cdcdf946abf027b9a](https://www.oklink.com/xlayer/tx/0x316ed1e3b31d1aa61f7e72f8ff0f62859e32f26a1c98621cdcdf946abf027b9a) |
+| V4 Quoter | [0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff](https://www.oklink.com/xlayer/address/0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff) | 复用基础部署 | [0x787a652148d1102eed7ec3c3a14727ff7a23ad7f5a3d6effb377a7c2b77045b3](https://www.oklink.com/xlayer/tx/0x787a652148d1102eed7ec3c3a14727ff7a23ad7f5a3d6effb377a7c2b77045b3) |
+| V4 StateView | [0x7991d4a8493b9709365cd079dffc75e790007874](https://www.oklink.com/xlayer/address/0x7991d4a8493b9709365cd079dffc75e790007874) | 复用基础部署 | [0x4b341a1f30d8e254aea8165872e3cb95f2ff9a8a93a7b341bc0abc1d0a2d8152](https://www.oklink.com/xlayer/tx/0x4b341a1f30d8e254aea8165872e3cb95f2ff9a8a93a7b341bc0abc1d0a2d8152) |
+| UnsupportedProtocol | [0x68eca93437df07be4b2c3a67956ace2dc87d2f39](https://www.oklink.com/xlayer/address/0x68eca93437df07be4b2c3a67956ace2dc87d2f39) | 复用基础部署 | [0x6b82ed35bf18729ec89ac692df89c2e63979e179f0c2c758d85c1b210fa45d44](https://www.oklink.com/xlayer/tx/0x6b82ed35bf18729ec89ac692df89c2e63979e179f0c2c758d85c1b210fa45d44) |
+| SodaDEX Universal Router | [0xda5bc8bc981d9b2f5df2b0c7e5aed044993709fa](https://www.oklink.com/xlayer/address/0xda5bc8bc981d9b2f5df2b0c7e5aed044993709fa) | 本轮品牌更新 | [0x1abab95972697fc4ac3655a675d460f7abdfdbd0da4a287db8f3d787804023dc](https://www.oklink.com/xlayer/tx/0x1abab95972697fc4ac3655a675d460f7abdfdbd0da4a287db8f3d787804023dc) |
 
-| 合约 | 实际部署地址 | 部署交易 |
-| --- | --- | --- |
-| V3 Factory | [0xa6109b7f4237d2ac28b8009fbd21b88cff194cfe](https://www.oklink.com/xlayer/address/0xa6109b7f4237d2ac28b8009fbd21b88cff194cfe) | [交易](https://www.oklink.com/xlayer/tx/0x1c5d2b5a0831077e56133eb5308a86ff0eda38108792b3214e9190c034d18953) |
-| V3 NFTDescriptor（库） | [0xbde586b47373676afbdf9669caa40e932d45dafe](https://www.oklink.com/xlayer/address/0xbde586b47373676afbdf9669caa40e932d45dafe) | [交易](https://www.oklink.com/xlayer/tx/0xedc0864f7d760f8f6710e21cb1f48258d707ace98dd11ddcdf9ee57c9a3b6086) |
-| V3 TokenDescriptor | [0xd89f1293deb12ab050531bcba4a465b7847bee7d](https://www.oklink.com/xlayer/address/0xd89f1293deb12ab050531bcba4a465b7847bee7d) | [交易](https://www.oklink.com/xlayer/tx/0x69235e41030ba433b5526a1290bebe3431d903662a4f66303fb38af6528ebd74) |
-| V3 PositionManager | [0x484c58d937387ec34c5ae01ad796f0c5f801fd72](https://www.oklink.com/xlayer/address/0x484c58d937387ec34c5ae01ad796f0c5f801fd72) | [交易](https://www.oklink.com/xlayer/tx/0x847c163c688c4b6ed1153a02585a3c6ede5bed0b869d6373acbec4229209036e) |
-| V3 QuoterV2 | [0x98f4dfbfab6fc37e59e00d6881e779b33b23b009](https://www.oklink.com/xlayer/address/0x98f4dfbfab6fc37e59e00d6881e779b33b23b009) | [交易](https://www.oklink.com/xlayer/tx/0x007ad495f25e2123f2818b0b3a9037af4b66a9f2742099011ac9bbc190141e7e) |
-| V4 PoolManager | [0x6b5c32ad97eb42230138e02a21b0e6d811fd713d](https://www.oklink.com/xlayer/address/0x6b5c32ad97eb42230138e02a21b0e6d811fd713d) | [交易](https://www.oklink.com/xlayer/tx/0x6920add66040fd7af83d2fe8845b2942c4de6f3a1a354d00b70251c6f1e0d0d2) |
-| V4 Descriptor | [0xad6e6bd6feecd3ef77ead8779ffcf5d52521abca](https://www.oklink.com/xlayer/address/0xad6e6bd6feecd3ef77ead8779ffcf5d52521abca) | [交易](https://www.oklink.com/xlayer/tx/0x3b2c0a4e3f1d9ec751380f02847f095183a92a8a93b84ade4fb82b1b874b58e4) |
-| V4 PositionManager | [0xfe32078e62a43d88f65731da693950e6e221fe0b](https://www.oklink.com/xlayer/address/0xfe32078e62a43d88f65731da693950e6e221fe0b) | [交易](https://www.oklink.com/xlayer/tx/0x1cb2cfbf66cf6fa1778837bbe596d40b84406fb26196c2653d2acfcfbfe9c902) |
-| V4 Quoter | [0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff](https://www.oklink.com/xlayer/address/0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff) | [交易](https://www.oklink.com/xlayer/tx/0x787a652148d1102eed7ec3c3a14727ff7a23ad7f5a3d6effb377a7c2b77045b3) |
-| V4 StateView | [0x7991d4a8493b9709365cd079dffc75e790007874](https://www.oklink.com/xlayer/address/0x7991d4a8493b9709365cd079dffc75e790007874) | [交易](https://www.oklink.com/xlayer/tx/0x4b341a1f30d8e254aea8165872e3cb95f2ff9a8a93a7b341bc0abc1d0a2d8152) |
-| UnsupportedProtocol（占位） | [0x68eca93437df07be4b2c3a67956ace2dc87d2f39](https://www.oklink.com/xlayer/address/0x68eca93437df07be4b2c3a67956ace2dc87d2f39) | [交易](https://www.oklink.com/xlayer/tx/0x6b82ed35bf18729ec89ac692df89c2e63979e179f0c2c758d85c1b210fa45d44) |
-| Universal Router（V3/V4） | [0x9206a7fac11948efdb391fc1dfa310f8b09d3afa](https://www.oklink.com/xlayer/address/0x9206a7fac11948efdb391fc1dfa310f8b09d3afa) | [交易](https://www.oklink.com/xlayer/tx/0xe899e43d599393917180da2475b0dba32bcd84bdc2b565b0bd61cdcc17a50247) |
+## 已创建的测试池
 
-V3 已启用 **0.01%（fee=100，tickSpacing=1）** 费档：[配置交易](https://www.oklink.com/xlayer/tx/0xcf525d5e0d45c91f9baeba74227fbf275687ff3e93817e86045021db781193cd)。
+V3：**WOKB / USD₮0，0.01%**，全范围。池地址：[0x5c6825eff223ba53744c2a19a0aec27033a432bd](https://www.oklink.com/xlayer/address/0x5c6825eff223ba53744c2a19a0aec27033a432bd)。仓位 NFT：`SODA-V3-POS #1`，Owner 同上。
 
-尚未创建池或注入流动性；V4 的 0 费率计划在建池时应用。前端仍为只读测试界面，兑换及提供流动性未开放。
+V4：**原生 OKB / USD₮0，0%**，tickSpacing=1、hooks=0，全范围。PoolManager 为上表当前地址；池标识（不是独立合约地址）：
 
-完整回执、runtime SHA-256 和费用记录见 [receipts.json](receipts.json)；固定版本、收费与现有 WOKB / Permit2 地址见 [plan.json](plan.json)。
+`0x326670fbdc54a57ec96182faebc60ce6f06e9073e0044e978805520be3c6983e`
 
-核验范围：成功回执、canonical 区块、12 个完整运行时代码 hash、23 项 owner／依赖／费档绑定。浏览器源码验证尚未提交。
+仓位 NFT：`SODA-V4-POS #1`，Owner 同上。两个池均已完成原生 OKB 输入 0.000001、反向 USD₮0 输入 0.0001 的微额兑换，逐笔核对事件、实际余额、最低输出和无残留。
+
+## SodaDEX 仓位图片
+
+以下图片来自真实链上 NFT 的 tokenURI，包含测试部署标记：
+
+![SodaDEX V3 测试仓位](nft/v3-position-1.svg)
+
+![SodaDEX V4 测试仓位](nft/v4-position-1.svg)
+
+当前配置：[active.json](active.json)；池配置：[pools.json](pools.json)；本轮完整回执及核验：[branding-receipts.json](branding-receipts.json)；构建指纹：[branding-build.json](branding-build.json)。
+
+原始基础部署的 plan.json / receipts.json 保留为历史记录。原 NFT 管理器和路由已由本表地址取代；原 V3 管理器授权已清零。区块浏览器源码验证尚未提交。

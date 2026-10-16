@@ -1,18 +1,21 @@
 {
   "schemaVersion": 1,
   "chainId": 196,
-  "status": "pending",
+  "status": "ready",
   "stable": {
     "address": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
-    "symbol": "USD₮0",
+    "symbol": "USD\u20ae0",
     "decimals": 6
   },
   "v3": {
-    "address": null,
+    "address": "0x5c6825eff223ba53744c2a19a0aec27033a432bd",
     "token0": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
     "token1": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
     "fee": 100,
-    "tickSpacing": 1
+    "tickSpacing": 1,
+    "positionManager": "0x2BeCd78E05FB33b0588e9cF61E65afeE9DC7428f",
+    "positionTokenId": 1,
+    "creationTransaction": "0x7833a83bbf16b6e1b91958d7145bbe9cf6c08b58614f3bef35d71d6e24e6f1b1"
   },
   "v4": {
     "poolId": "0x326670fbdc54a57ec96182faebc60ce6f06e9073e0044e978805520be3c6983e",
@@ -20,8 +23,12 @@
     "currency1": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
     "fee": 0,
     "tickSpacing": 1,
-    "hooks": "0x0000000000000000000000000000000000000000"
+    "hooks": "0x0000000000000000000000000000000000000000",
+    "positionManager": "0x1f85377930011B701dd2940c526e32FD3aDaB730",
+    "positionTokenId": 1,
+    "initializationTransaction": "0xe0e16d29fc6b1117f9695bdef12803964c72b00d03a6f65d6e7a92519ca2761e"
   },
   "slippageBps": 50,
-  "deadlineSeconds": 600
+  "deadlineSeconds": 600,
+  "verificationRecord": "branding-receipts.json"
 }

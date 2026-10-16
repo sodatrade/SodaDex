@@ -6,6 +6,9 @@ import { App } from '../src/App'
 import { WOKB_ADDRESS } from '../src/domain/assets'
 import type { Eip1193Provider } from '../src/lib/wallet'
 import { PREFERENCES_KEY } from '../src/preferences/model'
+import { POOLS } from '../src/trading/config'
+
+const deploymentReady = POOLS.ready
 
 function renderApp(): ReturnType<typeof render> {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } })
@@ -17,6 +20,8 @@ function renderApp(): ReturnType<typeof render> {
 }
 
 beforeEach(() => {
+  // Preference and pending-search fixtures must not depend on live deployment progress.
+  POOLS.ready = false
   vi.stubGlobal(
     'fetch',
     vi.fn().mockImplementation(async (_url: unknown, options: RequestInit) => {
@@ -32,6 +37,7 @@ beforeEach(() => {
   )
 })
 afterEach(() => {
+  POOLS.ready = deploymentReady
   vi.unstubAllGlobals()
   delete (window as Window & { ethereum?: Eip1193Provider }).ethereum
 })

@@ -11,6 +11,7 @@ import { v3QuoterAbi, v4QuoterAbi } from '../src/trading/abis'
 import { CONTRACTS, POOLS } from '../src/trading/config'
 const owner = '0x1111111111111111111111111111111111111111'
 const hash = `0x${'a'.repeat(64)}` as Hex
+const deploymentReady = POOLS.ready
 let requests: string[] = []
 let listener: ((value: unknown) => void) | undefined
 function renderApp(): void {
@@ -77,7 +78,7 @@ beforeEach(() => {
   )
 })
 afterEach(() => {
-  POOLS.ready = false
+  POOLS.ready = deploymentReady
   vi.unstubAllGlobals()
   delete (window as Window & { ethereum?: Eip1193Provider }).ethereum
 })

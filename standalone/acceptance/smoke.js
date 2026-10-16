@@ -49,7 +49,7 @@ async (page) => {
   await page.reload()
   await page.getByText('X Layer 已连接', { exact: true }).waitFor()
   check(await page.locator('html').getAttribute('data-theme') === 'light', 'new visitors default to day theme even when their system is dark')
-  check(await page.getByText(/X Layer 主网/).isVisible(), 'mainnet test notice remains visible')
+  check(await page.getByText(/^X Layer 主网 196 ·/).isVisible(), 'mainnet test notice remains visible')
   const poolsReady = await page.getByText('V3 / V4 测试池已开放', { exact: true }).count() === 1
   await page.waitForFunction(() => [...document.querySelectorAll('.asset-icon img, .network-icon')].every((img) => img.complete && img.naturalWidth > 0))
   check(await page.getByRole('button', { name: '选择支付资产，当前 OKB', exact: true }).locator('img').getAttribute('src') === '/assets/okb.png', 'native OKB uses its locally served official icon')

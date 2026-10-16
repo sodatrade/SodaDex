@@ -2,11 +2,11 @@
 
 SodaDEX is a fork of [Uniswap/interface](https://github.com/Uniswap/interface), maintained in [sodatrade/SodaDex](https://github.com/sodatrade/SodaDex).
 
-The application is labelled **SodaDEX Test**, for personal learning and noncommercial testing. Its independent interface in [`standalone/web`](standalone/README.md) uses a same-origin read/simulation proxy for `https://rpc.ignix.bot/rpc/196`. Original v3/v4 test contracts have been deployed on **X Layer mainnet (chain ID 196)**; SodaDEX NFT branding updates and test-pool initialization are in preparation. Current contract addresses are tracked in [`active.json`](deployments/xlayer-test/active.json), and trading stays disabled until verified pools are marked ready. The preserved upstream application in `apps/web` still uses Uniswap APIs and contract mappings.
+The application is labelled **SodaDEX Test**, for personal learning and noncommercial testing. Its independent interface in [`standalone/web`](standalone/README.md) uses a same-origin read/simulation proxy for `https://rpc.ignix.bot/rpc/196`. SodaDEX-branded NFT contracts and two funded v3/v4 test pools are deployed on **X Layer mainnet (chain ID 196)**. Both pools passed real micro swaps in both directions. Current addresses and receipts are in the [deployment address table](deployments/xlayer-test/ADDRESSES.md); the frontend and Worker share [`active.json`](deployments/xlayer-test/active.json) and verified `pools.json`. The preserved upstream application in `apps/web` still uses Uniswap APIs and contract mappings.
 
 The source baseline is `web/5.166.0`, commit `6f54d9a474a6036e7043ed52f2a9359003c96c9c`. Preserve upstream licences, notices, protocol identifiers, and SDK package names.
 
-Test preview: [sodadex-preview.jsmsdx2025.workers.dev](https://sodadex-preview.jsmsdx2025.workers.dev). Wallet connection and balance reads are available; swaps and liquidity actions remain closed until independent contracts, pools and quotes are integrated. Hosting is published manually, without a custom domain or deployment CI. See the [local runbook](standalone/README.md) and [hosting receipt](deployments/frontend-test.json).
+Test preview: [sodadex-preview.jsmsdx2025.workers.dev](https://sodadex-preview.jsmsdx2025.workers.dev). The interface supports wallet connection, balance reads and reviewed swaps through the verified SodaDEX pools. Adding liquidity through the interface remains unavailable. Hosting is published manually, without a custom domain or deployment CI. See the [local runbook](standalone/README.md) and [hosting receipt](deployments/frontend-test.json).
 
 ```bash
 git clone https://github.com/sodatrade/SodaDex.git

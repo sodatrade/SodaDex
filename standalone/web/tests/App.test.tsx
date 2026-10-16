@@ -6,9 +6,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { App } from '../src/App'
 import { STABLE_ADDRESS } from '../src/domain/assets'
 import type { Eip1193Provider } from '../src/lib/wallet'
+import { POOLS } from '../src/trading/config'
 
 const address = '0x1111111111111111111111111111111111111111'
 const methods: string[] = []
+const deploymentReady = POOLS.ready
 
 function renderApp(): ReturnType<typeof render> {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } })
@@ -22,6 +24,8 @@ function renderApp(): ReturnType<typeof render> {
 }
 
 beforeEach(() => {
+  // These cases exercise the unavailable-pool flow independently of the deployed manifest.
+  POOLS.ready = false
   methods.length = 0
   vi.stubGlobal(
     'fetch',
@@ -43,6 +47,7 @@ beforeEach(() => {
 })
 
 afterEach(() => {
+  POOLS.ready = deploymentReady
   vi.unstubAllGlobals()
   delete (window as Window & { ethereum?: Eip1193Provider }).ethereum
 })

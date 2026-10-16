@@ -1,0 +1,56 @@
+{
+  "status": "passed",
+  "date": "2026-10-16",
+  "origin": "http://127.0.0.1:8787",
+  "poolState": "ready",
+  "checksPassed": 50,
+  "viewports": [
+    {
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "scope": "Real browser with isolated mock wallet and mock RPC; no signing or blockchain writes",
+  "walletMethods": [
+    "eth_requestAccounts",
+    "eth_chainId",
+    "wallet_switchEthereumChain",
+    "eth_chainId"
+  ],
+  "mainnetWrites": false,
+  "coverage": [
+    "default day theme; manual theme persistence",
+    "Chinese, English, Cantonese; CNY/USD/HKD labels",
+    "official token/network icons",
+    "asset and global search; verified pool results",
+    "exact amount and insufficient-balance validation",
+    "reviewed 0.5% minimum; separate final confirmation",
+    "wallet chain/account changes; preference changes preserve the session",
+    "RPC failure and retry without fake online status"
+  ],
+  "script": "../../../standalone/acceptance/smoke.js",
+  "scriptSha256": "5c4d5cb5ca54900be4f43b45a5d8137612996c659200c77507f2b4d9104db298",
+  "activeManifestSha256": "624b8f5d3294e661d9de4b125563ea3f8289716e58d4c66ef29ba03c2ea37ed3",
+  "poolManifestSha256": "38b5f327966ae53fd709424176ba877c1492ae1d621526922d10adbe7defd71d",
+  "webBuild": {
+    "assets/Inter-Regular-Latin-BYtJb7jM.woff2": "9ebb07cb3efc1bbb2b84342914fdaed9493e4c6b2282fd1e7e4de2f4965a0599",
+    "assets/SOURCES.md": "a7e33e8850d71be0d33c3734487115221ee55ce71148df389283db945ffc4499",
+    "assets/index-BOCwzmQd.css": "0111cc681168f228a41d09696f54f7e0a9c5855cb221ad84991e30e57d7a3ea2",
+    "assets/index-DxilXUZv.js": "d9a4aa77c8d0a400a046ba451991ee33d451ecaa8a52a1b2f4f66e0915c57d9b",
+    "assets/okb.png": "be310dd7ec1349c0b353c0a4d17b4c6905b5b51301787690631860eadefbc996",
+    "assets/usdt0.png": "df5238a34df0255a1356485cd6939c521c125e22a25d43fe6d3ca0c98eab0403",
+    "assets/wokb.png": "5ce174b09a097862e25741ca77eea51a26ad3e64621f8e61003c44ae080cf6fa",
+    "assets/xlayer.svg": "f837468b7de4079c832bcd8d410d0c4cb90002f9e8f331e32a2e2b72a399eb88",
+    "brand.svg": "eaf5e3579216252e91040013e6e78f5b10b02b3de34c32c544d63197aee2dab0",
+    "index.html": "34c500d7850344c47827d04c76cebbf09f27480b3a0be20ac226ff29efe028e6",
+    "preferences-script.json": "8aabb800ae162745d485e03b7ad5424eac8030e13dcdb1e529102713816763be"
+  }
+}
