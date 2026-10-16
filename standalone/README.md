@@ -27,21 +27,22 @@ npm --prefix standalone/worker run check
 
 ```sh
 playwright-cli -s=sodadex-acceptance open http://localhost:8787
-playwright-cli -s=sodadex-acceptance run-code --filename=standalone/acceptance/smoke.js
+playwright-cli -s=sodadex-acceptance run-code --filename=standalone/acceptance/workspace-readonly.js
+playwright-cli -s=sodadex-acceptance run-code --filename=standalone/acceptance/reference-readonly.js
 playwright-cli -s=sodadex-acceptance close
 ```
 
-该脚本使用隔离的模拟钱包和模拟 RPC，覆盖 1440/768/390 宽度、全局和资产搜索、中英粤切换、货币偏好、默认白天主题与偏好持久化、协议选择、余额、切链、撤销授权和节点失败。切换偏好时会检查钱包、精确金额、资产方向与 V4 选择保持不变。它不会签名或发送链上交易；实际 RPC 连通性需另行验证。
+工作台脚本使用隔离的只读公开地址钱包和实际 Worker/RPC，覆盖四个主页面、1440/768/390 宽度、默认白天、中英粤、页面刷新与表单保持；不会调用签名或发送方法。随后官方参考脚本读取实际候选池和 V4 报价，并检查没有授权或执行入口。`smoke.js` 和旧固定币对验收保留为历史脚本；当前工作台以新脚本及组件测试为准。
 
 ## 本地 fork 兑换验收
 
-`acceptance/fork-server.mjs` 只绑定 localhost，并验证 Anvil 进程 PID、客户端和 chain ID。它将实际编译的 Worker 读取入口接到该节点，钱包写入也仅转到这个 Anvil；不读取 keystore，不签名真实交易。前端/Worker 的部署清单必须指向该 fork 上实际存在的合约和池。
+`acceptance/fork-server.mjs` 只绑定 localhost，并验证 Anvil 进程 PID、客户端和 chain ID。适配器只对这个自有临时节点开启每秒出块，避免浏览器空闲后 latest 与 pending 时间相差超过交易有效期；分页游标使用本进程临时 Cache API 适配。它将实际编译的 Worker 读取入口接到该节点，钱包写入也仅转到这个 Anvil；不读取 keystore，不签名真实交易。前端/Worker 的部署清单必须指向该 fork 上实际存在的合约和池。
 
 ```sh
 # 已有自己的 Anvil 进程，以及包含当前前端构建的 Worker dry-run bundle：
 node standalone/acceptance/fork-server.mjs /absolute/path/index.mjs 18549 ANVIL_PID 4173
 playwright-cli -s=sodadex-fork-ui open http://127.0.0.1:4173
-playwright-cli -s=sodadex-fork-ui run-code --filename=standalone/acceptance/fork-swaps.js
+playwright-cli -s=sodadex-fork-ui run-code --filename=standalone/acceptance/workspace-fork.js
 playwright-cli -s=sodadex-fork-ui close
 ```
 
@@ -108,4 +109,4 @@ SODADEX_TRADE_RUNTIMES=/absolute/path/trading-quoter-runtimes.json \
 npm --prefix standalone/web test
 ```
 
-这些状态和 runtime 是本地验收输入，不提交 Git。新导航与功能范围见 [web/README.md](web/README.md)。`#explore`/`#market`/`#history`/`#reference` 是探索页子 Tab，`#portfolio`/`#assets`/`#nfts`/`#activity` 是投资组合子 Tab；刷新和浏览器前进后退可恢复对应页面。官方参考池只读，钱包活动仅为 SodaDEX 事件和本浏览器记录，不宣称完整全链资产索引。
+这些状态和 runtime 是本地验收输入，不提交 Git。完整 fixture 测试包含 5 项 LP、7 项通用池交易/包装及 3 项发送集成用例；缺少任何关键 fixture 的跳过不计作通过。新导航与功能范围见 [web/README.md](web/README.md)。`#explore`/`#market`/`#history`/`#reference` 是探索页子 Tab，`#portfolio`/`#assets`/`#nfts`/`#activity` 是投资组合子 Tab；刷新和浏览器前进后退可恢复对应页面。官方参考池只读，钱包活动仅为 SodaDEX 事件和本浏览器记录，不宣称完整全链资产索引。

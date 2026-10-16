@@ -1,0 +1,68 @@
+{
+  "scope": "Rendered own workspace, real read-only X Layer RPC, 1440/768/390 widths",
+  "checkedScreens": [
+    "swap-1440.png",
+    "explore-1440.png",
+    "pools-1440.png",
+    "portfolio-1440.png",
+    "swap-768.png",
+    "explore-768.png",
+    "pools-768.png",
+    "portfolio-768.png",
+    "swap-390.png",
+    "explore-390.png",
+    "pools-390.png",
+    "portfolio-390.png"
+  ],
+  "scores": [
+    {
+      "category": "Task clarity",
+      "score": 4,
+      "evidence": "Trade is centered; four primary destinations and explicit test status are visible."
+    },
+    {
+      "category": "Composition",
+      "score": 4,
+      "evidence": "Consistent 1120px data pages and 512px trade card; aligned page gutters."
+    },
+    {
+      "category": "Typography",
+      "score": 4,
+      "evidence": "Compact headings, distinct token symbols and tabular amount numerals."
+    },
+    {
+      "category": "Density",
+      "score": 4,
+      "evidence": "Large marketing hero removed; token rows and primary actions stay close."
+    },
+    {
+      "category": "Color and surfaces",
+      "score": 4,
+      "evidence": "Existing lime/graphite palette with restrained light surfaces and active accent."
+    },
+    {
+      "category": "Component states",
+      "score": 4,
+      "evidence": "Read errors show unavailable or dash; failed quote blocks review; pending receipt actions remain."
+    },
+    {
+      "category": "Responsiveness",
+      "score": 4,
+      "evidence": "No horizontal overflow in 12 page/viewport combinations; mobile header fits two rows."
+    },
+    {
+      "category": "Restraint",
+      "score": 4,
+      "evidence": "No decorative gradients or ambient objects; official token marks retained."
+    }
+  ],
+  "correctionsCompleted": [
+    "Reduced hero to a compact Trade heading",
+    "Unified data page widths and smaller heading scale",
+    "Kept mobile brand, search and wallet on one row",
+    "Made navigation and content tabs persist in URL",
+    "Hid stale outputs after quote refresh failure"
+  ],
+  "remainingVisualBlockers": [],
+  "limits": "Scores are an internal rendered review, not an accessibility certification or full-device matrix."
+}

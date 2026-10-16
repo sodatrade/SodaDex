@@ -1,0 +1,34 @@
+{
+  "passedChecks": 48,
+  "protocols": {
+    "V3": {
+      "tokenId": "3",
+      "liquidity": { "initial": "106106", "afterIncrease": "212212", "afterFullExit": "0" },
+      "mintPosition": "0x5887f4a6910dc3a14834f8293a1410dc4520f2980189e2fdea446719421ad75f",
+      "increasePosition": "0xc5b849fe3a657eef70392b131886bad60947b509bdb8a72d0cbca92966b3465f",
+      "partialExit": "0xfaaae1ddcc74649c0d3a2128e736309a587339b6ef136818d209e2889be479f3",
+      "fullExit": "0x19ac59dc4e686c04a51355aaa605ce195ead692a44ccab4ef97346d726f0e835",
+      "partialReturned": { "nativeExcludingGas": "9999992514", "stable": "1" },
+      "fullExitReturned": { "nativeExcludingGas": "9999992514", "stable": "1" }
+    },
+    "V4": {
+      "tokenId": "3",
+      "liquidity": { "initial": "108293", "afterIncrease": "216586", "afterFullExit": "0" },
+      "mintPosition": "0x00c1a30b38f8e4a5a5bf0388431e5bb958d29d69b45aee57b02bb7b5f38360c7",
+      "increasePosition": "0x89c90338acd0d258b37ca97af853f63dacb5bafddeeb102f0576d0e3616c0d9b",
+      "partialExit": "0x7804ed07717272f0f0b206a66db1422f5dd4d4a08b2f15430a7fead493e27f19",
+      "fullExit": "0x07fb7f47b8325b413a6fd0b87bc0f5bba9b12260564658fed0d456ed7b59cc87",
+      "partialReturned": { "nativeExcludingGas": "9994970386", "stable": "1" },
+      "fullExitReturned": { "nativeExcludingGas": "9994970386", "stable": "1" }
+    }
+  },
+  "assertions": [
+    "each position NFT remained owned by the fixture wallet",
+    "each position had nonzero liquidity after mint and increase, then zero after full exit",
+    "partial and full atomic collection returned assets",
+    "position managers retained no test-operation residue",
+    "wallet settled with no WOKB residue",
+    "desktop and 390px mobile liquidity layouts had no horizontal overflow"
+  ],
+  "evidence": "real browser + compiled Worker LP gate + owned local Anvil; no real-chain write or wallet private key"
+}

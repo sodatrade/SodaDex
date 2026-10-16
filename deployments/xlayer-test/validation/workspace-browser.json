@@ -1,0 +1,43 @@
+{
+  "status": "passed",
+  "checks": [
+    "default light theme",
+    "actual own-pool quote without wallet",
+    "swap no overflow at 1440",
+    "explore no overflow at 1440",
+    "pools no overflow at 1440",
+    "portfolio no overflow at 1440",
+    "swap no overflow at 768",
+    "explore no overflow at 768",
+    "pools no overflow at 768",
+    "portfolio no overflow at 768",
+    "swap no overflow at 390",
+    "explore no overflow at 390",
+    "pools no overflow at 390",
+    "portfolio no overflow at 390",
+    "portfolio tokens route",
+    "tokens route survives reload",
+    "English trading labels",
+    "Cantonese trading labels",
+    "amount persists across navigation and locales",
+    "no signing or transaction requests",
+    "no browser runtime errors"
+  ],
+  "screenshots": [
+    "swap-1440.png",
+    "explore-1440.png",
+    "pools-1440.png",
+    "portfolio-1440.png",
+    "swap-768.png",
+    "explore-768.png",
+    "pools-768.png",
+    "portfolio-768.png",
+    "swap-390.png",
+    "explore-390.png",
+    "pools-390.png",
+    "portfolio-390.png"
+  ],
+  "walletMethods": [],
+  "runtimeErrors": [],
+  "mainnetWrites": false
+}

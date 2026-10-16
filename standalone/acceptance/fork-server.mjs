@@ -27,10 +27,16 @@ async function rpc(method, params = []) {
   const response = await originalFetch(nodeUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ jsonrpc: '2.0', id: ++rpcId, method, params }) })
   const result = await response.json()
-  if (result.error) throw new Error(`Fork ${method} rejected`)
+  if (result.error) throw new Error(`Fork ${method} rejected: ${result.error.code} ${result.error.message}`)
   return result.result
 }
 if (!(await rpc('web3_clientVersion')).toLowerCase().includes('anvil') || BigInt(await rpc('eth_chainId')) !== 196n) throw new Error('Expected owned chain-196 Anvil fork')
+// Browser sessions can sit idle longer than a transaction deadline. Unlike a
+// live chain, automining alone leaves the latest block's time frozen until a
+// write, while estimateGas uses a newer pending timestamp. Keep this owned
+// disposable chain advancing so both calls observe current block time.
+await rpc('anvil_setIntervalMining', [1])
+await rpc('evm_mine')
 // The actual compiled Worker still validates every request. Only its fixed read
 // transport is redirected, inside this process, to the owned fork.
 globalThis.fetch = async (input, init) => {
@@ -95,7 +101,8 @@ const server = createServer(async (incoming, outgoing) => {
     }
     outgoing.writeHead(response.status, Object.fromEntries(response.headers))
     outgoing.end(Buffer.from(await response.arrayBuffer()))
-  } catch {
+  } catch (error) {
+    process.stderr.write(`Local fixture rejected request: ${error instanceof Error ? error.message : 'Unknown error'}\n`)
     outgoing.writeHead(400, { 'Content-Type': 'application/json' })
     outgoing.end(JSON.stringify({ error: 'Fork fixture rejected request' }))
   }
