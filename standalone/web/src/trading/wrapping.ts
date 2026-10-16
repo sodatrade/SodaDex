@@ -19,7 +19,7 @@ export function buildWrap(request: WrapRequest, owner: Address): Transaction {
     value: toHex(request.direction === 'wrap' ? request.amount : 0n) }
 }
 export async function executeWrap(request: WrapRequest, c: ExecutionContext): Promise<Hex> {
-  const { progress, send, checkNetwork } = createExecutionSession(c)
+  const { progress, send, checkNetwork } = createExecutionSession(c, { requiresPublicSwaps: false })
   const tx = buildWrap(request, c.identity.address)
   progress('tradePreparing')
   await checkNetwork()

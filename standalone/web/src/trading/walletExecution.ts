@@ -19,8 +19,12 @@ export interface ExecutionSession {
   read: PublicRpc
   assertCurrent: () => void
   progress: (stage: TradeStage) => void
-  send: (tx: Transaction, stage: TradeStage, kind: 'approval' | 'swap') => Promise<Hex>
+  send: (tx: Transaction, stage: TradeStage, kind: 'approval' | 'swap', options?: { validateBooleanReturn?: boolean }) => Promise<Hex>
   checkNetwork: () => Promise<void>
+}
+export interface ExecutionOptions {
+  /** Swaps use the public-trading switch; independent wallet actions opt out explicitly. */
+  requiresPublicSwaps?: boolean
 }
 export function identityGuard(c: ExecutionContext): () => void {
   return () => {
@@ -37,13 +41,17 @@ export function identityGuard(c: ExecutionContext): () => void {
   }
 }
 /** Shared wallet boundary for legacy swaps, discovered-pool swaps and native wrapping. */
-export function createExecutionSession(c: ExecutionContext): ExecutionSession {
-  if (!publicSwapsEnabled()) throw new TradeError('tradePaused')
+export function createExecutionSession(c: ExecutionContext, options: ExecutionOptions = {}): ExecutionSession {
+  const requiresPublicSwaps = options.requiresPublicSwaps !== false
+  const assertPolicy = (): void => {
+    if (requiresPublicSwaps && !publicSwapsEnabled()) throw new TradeError('tradePaused')
+  }
+  assertPolicy()
   const read = c.read ?? rpc
   const wait = c.wait ?? waitReceipt
   const assertIdentity = identityGuard(c)
   const assertCurrent = (): void => {
-    if (!publicSwapsEnabled()) throw new TradeError('tradePaused')
+    assertPolicy()
     assertIdentity()
   }
   const identity = c.identity
@@ -63,7 +71,7 @@ export function createExecutionSession(c: ExecutionContext): ExecutionSession {
     if (hexQuantity(await read('eth_chainId')) !== BigInt(CHAIN_ID)) throw new TradeError('tradeUnavailable')
     assertCurrent()
   }
-  const send = async (tx: Transaction, stage: TradeStage, kind: 'approval' | 'swap'): Promise<Hex> => {
+  const send: ExecutionSession['send'] = async (tx, stage, kind, sendOptions) => {
     await checkWallet()
     progress(stage)
     const simulated = await read('eth_call', [tx, 'latest'])
@@ -72,6 +80,11 @@ export function createExecutionSession(c: ExecutionContext): ExecutionSession {
     // ERC-20 approve must not silently return false. Empty-return USDT tokens remain supported.
     if (kind === 'approval' && simulated !== '0x' && hexQuantity(simulated) === 0n)
       throw new TradeError('tradeReverted')
+    if (sendOptions?.validateBooleanReturn && simulated !== '0x') {
+      if (!/^0x[0-9a-fA-F]{64}$/.test(simulated)) throw new TradeError('tradeFailed')
+      if (hexQuantity(simulated) === 0n) throw new TradeError('tradeReverted')
+      if (hexQuantity(simulated) !== 1n) throw new TradeError('tradeFailed')
+    }
     const gas = hexQuantity(await read('eth_estimateGas', [tx]))
     assertCurrent()
     if (gas <= 0n) throw new TradeError('tradeFailed')
