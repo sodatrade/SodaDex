@@ -7,7 +7,7 @@ import { App } from './App'
 const queryClient = new QueryClient({ defaultOptions: { queries: { refetchOnWindowFocus: false } } })
 const container = document.getElementById('root')
 if (!container) {
-  throw new Error('缺少 SodaDex 页面容器')
+  throw new Error('缺少 SodaDEX 页面容器')
 }
 createRoot(container).render(
   <StrictMode>

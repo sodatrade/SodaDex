@@ -134,7 +134,7 @@ export function SodaMark({ decorative = false }: { decorative?: boolean }): Reac
       viewBox="0 0 48 48"
       aria-hidden={decorative || undefined}
       role={decorative ? undefined : 'img'}
-      aria-label={decorative ? undefined : 'SodaDex'}
+      aria-label={decorative ? undefined : 'SodaDEX'}
     >
       <circle cx="20" cy="29" r="11" />
       <circle cx="35" cy="15" r="7" />

@@ -155,7 +155,7 @@ function AppContent(): ReactElement {
         <div className="footer-brand">
           <SodaMark decorative />
           <span>
-            SodaDex <span>·</span> {t('footerFlow')}
+            SodaDEX <span>·</span> {t('footerFlow')}
           </span>
         </div>
         <a href="https://github.com/sodatrade/SodaDex" target="_blank" rel="noreferrer">
