@@ -10,6 +10,7 @@ export type ReadMethod =
   | 'eth_getTransactionReceipt'
   | 'eth_gasPrice'
   | 'eth_getCode'
+  | 'eth_getLogs'
 
 export function isAddress(value: unknown): value is `0x${string}` {
   return typeof value === 'string' && /^0x[0-9a-fA-F]{40}$/.test(value)
