@@ -356,6 +356,9 @@ def run(args):
         if not args.broadcast:
             return
         for row in journal['rows']:
+            if row.get('receipt'):
+                # All saved receipts were just reconciled; final verification repeats it.
+                continue
             if row.get('raw'):
                 validate_signed(row, signer)
                 receipt = check_receipt(row, config)
