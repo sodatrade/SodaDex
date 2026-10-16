@@ -70,7 +70,7 @@ describe('same-origin X Layer read proxy', () => {
     expect((await proxyRpc(request(rpc('eth_chainId'), { Origin: 'https://foreign.example' }), upstream)).status).toBe(403)
     expect((await proxyRpc(request(rpc('eth_getBalance', ['not-address', 'latest'])), upstream)).status).toBe(400)
     expect((await proxyRpc(request([rpc('eth_chainId')]), upstream)).status).toBe(400)
-    expect((await proxyRpc(request({ ...rpc('eth_chainId'), padding: 'x'.repeat(5000) }), upstream)).status).toBe(413)
+    expect((await proxyRpc(request({ ...rpc('eth_chainId'), padding: 'x'.repeat(17000) }), upstream)).status).toBe(413)
     expect((await proxyRpc(new Request('https://soda.example/api/rpc'), upstream)).status).toBe(405)
     expect(upstream).not.toHaveBeenCalled()
   })

@@ -1,11 +1,11 @@
 // The user-selected node rejects browser Origin headers. Only this server
 // adapter knows the upstream; browsers always request the same-origin /api/rpc.
 export const RPC_URL = 'https://rpc.ignix.bot/rpc/196'
-const WOKB = '0xe538905cf8410324e03a5a23c1c177a474d59b2b'
+import { validContractRequest } from './trade-requests'
 const ADDRESS = /^0x[0-9a-fA-F]{40}$/
 const BLOCK = /^(latest|safe|finalized|pending|0x[0-9a-fA-F]+)$/
 const EMPTY_METHODS = new Set(['eth_chainId', 'eth_blockNumber', 'eth_gasPrice'])
-const MAX_BODY_BYTES = 4096
+const MAX_BODY_BYTES = 16384
 
 type RpcId = string | number
 interface RpcRequest {
@@ -21,17 +21,14 @@ function record(value: unknown): value is Record<string, unknown> {
 
 function validParams(method: string, params: unknown[]): boolean {
   if (EMPTY_METHODS.has(method)) return params.length === 0
+  if (method === 'eth_getTransactionReceipt') return params.length === 1 && typeof params[0] === 'string' && /^0x[0-9a-fA-F]{64}$/.test(params[0])
+  if (method === 'eth_getBlockByNumber') return params.length === 2 && typeof params[0] === 'string' && BLOCK.test(params[0]) && params[1] === false
+  if (method === 'eth_estimateGas') return params.length === 1 && validContractRequest(params[0], true)
   if (params.length !== 2 || typeof params[1] !== 'string' || !BLOCK.test(params[1])) return false
   if (method === 'eth_getBalance' || method === 'eth_getCode') {
     return typeof params[0] === 'string' && ADDRESS.test(params[0])
   }
-  if (method !== 'eth_call' || !record(params[0])) return false
-  const call = params[0]
-  if (Object.keys(call).some((key) => key !== 'to' && key !== 'data')) return false
-  if (typeof call.to !== 'string' || call.to.toLowerCase() !== WOKB || typeof call.data !== 'string') return false
-  // Only verified WOKB metadata and a single account balance may be read.
-  return /^0x(313ce567|95d89b41|06fdde03)$/.test(call.data) ||
-    /^0x70a082310{24}[0-9a-fA-F]{40}$/.test(call.data)
+  return method === 'eth_call' && validContractRequest(params[0], false)
 }
 
 function parseRequest(value: unknown): RpcRequest | null {

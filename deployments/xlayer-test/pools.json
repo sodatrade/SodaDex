@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "chainId": 196,
+  "status": "pending",
+  "stable": {
+    "address": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+    "symbol": "USD₮0",
+    "decimals": 6
+  },
+  "v3": {
+    "address": null,
+    "token0": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+    "token1": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+    "fee": 100,
+    "tickSpacing": 1
+  },
+  "v4": {
+    "poolId": "0x326670fbdc54a57ec96182faebc60ce6f06e9073e0044e978805520be3c6983e",
+    "currency0": "0x0000000000000000000000000000000000000000",
+    "currency1": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+    "fee": 0,
+    "tickSpacing": 1,
+    "hooks": "0x0000000000000000000000000000000000000000"
+  },
+  "slippageBps": 50,
+  "deadlineSeconds": 600
+}
