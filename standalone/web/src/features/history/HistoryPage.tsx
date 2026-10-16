@@ -11,10 +11,13 @@ import '../market/data.css'
 import { JOURNAL_CHANGED, readTransactions } from './journal'
 import { ReceiptLookup } from './ReceiptLookup'
 
-export function HistoryPage({ wallet, onConnect }: { wallet: WalletController; onConnect: () => void }): ReactElement {
+export type HistoryScope = 'all' | 'mine' | 'local'
+export function HistoryPage({ wallet, onConnect, initialScope = 'all', scopes = ['all', 'mine', 'local'], embedded = false }: {
+  wallet: WalletController; onConnect: () => void; initialScope?: HistoryScope; scopes?: readonly HistoryScope[]; embedded?: boolean
+}): ReactElement {
   const { locale } = usePreferences()
   const m = dataMessages(locale)
-  const [scope, setScope] = useState<'all' | 'mine' | 'local'>('all')
+  const [scope, setScope] = useState<HistoryScope>(scopes.includes(initialScope) ? initialScope : scopes[0] ?? 'all')
   const [, setRevision] = useState(0)
   const [selectedHash, setSelectedHash] = useState<Hex>()
   const account = wallet.session?.chainId === CHAIN_ID ? wallet.session.address : undefined
@@ -42,11 +45,11 @@ export function HistoryPage({ wallet, onConnect }: { wallet: WalletController; o
   const rows = restart ? [] : mergeEvents(events.data?.pages.map((p) => p.data) ?? [])
   const last = restart ? undefined : events.data?.pages.at(-1)?.data
   const local = account ? readTransactions(account) : []
-  return <section className="content-page data-page" aria-labelledby="history-title">
-    <div className="page-heading"><span className="eyebrow">ACTIVITY / X LAYER</span>
-      <h1 id="history-title">{m.historyTitle}</h1><p>{m.historyNote}</p></div>
+  return <section className={embedded ? "data-page portfolio-activity" : "content-page data-page"} aria-label={m.historyTitle}>
+    {!embedded && <div className="page-heading"><span className="eyebrow">ACTIVITY / X LAYER</span>
+      <h1 id="history-title">{m.historyTitle}</h1><p>{m.historyNote}</p></div>}
     <div className="data-tabs" aria-label={m.history}>
-      {(['all', 'mine', 'local'] as const).map((s) => <Button key={s} aria-pressed={scope === s} onClick={() => setScope(s)}>{m[s]}</Button>)}
+      {scopes.map((s) => <Button key={s} aria-pressed={scope === s} onClick={() => setScope(s)}>{m[s]}</Button>)}
     </div>
     {scope !== 'all' && !account && <Button onClick={wallet.session ? () => void wallet.switchChain() : onConnect}>
       {wallet.session ? m.wrongChain : m.connect}</Button>}

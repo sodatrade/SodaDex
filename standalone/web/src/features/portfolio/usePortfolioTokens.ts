@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { decodeFunctionResult, encodeFunctionData, type Address, type Hex } from 'viem'
+import { CHAIN_ID } from '../../domain/assets'
 import { readImportedTokenAddresses, TOKEN_CATALOG_CHANGED } from '../../domain/tokenCatalog'
 import { KNOWN_CURRENCIES } from '../../liquidity/config'
 import { importCurrency } from '../../liquidity/currencies'
@@ -18,6 +19,7 @@ export function usePortfolioTokens(account?: Address) {
   }, [])
   return useQuery({ queryKey: ['portfolio-tokens', account, revision], enabled: !!account, retry: false, refetchInterval: 30_000,
     queryFn: async () => {
+      if (hexQuantity(await rpc('eth_chainId')) !== BigInt(CHAIN_ID)) throw new Error('Wrong RPC chain')
       const imported = await Promise.allSettled(readImportedTokenAddresses().map(a => importCurrency(a)))
       const currencies = new Map(KNOWN_CURRENCIES.map(c => [c.address.toLowerCase(), c]))
       for (const entry of imported) if (entry.status === 'fulfilled') currencies.set(entry.value.address.toLowerCase(), entry.value)

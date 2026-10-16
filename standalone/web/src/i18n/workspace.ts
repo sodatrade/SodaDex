@@ -1,5 +1,7 @@
 import type { Locale } from '../preferences/model'
 const zh = {
+  estimatedNetworkFee: '预计网络费', receiptRecovered: '已恢复此前提交的发送记录；只查询回执，不会自动重发。', activityScopeNote: '显示此钱包在 SodaDEX 的活动，以及此浏览器提交的记录，并非全钱包历史。',
+  metadataReadFailures: '部分导入代币无法读取元数据，请重试。', balanceReadFailures: '部分余额读取失败，以 — 显示。', nativeBalance: '原生 OKB 余额', viewNft: '查看 NFT', activePosition: '活跃仓位', closedPosition: '已退出仓位',
   trade: '交易', explore: '探索', portfolio: '投资组合', overview: '概览', tokens: '代币', pools: '资金池', nfts: '仓位 NFT', activity: '活动',
   portfolioTitle: '你的资产与仓位', portfolioNote: '连接 X Layer 钱包，查看实际余额、SodaDEX 仓位和活动。',
   exploreTitle: '探索 X Layer', exploreNote: '查看代币、自有测试池，以及外部官方池的只读数据。', transactions: '交易记录', reference: '官方池 · 只读',
@@ -18,6 +20,8 @@ const zh = {
 } as const
 type Messages = Record<keyof typeof zh, string>
 const en: Messages = {
+  estimatedNetworkFee: 'Estimated network fee', receiptRecovered: 'A previous transfer was restored. Receipt checks never resend it.', activityScopeNote: 'Activity covers this wallet on SodaDEX and records submitted by this browser, not full wallet history.',
+  metadataReadFailures: 'Some imported token metadata could not be read. Retry to refresh.', balanceReadFailures: 'Some balances could not be read and are shown as —.', nativeBalance: 'Native OKB balance', viewNft: 'View NFT', activePosition: 'Active position', closedPosition: 'Exited position',
   trade: 'Trade', explore: 'Explore', portfolio: 'Portfolio', overview: 'Overview', tokens: 'Tokens', pools: 'Pools', nfts: 'Position NFTs', activity: 'Activity',
   portfolioTitle: 'Your assets and positions', portfolioNote: 'Connect an X Layer wallet for live balances, SodaDEX positions and activity.',
   exploreTitle: 'Explore X Layer', exploreNote: 'Browse tokens, SodaDEX test pools and read-only external official pools.', transactions: 'Transactions', reference: 'Official pools · Read only',
@@ -33,6 +37,8 @@ const en: Messages = {
   tokenDetails: 'Token details', remove: 'Remove local entry', localNote: 'Imported addresses stay in this browser; metadata and balances are read again onchain.',
 }
 const yue: Messages = {
+  estimatedNetworkFee: '預計網絡費', receiptRecovered: '已恢復之前提交嘅發送紀錄；只查詢回執，唔會自動重發。', activityScopeNote: '顯示呢個錢包喺 SodaDEX 嘅活動，同呢個瀏覽器提交嘅紀錄，唔係全錢包歷史。',
+  metadataReadFailures: '部分匯入代幣讀唔到元數據，請再試。', balanceReadFailures: '部分餘額讀取失敗，用 — 顯示。', nativeBalance: '原生 OKB 餘額', viewNft: '查看 NFT', activePosition: '活躍倉位', closedPosition: '已退出倉位',
   trade: '交易', explore: '探索', portfolio: '投資組合', overview: '概覽', tokens: '代幣', pools: '資金池', nfts: '倉位 NFT', activity: '活動',
   portfolioTitle: '你嘅資產同倉位', portfolioNote: '連接 X Layer 錢包，睇實際餘額、SodaDEX 倉位同活動。', exploreTitle: '探索 X Layer', exploreNote: '睇代幣、自有測試池，同外部官方池嘅唯讀數據。',
   transactions: '交易紀錄', reference: '官方池 · 唯讀', receive: '接收', send: '發送', swap: '兌換', liquidity: '流動性', refresh: '更新', connect: '連接錢包', wrongChain: '切換至 X Layer',
