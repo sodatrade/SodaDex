@@ -10,6 +10,7 @@ import type { OrderDeployment } from './config'
 export const orderReadAbi = parseAbi(['function nonceStatus(address maker,uint256 nonce) view returns (uint8)', 'function cancel(uint256 nonce)'])
 /** A witness signature authorizes exactly one order. The maker never approves the keeper. */
 export async function signLimitOrder(order: SodaLimitOrder, deployment: OrderDeployment, context: ExecutionContext): Promise<Hex> {
+  if (!deployment.executionEnabled) throw new TradeError('tradePaused')
   parseLimitOrder(order, { ...CONTRACTS, settlement: deployment.settlement, wrappedNative: WOKB_ADDRESS })
   if (order.settlement.toLowerCase() !== deployment.settlement.toLowerCase() || order.maker.toLowerCase() !== context.identity.address.toLowerCase()) throw new TradeError('tradeUnavailable')
   const session = createExecutionSession(context, { requiresPublicSwaps: false })

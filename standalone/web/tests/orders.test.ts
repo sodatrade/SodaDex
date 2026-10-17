@@ -3,7 +3,7 @@ import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { describe, expect, it, vi } from 'vitest'
 import { orderTypedData, type SodaLimitOrder } from '../../order-types'
 import { STABLE_ADDRESS, WOKB_ADDRESS } from '../src/domain/assets'
-import { decodeOrder, getOrder } from '../src/features/orders/api'
+import { decodeOrder, getOrder, orderServiceReady, submitOrder } from '../src/features/orders/api'
 import { orderDeployment, type OrderDeployment } from '../src/features/orders/config'
 import { draftOrder } from '../src/features/orders/model'
 import { cancelLimitOrder, orderReadAbi, signLimitOrder } from '../src/features/orders/signing'
@@ -61,7 +61,8 @@ function fixture() {
 describe('limit order wallet boundary', () => {
   it('requires an explicit ready test deployment and fixed service origin', () => {
     expect(orderDeployment(base)).toEqual(deployment)
-    for (const change of [{ settlement: null }, { chainId: 1 }, { stage: 'production' }, { executionEnabled: false }, { apiOrigin: 'https://example.com/redirect' }, { apiOrigin: 'http://example.com' }])
+    expect(orderDeployment({ ...base, executionEnabled: false })).toEqual({ ...deployment, executionEnabled: false })
+    for (const change of [{ settlement: null }, { chainId: 1 }, { stage: 'production' }, { executionEnabled: 'false' }, { apiOrigin: 'https://example.com/redirect' }, { apiOrigin: 'http://example.com' }])
       expect(orderDeployment({ ...base, ...change })).toBeUndefined()
   })
   it('preserves the selected minimum exactly and requires explicit future expiry', () => {
@@ -106,5 +107,15 @@ describe('limit order wallet boundary', () => {
       await expect(getOrder(id, deployment)).rejects.toThrow('unavailable')
       expect(request.mock.calls.every(([url, init]) => String(url).endsWith(id) && !init?.method)).toBe(true)
     } finally { request.mockRestore() }
+  })
+  it('keeps cancellation available while blocking approvals, signatures and new submissions during a pause', async () => {
+    const f = fixture(), paused = { ...deployment, executionEnabled: false }
+    await expect(orderServiceReady(paused)).resolves.toBe(false)
+    await expect(signLimitOrder(f.order, paused, f.context)).rejects.toThrow('tradePaused')
+    await expect(submitOrder(f.order, '0x1234', paused)).rejects.toThrow('paused')
+    expect(f.provider.request).not.toHaveBeenCalled()
+    await cancelLimitOrder(f.order, paused, f.context)
+    expect(f.submitted).toHaveLength(1)
+    expect(f.submitted[0].to).toBe(settlement)
   })
 })

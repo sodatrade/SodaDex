@@ -48,4 +48,15 @@ describe('fixed order service boundary', () => {
     expect(validOrderRequest(configured.settlement, cancel, maker, 1n, true, configured)).toBe(false)
     expect(validContractRequest({ from: maker, to: configured.settlement, data: cancel, value: '0x0' }, true)).toBe(false)
   })
+  it('retains history, nonce reads and cancellations when new orders are paused', async () => {
+    const paused = { ...configured, executionEnabled: false }
+    const upstream = vi.fn(async () => Response.json({ schemaVersion: 1, orders: [], nextCursor: null }))
+    expect((await ordersApi(request(`?maker=${maker}`), upstream, paused)).status).toBe(200)
+    expect((await ordersApi(request('', { method: 'POST' }), upstream, paused)).status).toBe(503)
+    expect(upstream).toHaveBeenCalledTimes(1)
+    const read = encodeFunctionData({ abi, functionName: 'nonceStatus', args: [maker, 1n] })
+    const cancel = encodeFunctionData({ abi, functionName: 'cancel', args: [1n] })
+    expect(validOrderRequest(configured.settlement, read, undefined, 0n, false, paused)).toBe(true)
+    expect(validOrderRequest(configured.settlement, cancel, maker, 0n, true, paused)).toBe(true)
+  })
 })

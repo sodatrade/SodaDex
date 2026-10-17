@@ -44,6 +44,7 @@ export async function ordersApi(request: Request, upstreamFetch: typeof fetch = 
   if (!configured) return suffix === '/status' ? Response.json({ schemaVersion: 1, service: 'sodadex-orders', chainId: 196,
     settlement: null, permit2: deployment.permit2, wrappedNative: deployment.wrappedNative, testDeployment: true,
     executionEnabled: false, acceptingOrders: false, reason: 'NOT_DEPLOYED' }, { headers }) : error(503, 'NOT_DEPLOYED')
+  if (posting && !configured.executionEnabled) return error(503, 'ORDERS_PAUSED')
   if (posting && !request.headers.get('Content-Type')?.toLowerCase().startsWith('application/json')) return error(415, 'JSON_REQUIRED')
   let body: string | undefined
   if (posting) {
@@ -56,6 +57,7 @@ export async function ordersApi(request: Request, upstreamFetch: typeof fetch = 
     if (response.status >= 300 && response.status < 400) return error(502, 'UPSTREAM_UNAVAILABLE')
     const value: unknown = JSON.parse(await boundedBody(response.body, MAX_RESPONSE_BYTES))
     if (!value || typeof value !== 'object' || !publicData(value)) return error(502, 'INVALID_UPSTREAM_RESPONSE')
+    if (suffix === '/status' && !configured.executionEnabled) return Response.json({ ...value, executionEnabled: false, acceptingOrders: false }, { status: response.status, headers })
     return Response.json(value, { status: response.status, headers })
   } catch { return error(502, 'UPSTREAM_UNAVAILABLE') }
 }

@@ -40,6 +40,7 @@ export async function getOrder(id: Hex, deployment: OrderDeployment): Promise<Pu
   return order
 }
 export async function orderServiceReady(deployment: OrderDeployment): Promise<boolean> {
+  if (!deployment.executionEnabled) return false
   const value = await request('/status')
   return record(value) && value.schemaVersion === 1 && value.service === 'sodadex-orders' && value.chainId === 196 && value.testDeployment === true &&
     typeof value.settlement === 'string' && value.settlement.toLowerCase() === deployment.settlement.toLowerCase() && value.reason === null &&
@@ -48,6 +49,7 @@ export async function orderServiceReady(deployment: OrderDeployment): Promise<bo
     value.executionEnabled === true && value.acceptingOrders === true
 }
 export async function submitOrder(order: SodaLimitOrder, signature: Hex, deployment: OrderDeployment): Promise<PublicOrder> {
+  if (!deployment.executionEnabled) throw Error('New orders are paused')
   const value = await request('', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ order, signature }) })
   if (!record(value) || value.schemaVersion !== 1) throw Error('Invalid order response')
   const result = decodeOrder(value.order, deployment)
