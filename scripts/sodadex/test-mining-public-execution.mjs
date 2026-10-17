@@ -8,9 +8,26 @@ import { encodeFunctionData, keccak256, parseAbi } from 'viem'
 import { miningFeeReservation, PublicMiningExecution, validateSignedMiningTransaction } from './mining-public-execution.mjs'
 import { assertReviewedMiningIntent, miningExecutionSources } from './mining-reviewed-intent.mjs'
 import { assertMiningFeeParameters } from './mining-fee-model.mjs'
+import { LoopbackMiningPlan } from './mining-plan-rpc.mjs'
 
 const owner = '0x6ecf746b078d46391f8C425B150153212F7C0545'
 const to = '0x0000000000000000000000000000000000001952'
+test('local fork retries transport failures only for reads, never writes or valid reverts', async () => {
+  let calls = 0
+  const transient = async () => { if (++calls === 1) throw new Error('transport timeout'); return Response.json({ jsonrpc: '2.0', id: 1, result: '0x10' }) }
+  const p = new LoopbackMiningPlan(owner, '/tmp/unused-loopback-test', 1n, transient)
+  assert.equal(await p.rpc('eth_blockNumber'), '0x10'); assert.equal(calls, 2)
+  for (const method of ['eth_sendTransaction', 'evm_mine', 'evm_revert', 'evm_increaseTime']) {
+    calls = 0
+    await assert.rejects(p.rpc(method), /transport timeout/); assert.equal(calls, 1)
+  }
+  calls = 0
+  p.fetcher = async () => { calls++; return Response.json({ jsonrpc: '2.0', id: 1, error: { code: 3, message: 'execution reverted' } }) }
+  await assert.rejects(p.rpc('eth_call'), /execution reverted/); assert.equal(calls, 1)
+  calls = 0
+  p.fetcher = async () => { calls++; throw new Error('transport timeout') }
+  await assert.rejects(p.rpc('eth_getCode'), /transport timeout/); assert.equal(calls, 3)
+})
 test('fee checks bind OP parameters to L1Block and estimates to GasPriceOracle', async () => {
   const calls = [], oracle = '0x420000000000000000000000000000000000000f', l1Block = '0x4200000000000000000000000000000000000015'
   const p = { feeCap: 20n, rpc: async () => '0x14', call: async (target, signature, args = []) => {

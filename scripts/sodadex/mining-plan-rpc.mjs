@@ -1,13 +1,26 @@
 import fs from 'node:fs'
 import { encodeFunctionData, decodeFunctionResult, keccak256, parseAbi, toHex } from 'viem'
+const READ_METHODS = new Set(['eth_chainId', 'web3_clientVersion', 'eth_blockNumber', 'eth_getBlockByNumber',
+  'eth_getCode', 'eth_getStorageAt', 'eth_getTransactionCount', 'eth_call', 'eth_estimateGas', 'eth_gasPrice',
+  'eth_getBalance', 'eth_getTransactionReceipt'])
 
 export class LoopbackMiningPlan {
   rows = []
   contracts = {}
-  constructor(owner, output, feeCap) { this.owner = owner; this.output = output; this.feeCap = BigInt(feeCap); if (this.feeCap <= 0n) throw new Error('A verified fee cap is required') }
+  constructor(owner, output, feeCap, fetcher = fetch) { this.owner = owner; this.output = output; this.feeCap = BigInt(feeCap); this.fetcher = fetcher; if (this.feeCap <= 0n) throw new Error('A verified fee cap is required') }
   async rpc(method, params = []) {
-    const response = await fetch('http://127.0.0.1:8953', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }), signal: AbortSignal.timeout(30_000) })
+    let response
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        response = await this.fetcher('http://127.0.0.1:8953', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }), signal: AbortSignal.timeout(30_000) })
+        break
+      } catch (error) {
+        // A fork may need an upstream storage read. Never retry a submission,
+        // snapshot, mine, time advance or any other state-changing operation.
+        if (!READ_METHODS.has(method) || attempt === 2) throw error
+      }
+    }
     const body = await response.json()
     if (!response.ok || body.id !== 1 || body.jsonrpc !== '2.0' || body.error) throw new Error(`Loopback ${method} failed: ${body.error?.message ?? response.status}`)
     return body.result
