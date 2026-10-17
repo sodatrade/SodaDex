@@ -63,6 +63,7 @@ describe('1952 signed launch policy', () => {
     { name: 'Mine', symbol: 'A', metadataURI: 'http://example.test' },
     { name: 'Mine', symbol: 'A', metadataURI: 'javascript:alert(1)' },
     { name: 'Mine', symbol: 'A', metadataURI: 'https://' },
+    { name: 'Mine', symbol: 'A', metadataURI: 'https://user:password@example.test' },
     { name: 'Mine', symbol: 'A', metadataURI: `ipfs://${'a'.repeat(250)}` },
   ])('rejects invalid presentation input before constructing calldata: %j', (bad) => {
     expect(() => normalizeMiningLaunchForm(bad)).toThrow('miningInvalidLaunch')

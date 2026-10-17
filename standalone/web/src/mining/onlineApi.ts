@@ -1,8 +1,9 @@
 import { decodeFunctionData, encodeFunctionData, type Hex } from 'viem'
 import { miningAbi, sameMiningAddress, validMiningProductCall, type MiningTransaction } from '../../../mining-calls'
+import { normalizeMiningLaunchForm, type MiningLaunchForm } from '../../../mining-signed-calls'
 import { parseMiningDeployment, type MiningAddress, type MiningProductDeployment, type MiningProject } from '../../../mining-products'
 
-export interface MiningLaunchForm { name: string; symbol: string; metadataURI: string }
+export type { MiningLaunchForm } from '../../../mining-signed-calls'
 export interface MiningOnlineJob {
   id: string; kind: 'sync' | 'fund' | 'purchase' | 'conversion'; status: string; reason: string
   token?: MiningAddress; hash?: Hex; updatedAt: number
@@ -24,23 +25,10 @@ const uint = (v: unknown): v is string => typeof v === 'string' && /^(0|[1-9][0-
 const controls = (v: string): boolean => Array.from(v).some((c) => c.charCodeAt(0) < 32 || c.charCodeAt(0) === 127)
 const text = (v: unknown, max = 128): v is string => typeof v === 'string' && v.length <= max && !controls(v)
 const invalid = (): never => { throw new Error('onlineInvalidResponse') }
-const bytes = (v: string): number => new TextEncoder().encode(v).length
 
 /** Display-only fields; financial launch parameters remain fixed by the shared call validator. */
 export function normalizeOnlineLaunchForm(value: MiningLaunchForm): MiningLaunchForm {
-  if (controls(value.name)) throw new Error('onlineInvalidForm')
-  const rawName = value.name.trim(), name = rawName.startsWith('TEST ') ? rawName : `TEST ${rawName}`
-  const symbol = `TEST-${value.symbol.trim().replace(/^TEST-/i, '').toUpperCase()}`
-  const metadataURI = value.metadataURI.trim()
-  if (!text(name, 64) || bytes(name) > 64 || name === 'TEST ' || !/^TEST-[A-Z0-9-]{1,20}$/.test(symbol) ||
-      !text(metadataURI, 256) || bytes(metadataURI) > 256 || /\s/.test(metadataURI)) throw new Error('onlineInvalidForm')
-  if (metadataURI) {
-    try {
-      const url = new URL(metadataURI)
-      if (!['https:', 'ipfs:'].includes(url.protocol) || !url.hostname || url.username || url.password) throw new Error()
-    } catch { throw new Error('onlineInvalidForm') }
-  }
-  return { name, symbol, metadataURI }
+  try { return normalizeMiningLaunchForm(value) } catch { throw new Error('onlineInvalidForm') }
 }
 function parseForm(value: unknown): MiningLaunchForm {
   if (!record(value) || !text(value.name, 64) || !text(value.symbol, 25) || !text(value.metadataURI, 256)) return invalid()

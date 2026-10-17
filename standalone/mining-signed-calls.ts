@@ -43,7 +43,7 @@ function validLaunchForm(v: unknown): v is MiningLaunchForm {
   if (/\s/.test(v.metadataURI) || hasAsciiControl(v.metadataURI)) return false
   try {
     const uri = new URL(v.metadataURI)
-    return ['https:', 'ipfs:'].includes(uri.protocol) && uri.hostname.length > 0
+    return ['https:', 'ipfs:'].includes(uri.protocol) && uri.hostname.length > 0 && !uri.username && !uri.password
   } catch { return false }
 }
 
