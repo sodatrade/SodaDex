@@ -3,8 +3,8 @@
 
 @font-face {
   font-family: "Soda Inter";
-  src: url("../../../apps/web/public/fonts/Inter-Regular-Latin.woff2") format("woff2");
-  font-weight: 400;
+  src: url("../../../apps/web/public/fonts/Inter-normal.var.ttf") format("truetype");
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
@@ -12,27 +12,27 @@
 :root {
   font-family: "Soda Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
   font-synthesis: none;
-  --soda-bg: #101310;
-  --soda-surface: #1a1e19;
-  --soda-raised: #242923;
-  --soda-field: #121610;
-  --soda-hover: #2c3329;
-  --soda-text: #f1f4e9;
-  --soda-muted: #a2ac9c;
-  --soda-faint: #7f897b;
-  --soda-line: #343c2f;
-  --soda-line-soft: #2a3126;
-  --soda-accent: #d5ff75;
-  --soda-accent-hover: #e1ff9d;
-  --soda-accent-text: #202a15;
-  --soda-highlight: #d5ff75;
-  --soda-accent-dim: #2b351e;
-  --soda-warning: #efce8e;
-  --soda-error: #ffb4a2;
-  --soda-overlay: #030603b8;
-  --soda-shadow: 0 24px 72px #00000032;
-  --soda-radius-card: 28px;
-  --soda-radius-control: 16px;
+  --soda-bg: #121017;
+  --soda-surface: #1b1821;
+  --soda-raised: #25212e;
+  --soda-field: #211d28;
+  --soda-hover: #302a3a;
+  --soda-text: #f6f3fa;
+  --soda-muted: #b3a9c0;
+  --soda-faint: #a599b4;
+  --soda-line: #3c3448;
+  --soda-line-soft: #302939;
+  --soda-accent: #b65ae9;
+  --soda-accent-hover: #c579ee;
+  --soda-accent-text: #180b22;
+  --soda-highlight: #d4a0f0;
+  --soda-accent-dim: #32223e;
+  --soda-warning: #e6bd73;
+  --soda-error: #f6a3af;
+  --soda-overlay: #14101985;
+  --soda-shadow: 0 8px 28px #0000001a;
+  --soda-radius-card: 16px;
+  --soda-radius-control: 10px;
   --soda-page-width: 1320px;
   color: var(--soda-text);
   background: var(--soda-bg);
@@ -40,24 +40,24 @@
 }
 
 :root[data-theme="light"] {
-  --soda-bg: #f2f4e9;
-  --soda-surface: #fdfff8;
-  --soda-raised: #f0f3e7;
-  --soda-field: #f0f3e7;
-  --soda-hover: #e6ebdb;
-  --soda-text: #20281b;
-  --soda-muted: #5a6651;
-  --soda-faint: #68745f;
-  --soda-line: #d3dbc5;
-  --soda-line-soft: #e1e7d6;
-  --soda-accent: #c9f366;
-  --soda-accent-hover: #bce850;
-  --soda-accent-text: #263117;
-  --soda-highlight: #446915;
-  --soda-accent-dim: #e3edcd;
-  --soda-warning: #7d5f25;
-  --soda-error: #a73828;
-  --soda-shadow: 0 24px 72px #25351212;
+  --soda-bg: #f6f5f8;
+  --soda-surface: #ffffff;
+  --soda-raised: #f1eef5;
+  --soda-field: #f5f4f7;
+  --soda-hover: #ece8f1;
+  --soda-text: #201d29;
+  --soda-muted: #746e80;
+  --soda-faint: #7d7589;
+  --soda-line: #e7e4ec;
+  --soda-line-soft: #efedf3;
+  --soda-accent: #a23be2;
+  --soda-accent-hover: #8a29c5;
+  --soda-accent-text: #ffffff;
+  --soda-highlight: #8a29c5;
+  --soda-accent-dim: #f3e9fb;
+  --soda-warning: #946315;
+  --soda-error: #bb364d;
+  --soda-shadow: 0 4px 20px #29203005;
   color-scheme: light;
 }
 
@@ -179,12 +179,12 @@ main { flex: 1; width: 100%; outline: none; }
 .footer-brand > span > span { margin: 0 6px; color: var(--soda-faint); }
 .site-footer > a { display: flex; align-items: center; gap: 6px; min-height: 32px; }
 .site-footer > a:hover { color: var(--soda-text); }
-.dialog { border: 1px solid var(--soda-line); border-radius: 24px; color: var(--soda-text); background: var(--soda-surface); padding: 0; width: min(440px, calc(100% - 32px)); max-height: min(720px, calc(100svh - 48px)); margin: auto; overflow: auto; box-shadow: var(--soda-shadow); }
-.dialog::backdrop { background: var(--soda-overlay); backdrop-filter: blur(5px); }
-.soda-dialog-body { padding: 20px; }
+.dialog { border: 1px solid var(--soda-line); border-radius: 18px; color: var(--soda-text); background: var(--soda-surface); padding: 0; width: min(460px, calc(100% - 32px)); max-height: min(780px, calc(100svh - 32px)); margin: auto; overflow: auto; box-shadow: 0 24px 80px #160f2926; }
+.dialog::backdrop { background: var(--soda-overlay); }
+.soda-dialog-body { padding: 24px; }
 .dialog-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: -4px -4px 0 2px; }
-.dialog-header h2 { font-size: 18px; font-weight: 500; margin: 0; }
-.dialog-description { font-size: 12px; color: var(--soda-muted); line-height: 1.7; margin: 7px 2px 20px; }
+.dialog-header h2 { font-size: 19px; font-weight: 600; letter-spacing: -.4px; margin: 0; }
+.dialog-description { font-size: 13px; color: var(--soda-muted); line-height: 1.7; margin: 7px 2px 22px; }
 .dialog-note { font-size: 11px; color: var(--soda-muted); line-height: 1.8; padding-top: 16px; margin: 16px 0 0; border-top: 1px solid var(--soda-line-soft); }
 .search-field { display: flex; align-items: center; gap: 10px; border: 1px solid var(--soda-line); background: var(--soda-field); border-radius: 12px; padding: 12px; margin-top: 16px; color: var(--soda-muted); }
 .search-field:focus-within { border-color: var(--soda-accent); }
