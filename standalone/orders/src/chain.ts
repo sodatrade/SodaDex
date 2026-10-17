@@ -1,9 +1,10 @@
-import { BaseError, ContractFunctionRevertedError, TransactionReceiptNotFoundError, createPublicClient, decodeErrorResult, decodeEventLog, encodeFunctionData, hashStruct, hashTypedData, http, verifyTypedData, type Address, type Hex, type PublicClient } from 'viem'
+import { BaseError, ContractFunctionRevertedError, TransactionReceiptNotFoundError, createPublicClient, decodeErrorResult, decodeEventLog, encodeFunctionData, hashStruct, hashTypedData, http, keccak256, parseTransaction, serializeTransaction, size, verifyTypedData, type Address, type Hex, type PublicClient } from 'viem'
 import { orderMessage, orderTypedData, ORDER_TYPES, type SodaLimitOrder } from '../../order-types.ts'
 import { SETTLEMENT_ABI, PERMIT_ABI } from './abi.ts'
 import { FIXED, type OrderRuntimeConfig } from './config.ts'
 import { ChainFailure, type ExecutionPlan, type ExecutionReceipt, type KeeperNonceObservation, type NonceObservation, type OrderChain } from './chain-types.ts'
 import type { ChainObservation } from './types.ts'
+import { assertZeroAdditionalFees, assertZeroReceiptExtras } from './fees.ts'
 const same = (a: string, b: string): boolean => a.toLowerCase() === b.toLowerCase()
 export function orderId(order: SodaLimitOrder): Hex { return hashTypedData(orderTypedData(order, FIXED.permit2)) }
 export function orderHash(order: SodaLimitOrder): Hex { return hashStruct({ data: orderMessage(order), primaryType: 'SodaLimitOrder', types: ORDER_TYPES }) }
@@ -111,15 +112,23 @@ export class ViemOrderChain implements OrderChain {
     try {
       const data = executionData(order, signature)
       const [gas, gasPrice, nonce] = await Promise.all([this.client.estimateGas({ account: executor, to: order.settlement, data, value: 0n }), this.client.getGasPrice(), this.client.getTransactionCount({ address: executor, blockTag: 'pending' })])
-      return { chainId: 196, to: order.settlement, data, value: 0n, nonce, gas, gasPrice }
+      const plan = { chainId: 196 as const, to: order.settlement, data, value: 0n as const, nonce, gas, gasPrice }
+      await assertZeroAdditionalFees(this.client, size(serializeTransaction({ ...plan, type: 'legacy' })), gas)
+      return plan
     } catch { throw new ChainFailure('unavailable') }
   }
   async receipt(hash: Hex, order: SodaLimitOrder): Promise<ExecutionReceipt | null> {
     try {
       const receipt = await this.client.getTransactionReceipt({ hash })
       if (!same(receipt.transactionHash, hash)) throw new ChainFailure('unavailable')
+      assertZeroReceiptExtras(receipt)
       const block = observation(await this.client.getBlock({ blockNumber: receipt.blockNumber }))
       if (!same(block.blockHash, receipt.blockHash)) return null
+      const transaction = await this.client.getTransaction({ hash })
+      if (!same(transaction.hash, hash) || transaction.type !== 'legacy' || transaction.chainId !== 196 || transaction.gas < receipt.gasUsed) throw new ChainFailure('unavailable')
+      const serialized = serializeTransaction({ ...transaction, data: transaction.input, type: 'legacy' }, { r: transaction.r, s: transaction.s, v: transaction.v })
+      if (!same(keccak256(serialized), hash)) throw new ChainFailure('unavailable')
+      await assertZeroAdditionalFees(this.client, size(serialized), receipt.gasUsed, receipt.blockNumber)
       const filled = receipt.logs.some(log => {
         if (!same(log.address, order.settlement)) return false
         try {
@@ -136,6 +145,11 @@ export class ViemOrderChain implements OrderChain {
     }
   }
   async broadcast(rawTransaction: Hex): Promise<Hex> {
-    try { return await this.client.sendRawTransaction({ serializedTransaction: rawTransaction }) } catch { throw new ChainFailure('unavailable') }
+    try {
+      const transaction = parseTransaction(rawTransaction)
+      if (transaction.type !== 'legacy' || transaction.chainId !== 196 || transaction.gas === undefined) throw new ChainFailure('unavailable')
+      await assertZeroAdditionalFees(this.client, size(rawTransaction), transaction.gas)
+      return await this.client.sendRawTransaction({ serializedTransaction: rawTransaction })
+    } catch { throw new ChainFailure('unavailable') }
   }
 }

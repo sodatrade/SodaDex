@@ -1,6 +1,7 @@
 // Owned Anvil only: actual SodaDEX Router, V3/V4, Permit2 and assets from the rehearsal snapshot.
 // Ephemeral in-memory test keys are never printed or saved. No URL option or upstream broadcast path exists.
 import { createRequire } from 'node:module'
+import { createHash } from 'node:crypto'
 import { readFile, writeFile } from 'node:fs/promises'
 import { startLiquidityFork } from '../../../standalone/web/tests/liquidityForkFixture.ts'
 const require = createRequire(new URL('../../../standalone/web/package.json', import.meta.url))
@@ -10,6 +11,7 @@ const {
   decodeFunctionResult,
   parseAbi,
   toHex,
+  pad,
   zeroAddress,
   keccak256,
   hashTypedData,
@@ -20,6 +22,36 @@ const artifact = await readJSON('../../../.analysis/orders/settlement.json')
 const config = await readJSON('../../../deployments/xlayer-test/active.json')
 const protocol = await readJSON('../protocol.json')
 const pools = await readJSON('../../../deployments/xlayer-test/pools.json')
+
+// Public, pinned RPC state. Never replace the real fee model with an always-zero mock.
+export async function installFeeOracleFixture(request, fixturePath = process.env.SODADEX_ORDER_FEE_ORACLE_FILE) {
+  if (!fixturePath) throw Error('SODADEX_ORDER_FEE_ORACLE_FILE required for the reviewed fee model')
+  const bytes = await readFile(fixturePath)
+  const sha = value => createHash('sha256').update(value).digest('hex')
+  if (sha(bytes) !== '80a0584aba839853de9d595c61cd4304a95e99c25376ac8395cfb324b7d2ff74') throw Error('Fee oracle fixture changed')
+  const fixture = JSON.parse(bytes.toString('utf8'))
+  if (fixture.chainId !== 196 || fixture.blockNumber !== 73438680 || fixture.blockHash !== '0xf56b34f2476f626fc70b8b8a772c4491222bdaa6458bd57bec81dcc1e22f5c65') throw Error('Unreviewed fee oracle source block')
+  const expected = {
+    '0x420000000000000000000000000000000000000f': '30ccc4ce49c00fae11d7118fc244f29a13788fb32cd4022ee69acc2f15c0e2f5',
+    '0x4f1db3c6abd250ba86e0928471a8f7db3afd88f1': '7e49db5c1d54bab9a75a387dc972d4fb1c3c78f3fbf31336a9d8413d6d125cc3',
+    '0x4200000000000000000000000000000000000015': '30ccc4ce49c00fae11d7118fc244f29a13788fb32cd4022ee69acc2f15c0e2f5',
+    '0x1160d963acd3799e820b75809cdba75bcef8bf74': 'eae605b5a2953f2075aec2473e3c8e754c1cccfc71ef1341754a170596f60150',
+  }
+  if (Object.keys(fixture.accounts).length !== Object.keys(expected).length) throw Error('Unexpected fee fixture account')
+  for (const [address, codeSha] of Object.entries(expected)) {
+    const account = fixture.accounts[address]
+    if (!account || sha(Buffer.from(account.code.slice(2), 'hex')) !== codeSha) throw Error('Unreviewed oracle runtime')
+    await request('anvil_setCode', [address, account.code])
+    for (const [slot, value] of Object.entries(account.storage)) await request('anvil_setStorageAt', [address, pad(toHex(BigInt(slot)), { size: 32 }), value])
+  }
+  const abi = parseAbi(['function isFjord() view returns(bool)', 'function isIsthmus() view returns(bool)', 'function getL1FeeUpperBound(uint256) view returns(uint256)', 'function getOperatorFee(uint256) view returns(uint256)'])
+  for (const [functionName, args, expectedValue] of [['isFjord', [], true], ['isIsthmus', [], true], ['getL1FeeUpperBound', [4096n], 0n], ['getOperatorFee', [1000000n], 0n]]) {
+    const data = encodeFunctionData({ abi, functionName, args })
+    const result = decodeFunctionResult({ abi, functionName, data: await request('eth_call', [{ to: '0x420000000000000000000000000000000000000f', data }, 'latest']) })
+    if (result !== expectedValue) throw Error('Installed oracle fixture proof failed')
+  }
+  return { blockNumber: fixture.blockNumber, blockHash: fixture.blockHash, sha256: sha(bytes) }
+}
 export async function startOrderFixture(options = {}) {
   const fork = await startLiquidityFork({
     fixturePath: options.fixturePath ?? process.env.SODADEX_LP_FORK_STATE,
@@ -120,6 +152,7 @@ export async function startOrderFixture(options = {}) {
     return x
   }
   try {
+    await installFeeOracleFixture(request, options.feeOraclePath)
     for (const address of [maker.address, keeper]) await request('anvil_setBalance', [address, '0x56bc75e2d63100000'])
     const deployed = await send(maker.address, null, '0x' + artifact.evm.bytecode.object)
     const settlement = deployed.contractAddress
