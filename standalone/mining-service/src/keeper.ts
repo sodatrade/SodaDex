@@ -103,21 +103,26 @@ export class Keeper {
       this.job(e, status === 1n ? 'confirmed' : 'failed', status === 1n ? 'settled' : 'transaction_reverted')
       await this.repo.flush(); return
     }
-    const nonce = quantity(await this.rpc.request('eth_getTransactionCount', [e.signer, 'latest']))
+    const [observedNonce, known, observedPendingNonce, balance] = await Promise.all([
+      this.rpc.request('eth_getTransactionCount', [e.signer, 'latest']),
+      this.rpc.request('eth_getTransactionByHash', [e.hash]),
+      this.rpc.request('eth_getTransactionCount', [e.signer, 'pending']),
+      this.rpc.request('eth_getBalance', [e.signer, 'latest']),
+    ])
+    const nonce = quantity(observedNonce)
     if (nonce > BigInt(e.nonce)) {
       this.repo.change(s => { s.executions[e.hash].status = 'nonce_conflict' })
       this.job(e, 'blocked', 'nonce_consumed_unknown'); await this.repo.flush(); return
     }
     if (nonce < BigInt(e.nonce)) { this.job(e, 'blocked', 'nonce_state_unavailable'); return }
-    const known = await this.rpc.request('eth_getTransactionByHash', [e.hash])
     if (known !== null) { this.job(e, 'broadcast', 'pending_confirmation'); return }
-    const pendingNonce = quantity(await this.rpc.request('eth_getTransactionCount', [e.signer, 'pending']))
+    const pendingNonce = quantity(observedPendingNonce)
     if (pendingNonce !== nonce) { this.job(e, 'blocked', 'pending_nonce_unknown'); return }
     if (e.deadline !== undefined && e.deadline <= this.now() + 5) { this.job(e, 'blocked', 'authorization_expired'); return }
     if (!allowBroadcast) { this.job(e, 'blocked', 'receipt_reorg'); return }
     if (!this.c.executionEnabled || BigInt(this.repo.read().spentWei) + BigInt(this.repo.read().reservedWei) > this.c.gasCapWei) throw new ServiceError('gas_budget_exhausted')
     await assertLiveExecution(e, this.c, this.d, this.rpc, this.planner.discovery, Object.values(this.repo.read().projects), initialProof)
-    if (quantity(await this.rpc.request('eth_getBalance', [e.signer, 'latest'])) < BigInt(e.maxCostWei)) throw new ServiceError('keeper_balance_insufficient')
+    if (quantity(balance) < BigInt(e.maxCostWei)) throw new ServiceError('keeper_balance_insufficient')
     // An unknown broadcast is reconciled by this exact hash; at most one identical rebroadcast.
     if (e.broadcasts >= 2) { this.job(e, 'blocked', 'broadcast_unknown'); return }
     await this.rpc.request('eth_call', [{ from: e.signer, to: e.to, data: e.data, value: toHex(0n) }, 'pending'])
