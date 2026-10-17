@@ -102,7 +102,7 @@ describe('verified timestamp chart API', () => {
     expect(value.queryComplete).toBe(false)
     const rejected = await dexApi(request(`${url}&cursor=${value.nextCursor}`), source, store)
     expect(rejected.status).toBe(400)
-    expect(await rejected.json()).toEqual({ error: 'Chart range exceeds 5000 trades; choose a narrower block range' })
+    expect(await rejected.json()).toEqual({ error: 'Chart range exceeds 5000 trades; choose a narrower block range', code: 'CHART_RANGE_TOO_LARGE' })
   })
 
 })

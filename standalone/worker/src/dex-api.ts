@@ -2,7 +2,7 @@ import { coverage, head, BadRequest } from './dex-data'
 import { events } from './dex-events'
 import { market } from './dex-market'
 import { poolPage } from './dex-pools'
-import { chart } from './dex-chart'
+import { chart, ChartRangeTooLarge } from './dex-chart'
 import { cacheCursorStore, RestartScan, type CursorStore } from './cursors'
 export async function dexApi(request: Request, upstreamFetch: typeof fetch = fetch, cursorStore?: CursorStore): Promise<Response> {
   const headers = { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' }
@@ -20,6 +20,7 @@ export async function dexApi(request: Request, upstreamFetch: typeof fetch = fet
     return Response.json(await market(url, block, coverage(url, block, true), upstreamFetch), { headers })
   } catch (error) {
     if (error instanceof RestartScan) return Response.json({ error: error.message, code: error.code, restartFromBlock: error.restartFromBlock }, { status: 409, headers })
+    if (error instanceof ChartRangeTooLarge) return Response.json({ error: error.message, code: 'CHART_RANGE_TOO_LARGE' }, { status: 400, headers })
     return Response.json({ error: error instanceof BadRequest ? error.message : 'Chain data temporarily unavailable' }, { status: error instanceof BadRequest ? 400 : 502, headers })
   }
 }

@@ -10,6 +10,7 @@ import { CHART_INTERVALS, type ChartInterval, type ChartResponse, type ChartToke
 
 const BLOCK_HEADERS_PER_REQUEST = 8
 const MAX_CHART_TRADES = 5000 // Bound ephemeral Worker/cache memory; dense queries must request a smaller range.
+export class ChartRangeTooLarge extends BadRequest {}
 interface ChartCursor extends ScanCursor {
   kind: 'chart'; interval: ChartInterval; fromBlock: number; targetBlock: number; throughBlock: number; nextBlock: number
   pageToBlock: number | null; pending: ChainLog[]; pool: Pool; token0: ChartToken; token1: ChartToken; trades: ChartTrade[]
@@ -58,7 +59,7 @@ async function processPage(state: ChartCursor, upstreamFetch: typeof fetch): Pro
     state.trades.push(trade)
     ids.set(trade.id, trade)
   }
-  if (state.trades.length > MAX_CHART_TRADES) throw new BadRequest('Chart range exceeds 5000 trades; choose a narrower block range')
+  if (state.trades.length > MAX_CHART_TRADES) throw new ChartRangeTooLarge('Chart range exceeds 5000 trades; choose a narrower block range')
   state.pending = state.pending.filter((log) => !byNumber.has(Number(BigInt(log.blockNumber))))
   if (state.pending.length) state.throughBlock = Number(BigInt(state.pending[0].blockNumber)) - 1
   else {
