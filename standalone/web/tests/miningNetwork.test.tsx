@@ -9,6 +9,12 @@ import { MiningNetworkApp } from '../src/MiningNetworkApp'
 import { getProfileNetworkStatus } from '../src/lib/networkStatus'
 import { switchToXLayer, type Eip1193Provider } from '../src/lib/wallet'
 
+// Readiness tests must retain their undeployed fixture after the public manifest
+// switches to ready; deployed-product behavior has its own workspace tests.
+vi.mock('../../../deployments/xlayer-1952/products.json', () => ({
+  default: { schemaVersion: 1, state: 'pending', chainId: 1952 },
+}))
+
 vi.mock('../src/network', async () => {
   const { networkProfile } = await import('../../network-profile')
   const NETWORK = networkProfile('1952-mining-test')
