@@ -8,5 +8,8 @@
     "skipLibCheck": true,
     "noEmit": true
   },
-  "include": ["trading-policy.ts"]
+  "include": [
+    "trading-policy.ts",
+    "order-types.ts"
+  ]
 }

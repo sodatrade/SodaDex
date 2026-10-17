@@ -5,6 +5,7 @@ import { primaryPage, type Page } from '../features/workspace/navigation'
 import type { WalletController } from '../lib/useWallet'
 import { usePreferences } from '../preferences/context'
 import { Button, Icon, NetworkIcon, SodaMark } from './primitives'
+import { IgnixLaunchLink } from './IgnixLaunchLink'
 
 export type { Page } from '../features/workspace/navigation'
 
@@ -47,6 +48,7 @@ export function Header({ page, onPageChange, wallet, onWallet, onSearch, onPrefe
             {item.name}
           </button>
         ))}
+        <IgnixLaunchLink />
       </nav>
       <div className="header-actions">
         <span className="network-badge">
