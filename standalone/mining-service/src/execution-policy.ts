@@ -70,6 +70,10 @@ export async function assertLiveExecution(e: Execution, c: RuntimeConfig, d: Min
     if (!policy.allowedListingIds.includes(String(p.listingId)) || d.testListingIds?.includes(String(p.listingId)) ||
         p.nativePrice <= 0n || p.nativePrice > policy.maxMinerPriceWei || p.maxFab <= 0n ||
         p.deadline < b.timestamp || p.deadline > b.timestamp + 60n) throw new ServiceError('purchase_policy_changed')
+    if (!same(await recoverTypedDataAddress({ ...purchaseTyped(farm, p), signature: args[1] as Hex }), c.expectedSigner)) throw new ServiceError('purchase_state_changed')
+    // Planner checked these exact historical-state reads at b in this event.
+    // Its proof is never stored with Execution or reconstructed after restart.
+    if (initialProof) { await assertCanonical(rpc, b); return }
     const [listing, count, cap, budget, spent, paused, used] = await Promise.all([
       read<readonly [Address, Address, bigint, bigint, number, boolean]>(rpc, d.contracts.circuitMarket.address,
         'function listingView(uint256) view returns(address,address,uint256,uint96,uint16,bool)', [p.listingId], b.number),
@@ -92,8 +96,7 @@ export async function assertLiveExecution(e: Execution, c: RuntimeConfig, d: Min
         [nativePrice, [d.contracts.fab.address, d.contracts.wrappedNative.address]], b.number),
     ])
     if (!same(owner, seller) || !admissible || !same(approved, d.contracts.circuitMarket.address) && !all || quote.length !== 2 ||
-        quote[0] <= 0n || quote[1] !== nativePrice || quote[0] > p.maxFab || p.maxFab > (quote[0] * BigInt(10000 + policy.slippageBps) + 9999n) / 10000n ||
-        !same(await recoverTypedDataAddress({ ...purchaseTyped(farm, p), signature: args[1] as Hex }), c.expectedSigner)) throw new ServiceError('purchase_state_changed')
+        quote[0] <= 0n || quote[1] !== nativePrice || quote[0] > p.maxFab || p.maxFab > (quote[0] * BigInt(10000 + policy.slippageBps) + 9999n) / 10000n) throw new ServiceError('purchase_state_changed')
   }
   if (decoded.functionName === 'convertTax') {
     if (!project) throw new ServiceError('project_not_registered')
@@ -101,6 +104,8 @@ export async function assertLiveExecution(e: Execution, c: RuntimeConfig, d: Min
     const p = args[0] as MiningConversion
     if (!verified.pair || p.input <= 0n || p.input > c.policy.maxConversionInputRaw || p.minimumFab <= 0n ||
         p.deadline < b.timestamp || p.deadline > b.timestamp + 60n) throw new ServiceError('conversion_policy_changed')
+    if (!same(await recoverTypedDataAddress({ ...conversionTyped(e.to, p), signature: args[1] as Hex }), c.expectedSigner)) throw new ServiceError('conversion_state_changed')
+    if (initialProof) { await assertCanonical(rpc, b); return }
     const [balance, exempt, tax, used] = await Promise.all([
       read<bigint>(rpc, project.token.address, 'function balanceOf(address) view returns(uint256)', [e.to], b.number),
       read<boolean>(rpc, project.token.address, 'function taxExempt(address) view returns(bool)', [e.to], b.number),
@@ -111,8 +116,7 @@ export async function assertLiveExecution(e: Execution, c: RuntimeConfig, d: Min
     const effective = exempt ? p.input : p.input - p.input * BigInt(tax) / 10000n
     const quote = await read<readonly bigint[]>(rpc, d.contracts.router.address, 'function getAmountsOut(uint256,address[]) view returns(uint256[])',
       [effective, [project.token.address, d.contracts.fab.address]], b.number)
-    if (quote.length !== 2 || quote[0] !== effective || quote[1] <= 0n || p.minimumFab < quote[1] * BigInt(10000 - c.policy.slippageBps) / 10000n ||
-        !same(await recoverTypedDataAddress({ ...conversionTyped(e.to, p), signature: args[1] as Hex }), c.expectedSigner)) throw new ServiceError('conversion_state_changed')
+    if (quote.length !== 2 || quote[0] !== effective || quote[1] <= 0n || p.minimumFab < quote[1] * BigInt(10000 - c.policy.slippageBps) / 10000n) throw new ServiceError('conversion_state_changed')
   }
   await assertCanonical(rpc, b)
 }
