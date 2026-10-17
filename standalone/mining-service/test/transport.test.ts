@@ -23,7 +23,7 @@ describe('1952 RPC transport', () => {
     await expect(freshPending({ request: vi.fn(), batch }, 'eth_estimateGas', args, wait)).rejects.toThrow('pending_rpc_stale')
     expect(batch).toHaveBeenCalledTimes(6); expect(wait.mock.calls.map(c => c[0])).toEqual([1000, 2000, 4000, 4000, 4000])
   })
-  it('batches independent reads in groups of at most five and maps replies by id', async () => {
+  it('batches independent reads in groups of at most ten and maps replies by id', async () => {
     const sizes: number[] = []
     const fetcher = vi.fn(async (_url: unknown, init?: RequestInit) => {
       const calls = JSON.parse(String(init?.body)) as { id: number; params: unknown[] }[]
@@ -32,7 +32,7 @@ describe('1952 RPC transport', () => {
     })
     const rpc = new HttpRpc('https://example.invalid/', fetcher)
     const values = await Promise.all(Array.from({ length: 13 }, (_, i) => rpc.request('test_read', [i])))
-    expect(values).toEqual(Array.from({ length: 13 }, (_, i) => i)); expect(sizes).toEqual([5, 5, 3])
+    expect(values).toEqual(Array.from({ length: 13 }, (_, i) => i)); expect(sizes).toEqual([10, 3])
   })
   it('does not retry raw broadcasts and rejects duplicate or missing RPC reply ids', async () => {
     const fetcher = vi.fn().mockRejectedValue(new Error('response lost')), rpc = new HttpRpc('https://example.invalid/', fetcher)
@@ -40,5 +40,13 @@ describe('1952 RPC transport', () => {
     expect(fetcher).toHaveBeenCalledTimes(1)
     const malformed = new HttpRpc('https://example.invalid/', vi.fn(async () => Response.json([{ jsonrpc: '2.0', id: 999, result: '0x1' }])))
     await expect(malformed.request('eth_chainId')).rejects.toThrow('rpc_invalid')
+  })
+})
+
+describe('pinned block RPC identity', () => {
+  it('rejects a different block height even when its hash has the right shape', async () => {
+    const { block } = await import('../src/rpc.ts')
+    const rpc = { request: vi.fn(async () => ({ number: '0x63', hash: `0x${'ab'.repeat(32)}`, timestamp: '0x400' })) }
+    await expect(block(rpc, '0x64')).rejects.toThrow('rpc_height_mismatch')
   })
 })

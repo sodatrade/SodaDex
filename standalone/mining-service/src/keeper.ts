@@ -2,10 +2,10 @@ import { toHex, type TransactionSerializableLegacy } from 'viem'
 import type { MiningProductDeployment } from '../../mining-products.ts'
 import { block, assertCanonical } from './rpc.ts'
 import { assertZeroAdditionalFees, serializedBytes } from './fees.ts'
-import { validateRaw, validateSaved, validKeeperCall } from './execution-policy.ts'
+import { validateRaw, validateSaved, validKeeperCall, assertLiveExecution } from './execution-policy.ts'
 import { Repository } from './repository.ts'
 import { Planner } from './planner.ts'
-import { hash, quantity, record, same, ServiceError, type Execution, type KeeperSigner, type Rpc, type RuntimeConfig } from './types.ts'
+import { hash, quantity, record, same, ServiceError, type Block, type Execution, type KeeperSigner, type Rpc, type RuntimeConfig } from './types.ts'
 export class Keeper {
   constructor(readonly c: RuntimeConfig, readonly d: MiningProductDeployment, readonly repo: Repository, readonly rpc: Rpc,
     readonly planner: Planner, readonly signer?: KeeperSigner, readonly now = (): number => Math.floor(Date.now() / 1000)) {}
@@ -23,7 +23,7 @@ export class Keeper {
     if (quantity(await this.rpc.request('eth_chainId')) !== 1952n) throw new ServiceError('wrong_chain', 503)
     // Check the latest finished execution for a reorg before allocating another nonce.
     const finished = Object.values(this.repo.read().executions).filter(e => ['confirmed', 'reverted'].includes(e.status)).toSorted((a, b) => b.nonce - a.nonce)[0]
-    if (finished) await this.recheckFinished(finished)
+    if (finished && await this.recheckFinished(finished)) return
     const pending = this.pending()
     if (pending) { await this.recover(pending); return }
     const budget = this.repo.read()
@@ -59,20 +59,28 @@ export class Keeper {
       s.jobs[call.jobId] = { id: call.jobId, kind: call.kind, status: 'prepared', reason: 'signed', ...(call.token ? { token: call.token } : {}), hash: txHash, updatedAt: this.now() * 1000 }
     })
     await this.repo.flush()
-    await this.recover(e)
+    await this.recover(e, true, call.verifiedBlock)
   }
-  private async recheckFinished(e: Execution): Promise<void> {
-    const receipt = await this.rpc.request('eth_getTransactionReceipt', [e.hash])
-    const canonical = record(receipt) && hash(receipt.blockHash) && typeof receipt.blockNumber === 'string' && same((await block(this.rpc, receipt.blockNumber)).hash, receipt.blockHash)
-    if (canonical && same(String(receipt.blockHash), e.receiptBlockHash ?? '')) return
+  private async recheckFinished(e: Execution): Promise<boolean> {
+    const head = await block(this.rpc)
+    const canonical = e.receiptBlock && e.receiptBlockHash && BigInt(e.receiptBlock) <= BigInt(head.number) &&
+      same((await block(this.rpc, e.receiptBlock)).hash, e.receiptBlockHash)
+    if (canonical) return false // This canonical descendant also anchors every earlier settled transaction.
+    const finished = Object.values(this.repo.read().executions).filter(x => ['confirmed', 'reverted'].includes(x.status))
+    // Restore all affected reserves atomically before any network reads. Earlier nonces can
+    // have different gasUsed/status after the same reorg; none of their old costs is final.
     this.repo.change(s => {
-      s.spentWei = String(BigInt(s.spentWei) - BigInt(e.actualCostWei ?? '0'))
-      s.reservedWei = String(BigInt(s.reservedWei) + BigInt(e.maxCostWei))
-      s.executions[e.hash] = { ...e, status: 'broadcast' }
+      for (const prior of finished) {
+        s.spentWei = String(BigInt(s.spentWei) - BigInt(prior.actualCostWei ?? '0'))
+        s.reservedWei = String(BigInt(s.reservedWei) + BigInt(prior.maxCostWei))
+        s.executions[prior.hash] = { ...prior, status: 'broadcast' }
+      }
     })
-    this.job(e, 'blocked', 'receipt_reorg'); await this.repo.flush()
+    await this.repo.flush()
+    for (const prior of finished) await this.recover({ ...prior, status: 'broadcast' }, false)
+    return true
   }
-  async recover(e: Execution): Promise<void> {
+  async recover(e: Execution, allowBroadcast = true, initialProof?: Block): Promise<void> {
     await validateSaved(e, this.d, Object.values(this.repo.read().projects))
     const receipt = await this.rpc.request('eth_getTransactionReceipt', [e.hash])
     if (record(receipt)) {
@@ -106,6 +114,10 @@ export class Keeper {
     const pendingNonce = quantity(await this.rpc.request('eth_getTransactionCount', [e.signer, 'pending']))
     if (pendingNonce !== nonce) { this.job(e, 'blocked', 'pending_nonce_unknown'); return }
     if (e.deadline !== undefined && e.deadline <= this.now() + 5) { this.job(e, 'blocked', 'authorization_expired'); return }
+    if (!allowBroadcast) { this.job(e, 'blocked', 'receipt_reorg'); return }
+    if (!this.c.executionEnabled || BigInt(this.repo.read().spentWei) + BigInt(this.repo.read().reservedWei) > this.c.gasCapWei) throw new ServiceError('gas_budget_exhausted')
+    await assertLiveExecution(e, this.c, this.d, this.rpc, this.planner.discovery, Object.values(this.repo.read().projects), initialProof)
+    if (quantity(await this.rpc.request('eth_getBalance', [e.signer, 'latest'])) < BigInt(e.maxCostWei)) throw new ServiceError('keeper_balance_insufficient')
     // An unknown broadcast is reconciled by this exact hash; at most one identical rebroadcast.
     if (e.broadcasts >= 2) { this.job(e, 'blocked', 'broadcast_unknown'); return }
     await this.rpc.request('eth_call', [{ from: e.signer, to: e.to, data: e.data, value: toHex(0n) }, 'pending'])

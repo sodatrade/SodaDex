@@ -42,3 +42,19 @@ describe('receipt-verified public project directory', () => {
     expect(f.repo.read().revision).toBe(0)
   })
 })
+
+describe('directory keeps current graduation state', () => {
+  it('registers creation, refreshes graduation, then replays old creation without deleting the current pair', async () => {
+    const f = setup(), curve = { ...f.p, pair: undefined }
+    let current: typeof f.p = curve
+    const proof = vi.fn(async () => current)
+    const directory = new Directory(f.c, d, f.repo, f.rpc, { ...f.discovery, resolveProject: proof })
+    await directory.register(txHash)
+    expect(f.repo.read().projects[f.p.token.address.toLowerCase()].pair).toBeUndefined()
+    current = f.p; await directory.refresh(f.p.token.address)
+    expect(f.repo.read().projects[f.p.token.address.toLowerCase()].pair).toEqual(f.p.pair)
+    await directory.register(txHash)
+    expect(f.repo.read().projects[f.p.token.address.toLowerCase()].pair).toEqual(f.p.pair)
+    expect(proof.mock.calls).toHaveLength(3)
+  })
+})

@@ -36,7 +36,7 @@ export class HttpRpc implements BatchRpc {
   }
   async #flush(): Promise<void> {
     this.#scheduled = false
-    const batch = this.#queue.splice(0, 5)
+    const batch = this.#queue.splice(0, 10)
     if (this.#queue.length) { this.#scheduled = true; queueMicrotask(() => { void this.#flush() }) }
     try {
       const result = await this.batch(batch)
@@ -58,6 +58,7 @@ export async function read<T>(rpc: Rpc, to: Address, signature: string, args: re
 export async function block(rpc: Rpc, tag = 'latest'): Promise<Block> {
   const b = await rpc.request('eth_getBlockByNumber', [tag, false])
   if (!record(b) || typeof b.hash !== 'string' || !/^0x[0-9a-f]{64}$/i.test(b.hash)) throw new ServiceError('rpc_invalid', 503)
+  if (/^0x[0-9a-f]+$/i.test(tag) && quantity(b.number) !== quantity(tag)) throw new ServiceError('rpc_height_mismatch', 503)
   return { number: `0x${quantity(b.number).toString(16)}`, hash: b.hash as Hex, timestamp: quantity(b.timestamp) }
 }
 export async function assertCanonical(rpc: Rpc, b: Block): Promise<void> {

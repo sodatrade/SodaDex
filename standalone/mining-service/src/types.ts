@@ -53,7 +53,7 @@ export interface PersistentState {
   spentWei: string; reservedWei: string; cursor: number; requested: boolean
   authorizations: Record<string, { nonce: string; expiresAt: number }>
 }
-export interface PreparedCall { to: Address; data: Hex; kind: JobKind; jobId: string; token?: Address; deadline?: number }
+export interface PreparedCall { to: Address; data: Hex; kind: JobKind; jobId: string; token?: Address; deadline?: number; verifiedBlock?: Block }
 export class ServiceError extends Error {
   constructor(readonly code: string, readonly status = 409) { super(code) }
 }

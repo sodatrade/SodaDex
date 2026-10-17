@@ -34,7 +34,7 @@ export class Planner {
       const index = (start + n) % options.length
       const p = options[index], result = p ? await this.project(p, b) : await this.purchase(b)
       this.repo.change(s => { s.cursor = (index + 1) % options.length })
-      if (result) { await assertCanonical(this.rpc, b); await this.repo.flush(); return result }
+      if (result) { await assertCanonical(this.rpc, b); await this.repo.flush(); return { ...result, verifiedBlock: b } }
     }
     await assertCanonical(this.rpc, b); await this.repo.flush(); return undefined
   }

@@ -45,8 +45,10 @@ export class Directory {
       } catch (e) { if (e instanceof ServiceError) throw e }
     }
     if (!token) throw new ServiceError('project_creation_event_required')
-    const verifiedBase = await this.discovery.verifyBase(this.rpc, this.d, this.config.expectedSigner, b.number)
-    if (!same(verifiedBase.hash, b.hash)) throw new ServiceError('chain_reorg', 503)
+    // The old receipt proves origin only. Always save a current, internally pinned
+    // project proof so replaying creation cannot remove a later graduation pair.
+    const verifiedBase = await this.discovery.verifyBase(this.rpc, this.d, this.config.expectedSigner)
+    if (BigInt(verifiedBase.number) < BigInt(b.number)) throw new ServiceError('chain_state_stale', 503)
     const project = await this.discovery.resolveProject(this.rpc, this.d, token, this.config.expectedSigner, verifiedBase)
     await assertCanonical(this.rpc, b)
     const revision = this.save(project)
