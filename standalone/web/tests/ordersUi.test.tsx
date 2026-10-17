@@ -17,6 +17,9 @@ import { orderReadAbi } from '../src/features/orders/signing'
 import { readOrderSubmissions } from '../src/features/orders/OrderJournal'
 import { marketOwner, marketV3 } from './tradeMarketFixture'
 import { orderDeployment, orderUiFixture } from './ordersUiFixture'
+vi.mock('../src/features/orders/config', async (importOriginal) => ({
+  ...await importOriginal<typeof import('../src/features/orders/config')>(), ORDER_DEPLOYMENT: undefined,
+}))
 let f: ReturnType<typeof orderUiFixture>, client: QueryClient
 function mount(deployed = true) {
   client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } })

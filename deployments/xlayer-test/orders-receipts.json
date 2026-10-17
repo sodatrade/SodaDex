@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "stage": "test",
+  "chainId": 196,
+  "rpcUrl": "https://rpc.ignix.bot/rpc/196",
+  "status": "deployment-verified-acceptance-pending",
+  "settlement": "0xE713AfD6133207df18662080e2B0F7e456AeEBA5",
+  "deploymentTransaction": "0x2144f86f7ce985ce9f1ac6b0e5aff56bb799645dd99c256e0f8ba58dd9d2f459",
+  "deploymentBlock": 73438869,
+  "creationCodeKeccak": "0x0d16085b29eea86fb71834f72572c42761812846b38bcbf0769b3aad817cca67",
+  "runtimeCodeKeccak": "0x5ebe2b7b905fa36f8be8aedc9e10b098fb58d766f164952e7bab089f783ecb34",
+  "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+  "keeper": "0x7c8998946896d1dFF8F70f00ba1392938Fb5b3a2",
+  "keeperFundingWei": "100000000000000",
+  "gasBudget": {
+    "stageCapWei": "200000000000000",
+    "ownerAllocatedCapWei": "100000000000000",
+    "keeperCumulativeCapWei": "100000000000000"
+  },
+  "backend": {
+    "worker": "sodadex-orders-test",
+    "url": "https://sodadex-orders-test.jsmsdx2025.workers.dev",
+    "storage": "SQLite Durable Object",
+    "actor": "sodadex-orders:196:0xe713afd6133207df18662080e2b0f7e456aeeba5"
+  },
+  "ownerTransactions": [
+    {
+      "name": "deploy",
+      "hash": "0x2144f86f7ce985ce9f1ac6b0e5aff56bb799645dd99c256e0f8ba58dd9d2f459",
+      "blockNumber": 73438869,
+      "blockHash": "0x2620cbac97d497eecbe600b6f1d3ce2b45264dbcc86cffe1eaab9697cceab128",
+      "gasUsed": "2180603",
+      "effectiveGasPriceWei": "21000000",
+      "gasCostWei": "45792663000000",
+      "contractAddress": "0xe713afd6133207df18662080e2b0f7e456aeeba5"
+    },
+    {
+      "name": "fund",
+      "hash": "0xeeb4670ef47ed8f5a711522c44bedb56b003b60bfb57c69415a2af0c25afcaf2",
+      "blockNumber": 73439066,
+      "blockHash": "0x0dc3296d6d0cfa6bdc576a117a038b3af175e0bdaaca9de496c92a57a4b47e99",
+      "gasUsed": "21000",
+      "effectiveGasPriceWei": "21000000",
+      "gasCostWei": "441000000000",
+      "contractAddress": null
+    },
+    {
+      "name": "approve",
+      "hash": "0xbcfda993d358d21d08070b43f33e8b3e5865bc886b518e3e492d721e6c7df792",
+      "blockNumber": 73439131,
+      "blockHash": "0x1edf4c736e4da187104f3b9f8c5c12a5ab3fe18e20317502eb79d5b442ae82d1",
+      "gasUsed": "53281",
+      "effectiveGasPriceWei": "21000000",
+      "gasCostWei": "1118901000000",
+      "contractAddress": null
+    }
+  ],
+  "productionContractsModified": false
+}
