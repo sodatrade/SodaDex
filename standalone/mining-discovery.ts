@@ -26,6 +26,7 @@ async function snapshot(rpc: MiningDiscoveryRpc, block = 'latest'): Promise<Mini
   if (!record(value) || typeof value.number !== 'string' || !/^0x[0-9a-f]+$/i.test(value.number) ||
       typeof value.hash !== 'string' || !/^0x[0-9a-f]{64}$/i.test(value.hash) ||
       typeof value.timestamp !== 'string' || !/^0x[0-9a-f]+$/i.test(value.timestamp)) throw new Error('mining_discovery_invalid_block')
+  if (/^0x[0-9a-f]+$/i.test(block) && BigInt(value.number) !== BigInt(block)) throw new Error('mining_discovery_wrong_block')
   return { number: value.number, hash: value.hash, timestamp: BigInt(value.timestamp) }
 }
 async function canonical(rpc: MiningDiscoveryRpc, block: MiningDiscoveryBlock): Promise<void> {
@@ -109,13 +110,13 @@ export async function resolveMiningProject(rpc: MiningDiscoveryRpc, d: MiningPro
     read(c.miningFactory.address, 'function vaultOf(address) view returns(address)', [token]),
   ])
   if (!address(vault) || !eq(vault, factoryVault)) throw new Error('mining_discovery_unregistered')
-  const holder = await read(vault, 'function tracker() view returns(address)')
-  if (!address(holder)) throw new Error('mining_discovery_unregistered')
-  const [symbol, pair, tokenPair] = await Promise.all([
+  const [holder, symbol, pair, tokenPair] = await Promise.all([
+    read(vault, 'function tracker() view returns(address)'),
     read(token, 'function symbol() view returns(string)'),
     read(c.manager.address, 'function pairOf(address) view returns(address)', [token]),
     read(token, 'function pair() view returns(address)'),
   ])
+  if (!address(holder)) throw new Error('mining_discovery_unregistered')
   if (typeof symbol !== 'string' || !/^TEST-[A-Z0-9-]{1,20}$/.test(symbol) || !eq(pair, tokenPair)) throw new Error('mining_discovery_wrong_project')
   await bindings(rpc, [
     [token, 'function taxSink() view returns(address)', [], vault],
@@ -132,7 +133,10 @@ export async function resolveMiningProject(rpc: MiningDiscoveryRpc, d: MiningPro
     [holder, 'function FARM() view returns(address)', [], c.farm.address],
     [holder, 'function VAULT() view returns(address)', [], vault],
   ], at)
-  const result: MiningProject = { symbol, token: await identity(rpc, token, at), vault: await identity(rpc, vault, at), holder: await identity(rpc, holder, at) }
+  const [tokenIdentity, vaultIdentity, holderIdentity] = await Promise.all([
+    identity(rpc, token, at), identity(rpc, vault, at), identity(rpc, holder, at),
+  ])
+  const result: MiningProject = { symbol, token: tokenIdentity, vault: vaultIdentity, holder: holderIdentity }
   if (address(pair)) {
     const [registered, factory, token0, token1] = await Promise.all([
       read(c.v2Factory.address, 'function getPair(address,address) view returns(address)', [token, c.fab.address]),

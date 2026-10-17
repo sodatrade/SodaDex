@@ -5,11 +5,9 @@ no public `workers.dev` route. Only the 1952 frontend Worker's Service Binding
 should call `/v1/*`, preserving the exact configured `Origin` and
 `X-SodaDEX-Network-Profile: 1952-mining-test` headers.
 
-**Integration prerequisite:** `cloudflare/discovery-adapter.ts` currently fails
-closed with `discovery_not_wired`. The integration owner must connect the shared
-`verifyMiningBase` / `resolveMiningProject` verifier before enabling admission or
-execution. Unit fixtures inject a verifier; that does not establish public chain
-integration.
+`cloudflare/discovery-adapter.ts` connects the shared chain verifier. Root runtime,
+proxy/beacon implementation, factory ownership and project bindings are checked
+at one canonical block. Unit fixtures remain separate from real-chain evidence.
 
 ## Responsibilities and fund flow
 
@@ -143,3 +141,19 @@ reserve restoration. Real local Wrangler/SQLite restart smoke is separate from
 these pure/mocked integration tests. Public E2E requires the real verifier,
 operator-approved configuration, injected Secrets and funded keeper; a disabled
 bundle build does not establish that those workflows have been deployed.
+
+## Isolated browser integration
+
+`npm --prefix standalone/mining-service run dev:local` runs only against Anvil at
+`http://127.0.0.1:8954/` and serves `http://127.0.0.1:8791` for the exact browser
+origin `http://127.0.0.1:5173`. It requires the separately exported
+`.analysis/mining-1952/browser-online-fixture` manifest and the `loopback-online-`
+version prefix. It refuses non-Anvil chains. All three local accounts are public
+deterministic test accounts; the tool never reads the owner's wallets or Secrets.
+
+Business contracts execute their real bytecode. The local fixture supplies named
+zero-surcharge OP fee predeploys as infrastructure only; public fee-model checks
+must still pass independently. Local economic limits and Anvil-funded balances
+are test fixtures, not approved public-service or production settings. State uses
+a private SQLite file under `.analysis/mining-online/local-service/`; a deployment
+version mismatch refuses to reuse it. No browser or service retry clears that state.

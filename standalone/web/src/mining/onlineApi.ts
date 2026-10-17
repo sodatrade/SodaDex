@@ -47,7 +47,9 @@ function envelope(value: unknown, d: MiningProductDeployment): Record<string, un
   return value
 }
 async function request(d: MiningProductDeployment, path: string, body?: unknown): Promise<Record<string, unknown>> {
-  const controller = new AbortController(), timeout = setTimeout(() => controller.abort(), 20_000)
+  // Issuance and selected-project refresh prove bindings through the public RPC.
+  const chainRead = path === 'launch' || path === 'register' || path.startsWith('projects?')
+  const controller = new AbortController(), timeout = setTimeout(() => controller.abort(), chainRead ? 60_000 : 20_000)
   try {
     const response = await fetch(`/api/mining/${path}`, { method: body === undefined ? 'GET' : 'POST', cache: 'no-store',
       credentials: 'same-origin', signal: controller.signal,

@@ -29,6 +29,7 @@
   "include": [
     "src",
     "test",
-    "cloudflare"
+    "cloudflare",
+    "local"
   ]
 }

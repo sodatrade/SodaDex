@@ -9,10 +9,11 @@
   "scripts": {
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "lint": "oxlint --config .oxlintrc.json --deny-warnings src test cloudflare",
+    "lint": "oxlint --config .oxlintrc.json --deny-warnings src test cloudflare local",
     "check": "npm run typecheck && npm run lint && npm test",
     "dev:cloudflare": "node ../worker/node_modules/wrangler/bin/wrangler.js --cwd cloudflare dev --config wrangler.test.jsonc --local --persist-to ../.data/cloudflare",
-    "build:cloudflare": "node ../worker/node_modules/wrangler/bin/wrangler.js --cwd cloudflare deploy --config wrangler.test.jsonc --dry-run"
+    "build:cloudflare": "node ../worker/node_modules/wrangler/bin/wrangler.js --cwd cloudflare deploy --config wrangler.test.jsonc --dry-run",
+    "dev:local": "node ../../scripts/sodadex/run-mining-online-local.mjs"
   },
   "dependencies": {
     "viem": "2.49.0"

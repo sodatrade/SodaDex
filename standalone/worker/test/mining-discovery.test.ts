@@ -56,6 +56,10 @@ describe('chain-proven mining project directory', () => {
     const { d, rpc } = fixture()
     expect((await verifyMiningBase(rpc, d, signer)).number).toBe('0x10')
   })
+  it('rejects a backend returning another height for a pinned proof', async () => {
+    const { d, rpc } = fixture()
+    await expect(verifyMiningBase(rpc, d, signer, '0x11')).rejects.toThrow('wrong_block')
+  })
   it.each(['runtime', 'proxy', 'chain', 'signer'] as const)('stops when the trusted %s changes', async (kind) => {
     const { d, rpc } = fixture({ badCode: kind === 'runtime', badSlot: kind === 'proxy', chain: kind === 'chain' ? '0xc4' : undefined,
       change: (name, _to, value) => name === 'signer' && kind === 'signer' ? addr(777) : value })
