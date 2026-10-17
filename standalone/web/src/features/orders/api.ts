@@ -21,12 +21,23 @@ export function decodeOrder(value: unknown, deployment: OrderDeployment): Public
       hash(value.observation.blockHash) && integer(value.observation.timestamp)))) throw Error('Invalid order response')
   const order = parseLimitOrder(value.order, { ...CONTRACTS, settlement: deployment.settlement, wrappedNative: WOKB_ADDRESS })
   if (hashTypedData(orderTypedData(order, CONTRACTS.permit2)).toLowerCase() !== value.id.toLowerCase()) throw Error('Order digest mismatch')
-  return { ...value, order } as unknown as PublicOrder
+  return { id: value.id, order, status: value.status, reason: value.reason, txHash: value.txHash,
+    createdAt: value.createdAt, updatedAt: value.updatedAt, observation: value.observation } as PublicOrder
 }
-async function request(path: string, init?: RequestInit): Promise<unknown> {
+async function request(path: string, init?: RequestInit, allowMissing = false): Promise<unknown> {
   const response = await fetch(`/api/orders${path}`, { ...init, signal: AbortSignal.timeout(15_000) })
+  if (allowMissing && response.status === 404) return undefined
   if (!response.ok) throw Error('Order service unavailable')
   return response.json() as Promise<unknown>
+}
+export async function getOrder(id: Hex, deployment: OrderDeployment): Promise<PublicOrder | undefined> {
+  if (!hash(id)) throw Error('Invalid order digest')
+  const value = await request(`/${id}`, undefined, true)
+  if (value === undefined) return
+  if (!record(value) || value.schemaVersion !== 1) throw Error('Invalid order response')
+  const order = decodeOrder(value.order, deployment)
+  if (order.id.toLowerCase() !== id.toLowerCase()) throw Error('Order response mismatch')
+  return order
 }
 export async function orderServiceReady(deployment: OrderDeployment): Promise<boolean> {
   const value = await request('/status')

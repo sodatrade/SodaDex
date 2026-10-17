@@ -3,7 +3,7 @@ import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { describe, expect, it, vi } from 'vitest'
 import { orderTypedData, type SodaLimitOrder } from '../../order-types'
 import { STABLE_ADDRESS, WOKB_ADDRESS } from '../src/domain/assets'
-import { decodeOrder } from '../src/features/orders/api'
+import { decodeOrder, getOrder } from '../src/features/orders/api'
 import { orderDeployment, type OrderDeployment } from '../src/features/orders/config'
 import { draftOrder } from '../src/features/orders/model'
 import { cancelLimitOrder, orderReadAbi, signLimitOrder } from '../src/features/orders/signing'
@@ -96,5 +96,15 @@ describe('limit order wallet boundary', () => {
     expect(() => decodeOrder({ ...value, order: { ...f.order, settlement: zeroAddress } }, deployment)).toThrow()
     const changed: SodaLimitOrder = { ...f.order, receiver: settlement }
     expect(() => decodeOrder({ ...value, order: changed }, deployment)).toThrow()
+  })
+  it('distinguishes an absent digest from a failed lookup without reposting an order', async () => {
+    const id = `0x${'ab'.repeat(32)}` as Hex
+    const request = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(new Response(null, { status: 404 }))
+      .mockResolvedValueOnce(new Response(null, { status: 502 }))
+    try {
+      await expect(getOrder(id, deployment)).resolves.toBeUndefined()
+      await expect(getOrder(id, deployment)).rejects.toThrow('unavailable')
+      expect(request.mock.calls.every(([url, init]) => String(url).endsWith(id) && !init?.method)).toBe(true)
+    } finally { request.mockRestore() }
   })
 })
