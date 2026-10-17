@@ -1,0 +1,265 @@
+{
+  "sourceCommit": "bf85d8a76a40963c5e9e8c51158335005e294fef",
+  "versionId": "5f08d512-3faf-4f16-b4e9-003c1b07a342",
+  "checkedAt": "2026-10-17T03:03:20.899Z",
+  "site": "https://sodadex-preview.jsmsdx2025.workers.dev/",
+  "assetsMatched": 42,
+  "assetsTotal": 42,
+  "rpcHttpStatus": 200,
+  "chainId": "0xc4",
+  "mainnetWrites": false,
+  "assets": [
+    {
+      "file": "assets/ExplorePage-BaRDDmEB.js",
+      "status": 200,
+      "sha256": "f2ed79ae4bf820137e2b66e3d6427f150a34a43a69d3c134bfc572f509bc7029",
+      "matched": true
+    },
+    {
+      "file": "assets/ExplorePage-Bcb03ejl.css",
+      "status": 200,
+      "sha256": "2087306cdf8937320d740b4b32a3a3176fe21d572078b335a26afa9b6812796a",
+      "matched": true
+    },
+    {
+      "file": "assets/CurrencyLabel-BTwMgwCb.js",
+      "status": 200,
+      "sha256": "60421ce78a4d21bc2e859016c55dd53b92b7f1ee310627eec451446432093a94",
+      "matched": true
+    },
+    {
+      "file": "assets/HistoryPage-B6yJXWdJ.js",
+      "status": 200,
+      "sha256": "727aac85629935b51d46c9fa1adee56a7a152193a90cefaedf1cae96928b09c7",
+      "matched": true
+    },
+    {
+      "file": "assets/LimitOrderPanel-DnHYHfn3.css",
+      "status": 200,
+      "sha256": "cc13c47215a7a02c381d2100e09664814164fcc9c210345e2d5b26fee01cef0a",
+      "matched": true
+    },
+    {
+      "file": "assets/LimitOrderPanel-JbjK_e4-.js",
+      "status": 200,
+      "sha256": "e4d63d100e15cddd405fe13a73358d6c308cedaf079b9edaf083424e9cecb0bc",
+      "matched": true
+    },
+    {
+      "file": "assets/HistoryPage-DhBVaXJ2.css",
+      "status": 200,
+      "sha256": "a946842042b34a94a1fc1727cac0d2c8671e0ce8ff027958a6daa62db7d50dd3",
+      "matched": true
+    },
+    {
+      "file": "assets/Inter-normal.var-BsKWvCjH.ttf",
+      "status": 200,
+      "sha256": "c3b7c80beacfc5c4c486826ed9ace8cbfd074aabb9fdb4638967fa3e29554e91",
+      "matched": true
+    },
+    {
+      "file": "assets/PortfolioPage-DcbQzCsJ.css",
+      "status": 200,
+      "sha256": "e6f57f05bc27c811973f62675f89d10c995bba39ff959c046d05d8123bdea14e",
+      "matched": true
+    },
+    {
+      "file": "assets/LiquidityPage-BAnUSO9U.js",
+      "status": 200,
+      "sha256": "5e472b2ae3bf8834fc199027c10dcbf89d8c50023e3285f123ddc5afc7d2f7c7",
+      "matched": true
+    },
+    {
+      "file": "assets/LiquidityPage-C9tk6LYU.css",
+      "status": 200,
+      "sha256": "fa1fd254cebe51dd508126be76ec97a6572535720a37f08a38f23d9e2fc77ce7",
+      "matched": true
+    },
+    {
+      "file": "assets/PoolQuotePanel-C_uI9b6R.js",
+      "status": 200,
+      "sha256": "e9f8b9f4675b1d6c3b6a0542e0e059fd9e76c20c679eb335c3edae83db68ac3b",
+      "matched": true
+    },
+    {
+      "file": "assets/SOURCES.md",
+      "status": 200,
+      "sha256": "b23d977b3272d8385ef3466ddf186792b6b5432e4599ef014f6b1bc3804273ff",
+      "matched": true
+    },
+    {
+      "file": "assets/TradeWorkspace-BAPjbyMy.css",
+      "status": 200,
+      "sha256": "3c9e6723aa00aa88fa58fd8912bb05531fdea396b7b06a6d05e752579f889685",
+      "matched": true
+    },
+    {
+      "file": "assets/PortfolioPage-DvfFlFoR.js",
+      "status": 200,
+      "sha256": "5345ea0de0431b717c5c97979bd97ea36f8261c733693891ad0a7fd8b89e6e50",
+      "matched": true
+    },
+    {
+      "file": "assets/TokenIcon-DI08yj51.js",
+      "status": 200,
+      "sha256": "b6104e796df0b81c2e3d7d51f1e1fb9a0e66cd480785a881f5c60459b476d08e",
+      "matched": true
+    },
+    {
+      "file": "assets/index-DMk7k6uK.css",
+      "status": 200,
+      "sha256": "dd9b33049968a8bcc20bb054be2d8db7e320e7f75c4ad907aff131ce1ac4bec2",
+      "matched": true
+    },
+    {
+      "file": "assets/context-CfXkRZbd.js",
+      "status": 200,
+      "sha256": "56501ecc34ba09aa8058f72309dbb290dc4904d2d405284a5464d85b85cb936e",
+      "matched": true
+    },
+    {
+      "file": "assets/TradeWorkspace-ZsM-r-Sy.js",
+      "status": 200,
+      "sha256": "5113f70c5394b9647448df2e2fa586255710c35d43db4fb42a96fc9e6b8bd386",
+      "matched": true
+    },
+    {
+      "file": "assets/index-D_3Lx4O5.js",
+      "status": 200,
+      "sha256": "67fa77e851f9eedafb7dbe2be0f2736f4cba39a32c10ef4779b95312af497659",
+      "matched": true
+    },
+    {
+      "file": "assets/poolQuotes-L5QpSekR.js",
+      "status": 200,
+      "sha256": "fdb41d83ae0ee6043dcd58eb17e7c072ac9b3d23dd41856a3ac3a384939f2c56",
+      "matched": true
+    },
+    {
+      "file": "assets/okb.png",
+      "status": 200,
+      "sha256": "be310dd7ec1349c0b353c0a4d17b4c6905b5b51301787690631860eadefbc996",
+      "matched": true
+    },
+    {
+      "file": "assets/pools-Ca227QvL.js",
+      "status": 200,
+      "sha256": "9b6a800547a8df8781124ed234477a26e6441bcfc9bf8f4f2e40218ab99bf6d3",
+      "matched": true
+    },
+    {
+      "file": "assets/liquidity-Bk5sBjoH.js",
+      "status": 200,
+      "sha256": "3c91c1c779ea10932788601c951a9ebb32ad64d12e5d14ad28cdee1c41888de5",
+      "matched": true
+    },
+    {
+      "file": "assets/tokens/0x4ae46a509f6b1d9056937ba4500cb143933d2dc8.png",
+      "status": 200,
+      "sha256": "15a525a24b41ddf569ec4d8b583d91968fb4c4e60b961d3c550d9db35a412da8",
+      "matched": true
+    },
+    {
+      "file": "assets/tokens/0x14a686103854dab7b8801e31979caa595835b25d.png",
+      "status": 200,
+      "sha256": "74e4b655a3b66f4efcfe3012f813c1f9ddc7c8a81e08329e07a89f13e64fe1c7",
+      "matched": true
+    },
+    {
+      "file": "assets/tokens/0x505000008de8748dbd4422ff4687a4fc9beba15b.png",
+      "status": 200,
+      "sha256": "254681b94fff81cb3ea2a7590f5160598545a613297a6eeb21e455d127739d96",
+      "matched": true
+    },
+    {
+      "file": "assets/tokens/0x74b7f16337b8972027f6196a17a631ac6de26d22.png",
+      "status": 200,
+      "sha256": "32aa99cbdc067c7e8609c1b016b6a9d91e41e59ead9692f25278dcc08701b467",
+      "matched": true
+    },
+    {
+      "file": "assets/tokens/0xafeab3b85b6a56cf5f02317f0f7a23340eb983d7.png",
+      "status": 200,
+      "sha256": "d84678fdea64c2c3a0e62adc5f9f6304b9f3352b62f21335feb2a04f907c8ae3",
+      "matched": true
+    },
+    {
+      "file": "assets/tokens/0xe7b000003a45145decf8a28fc755ad5ec5ea025a.png",
+      "status": 200,
+      "sha256": "70172b0352cf49d468d670543841a8d73ad1b1ff0f2ff678c8bff0d69b219808",
+      "matched": true
+    },
+    {
+      "file": "assets/tokens/0xb7c00000bcdeef966b20b3d884b98e64d2b06b4f.png",
+      "status": 200,
+      "sha256": "8c70c36d640cc15675744749b858e50dd9a3d801be450c98dce01db3fbdc008e",
+      "matched": true
+    },
+    {
+      "file": "assets/tokens/0xc5015b9d9161dca7e18e32f6f25c4ad850731fd4.png",
+      "status": 200,
+      "sha256": "6e48057801b656fc2658e7b12c7893e7b8ace26dc0b8f246f376b8cf955b3129",
+      "matched": true
+    },
+    {
+      "file": "assets/useInfiniteQuery-CSEUySZS.js",
+      "status": 200,
+      "sha256": "a5e7c3c7ece94da0a4dc0975158ca116948753e8ebba4e99500b6c255e69575c",
+      "matched": true
+    },
+    {
+      "file": "assets/useMutation-DUVfXZmq.js",
+      "status": 200,
+      "sha256": "1f4f9cb57aa7861a02cb73ebacd33b5cfd5d9a3d3aed8259c8024cc1a6241d21",
+      "matched": true
+    },
+    {
+      "file": "assets/usdt0.png",
+      "status": 200,
+      "sha256": "df5238a34df0255a1356485cd6939c521c125e22a25d43fe6d3ca0c98eab0403",
+      "matched": true
+    },
+    {
+      "file": "assets/trading-policy-RiXm3TGl.js",
+      "status": 200,
+      "sha256": "57b1c3133edad5f941e243b1bbb9570978000aea1a30a35e9055a1b314614f68",
+      "matched": true
+    },
+    {
+      "file": "assets/walletExecution-gE0v2GOv.js",
+      "status": 200,
+      "sha256": "9221c18b60b91f24316c6a845d3f219290cfb02dc82929c59162953054327980",
+      "matched": true
+    },
+    {
+      "file": "assets/wokb.png",
+      "status": 200,
+      "sha256": "5ce174b09a097862e25741ca77eea51a26ad3e64621f8e61003c44ae080cf6fa",
+      "matched": true
+    },
+    {
+      "file": "assets/xlayer.svg",
+      "status": 200,
+      "sha256": "f837468b7de4079c832bcd8d410d0c4cb90002f9e8f331e32a2e2b72a399eb88",
+      "matched": true
+    },
+    {
+      "file": "brand.svg",
+      "status": 200,
+      "sha256": "6762ccb350e717e96d13445ca80da96b9c2bede59e1a69b1c3bc2cbf21b99e5c",
+      "matched": true
+    },
+    {
+      "file": "preferences-script.json",
+      "status": 200,
+      "sha256": "8aabb800ae162745d485e03b7ad5424eac8030e13dcdb1e529102713816763be",
+      "matched": true
+    },
+    {
+      "file": "index.html",
+      "status": 200,
+      "sha256": "eb54a4b921921253017bd59a65bf1b23ed35a23259af7a8ef063604911afbad2",
+      "matched": true
+    }
+  ]
+}

@@ -5,49 +5,77 @@
   "url": "https://sodadex-preview.jsmsdx2025.workers.dev",
   "provider": "Cloudflare Workers Static Assets",
   "worker": "sodadex-preview",
-  "versionId": "92aff647-7c0a-4c68-999b-2faa2c2c19a1",
-  "sourceCommit": "713d0db5591ed3d7765d5389ae8d713069332c01",
-  "publishedOn": "2026-10-16",
+  "versionId": "5f08d512-3faf-4f16-b4e9-003c1b07a342",
+  "sourceCommit": "bf85d8a76a40963c5e9e8c51158335005e294fef",
+  "publishedOn": "2026-10-17",
   "customDomain": null,
   "deploymentCi": null,
   "chainId": 196,
   "rpcUrl": "https://rpc.ignix.bot/rpc/196",
   "browserRpcPath": "/api/rpc",
   "contractStatus": "SodaDEX branded V3/V4 test contracts deployed and verified",
-  "tradingStatus": "public exact-input single-hop swaps in verified own V3/V4 test pools; wrapping, sends and LP actions need explicit wallet confirmation; official Uniswap pools read only",
+  "tradingStatus": "public single-hop exact-input and exact-output swaps in verified own V3/V4 test pools; wrapping, sends and LP actions require wallet confirmation; official Uniswap pools read only",
   "validation": {
-    "webTestsPassed": 210,
-    "webTestFilesPassed": 25,
-    "workerTestsPassed": 87,
-    "workerTestFilesPassed": 13,
-    "criticalAnvilTestsPassed": 15,
+    "webTestsPassed": 349,
+    "webTestFilesPassed": 35,
+    "workerTestsPassed": 120,
+    "workerTestFilesPassed": 17,
+    "ordersTestsPassed": 34,
+    "ordersTestFilesPassed": 6,
     "testsSkipped": 0,
-    "browserWorkspaceChecksPassed": 19,
-    "browserLiquidityForkChecksPassed": 48,
-    "browserRealReadonlyChecksPassed": 28,
-    "liveBrowserChecksPassed": 32,
-    "liveAssetHashesMatched": 38,
+    "typecheckPassed": true,
+    "lintPassed": true,
+    "buildPassed": true,
+    "liveAssetHashesMatched": 42,
+    "liveAssetCount": 42,
     "liveRpcChainId": "0xc4",
     "liveSiteHttpStatus": 200,
     "liveRuntimeErrors": 0,
     "liveMobileOverflow": false,
-    "liveSwapPreviewsPassed": 2,
-    "liveSwapAndApprovalSimulationsPassed": 8,
-    "liveReferenceReadsPassed": 3,
-    "officialRouterApprovalBlocked": true,
-    "liveNoncanonicalRequestRejected": true,
+    "liveReadonlyQuoteObserved": true,
     "mainnetWritesInThisUpdate": false,
     "productionContractsModified": false,
-    "coreEvidence": "xlayer-test/validation/workspace-validation.json",
-    "browserEvidence": "xlayer-test/validation/workspace-browser.json",
-    "browserTradingEvidence": "xlayer-test/validation/workspace-fork.json",
-    "browserLiquidityEvidence": "xlayer-test/validation/workspace-liquidity.json",
-    "liveBrowserEvidence": "xlayer-test/validation/workspace-live-browser.json",
-    "liveHttpEvidence": "xlayer-test/validation/workspace-http.json",
-    "historicalContractValidation": {
-      "mainnetMicroSwapsPassed": 4,
-      "record": "xlayer-test/branding-receipts.json",
-      "scope": "Prior branded test-contract deployment. No mainnet broadcasts in this UI release."
+    "evidence": "xlayer-test/validation/redesign-validation.json",
+    "liveHttpEvidence": "xlayer-test/validation/redesign-http.json",
+    "previousRelease": {
+      "sourceCommit": "713d0db5591ed3d7765d5389ae8d713069332c01",
+      "versionId": "92aff647-7c0a-4c68-999b-2faa2c2c19a1",
+      "publishedOn": "2026-10-16",
+      "validation": {
+        "webTestsPassed": 210,
+        "webTestFilesPassed": 25,
+        "workerTestsPassed": 87,
+        "workerTestFilesPassed": 13,
+        "criticalAnvilTestsPassed": 15,
+        "testsSkipped": 0,
+        "browserWorkspaceChecksPassed": 19,
+        "browserLiquidityForkChecksPassed": 48,
+        "browserRealReadonlyChecksPassed": 28,
+        "liveBrowserChecksPassed": 32,
+        "liveAssetHashesMatched": 38,
+        "liveRpcChainId": "0xc4",
+        "liveSiteHttpStatus": 200,
+        "liveRuntimeErrors": 0,
+        "liveMobileOverflow": false,
+        "liveSwapPreviewsPassed": 2,
+        "liveSwapAndApprovalSimulationsPassed": 8,
+        "liveReferenceReadsPassed": 3,
+        "officialRouterApprovalBlocked": true,
+        "liveNoncanonicalRequestRejected": true,
+        "mainnetWritesInThisUpdate": false,
+        "productionContractsModified": false,
+        "coreEvidence": "xlayer-test/validation/workspace-validation.json",
+        "browserEvidence": "xlayer-test/validation/workspace-browser.json",
+        "browserTradingEvidence": "xlayer-test/validation/workspace-fork.json",
+        "browserLiquidityEvidence": "xlayer-test/validation/workspace-liquidity.json",
+        "liveBrowserEvidence": "xlayer-test/validation/workspace-live-browser.json",
+        "liveHttpEvidence": "xlayer-test/validation/workspace-http.json",
+        "historicalContractValidation": {
+          "mainnetMicroSwapsPassed": 4,
+          "record": "xlayer-test/branding-receipts.json",
+          "scope": "Prior branded test-contract deployment. No mainnet broadcasts in this UI release."
+        }
+      }
     }
   },
   "features": {
@@ -80,7 +108,9 @@
         "increase",
         "partial or full decrease",
         "collect assets",
-        "position NFT lookup"
+        "position NFT lookup",
+        "transfer position NFT",
+        "burn empty position NFT"
       ],
       "defaultLpSlippage": {
         "general": "2.5%",
@@ -88,7 +118,7 @@
         "source": "pinned upstream fallback, user editable; remote automatic slippage is not used"
       }
     },
-    "market": "on-chain relative price, block-range swap prices, volume and estimated input fees; no fabricated fiat TVL or APR",
+    "market": "same-screen actual pool snapshot, timestamp, line/candlestick chart, scanned swaps and range statistics; no fabricated fiat TVL or APR",
     "history": "paginated own-contract events, wallet filter, public receipt lookup and local submission journal",
     "navigation": {
       "primary": [
@@ -117,7 +147,7 @@
         "v4"
       ],
       "scope": "registered own test pools only",
-      "route": "best quoted single-hop exact-input",
+      "route": "best quoted single-hop exact-input or exact-output",
       "defaultSlippage": "0.5%, editable",
       "wrapping": "official WOKB deposit/withdraw, 1:1"
     },
@@ -134,16 +164,31 @@
     "portfolio": "current-wallet known/imported token balances and own position NFTs; no fabricated fiat valuation",
     "sendReceive": "wallet-confirmed native OKB/ERC20 transfers; receive-address copy",
     "notIntegrated": [
-      "exact output",
       "multihop",
-      "limit orders",
       "fiat onramp/offramp",
-      "token launch and auctions",
+      "native token launch and auctions (external IGNIX link only)",
       "rewards",
       "cross-chain execution",
       "independent fiat pricing",
-      "full-chain wallet index"
-    ]
+      "full-chain wallet index",
+      "public limit-order settlement deployment"
+    ],
+    "limitOrders": {
+      "frontend": true,
+      "publicSettlementReady": false,
+      "publicExecutionServiceReady": false,
+      "unreadyBehavior": "approval, signing and submission disabled",
+      "localFlow": "owned localhost Anvil tests only"
+    },
+    "launch": "environment-specific external IGNIX launch link",
+    "design": {
+      "default": "light",
+      "accent": "purple",
+      "desktop": "market left, order form right",
+      "mobile": "order form before market",
+      "tokenPicker": "one scrolling result list",
+      "quoteConstraints": "minimum received or maximum spend, slippage, impact and fee visible before review"
+    }
   },
   "activeContracts": "xlayer-test/active.json",
   "poolRecord": "xlayer-test/pools.json",
