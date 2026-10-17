@@ -1,6 +1,7 @@
 import { proxyRpc } from './rpc'
 import { dexApi } from './dex-api'
 import { referenceApi } from './reference-api'
+import { ordersApi } from './orders-api'
 import preferencesScript from '../../web/dist/preferences-script.json'
 
 interface Env {
@@ -10,6 +11,7 @@ interface Env {
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const path = new URL(request.url).pathname
+    if (path === '/api/orders' || path.startsWith('/api/orders/')) return ordersApi(request)
     if (path.startsWith('/api/reference/')) return referenceApi(request)
     if (path.startsWith('/api/dex/')) return dexApi(request)
     if (path === '/api/rpc') return proxyRpc(request)

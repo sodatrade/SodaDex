@@ -4,6 +4,7 @@ import { publicSwapsEnabled } from '../../trading-policy'
 import { contractReadKind } from './contract-reads'
 import { validLiquidityRequest } from './lp-requests'
 import { tradeRoute } from './trade-routes'
+import { validOrderRequest } from './order-requests'
 
 const ZERO = '0x0000000000000000000000000000000000000000'
 const ROUTER = deployment.contracts.universalRouter.toLowerCase()
@@ -29,6 +30,7 @@ export function validContractRequest(value: unknown, simulation: boolean): boole
   const to = value.to.toLowerCase(), data = value.data as Hex
   const amount = BigInt((value.value as string | undefined) ?? '0x0')
   try {
+    if (validOrderRequest(to, data, value.from as string | undefined, amount, simulation)) return true
     if (typeof value.from === 'string' && to !== ZERO) {
       if (data === '0x' && amount > 0n && amount < 2n ** 256n) return true
       if (amount === 0n) {
