@@ -15,7 +15,15 @@ export class Keeper {
   private job(e: Execution, status: 'broadcast' | 'confirmed' | 'failed' | 'blocked', reason: string): void {
     this.repo.change(s => {
       const j = s.jobs[e.jobId]
-      if (j) s.jobs[e.jobId] = { ...j, status, reason, hash: e.hash, updatedAt: this.now() * 1000 }
+      if (j) {
+        const next = { ...j, status, reason, hash: e.hash, updatedAt: this.now() * 1000 }
+        s.jobs[e.jobId] = next
+        // Keep receipt links when the scheduler replaces the live job with a waiting state.
+        const id = `execution:${e.hash}`
+        s.jobs[id] = { ...next, id }
+        const history = Object.values(s.jobs).filter(x => x.id.startsWith('execution:')).toSorted((a, b) => b.updatedAt - a.updatedAt)
+        for (const old of history.slice(50)) delete s.jobs[old.id]
+      }
     })
   }
   async runOnce(): Promise<void> {
@@ -74,6 +82,9 @@ export class Keeper {
         s.spentWei = String(BigInt(s.spentWei) - BigInt(prior.actualCostWei ?? '0'))
         s.reservedWei = String(BigInt(s.reservedWei) + BigInt(prior.maxCostWei))
         s.executions[prior.hash] = { ...prior, status: 'broadcast' }
+        for (const j of Object.values(s.jobs)) if (j.hash === prior.hash) {
+          j.status = 'blocked'; j.reason = 'receipt_reorg'; j.updatedAt = this.now() * 1000
+        }
       }
     })
     await this.repo.flush()

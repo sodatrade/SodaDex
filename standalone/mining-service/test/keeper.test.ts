@@ -46,6 +46,15 @@ describe('durable keeper', () => {
       expect(f.sign).toHaveBeenCalledTimes(1)
     }
   })
+  it('retains a public receipt entry after the live job returns to waiting', async () => {
+    const f = setup(); await f.keeper.runOnce(); const e = Object.values(f.repo.read().executions)[0]
+    f.rpc.receipts.set(e.hash, receipt(e.hash)); await f.keeper.runOnce()
+    f.rpc.set('balanceOf', 0n, d.contracts.fab.address); f.repo.change(s => { s.cursor = 0 })
+    await f.keeper.runOnce()
+    expect(f.repo.read().jobs[e.jobId].status).toBe('waiting')
+    expect(f.repo.read().jobs[`execution:${e.hash}`]).toMatchObject({ hash: e.hash, status: 'confirmed', reason: 'settled' })
+    expect(f.repo.read().jobs[`execution:${e.hash}`]).not.toHaveProperty('raw')
+  })
   it('keeps full reserve when nonce moves without the original receipt; does not sign another transaction', async () => {
     const f = setup(); await f.keeper.runOnce(); const e = Object.values(f.repo.read().executions)[0]
     f.rpc.nonce = 1n; f.rpc.pendingNonce = 1n; await f.keeper.runOnce()
@@ -62,6 +71,7 @@ describe('durable keeper', () => {
     vi.spyOn(f.discovery, 'verifyBase').mockResolvedValue({ ...header, hash: changedHash })
     await f.keeper.runOnce()
     expect(f.repo.read().spentWei).toBe('0'); expect(f.repo.read().reservedWei).toBe(e.maxCostWei)
+    expect(f.repo.read().jobs[`execution:${e.hash}`]).toMatchObject({ status: 'blocked', reason: 'receipt_reorg' })
     expect(f.rpc.sent).toEqual([e.raw]); expect(f.sign).toHaveBeenCalledTimes(1)
     await f.keeper.runOnce(); expect(f.rpc.sent).toEqual([e.raw, e.raw]); expect(f.sign).toHaveBeenCalledTimes(1)
   })
