@@ -20,6 +20,7 @@ export function LiquidityPreviewDialog({ operation, current, l, onClose }: Props
   const { preview } = review,
     { pool } = preview
   const done = operation.progress?.stage === 'success'
+  const nftAction = preview.operation.kind === 'transfer' || preview.operation.kind === 'burn'
   return (
     <Dialog title={l('review')} description={l('reviewNote')} onClose={onClose}>
       <div className="lp-pair">
@@ -31,6 +32,7 @@ export function LiquidityPreviewDialog({ operation, current, l, onClose }: Props
       <dl className="lp-review">
         <div><dt>{l('action')}</dt><dd>{l(preview.operation.kind)}</dd></div>
         {preview.operation.kind !== 'mint' && <div><dt>{l('tokenId')}</dt><dd>#{preview.operation.position.tokenId.toString()}</dd></div>}
+        {!nftAction && <>
         <div>
           <dt>{l('actual')}</dt>
           <dd>
@@ -67,6 +69,7 @@ export function LiquidityPreviewDialog({ operation, current, l, onClose }: Props
           <dt>{l('slippage')}</dt>
           <dd>{formatUnits(BigInt(preview.slippageBps), 2)}%</dd>
         </div>
+        </>}
         <div>
           <dt>{l('recipient')}</dt>
           <dd>

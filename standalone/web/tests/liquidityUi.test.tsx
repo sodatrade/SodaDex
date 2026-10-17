@@ -150,6 +150,23 @@ async function prepareMint(user: ReturnType<typeof userEvent.setup>): Promise<HT
   return screen.findByRole('dialog', { name: '确认流动性操作' })
 }
 describe('self-service liquidity UI', () => {
+  it('clears a manually looked-up NFT after its transfer receipt instead of keeping a stale actionable card', async () => {
+    vi.mocked(client.listPositions).mockResolvedValue([])
+    const user = userEvent.setup(); mount()
+    await user.click(screen.getByRole('button', { name: '我的仓位' }))
+    await user.click(screen.getByText('查找仓位 NFT'))
+    await user.type(screen.getByLabelText('NFT Token ID'), '7')
+    await user.click(screen.getByRole('button', { name: '查找' }))
+    await user.click(await screen.findByRole('button', { name: '转移仓位 NFT' }))
+    const editor = screen.getByRole('dialog', { name: /转移仓位 NFT/ })
+    await user.type(within(editor).getByLabelText('接收钱包'), other)
+    await user.click(within(editor).getByRole('button', { name: '预览流动性操作' }))
+    const review = await screen.findByRole('dialog', { name: '确认流动性操作' })
+    expect(within(review).queryByText('LP 滑点上限（%）')).not.toBeInTheDocument()
+    await user.click(within(review).getByRole('button', { name: '确认并打开钱包' }))
+    await waitFor(() => expect(screen.queryByRole('button', { name: '转移仓位 NFT' })).not.toBeInTheDocument())
+    expect(client.executeLiquidity).toHaveBeenCalledOnce()
+  })
   it('reviews the entire position and exact transfer recipient before requesting the wallet', async () => {
     const user = userEvent.setup(); mount()
     await user.click(screen.getByRole('button', { name: '我的仓位' }))

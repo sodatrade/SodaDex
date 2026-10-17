@@ -1,6 +1,6 @@
 import './liquidity.css'
 import { useQuery } from '@tanstack/react-query'
-import { useState, type ReactElement } from 'react'
+import { useEffect, useState, type ReactElement } from 'react'
 import { formatUnits } from 'viem'
 import { Button, Icon, Surface } from '../../components/primitives'
 import { CHAIN_ID } from '../../domain/assets'
@@ -35,6 +35,9 @@ export function LiquidityPage({ wallet, onConnect, onSwap }: Props): ReactElemen
   const { locale } = usePreferences(),
     l = liquidityText(locale)
   const operation = useLiquidityOperation(wallet)
+  useEffect(() => {
+    if (operation.progress?.stage === 'success' || operation.receiptMessage === 'receiptConfirmed') setFound(undefined)
+  }, [operation.progress?.stage, operation.receiptMessage])
   const correctChain = wallet.session?.chainId === CHAIN_ID
   const pools = useQuery({
     queryKey: ['liquidity', 'pools'],
