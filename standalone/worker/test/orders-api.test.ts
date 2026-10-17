@@ -1,5 +1,7 @@
 import { encodeFunctionData, parseAbi, type Hex } from 'viem'
 import { describe, expect, it, vi } from 'vitest'
+// This boundary test must never inherit the current cloud service from a release manifest.
+vi.mock('../src/order-config', () => ({ ORDER_DEPLOYMENT: undefined }))
 import { ordersApi } from '../src/orders-api'
 import { validOrderRequest } from '../src/order-requests'
 import { validContractRequest } from '../src/trade-requests'

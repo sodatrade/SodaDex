@@ -13,13 +13,14 @@ import { FIXED } from '../src/config.ts'
 const require = createRequire(new URL('../../worker/package.json', import.meta.url))
 const { build } = require('esbuild'), { Miniflare, Log, LogLevel, convertV4MiniflareOptions } = require('miniflare')
 const root = fileURLToPath(new URL('../../../', import.meta.url)), entry = resolve(root, 'standalone/orders/cloudflare/index.ts')
+const undeployedManifest = JSON.parse(readFileSync(new URL('./fixtures/orders-undeployed.json', import.meta.url), 'utf8'))
 const folder = await mkdtemp(resolve(tmpdir(), 'sodadex-orders-do-')), bundle = resolve(folder, 'worker.mjs')
 let mf, fixture
 let signCalls = 0, rpcCalls = 0, heldBroadcasts = 0, broadcastMode = 'hold'
 const broadcasts = [], rpcMethods = [], outboundUrls = []
-async function compile(manifest) {
+async function compile(manifest = undeployedManifest) {
   await build({ entryPoints: [entry], outfile: bundle, bundle: true, format: 'esm', platform: 'browser', external: ['cloudflare:workers'], target: 'es2022', plugins: [{ name: 'owned-do-only', setup(builder) {
-    if (manifest) builder.onLoad({ filter: /orders-test\.json$/ }, args => args.path === resolve(root, 'deployments/orders-test.json') ? { contents: JSON.stringify(manifest), loader: 'json' } : undefined)
+    builder.onLoad({ filter: /orders-test\.json$/ }, args => args.path === resolve(root, 'deployments/orders-test.json') ? { contents: JSON.stringify(manifest), loader: 'json' } : undefined)
     // Count signer invocations without disclosing the key, signature or raw transaction.
     builder.onLoad({ filter: /orders\/cloudflare\/config\.ts$/ }, async args => {
       const { readFile } = await import('node:fs/promises')
