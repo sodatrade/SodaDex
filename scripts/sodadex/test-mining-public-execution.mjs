@@ -7,9 +7,32 @@ import { privateKeyToAccount } from 'viem/accounts'
 import { encodeFunctionData, keccak256, parseAbi } from 'viem'
 import { miningFeeReservation, PublicMiningExecution, validateSignedMiningTransaction } from './mining-public-execution.mjs'
 import { assertReviewedMiningIntent, miningExecutionSources } from './mining-reviewed-intent.mjs'
+import { assertMiningFeeParameters } from './mining-fee-model.mjs'
 
 const owner = '0x6ecf746b078d46391f8C425B150153212F7C0545'
 const to = '0x0000000000000000000000000000000000001952'
+test('fee checks bind OP parameters to L1Block and estimates to GasPriceOracle', async () => {
+  const calls = [], oracle = '0x420000000000000000000000000000000000000f', l1Block = '0x4200000000000000000000000000000000000015'
+  const p = { feeCap: 20n, rpc: async () => '0x14', call: async (target, signature, args = []) => {
+    calls.push({ target, signature, args })
+    if (signature.includes('operatorFeeScalar') || signature.includes('operatorFeeConstant')) {
+      assert.equal(target, l1Block, 'operator parameters are L1Block getters')
+      return signature.includes('uint32') ? 0 : 0n
+    }
+    assert.equal(target, oracle)
+    return signature.includes('returns(bool)') ? true : 0n
+  } }
+  await assertMiningFeeParameters(p, 123n, 21000n)
+  assert.equal(calls.length, 6)
+  assert.deepEqual(calls.slice(-2).map((c) => c.args), [[123n], [21000n]])
+  for (const changed of ['operatorFeeScalar', 'operatorFeeConstant', 'getOperatorFee', 'getL1FeeUpperBound', 'isFjord', 'isIsthmus']) {
+    const altered = { ...p, call: async (target, signature, args) => signature.includes(changed)
+      ? signature.includes('returns(bool)') ? false : 1n : p.call(target, signature, args) }
+    await assert.rejects(assertMiningFeeParameters(altered, 123n, 21000n), /Fee model/)
+  }
+  await PublicMiningExecution.prototype.checkFeeModel.call(p, 123n, 21000n)
+  await assert.rejects(PublicMiningExecution.prototype.checkFeeModel.call({ ...p, rpc: async () => '0x15' }, 123n, 21000n), /Gas price/)
+})
 test('signed transaction binds chain, signer, recipient, amount, calldata, nonce and gas', async () => {
   // Publicly known dummy key, unrelated to any deployed wallet.
   const account = privateKeyToAccount(`0x${'0'.repeat(63)}1`)

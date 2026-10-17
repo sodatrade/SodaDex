@@ -6,7 +6,7 @@ import { productArtifact, sourceArtifact } from './mining-plan-artifacts.mjs'
 import { notSamples } from './mining-plan-nfts.mjs'
 
 const sourceFiles = ['mining-plan-artifacts.mjs', 'mining-plan-rpc.mjs', 'mining-plan-stack.mjs', 'mining-plan-nfts.mjs',
-  'mining-plan-business.mjs', 'mining-permit2-proof.mjs', 'mining-public-execution.mjs', 'mining-public-rpc.mjs', 'mining-reviewed-intent.mjs', 'execute-mining-stage2.mjs']
+  'mining-plan-business.mjs', 'mining-permit2-proof.mjs', 'mining-public-execution.mjs', 'mining-public-rpc.mjs', 'mining-fee-model.mjs', 'mining-reviewed-intent.mjs', 'execute-mining-stage2.mjs']
 export function miningExecutionSources(root) {
   const files = [...sourceFiles.map((f) => `scripts/sodadex/${f}`), 'standalone/mining-math.ts']
   return Object.fromEntries(files.map((f) => [f, createHash('sha256').update(fs.readFileSync(path.join(root, f))).digest('hex')]))

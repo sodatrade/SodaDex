@@ -10,6 +10,7 @@ import { prepareMiningStack } from './mining-plan-stack.mjs'
 import { prepareMiningNfts } from './mining-plan-nfts.mjs'
 import { exerciseMiningProducts } from './mining-plan-business.mjs'
 import { miningExecutionSources } from './mining-reviewed-intent.mjs'
+import { assertMiningFeeParameters } from './mining-fee-model.mjs'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const directory = path.join(root, '.analysis/mining-1952/stage2-plan')
@@ -33,6 +34,9 @@ else {
   plan.save()
 }
 try {
+  // Anvil's recommended gas price includes a development tip. Signed execution
+  // uses the pinned public quote; fee-parameter ABI checks are shared verbatim.
+  await assertMiningFeeParameters(plan, 0n, 0n)
   const stack = plan.stack ?? await prepareMiningStack(plan, root, publicSigner.address)
   if (process.argv.includes('--with-miners') && !plan.miners) await prepareMiningNfts(plan, root, stack)
   if (process.argv.includes('--with-business')) {
@@ -56,6 +60,7 @@ try {
   }
   if (await plan.call(oracle, 'function isFjord() view returns(bool)') !== true ||
       await plan.call(oracle, 'function isIsthmus() view returns(bool)') !== true) throw new Error('Unverified additional-fee model')
+  await assertMiningFeeParameters(plan, maxBytes, maxGas)
   const l1 = await plan.call(oracle, 'function getL1FeeUpperBound(uint256) view returns(uint256)', [maxBytes])
   const operator = await plan.call(oracle, 'function getOperatorFee(uint256) view returns(uint256)', [maxGas])
   plan.additionalFeeUpperBound = String((l1 + operator) * BigInt(plan.rows.length))

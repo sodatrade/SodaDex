@@ -8,9 +8,9 @@ import { LoopbackMiningPlan } from './mining-plan-rpc.mjs'
 import { assertReviewedMiningIntent, miningExecutionSources } from './mining-reviewed-intent.mjs'
 import { fileURLToPath } from 'node:url'
 import { MINING_PUBLIC_RPC, VerifiedMiningRpc } from './mining-public-rpc.mjs'
+import { assertMiningFeeParameters } from './mining-fee-model.mjs'
 
 const PUBLIC_RPC = MINING_PUBLIC_RPC
-const ORACLE = '0x420000000000000000000000000000000000000f'
 const equal = (a, b) => String(a ?? '').toLowerCase() === String(b ?? '').toLowerCase()
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
@@ -76,14 +76,8 @@ export class PublicMiningExecution extends LoopbackMiningPlan {
     fs.closeSync(fs.openSync(this.output, 'wx', 0o600)); this.journalOwned = true; this.save()
   }
   async checkFeeModel(bytes, gas) {
-    if (BigInt(await this.rpc('eth_gasPrice')) > this.feeCap ||
-      await this.call(ORACLE, 'function isFjord() view returns(bool)') !== true ||
-      await this.call(ORACLE, 'function isIsthmus() view returns(bool)') !== true ||
-      await this.call(ORACLE, 'function operatorFeeScalar() view returns(uint256)') !== 0n ||
-      await this.call(ORACLE, 'function operatorFeeConstant() view returns(uint256)') !== 0n ||
-      await this.call(ORACLE, 'function getL1FeeUpperBound(uint256) view returns(uint256)', [bytes]) !== 0n ||
-      await this.call(ORACLE, 'function getOperatorFee(uint256) view returns(uint256)', [gas]) !== 0n)
-      throw new Error('Fee model or price changed: stop and refresh the full budget')
+    if (BigInt(await this.rpc('eth_gasPrice')) > this.feeCap) throw new Error('Gas price exceeds the reviewed fee cap')
+    await assertMiningFeeParameters(this, bytes, gas)
   }
   async mineAfterBlock(anchor) {
     for (let attempt = 0; attempt < 90; attempt++) {
