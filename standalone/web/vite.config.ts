@@ -11,6 +11,7 @@ export default defineConfig({
   server: {
     fs: { allow: [local('../../')] },
     proxy: {
+      '/api/network': { target: 'http://127.0.0.1:8787', changeOrigin: true },
       '/api/rpc': {
         target: 'http://127.0.0.1:8787',
         changeOrigin: true,

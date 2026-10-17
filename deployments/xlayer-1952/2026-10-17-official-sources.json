@@ -1,0 +1,79 @@
+{
+  "checkedAtUtc": "2026-10-17T04:32:20.733892+00:00",
+  "officialSources": [
+    {
+      "url": "https://web3.okx.com/onchainos/dev-docs/xlayer/developer/build-on-xlayer/network-information",
+      "facts": {
+        "chainId": 1952,
+        "nativeSymbol": "OKB",
+        "rpcUrls": [
+          "https://testrpc.xlayer.tech/terigon",
+          "https://xlayertestrpc.okx.com/terigon"
+        ],
+        "explorer": "https://www.okx.com/web3/explorer/xlayer-test"
+      }
+    },
+    {
+      "url": "https://web3.okx.com/onchainos/dev-docs/xlayer/developer/build-on-xlayer/contracts",
+      "facts": {
+        "WOKBTestnetAddress": null,
+        "USDT0TestnetAddress": null,
+        "listedWETHTestnetAddress": "0xBec7859BC3d0603BeC454F7194173E36BF2Aa5C8"
+      },
+      "warning": "Listed WETH address has no code at observed1952 block. Token address table is not sufficient deployment proof."
+    },
+    {
+      "url": "https://web3.okx.com/onchainos/dev-docs/xlayer/developer/bridge/get-testnet-okb-from-faucet",
+      "facts": {
+        "documentedDailyMaxTestOKBPerUser": "0.2",
+        "claimSteps": "Open official faucet, enter public wallet address, complete Get action; a connected wallet may populate address."
+      }
+    },
+    {
+      "url": "https://web3.okx.com/xlayer/faucet",
+      "facts": {
+        "pageTitle": "X Layer testnet faucet",
+        "pageDescription": "Get OKB, USDG, and more on X Layer testnet",
+        "claimUrl": "https://web3.okx.com/xlayer/faucet/xlayerfaucet"
+      },
+      "limitation": "Read pages only; no claim submitted, no guarantee faucet claim succeeds or current available balance."
+    },
+    {
+      "url": "https://developers.uniswap.org/docs/protocols/permit2/overview",
+      "facts": {
+        "canonicalAddress": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+        "documentScope": "Same address on supported Uniswap chains except zkSync; this alone does not assert1952 support."
+      }
+    }
+  ],
+  "repositoryEvidence": {
+    "paths": [
+      "deployments/xlayer-test/active.json",
+      "deployments/orders-test.json",
+      "deployments/xlayer-test/pools.json"
+    ],
+    "chainId": 196,
+    "searchedScopes": [
+      "deployments",
+      "contracts",
+      "scripts/sodadex",
+      "standalone"
+    ],
+    "query": "1952 | FAB | BEM | marketplace | 矿机, excluding generated assets, dependencies, long receipt bytecode",
+    "noTrusted1952RecordsFor": [
+      "FAB",
+      "BEM",
+      "mining-NFT",
+      "marketplace",
+      "SodaDEX V3",
+      "SodaDEX V4",
+      "SodaDEX limit settlement"
+    ]
+  },
+  "nextNeeded": [
+    "Obtain1952 test OKB for deployer and separate keeper through official faucet or trusted existing testnet funds.",
+    "Confirm authoritative FAB/BEM/miner-NFT/marketplace1952 deployment records from business owner; otherwise prepare explicit test deployments, never reuse196 addresses as1952 asset identity.",
+    "Prepare own1952 native OKB wrapper and required tokens when no verified existing deployment is supplied.",
+    "Pin and verify Permit2 runtime source before treating it as reviewed deployment dependency."
+  ]
+}

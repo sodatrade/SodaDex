@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "chainId": 1952,
+  "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+  "status": "preparation-only",
+  "dependencies": [
+    {
+      "role": "permit2",
+      "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+      "expectedRuntimeSha256": "668c194b735d51df66e1795dee13be5b7110ec379429c99319904eb1bb5ac6bd",
+      "sourceVerified": false
+    },
+    { "role": "wokb", "address": null },
+    { "role": "fab", "address": null },
+    { "role": "mining", "address": null },
+    { "role": "circuits", "address": null },
+    { "role": "circuitMarket", "address": null },
+    { "role": "sodaV3Factory", "address": null },
+    { "role": "sodaV3PositionManager", "address": null },
+    { "role": "sodaV4PoolManager", "address": null },
+    { "role": "sodaV4PositionManager", "address": null }
+  ]
+}

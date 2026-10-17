@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "checkedAtUtc": "2026-10-17T04:39:22.828813+00:00",
+  "chainId": 1952,
+  "blockNumber": 43753117,
+  "blockHash": "0x9edf9b6f0fc70b1ace6b2f9c0f5641d61044b90b1df34c36f9a0d9b84a785064",
+  "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+  "ownerBalanceWei": "0",
+  "dependencies": [
+    {
+      "role": "permit2",
+      "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+      "runtimeBytes": 9152,
+      "runtimeSha256": "668c194b735d51df66e1795dee13be5b7110ec379429c99319904eb1bb5ac6bd",
+      "status": "source-verification-pending"
+    },
+    {
+      "role": "wokb",
+      "address": null,
+      "status": "not-configured"
+    },
+    {
+      "role": "fab",
+      "address": null,
+      "status": "not-configured"
+    },
+    {
+      "role": "mining",
+      "address": null,
+      "status": "not-configured"
+    },
+    {
+      "role": "circuits",
+      "address": null,
+      "status": "not-configured"
+    },
+    {
+      "role": "circuitMarket",
+      "address": null,
+      "status": "not-configured"
+    },
+    {
+      "role": "sodaV3Factory",
+      "address": null,
+      "status": "not-configured"
+    },
+    {
+      "role": "sodaV3PositionManager",
+      "address": null,
+      "status": "not-configured"
+    },
+    {
+      "role": "sodaV4PoolManager",
+      "address": null,
+      "status": "not-configured"
+    },
+    {
+      "role": "sodaV4PositionManager",
+      "address": null,
+      "status": "not-configured"
+    }
+  ],
+  "prerequisitesReady": false,
+  "broadcastPerformed": false,
+  "scope": "Balances and runtime prerequisites only; not business acceptance or permission to deploy"
+}

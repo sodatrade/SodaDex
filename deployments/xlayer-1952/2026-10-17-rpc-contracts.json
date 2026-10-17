@@ -1,0 +1,271 @@
+{
+  "schemaVersion": 1,
+  "checkedAtUtc": "2026-10-17T04:31:23.666601+00:00",
+  "mode": "read-only-no-signing-no-secrets-no-deployment",
+  "targetChainId": 1952,
+  "endpoints": [
+    {
+      "rpcUrl": "https://testrpc.xlayer.tech/terigon",
+      "chainIdHex": "0x7a0",
+      "chainId": 1952,
+      "blockNumber": 43752631,
+      "blockHash": "0x02c27e5d6858214c02864200968108756df281e539cbc59c3bad57a36749d890",
+      "blockTimestamp": 1792211468,
+      "owner": {
+        "address": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+        "balanceWei": "0",
+        "nonce": 0
+      },
+      "gasPriceWei": "20000001",
+      "status": "verified-chain-1952"
+    },
+    {
+      "rpcUrl": "https://xlayertestrpc.okx.com/terigon",
+      "chainIdHex": "0x7a0",
+      "chainId": 1952,
+      "blockNumber": 43752631,
+      "blockHash": "0x02c27e5d6858214c02864200968108756df281e539cbc59c3bad57a36749d890",
+      "blockTimestamp": 1792211468,
+      "owner": {
+        "address": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+        "balanceWei": "0",
+        "nonce": 0
+      },
+      "gasPriceWei": "20000001",
+      "status": "verified-chain-1952"
+    }
+  ],
+  "contracts": [
+    {
+      "kind": "Permit2",
+      "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+      "source": "deployments/xlayer-test/active.json",
+      "sourceChainId": 196,
+      "purpose": "canonical-address presence check; not a prior 1952 deployment claim",
+      "bytecodeBytes": 9152,
+      "bytecodeSha256": "668c194b735d51df66e1795dee13be5b7110ec379429c99319904eb1bb5ac6bd",
+      "status": "code-present",
+      "domainSeparator": "0xc4040bdaa9a8662b903e2a275c018a3910c18c691a3e5cf78ca1b383a5d95a41",
+      "expectedDomainSeparator": "0xc4040bdaa9a8662b903e2a275c018a3910c18c691a3e5cf78ca1b383a5d95a41",
+      "domainMatchesExpected": true,
+      "verificationLimit": "Runtime source verification and bytecode pinning not performed; code and correct EIP712 domain establish availability at canonical address only."
+    },
+    {
+      "kind": "WOKB-mainnet-address-only",
+      "address": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+      "source": "deployments/xlayer-test/active.json",
+      "sourceChainId": 196,
+      "purpose": "negative reuse check; official 1952 WOKB entry is unavailable",
+      "bytecodeBytes": 0,
+      "bytecodeSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "no-code"
+    },
+    {
+      "kind": "WETH-testnet-official",
+      "address": "0xBec7859BC3d0603BeC454F7194173E36BF2Aa5C8",
+      "source": "https://web3.okx.com/onchainos/dev-docs/xlayer/developer/build-on-xlayer/contracts",
+      "sourceChainId": 1952,
+      "purpose": "official WETH token, not native OKB wrapper",
+      "bytecodeBytes": 0,
+      "bytecodeSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "no-code"
+    },
+    {
+      "kind": "SodaDEX-v3Factory",
+      "address": "0xa6109B7F4237d2aC28B8009FbD21B88cff194cFe",
+      "source": "deployments/xlayer-test/active.json",
+      "sourceChainId": 196,
+      "purpose": "presence check at recorded 196 address; no 1952 deployment record",
+      "bytecodeBytes": 0,
+      "bytecodeSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "no-code"
+    },
+    {
+      "kind": "SodaDEX-v3NFTDescriptor",
+      "address": "0x5aBE8f32072B46E67816DB5991033e06D3b000D1",
+      "source": "deployments/xlayer-test/active.json",
+      "sourceChainId": 196,
+      "purpose": "presence check at recorded 196 address; no 1952 deployment record",
+      "bytecodeBytes": 0,
+      "bytecodeSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "no-code"
+    },
+    {
+      "kind": "SodaDEX-v3TokenDescriptor",
+      "address": "0xe8738389c2027BfcD4ac0ddE764Df9F170EB9750",
+      "source": "deployments/xlayer-test/active.json",
+      "sourceChainId": 196,
+      "purpose": "presence check at recorded 196 address; no 1952 deployment record",
+      "bytecodeBytes": 0,
+      "bytecodeSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "no-code"
+    },
+    {
+      "kind": "SodaDEX-v3PositionManager",
+      "address": "0x2BeCd78E05FB33b0588e9cF61E65afeE9DC7428f",
+      "source": "deployments/xlayer-test/active.json",
+      "sourceChainId": 196,
+      "purpose": "presence check at recorded 196 address; no 1952 deployment record",
+      "bytecodeBytes": 0,
+      "bytecodeSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "no-code"
+    },
+    {
+      "kind": "SodaDEX-v3Quoter",
+      "address": "0x98F4DFBfAb6fC37e59e00d6881E779B33b23b009",
+      "source": "deployments/xlayer-test/active.json",
+      "sourceChainId": 196,
+      "purpose": "presence check at recorded 196 address; no 1952 deployment record",
+      "bytecodeBytes": 0,
+      "bytecodeSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "no-code"
+    },
+    {
+      "kind": "SodaDEX-v4PoolManager",
+      "address": "0x6B5C32aD97EB42230138e02a21B0E6d811FD713D",
+      "source": "deployments/xlayer-test/active.json",
+      "sourceChainId": 196,
+      "purpose": "presence check at recorded 196 address; no 1952 deployment record",
+      "bytecodeBytes": 0,
+      "bytecodeSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "no-code"
+    },
+    {
+      "kind": "SodaDEX-v4Descriptor",
+      "address": "0x1d59446D84e2470015dC926d9dF7d83A2395d264",
+      "source": "deployments/xlayer-test/active.json",
+      "sourceChainId": 196,
+      "purpose": "presence check at recorded 196 address; no 1952 deployment record",
+      "bytecodeBytes": 0,
+      "bytecodeSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "no-code"
+    },
+    {
+      "kind": "SodaDEX-v4PositionManager",
+      "address": "0x1f85377930011B701dd2940c526e32FD3aDaB730",
+      "source": "deployments/xlayer-test/active.json",
+      "sourceChainId": 196,
+      "purpose": "presence check at recorded 196 address; no 1952 deployment record",
+      "bytecodeBytes": 0,
+      "bytecodeSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "no-code"
+    },
+    {
+      "kind": "SodaDEX-v4Quoter",
+      "address": "0x7a188D4C46C9FE045A5875FecaeF9Bf00e4521fF",
+      "source": "deployments/xlayer-test/active.json",
+      "sourceChainId": 196,
+      "purpose": "presence check at recorded 196 address; no 1952 deployment record",
+      "bytecodeBytes": 0,
+      "bytecodeSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "no-code"
+    },
+    {
+      "kind": "SodaDEX-v4StateView",
+      "address": "0x7991D4a8493b9709365cD079DfFc75e790007874",
+      "source": "deployments/xlayer-test/active.json",
+      "sourceChainId": 196,
+      "purpose": "presence check at recorded 196 address; no 1952 deployment record",
+      "bytecodeBytes": 0,
+      "bytecodeSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "no-code"
+    },
+    {
+      "kind": "SodaDEX-unsupportedProtocol",
+      "address": "0x68Eca93437dF07bE4b2C3A67956ACe2dC87d2F39",
+      "source": "deployments/xlayer-test/active.json",
+      "sourceChainId": 196,
+      "purpose": "presence check at recorded 196 address; no 1952 deployment record",
+      "bytecodeBytes": 0,
+      "bytecodeSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "no-code"
+    },
+    {
+      "kind": "SodaDEX-universalRouter",
+      "address": "0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA",
+      "source": "deployments/xlayer-test/active.json",
+      "sourceChainId": 196,
+      "purpose": "presence check at recorded 196 address; no 1952 deployment record",
+      "bytecodeBytes": 0,
+      "bytecodeSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "no-code"
+    },
+    {
+      "kind": "SodaDEX-limit-settlement",
+      "address": "0xE713AfD6133207df18662080e2B0F7e456AeEBA5",
+      "source": "deployments/orders-test.json",
+      "sourceChainId": 196,
+      "purpose": "presence check at recorded 196 address; contract hardcoded to196",
+      "bytecodeBytes": 0,
+      "bytecodeSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "no-code"
+    },
+    {
+      "kind": "USDt0-mainnet-address-only",
+      "address": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+      "source": "deployments/xlayer-test/pools.json",
+      "sourceChainId": 196,
+      "purpose": "negative reuse check; official1952 USDT0 entry unavailable",
+      "status": "no-code",
+      "bytecodeBytes": 0
+    }
+  ],
+  "unresolvedAssets": [
+    {
+      "name": "FAB",
+      "status": "no-trusted-1952-address-in-SodaDex-deployment-records",
+      "notClaim": "not evidence that this asset cannot exist anywhere"
+    },
+    {
+      "name": "BEM",
+      "status": "no-trusted-1952-address-in-SodaDex-deployment-records",
+      "notClaim": "not evidence that this asset cannot exist anywhere"
+    },
+    {
+      "name": "mining-NFT",
+      "status": "no-trusted-1952-address-in-SodaDex-deployment-records",
+      "notClaim": "not evidence that this asset cannot exist anywhere"
+    },
+    {
+      "name": "marketplace",
+      "status": "no-trusted-1952-address-in-SodaDex-deployment-records",
+      "notClaim": "not evidence that this asset cannot exist anywhere"
+    }
+  ],
+  "sourceNotes": [
+    "All SodaDEX contract addresses checked originate from chain196 deployment records; empty code proves no contract at those exact1952 addresses at observation block, not universal absence.",
+    "Official WOKB and USDT0 testnet address cells are dash; official WETH is not a native OKB wrapper."
+  ],
+  "secondaryEndpointCodeChecks": {
+    "rpcUrl": "https://xlayertestrpc.okx.com/terigon",
+    "blockNumber": 43752631,
+    "contracts": [
+      {
+        "kind": "Permit2",
+        "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+        "status": "unavailable",
+        "errorType": "HTTPError"
+      },
+      {
+        "kind": "WOKB-mainnet-address-only",
+        "address": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+        "status": "unavailable",
+        "errorType": "HTTPError"
+      },
+      {
+        "kind": "WETH-testnet-official",
+        "address": "0xBec7859BC3d0603BeC454F7194173E36BF2Aa5C8",
+        "status": "unavailable",
+        "errorType": "HTTPError"
+      },
+      {
+        "kind": "USDt0-mainnet-address-only",
+        "address": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+        "status": "unavailable",
+        "errorType": "HTTPError"
+      }
+    ]
+  },
+  "repoHead": "7506ce36138dfb6262ef11d1e3ca4828fec5ede3",
+  "crossEndpointLimit": "Initial chainId, block, owner balance and nonce matched both official RPCs; secondary contract-code confirmation failed HTTP requests. Contract observations are from primary RPC only."
+}

@@ -11,6 +11,7 @@
   "include": [
     "trading-policy.ts",
     "order-types.ts",
-    "order-deployment.ts"
+    "order-deployment.ts",
+    "network-profile.ts"
   ]
 }

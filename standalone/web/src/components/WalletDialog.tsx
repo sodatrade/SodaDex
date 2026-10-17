@@ -1,5 +1,6 @@
 import { useState, type ReactElement } from 'react'
-import { CHAIN_ID, EXPLORER_URL, shortenAddress } from '../domain/assets'
+import { CHAIN_ID, EXPLORER_URL } from '../network'
+import { shortenAddress } from '../lib/address'
 import type { WalletController } from '../lib/useWallet'
 import { usePreferences } from '../preferences/context'
 import { Dialog } from './Dialog'
