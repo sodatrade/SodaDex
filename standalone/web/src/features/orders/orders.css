@@ -1,4 +1,6 @@
-.limit-panel { padding: 20px; border-radius: 16px; min-width: 0; }
+.limit-panel { position: relative; padding: 20px; border-radius: 16px; min-width: 0; }
+.limit-panel > .limit-refresh { position: absolute; top: 10px; right: 12px; width: 44px; padding: 0; }
+.trade-order-column:has(> .workspace-tabs) .limit-panel { position: static; }
 .limit-panel > h2 { font-size: 20px; margin: 0 0 10px; font-weight: 620; letter-spacing: -.4px; }
 .limit-panel form { display: grid; gap: 12px; margin-top: 18px; }
 .limit-panel form > label { display: grid; gap: 8px; font-size: 11px; color: var(--soda-muted); min-width: 0; }

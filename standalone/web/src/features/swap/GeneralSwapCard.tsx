@@ -133,7 +133,7 @@ export function GeneralSwapCard({ wallet, balances, balancesLoading, balancesErr
       {!direction && pools.isPending && <p role="status" className="swap-notice">{m.loading}</p>}
       {!direction && pools.isError && <p role="alert" className="error-text">{m.poolError} <button className="text-button" onClick={() => void pools.refetch()}>{m.reload}</button></p>}
       {!direction && pools.isSuccess && !matches.length && <p className="swap-notice">{m.noPool}{onCreatePool && <> <button className="text-button" onClick={onCreatePool}>{m.createPool}</button></>}</p>}
-      {!direction && quote.isError && <p role="alert" className="error-text">{m.noQuote} <button className="text-button" onClick={() => void quote.refetch()}>{m.reload}</button></p>}
+      {!direction && quote.isError && !quote.isFetching && <p role="alert" className="error-text">{m.noQuote} <button className="text-button" onClick={() => void quote.refetch()}>{m.reload}</button></p>}
       <div className="route-summary"><span><NetworkIcon small />X Layer</span><button onClick={() => setSettings(true)} disabled={locked}>
         {m.route} · {direction ? '1:1' : validQuote?.pool.protocol.toUpperCase() ?? (protocol === 'auto' ? m.auto : protocol.toUpperCase())}<Icon name="chevron" size={14} /></button></div>
       {validQuote && !direction && <div className="swap-quote-summary"><TradeDetails quote={validQuote} scope="summary" />

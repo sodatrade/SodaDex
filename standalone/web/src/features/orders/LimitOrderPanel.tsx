@@ -69,7 +69,7 @@ export function LimitOrderPanel({ wallet, onConnect, onSwap, seed, onContextChan
   return <>
     <Surface className="limit-panel" aria-label={m.title}><h2>{m.title}</h2><p className="order-note">{m.note}</p>
       {!ready && <p role="status" className="order-readiness">{!deployment || deployment.executionEnabled !== true ? m.notReady : service.isError || service.data === false ? m.serviceFailed : m.loading}</p>}
-      {deployment && <Button onClick={() => void service.refetch()} disabled={service.isFetching}>{m.retry}</Button>}
+      {deployment && <Button appearance="icon" className="limit-refresh" aria-label={m.retry} title={m.retry} onClick={() => void service.refetch()} disabled={service.isFetching}><Icon name="refresh" size={17} /></Button>}
       <form onSubmit={(event) => { event.preventDefault(); preview() }}>
         <div className="limit-amount-field"><label htmlFor="limit-pay-amount">{m.pay}</label><div className="limit-amount-row"><input id="limit-pay-amount" aria-label={m.pay} inputMode="decimal" placeholder="0" value={amount} disabled={locked} onChange={e => { changed(); setAmount(e.target.value.slice(0, 100)) }} />
           <Button type="button" aria-label={m.input} disabled={locked} onClick={() => setSelector('from')}><CurrencyIcon currency={from} /><span>{from.symbol}</span><Icon name="chevron" size={14} /></Button></div>

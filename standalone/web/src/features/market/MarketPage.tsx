@@ -35,7 +35,7 @@ export function MarketPage(): ReactElement {
   return (
     <section className="content-page data-page" aria-labelledby="market-title">
       <div className="page-heading"><span className="eyebrow">MARKET / X LAYER</span>
-        <h1 id="market-title">{m.marketTitle}</h1><p>{m.marketNote}</p></div>
+        <h1 id="market-title">{m.market}</h1><p>{m.marketNote}</p></div>
       <div className="data-toolbar">
         <label>{m.pool}<select value={pool?.id ?? ''} onChange={(e) => setSelected(e.target.value)}>
           {pools.data?.pools.map((p) => <option key={p.id} value={p.id}>

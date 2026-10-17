@@ -30,6 +30,7 @@
 .bridge-link:hover { color: var(--soda-highlight); }
 .app-shell .content-page { width: min(1200px, 100%); padding: 32px 28px 56px; }
 .app-shell .content-page .content-page { width: 100%; padding: 0; }
+.app-shell .lp-page > .lp-test-note { display: none; }
 .app-shell .page-heading h1 { margin: 0 0 10px; font-size: 28px; font-weight: 620; letter-spacing: -.8px; }
 .app-shell .page-heading > p { margin: 0 0 24px; color: var(--soda-muted); font-size: 13px; line-height: 1.7; }
 .app-shell .page-heading .eyebrow { margin-bottom: 10px; }

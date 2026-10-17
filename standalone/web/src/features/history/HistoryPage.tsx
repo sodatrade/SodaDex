@@ -45,9 +45,9 @@ export function HistoryPage({ wallet, onConnect, initialScope = 'all', scopes = 
   const rows = restart ? [] : mergeEvents(events.data?.pages.map((p) => p.data) ?? [])
   const last = restart ? undefined : events.data?.pages.at(-1)?.data
   const local = account ? readTransactions(account) : []
-  return <section className={embedded ? "data-page portfolio-activity" : "content-page data-page"} aria-label={m.historyTitle}>
+  return <section className={embedded ? "data-page portfolio-activity" : "content-page data-page"} aria-label={m.history}>
     {!embedded && <div className="page-heading"><span className="eyebrow">ACTIVITY / X LAYER</span>
-      <h1 id="history-title">{m.historyTitle}</h1><p>{m.historyNote}</p></div>}
+      <h1 id="history-title">{m.history}</h1><p>{m.historyNote}</p></div>}
     <div className="data-tabs" aria-label={m.history}>
       {scopes.map((s) => <Button key={s} aria-pressed={scope === s} onClick={() => setScope(s)}>{m[s]}</Button>)}
     </div>

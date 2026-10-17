@@ -72,8 +72,16 @@ describe('main swap interactions', () => {
     expect(screen.getByRole('button', { name: 'Review swap' })).toBeDisabled()
     expect(screen.queryByText('Trade details')).not.toBeInTheDocument()
     expect(trades.executePoolTrade).not.toHaveBeenCalled()
-    vi.mocked(trades.getPoolTradeQuote).mockImplementation(async (p, dir, value, slippageBps = 50) => ({ pool: p, zeroForOne: dir, amount: value, amountOut: 1000n, minimumOut: 995n, slippageBps }))
+    let finishQuote: (() => void) | undefined
+    vi.mocked(trades.getPoolTradeQuote).mockImplementation((p, dir, value, slippageBps = 50) => new Promise(resolve => {
+      finishQuote = () => resolve({ pool: p, zeroForOne: dir, amount: value, amountOut: 1000n, minimumOut: 995n, slippageBps })
+    }))
     await userEvent.click(screen.getByRole('button', { name: 'Retry' }))
+    await waitFor(() => expect(screen.queryByText('No route could quote this amount.')).not.toBeInTheDocument())
+    expect(screen.getByRole('button', { name: 'Getting quote…' })).toBeDisabled()
+    expect(screen.getByLabelText('You receive')).toHaveValue('')
+    expect(trades.executePoolTrade).not.toHaveBeenCalled()
+    await act(async () => { finishQuote?.() })
     await waitFor(() => expect(screen.getByRole('button', { name: 'Review swap' })).toBeEnabled())
     expect(screen.getByLabelText('You receive')).toHaveValue('0.001')
   })
