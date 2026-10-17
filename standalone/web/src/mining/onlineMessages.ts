@@ -29,6 +29,9 @@ const zh = {
   statusRunning: '执行中', statusBlocked: '等待条件满足', statusUnknown: '等待核验',
   reasonPending: '等待启用测试执行策略', reasonBudget: '本阶段 gas 预算不足', reasonDisabled: '后台执行已关闭',
   reasonChain: '测试链暂时无法读取', reasonLiquidity: '可用流动性不足', reasonNoWork: '当前无可执行任务',
+  reasonNotGraduated: '项目毕业后才转换代币税款', reasonPaused: '矿机系统已暂停', reasonDust: '当前金额过小，暂不转换',
+  reasonAuthorization: '等待核对授权状态', reasonSimulation: '模拟未通过，已停止发送', reasonReconcile: '正在核对原交易，已暂停后续发送',
+  reasonSettled: '已在测试链确认', reasonSigned: '已签名，等待发送', reasonSubmitted: '已提交，等待链上确认', reasonQueued: '已排队，等待后台检查',
   reasonCapacity: '矿场已达容量上限', reasonListing: '暂无合格矿机挂单', reasonFunds: '采购预算不足', reasonOther: '请刷新状态查看后续结果',
 }
 type Messages = Record<keyof typeof zh, string>
@@ -61,6 +64,9 @@ const en: Messages = {
   statusRunning: 'Running', statusBlocked: 'Waiting for conditions', statusUnknown: 'Awaiting verification',
   reasonPending: 'Waiting for test execution policy', reasonBudget: 'Phase gas budget is insufficient', reasonDisabled: 'Background execution is disabled',
   reasonChain: 'Test-chain reads are unavailable', reasonLiquidity: 'Insufficient available liquidity', reasonNoWork: 'No executable tasks now',
+  reasonNotGraduated: 'Token-tax conversion starts after graduation', reasonPaused: 'Mining is paused', reasonDust: 'Amount is too small to convert',
+  reasonAuthorization: 'Checking authorization state', reasonSimulation: 'Simulation failed; sending stopped', reasonReconcile: 'Reconciling the original transaction; further sends are paused',
+  reasonSettled: 'Confirmed on testnet', reasonSigned: 'Signed; awaiting broadcast', reasonSubmitted: 'Submitted; awaiting chain confirmation', reasonQueued: 'Queued for a background check',
   reasonCapacity: 'Farm capacity reached', reasonListing: 'No eligible miner listing', reasonFunds: 'Purchase budget is insufficient', reasonOther: 'Refresh for the next verified result',
 }
 const yue: Messages = {
@@ -90,6 +96,9 @@ const yue: Messages = {
   statusRunning: '執行緊', statusBlocked: '等條件滿足', statusUnknown: '等緊核實',
   reasonPending: '等測試執行策略啟用', reasonBudget: '今階段 gas 預算唔夠', reasonDisabled: '後台執行已關閉',
   reasonChain: '暫時讀唔到測試鏈', reasonLiquidity: '可用流動性唔夠', reasonNoWork: '而家冇可執行任務',
+  reasonNotGraduated: '項目畢業後先轉換代幣稅款', reasonPaused: '礦機系統暫停咗', reasonDust: '金額太細，暫時唔轉換',
+  reasonAuthorization: '核對緊授權狀態', reasonSimulation: '模擬唔通過，已停止發送', reasonReconcile: '核對緊原交易，後續發送暫停咗',
+  reasonSettled: '已喺測試鏈確認', reasonSigned: '已簽名，等緊發送', reasonSubmitted: '已提交，等緊鏈上確認', reasonQueued: '已排隊，等後台檢查',
   reasonCapacity: '礦場容量已滿', reasonListing: '暫時冇合格礦機掛單', reasonFunds: '採購預算唔夠', reasonOther: '請再讀取狀態睇後續結果',
 }
 export type MiningOnlineMessageKey = keyof Messages
@@ -97,6 +106,14 @@ export function onlineMessages(locale: Locale): Messages { return locale === 'en
 export function onlineReason(reason: string | undefined, m: Messages): string {
   const key: Record<string, keyof Messages> = { policy_pending: 'reasonPending', gas_budget: 'reasonBudget', execution_disabled: 'reasonDisabled',
     chain_unavailable: 'reasonChain', no_liquidity: 'reasonLiquidity', no_work: 'reasonNoWork', capacity: 'reasonCapacity',
-    no_listing: 'reasonListing', insufficient_budget: 'reasonFunds' }
+    no_listing: 'reasonListing', insufficient_budget: 'reasonFunds', farm_full: 'reasonCapacity', no_approved_inventory: 'reasonListing',
+    procurement_budget_exhausted: 'reasonFunds', gas_budget_exhausted: 'reasonBudget', no_tax: 'reasonNoWork',
+    not_graduated: 'reasonNotGraduated', source_paused: 'reasonPaused', tax_dust: 'reasonDust', quote_too_small: 'reasonDust',
+    authorization_pending: 'reasonAuthorization', authorization_expiring: 'reasonAuthorization', authorization_expired: 'reasonReconcile',
+    rpc_event_budget: 'reasonChain', pending_rpc_stale: 'reasonChain', rpc_call_failed: 'reasonChain', rpc_unavailable: 'reasonChain',
+    rpc_invalid: 'reasonChain', service_unavailable: 'reasonChain', chain_reorg: 'reasonChain', simulation_reverted: 'reasonSimulation',
+    receipt_reorg: 'reasonReconcile', nonce_consumed_unknown: 'reasonReconcile', nonce_state_unavailable: 'reasonReconcile',
+    pending_nonce_unknown: 'reasonReconcile', broadcast_unknown: 'reasonReconcile', keeper_nonce_unresolved: 'reasonReconcile',
+    settled: 'reasonSettled', signed: 'reasonSigned', pending_confirmation: 'reasonSubmitted', requested: 'reasonQueued' }
   return m[key[reason ?? ''] ?? 'reasonOther']
 }

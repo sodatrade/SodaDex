@@ -100,7 +100,7 @@ export async function loadOnlineStatus(d: MiningProductDeployment): Promise<Mini
   const r = await request(d, 'status'), b = r.budget, farm = r.farm
   if (typeof r.admissionEnabled !== 'boolean' || typeof r.executionEnabled !== 'boolean' || !address(r.signer) ||
       (r.keeper !== null && !address(r.keeper)) || !record(b) || !uint(b.capWei) || !uint(b.spentWei) || !uint(b.reservedWei) ||
-      BigInt(b.spentWei) + BigInt(b.reservedWei) > BigInt(b.capWei) || (r.reason !== undefined && !text(r.reason)) ||
+      (r.reason !== undefined && !text(r.reason)) ||
       (farm !== null && (!record(farm) || !Number.isSafeInteger(farm.capacity) || Number(farm.capacity) < 0 ||
         !Number.isSafeInteger(farm.minerCount) || Number(farm.minerCount) < 0 || Number(farm.minerCount) > Number(farm.capacity) || !uint(farm.procurementBudgetFab))) || !Array.isArray(r.jobs)) return invalid()
   const jobs = r.jobs.map((j): MiningOnlineJob => {

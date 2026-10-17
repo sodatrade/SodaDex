@@ -23,8 +23,9 @@ at one canonical block. Unit fixtures remain separate from real-chain evidence.
   refresh can only target an already registered project. The deployment version
   stays fixed; directory revisions change separately. Plain `GET /projects` and
   `GET /status` read SQL snapshots without RPCs or waiting behind keeper work.
-- `src/planner.ts`: handles one approved business operation at a time in round
-  robin order. Before graduation, unbooked FAB is recognized with `sync`, then
+- `src/planner.ts`: examines one project or the shared farm per alarm in round robin
+  order. An idle or failed candidate advances the cursor without scanning the
+  rest in that same event; this bounds RPC requests and prevents starvation. Before graduation, unbooked FAB is recognized with `sync`, then
   `fundFarm`; bounded `syncVault` calls catch up older farm history first. After
   graduation, project-token tax is converted on the verified pair, with the 1%
   transfer tax applied before router quotation, and explicit slippage applied to
@@ -88,8 +89,12 @@ never takes that path.
 One SQLite Durable Object, `SodaMining1952`, owns challenges, authorizations,
 projects, jobs, signed executions and budget counters. Mutating requests and
 alarms are serialized; synchronous SQL mutations are transactional. Admission
-reserves project slots before signing; an expired issued authorization does not
-silently free a slot because its transaction may already have been broadcast.
+reserves project slots only after wallet proof. Unverified challenges form a
+bounded replaceable cache and cannot lock a wallet. After the chain has passed
+an authorization deadline, canonical Factory logs prove whether creation happened.
+Already-created projects are registered; uncreated requests become expired
+tombstones and release their reservations. A reorg invalidates that expiry proof
+and restores its reservation. Old request IDs are never authorized again.
 Reusing a request ID with another wallet or form is rejected. Reusing the exact
 verified request returns the same stored authorization while valid.
 
@@ -110,9 +115,10 @@ Successful and reverted canonical receipts both charge actual
 `gasUsed * effectiveGasPrice + l1Fee + operatorFee`, releasing only the known unused
 reserve. The zero L1/operator fee model is checked against GasPriceOracle **and**
 L1Block before signing and at the receipt block. Unknown or larger-than-reserved
-fees retain the reserve and stop. A reorg of the latest finished execution
-subtracts its prior spent amount, restores its full reserve, and reconciles the
-same saved raw bytes first. SQL state is not a substitute for chain finality.
+fees retain the reserve and stop. The most recent settled block anchors the earlier receipts. If that ancestor
+anchor changes, all affected settled costs return to full reserves atomically
+before their canonical receipts are rechecked; earlier re-mined transactions
+therefore cannot hide an increased gas cost. Saved raw bytes remain unchanged. SQL state is not a substitute for chain finality.
 
 Waiting conditions such as no tax, no approved inventory or a full farm consume
 read RPCs but do not send empty transactions. `/run` only queues existing fixed
@@ -138,7 +144,7 @@ binding, receipt spoofing/reorg rejection, fixed inventory/capacity/approval che
 tax-input/slippage bounds, budget exhaustion, simulation failure, raw persistence,
 response loss/restart, nonce conflicts, canonical success/revert costing and reorg
 reserve restoration. Real local Wrangler/SQLite restart smoke is separate from
-these pure/mocked integration tests. Public E2E requires the real verifier,
+these pure/mocked integration tests. Public E2E requires
 operator-approved configuration, injected Secrets and funded keeper; a disabled
 bundle build does not establish that those workflows have been deployed.
 
@@ -157,3 +163,11 @@ must still pass independently. Local economic limits and Anvil-funded balances
 are test fixtures, not approved public-service or production settings. State uses
 a private SQLite file under `.analysis/mining-online/local-service/`; a deployment
 version mismatch refuses to reuse it. No browser or service retry clears that state.
+
+The HTTP adapter batches at most ten ordinary RPC reads (the official endpoint
+was checked with ten; a batch of 23 was rejected). Pending simulations use one
+eight-call chain/header/code/nonce probe. Each cloud event stops before exceeding
+45 upstream fetches. A same-event planner proof may be reused for its first
+broadcast after a canonical-block check; restart/rebroadcast always verifies live
+root and project identities again. Successful cycles clear stale service-level
+errors; per-transaction jobs and receipts remain persisted.

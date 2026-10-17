@@ -58,7 +58,12 @@ export class SodaMining1952 extends DurableObject {
   alarm(): Promise<void> {
     return this.#serial(async () => {
       const app = this.#application()
-      try { await app.keeper.runOnce() }
+      try {
+        await app.keeper.runOnce()
+        if (this.#repo.read().jobs.service) {
+          this.#repo.change(s => { delete s.jobs.service }); await this.#repo.flush()
+        }
+      }
       catch (e) {
         this.#repo.change(s => { s.jobs.service = { id: 'service', kind: 'sync', status: 'blocked',
           reason: e instanceof ServiceError ? e.code : 'service_unavailable', updatedAt: Date.now() } })

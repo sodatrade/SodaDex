@@ -25,7 +25,7 @@ export function AutomationPanel({ deployment: d, token, disabled }: {
   const kind: Record<MiningOnlineJob['kind'], MiningOnlineMessageKey> = { sync: 'kindSync', fund: 'kindFund', purchase: 'kindPurchase', conversion: 'kindConversion' }
   const state: Record<string, MiningOnlineMessageKey> = { queued: 'statusQueued', pending: 'statusSubmitted', submitted: 'statusSubmitted',
     success: 'statusSucceeded', succeeded: 'statusSucceeded', confirmed: 'statusSucceeded', failed: 'statusFailed', error: 'statusFailed',
-    skipped: 'statusSkipped', noop: 'statusSkipped', running: 'statusRunning', blocked: 'statusBlocked', paused: 'statusBlocked' }
+    waiting: 'statusBlocked', prepared: 'statusRunning', broadcast: 'statusSubmitted', skipped: 'statusSkipped', noop: 'statusSkipped', running: 'statusRunning', blocked: 'statusBlocked', paused: 'statusBlocked' }
   return <Surface className="mining-online-panel" aria-labelledby="mining-automation-title">
     <header className="mining-online-heading"><div><h2 id="mining-automation-title">{m.automation}</h2><p>{m.automationIntro}</p></div>
       <Button disabled={status.isFetching || busy} onClick={() => void status.refetch()}>{m.refresh}</Button></header>
@@ -40,6 +40,7 @@ export function AutomationPanel({ deployment: d, token, disabled }: {
         {data.farm && <><div><dt>{m.miners}</dt><dd>{data.farm.minerCount} / {data.farm.capacity}</dd></div>
           <div><dt>{m.procurement}</dt><dd>{formatUnits(BigInt(data.farm.procurementBudgetFab), 8)} TEST-FAB</dd></div></>}
       </dl>
+      {BigInt(data.budget.spentWei) + BigInt(data.budget.reservedWei) >= BigInt(data.budget.capWei) && <p role="status">{m.reasonBudget}</p>}
       <details className="mining-online-addresses"><summary>{m.signer} / {m.keeper}</summary><dl>
         <div><dt>{m.signer}</dt><dd><a href={`https://www.oklink.com/xlayer-test/address/${data.signer}`} target="_blank" rel="noreferrer">{data.signer}</a></dd></div>
         <div><dt>{m.keeper}</dt><dd>{data.keeper ? <a href={`https://www.oklink.com/xlayer-test/address/${data.keeper}`} target="_blank" rel="noreferrer">{data.keeper}</a> : '—'}</dd></div>

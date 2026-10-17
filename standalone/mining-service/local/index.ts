@@ -86,7 +86,10 @@ createServer(async (incoming, outgoing) => {
   } catch (e) { const response = errorResponse(e); outgoing.writeHead(response.status, Object.fromEntries(response.headers)); outgoing.end(await response.text()) }
 }).listen(8791, '127.0.0.1', () => console.log(JSON.stringify({ localOnly: true, rpc: rpcUrl, http: 'http://127.0.0.1:8791', origin, version: deployment.version })))
 const timer = setInterval(() => { void serial(async () => {
-  try { await app().keeper.runOnce() }
+  try {
+    await app().keeper.runOnce()
+    if (repo.read().jobs.service) { repo.change(s => {delete s.jobs.service}); await repo.flush() }
+  }
   catch (e) { repo.change(s => { s.jobs.service = {id:'service',kind:'sync',status:'blocked',reason:e instanceof ServiceError ? e.code : 'service_unavailable',updatedAt:Date.now()} }); await repo.flush() }
   console.log(JSON.stringify({localOnly:true,rpcRequests:lastRequests,maximumRequests}))
 }) }, 2000)

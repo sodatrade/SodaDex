@@ -82,14 +82,14 @@ describe('mining online API boundaries', () => {
     guard.mockReturnValue(false)
     expect(() => validateOnlineLaunchTransaction(d, MINING_TEST_ACCOUNT, form, tx, expiry)).toThrow('onlineInvalidResponse')
   })
-  it('parses keeper budgets and jobs, rejecting over-cap values and invalid hashes', async () => {
+  it('keeps budget and job history readable when reorg reserves exceed the cap, rejecting invalid hashes', async () => {
     const d = miningTestDeployment(), status = { admissionEnabled: true, executionEnabled: true, signer: MINING_TEST_ACCOUNT, keeper: miningTestAddress(901),
       budget: { capWei: '100', spentWei: '30', reservedWei: '20' }, farm: { capacity: 10, minerCount: 1, procurementBudgetFab: '100000000' },
       jobs: [{ id: 'job-1', kind: 'purchase', status: 'submitted', reason: '', hash: MINING_TEST_HASH, updatedAt: Date.now() }] }
     vi.stubGlobal('fetch', vi.fn(async () => Response.json(envelope(status))))
     expect((await loadOnlineStatus(d)).jobs[0].hash).toBe(MINING_TEST_HASH)
     vi.stubGlobal('fetch', vi.fn(async () => Response.json(envelope({ ...status, budget: { ...status.budget, reservedWei: '100' } }))))
-    await expect(loadOnlineStatus(d)).rejects.toThrow('onlineInvalidResponse')
+    expect((await loadOnlineStatus(d)).budget.reservedWei).toBe('100')
     vi.stubGlobal('fetch', vi.fn(async () => Response.json(envelope({ ...status, jobs: [{ ...status.jobs[0], hash: 'bad' }] }))))
     await expect(loadOnlineStatus(d)).rejects.toThrow('onlineInvalidResponse')
   })
@@ -110,6 +110,7 @@ describe('mining online API boundaries', () => {
       const m = onlineMessages(locale)
       expect(onlineReason('secret diagnostic', m)).toBe(m.reasonOther)
       expect(onlineReason('gas_budget', m)).toBe(m.reasonBudget)
+      for (const reason of ['farm_full','no_approved_inventory','procurement_budget_exhausted','not_graduated','no_tax','settled','pending_confirmation','broadcast_unknown']) expect(onlineReason(reason,m)).not.toBe(m.reasonOther)
     }
   })
 })
