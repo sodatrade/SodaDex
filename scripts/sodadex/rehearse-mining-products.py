@@ -7,58 +7,98 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import time
 
 from fee_policy import PROFILES, require_test_profile
 from mining_history_source import history_source_snapshot
 from mining_source import foundry_env
-from mining_launch_artifacts import launch_artifacts
+from mining_launch_artifacts import CANONICAL_LAUNCH, launch_artifacts
+
+
+def prepared_artifacts(directory, full_launch, with_v2):
+    """Read an existing, explicit creation-artifact snapshot without rebuilding another checkout."""
+    names = ["FabFragmentVault", "FabFragmentPool", "FabMinerTestBuyer"]
+    if with_v2:
+        names += ["FabMiningFarm", "MiningProjectFactory", "MiningProjectVault", "MiningHolderRewards", "IgnixToken"]
+    if full_launch:
+        names += list(CANONICAL_LAUNCH) + ["PoolManager", "Permit2", "PositionDescriptor", "PositionManager", "V4Quoter"]
+    result = {}
+    for name in names:
+        data = (directory / (name + ".sol") / (name + ".json")).read_bytes()
+        artifact = json.loads(data)
+        code = artifact["bytecode"]["object"].removeprefix("0x")
+        if not code or not bytes.fromhex(code):
+            raise ValueError("Missing complete prepared creation bytecode: " + name)
+        if name == "IgnixManager":
+            links = artifact.get("sodadexLibraries", {})
+            if set(links) != {"CurveTrading", "LaunchLogic", "V2Graduation"}:
+                raise ValueError("Prepared Manager requires explicit reviewed library offsets")
+            occupied = set()
+            for entries in links.values():
+                for offset in entries:
+                    if (not isinstance(offset, int) or offset < 0 or (offset + 20) * 2 > len(code)
+                            or code[offset * 2:(offset + 20) * 2] != "00" * 20
+                            or any(i in occupied for i in range(offset, offset + 20))):
+                        raise ValueError("Invalid prepared Manager library slot")
+                    occupied.update(range(offset, offset + 20))
+        elif artifact["bytecode"]["linkReferences"]:
+            raise ValueError("Prepared artifact has unresolved libraries: " + name)
+        result[name] = data
+    return result
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--fabx-source", type=Path, required=True)
-    parser.add_argument("--ignix-contracts", type=Path, required=True)
+    parser.add_argument("--ignix-contracts", type=Path, help="Credential-free canonical source checkout to compile")
+    parser.add_argument("--prepared-artifacts", type=Path, help="Reuse an explicit existing complete artifact snapshot read-only")
     parser.add_argument("--v2-artifacts", type=Path, help="Include real Router02/Market/Farm/Token integration")
     parser.add_argument("--full-launch", action="store_true", help="Also run real Manager curve and graduation")
-    parser.add_argument("--browser-fixture", action="store_true", help="Export a real-contract loopback Anvil fixture, without broadcasting")
+    browser = parser.add_mutually_exclusive_group()
+    browser.add_argument("--browser-fixture", action="store_true", help="Export the original loopback Anvil fixture, without broadcasting")
+    browser.add_argument("--browser-online-fixture", action="store_true", help="Export a separate contemporary online-signing loopback fixture")
+    parser.add_argument("--fixture-timestamp", type=int, help="Explicit Unix-second clock for the online fixture; defaults to current time")
     args = parser.parse_args()
-    if args.browser_fixture and not args.full_launch:
+    if (args.browser_fixture or args.browser_online_fixture) and not args.full_launch:
         raise ValueError("Browser fixture requires the full real launch stack")
+    if args.fixture_timestamp is not None and (not args.browser_online_fixture or args.fixture_timestamp <= 88_401):
+        raise ValueError("An explicit contemporary clock is only supported for the online fixture")
+    if bool(args.prepared_artifacts) == bool(args.ignix_contracts):
+        raise ValueError("Choose exactly one of --prepared-artifacts or --ignix-contracts")
     if args.full_launch and not args.v2_artifacts:
         raise ValueError("Full launch requires the verified local V2 artifacts")
     root = Path(__file__).resolve().parents[2]
     require_test_profile(PROFILES["test"])
     baseline, variant = history_source_snapshot(root, args.fabx_source)
-    contracts = args.ignix_contracts.resolve(strict=True)
-    if (contracts / ".env").exists():
-        raise ValueError("Refusing artifact preparation in a contract root with a dotenv file")
-    artifacts = root / ".analysis/mining-1952/ignix-product-out"
-    build_env = {key: os.environ[key] for key in ("PATH", "HOME", "TMPDIR", "LANG") if key in os.environ}
-    build_command = [
-        "forge", "build", "src/mining/FabFragmentVault.sol", "src/mining/FabFragmentPool.sol", "src/mining/FabMinerTestBuyer.sol",
-        "src/mining/FabMiningFarm.sol", "src/mining/MiningProjectFactory.sol", "src/launch/IgnixToken.sol",
-        "--out", str(artifacts), "--cache-path", str(root / ".analysis/mining-1952/ignix-product-cache"),
-    ]
-    if args.full_launch:
-        build_command += ["src/launch/IgnixManager.sol", "src/launch/IgnixLaunchFactory.sol", "src/vault/VaultRegistry.sol",
-                          "src/launch/IgnixLpLocker.sol", "src/launch/IgnixV2Locker.sol", "src/launch/IgnixLiquidityHelper.sol",
-                          "src/launch/IgnixV4Router.sol", "src/launch/IgnixPoolGuard.sol"]
-    subprocess.run(build_command, cwd=contracts, env=build_env, check=True)
     hashes = {}
-    artifact_data = {}
-    names = ["FabFragmentVault", "FabFragmentPool", "FabMinerTestBuyer"]
-    if args.v2_artifacts:
-        names += ["FabMiningFarm", "MiningProjectFactory", "MiningProjectVault", "MiningHolderRewards", "IgnixToken"]
-    for name in names:
-        artifact_path = artifacts / (name + ".sol") / (name + ".json")
-        artifact = json.loads(artifact_path.read_text())
-        if artifact["bytecode"]["linkReferences"]:
-            raise ValueError("Product artifact requires explicit library linking: " + name)
-        artifact_data[name] = artifact_path.read_bytes()
-        hashes[name] = hashlib.sha256(artifact_data[name]).hexdigest()
-    if args.full_launch:
-        artifact_data.update(launch_artifacts(root, artifacts))
-        hashes = {name: hashlib.sha256(data).hexdigest() for name, data in artifact_data.items()}
+    if args.prepared_artifacts:
+        artifact_data = prepared_artifacts(args.prepared_artifacts.resolve(strict=True), args.full_launch, bool(args.v2_artifacts))
+    else:
+        contracts = args.ignix_contracts.resolve(strict=True)
+        if (contracts / ".env").exists():
+            raise ValueError("Refusing artifact preparation in a contract root with a dotenv file")
+        artifacts = root / ".analysis/mining-1952/ignix-product-out"
+        build_env = {key: os.environ[key] for key in ("PATH", "HOME", "TMPDIR", "LANG") if key in os.environ}
+        build_command = [
+            "forge", "build", "src/mining/FabFragmentVault.sol", "src/mining/FabFragmentPool.sol", "src/mining/FabMinerTestBuyer.sol",
+            "src/mining/FabMiningFarm.sol", "src/mining/MiningProjectFactory.sol", "src/launch/IgnixToken.sol",
+            "--out", str(artifacts), "--cache-path", str(root / ".analysis/mining-1952/ignix-product-cache"),
+        ]
+        if args.full_launch:
+            build_command += ["src/launch/IgnixManager.sol", "src/launch/IgnixLaunchFactory.sol", "src/vault/VaultRegistry.sol",
+                              "src/launch/IgnixLpLocker.sol", "src/launch/IgnixV2Locker.sol", "src/launch/IgnixLiquidityHelper.sol",
+                              "src/launch/IgnixV4Router.sol", "src/launch/IgnixPoolGuard.sol"]
+        subprocess.run(build_command, cwd=contracts, env=build_env, check=True)
+        names = ["FabFragmentVault", "FabFragmentPool", "FabMinerTestBuyer"]
+        if args.v2_artifacts:
+            names += ["FabMiningFarm", "MiningProjectFactory", "MiningProjectVault", "MiningHolderRewards", "IgnixToken"]
+        artifact_data = {name: (artifacts / (name + ".sol") / (name + ".json")).read_bytes() for name in names}
+        for name, data in artifact_data.items():
+            if json.loads(data)["bytecode"]["linkReferences"]:
+                raise ValueError("Product artifact requires explicit library linking: " + name)
+        if args.full_launch:
+            artifact_data.update(launch_artifacts(root, artifacts))
+    hashes = {name: hashlib.sha256(data).hexdigest() for name, data in artifact_data.items()}
     snapshot_id = hashlib.sha256(json.dumps(hashes, sort_keys=True).encode()).hexdigest()
     snapshot = root / ".analysis/mining-1952/product-artifacts" / snapshot_id
     for name, data in artifact_data.items():
@@ -76,11 +116,13 @@ def main():
     env["FOUNDRY_TEST"] = str(root / "contracts/mining-rehearsal/test")
     env["SODADEX_MINING_ARTIFACT_ROOT"] = str(artifacts)
     permissions = [{"access": "read", "path": str(artifacts)}]
-    if args.browser_fixture:
-        browser_output = root / ".analysis/mining-1952/browser-fixture"
+    if args.browser_fixture or args.browser_online_fixture:
+        browser_output = root / ".analysis/mining-1952" / ("browser-online-fixture" if args.browser_online_fixture else "browser-fixture")
         browser_output.mkdir(parents=True, exist_ok=True)
         env["SODADEX_MINING_BROWSER_OUTPUT"] = str(browser_output)
         permissions.append({"access": "read-write", "path": str(browser_output)})
+        if args.browser_online_fixture:
+            env["SODADEX_MINING_BROWSER_NOW"] = str(args.fixture_timestamp or int(time.time()))
     fixtures = variant / "test/fixtures/fork"
     env["SODADEX_FABX_FIXTURES"] = str(fixtures)
     permissions.append({"access": "read", "path": str(fixtures)})
@@ -104,7 +146,8 @@ def main():
         "--config-path", str(config),
         "--match-contract", selected,
     ]
-    command += ["--match-test", "test_exportBrowserFixture"] if args.browser_fixture else ["--no-match-test", "test_exportBrowserFixture"]
+    export_test = "test_exportOnlineBrowserFixture" if args.browser_online_fixture else "test_exportBrowserFixture"
+    command += ["--match-test", export_test] if args.browser_fixture or args.browser_online_fixture else ["--no-match-test", "test_export(Browser|OnlineBrowser)Fixture"]
     discovery = subprocess.run(command + ["--list", "--json"], cwd=root, env=env,
                                capture_output=True, text=True, check=False)
     if discovery.returncode != 0:
@@ -129,8 +172,8 @@ def main():
                      "test_realSourcePauseBlocksProjectTransferButKeepsBookedClaim")
     if args.full_launch:
         required += ("test_realSignedLaunchFundsMinerBeforeGraduationThenTradesGraduatedV2",)
-    if args.browser_fixture:
-        required = ("test_exportBrowserFixture",)
+    if args.browser_fixture or args.browser_online_fixture:
+        required = (export_test,)
     if not all(name in json.dumps(tests) for name in required):
         raise ValueError("Mandatory real-source product tests were not discovered")
     result = subprocess.run(command + ["-vv"], cwd=root, env=env, capture_output=True, text=True, check=False)

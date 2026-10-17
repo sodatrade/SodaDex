@@ -10,6 +10,18 @@ import {IMiningLaunchManager, IMiningLaunchRegistry, IMiningV2Pair,
     IMiningV2Locker, IMiningLiquidityHelper, MiningCreate2Deployer} from "./MiningLaunchAbi.sol";
 import {IRealFragmentVault, IRealFragmentPool} from "./FabFragmentRealIntegration.t.sol";
 
+/// @dev Loopback fee infrastructure only. Business contracts still execute genuine bytecode.
+contract MiningOnlineFixtureFeeOracle {
+    function isFjord() external pure returns (bool) { return true; }
+    function isIsthmus() external pure returns (bool) { return true; }
+    function getL1FeeUpperBound(uint256) external pure returns (uint256) { return 0; }
+    function getOperatorFee(uint256) external pure returns (uint256) { return 0; }
+}
+contract MiningOnlineFixtureL1Block {
+    function operatorFeeScalar() external pure returns (uint32) { return 0; }
+    function operatorFeeConstant() external pure returns (uint64) { return 0; }
+}
+
 /// @dev Genuine Manager, signature admission, curve, V2 graduation and FABX custody.
 /// Every protocol dependency runs constructor bytecode. No RPC, etch or manager adapter.
 contract FabMiningFullLaunchTest is OkbBoostBase {
@@ -178,6 +190,20 @@ contract FabMiningFullLaunchTest is OkbBoostBase {
 
     /// @dev Explicit loopback browser fixture export; never runs in ordinary acceptance.
     function test_exportBrowserFixture() public {
+        _exportBrowserFixture(false);
+    }
+
+    /// @dev Separate online fixture: preserve relative mining time while matching wallet clocks.
+    function test_exportOnlineBrowserFixture() public {
+        uint256 target = vm.envUint("SODADEX_MINING_BROWSER_NOW");
+        uint256 elapsed = pod.OWNER_HEAD_START() + 1 days + 201;
+        require(target > elapsed, "Explicit contemporary fixture timestamp required");
+        vm.warp(target - elapsed);
+        _exportBrowserFixture(true);
+        assertEq(vm.getBlockTimestamp(), target, "Online fixture clock must match the requested time");
+    }
+
+    function _exportBrowserFixture(bool online) private {
         string memory output = vm.envString("SODADEX_MINING_BROWSER_OUTPUT");
         require(bytes(output).length != 0, "Explicit fixture output required");
         // dumpState includes changes in this frame: deploy the complete real stack here.
@@ -203,10 +229,48 @@ contract FabMiningFullLaunchTest is OkbBoostBase {
         circuits.approve(address(market), retail);
         uint256 retailListing = market.list(address(circuits), retail, uint96(0.00000001 ether));
         vm.stopPrank();
+        uint256 farmListing;
+        uint256 farmInventory;
+        if (online) {
+            // Anvil has no OP fee predeploys. These explicitly model zero local surcharges;
+            // no miner, trading, token, reward or custody implementation is replaced.
+            vm.etch(0x420000000000000000000000000000000000000F, type(MiningOnlineFixtureFeeOracle).runtimeCode);
+            vm.etch(0x4200000000000000000000000000000000000015, type(MiningOnlineFixtureL1Block).runtimeCode);
+            // The keeper must not consume the listing reserved for the user's retail flow.
+            farmInventory = _tape(bob);
+            _startVerified(bob, farmInventory, taskId);
+            vm.startPrank(bob);
+            circuits.approve(address(market), farmInventory);
+            farmListing = market.list(address(circuits), farmInventory, uint96(0.00000001 ether));
+            vm.stopPrank();
+            vm.prank(owner);
+            assertTrue(xmake.transfer(alice, 10_000e8));
+            assertGe(xmake.balanceOf(alice), 10_000e8, "New project needs genuine FAB graduation funding");
+            assertEq(circuits.ownerOf(farmInventory), bob);
+            assertEq(circuits.ownerOf(retail), bob);
+            assertEq(circuits.ownerOf(available), alice);
+            assertFalse(pod.getMiner(pod.minerKey(address(circuits), farmInventory)).optimal);
+            (address seller,, uint256 listedId,,, bool valid) = market.listingView(farmListing);
+            assertTrue(valid);
+            assertEq(seller, bob);
+            assertEq(listedId, farmInventory);
+            vm.deal(keeper, 1 ether);
+        }
         vm.warp(vm.getBlockTimestamp() + 100);
         fragmentPool.harvest();
         vm.deal(alice, 1 ether);
         vm.serializeAddress("fixture", "account", alice);
+        if (online) {
+            vm.serializeBool("fixture", "online", true);
+            vm.serializeString("fixture", "feeModel", "loopback-zero-surcharges");
+            vm.serializeAddress("fixture", "inventorySeller", bob);
+            vm.serializeAddress("fixture", "keeper", keeper);
+            vm.serializeAddress("fixture", "publicSigner", vm.addr(SIGNER_KEY));
+            vm.serializeAddress("fixture", "transistors", address(transistors));
+            vm.serializeUint("fixture", "farmListingId", farmListing);
+            vm.serializeUint("fixture", "farmMinerId", farmInventory);
+            vm.serializeUint("fixture", "retailMinerId", retail);
+        }
         vm.serializeAddress("fixture", "fab", address(xmake));
         vm.serializeAddress("fixture", "mining", address(pod));
         vm.serializeAddress("fixture", "circuits", address(circuits));
