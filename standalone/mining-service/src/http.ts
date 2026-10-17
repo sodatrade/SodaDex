@@ -63,6 +63,7 @@ export async function handleRequest(request: Request, app: Application): Promise
           !record(b.form) || !exact(b.form, ['name', 'symbol', 'metadataURI']) || ['name', 'symbol', 'metadataURI'].some(k => typeof (b.form as Record<string, unknown>)[k] !== 'string')) throw new ServiceError('invalid_request', 400)
       let form: MiningLaunchForm
       try { form = normalizeMiningLaunchForm(b.form as unknown as MiningLaunchForm) } catch { throw new ServiceError('invalid_launch_form', 400) }
+      await app.admission.reconcileExpired()
       const challenge = app.admission.challenge(b.address, b.requestId, form)
       await repo.flush()
       return response({ ...envelope, requestId: challenge.requestId, message: challenge.message, expiresAt: challenge.expiresAt, form: challenge.form })

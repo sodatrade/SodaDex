@@ -36,7 +36,9 @@ export interface Job {
 }
 export interface Challenge {
   requestId: string; address: Address; form: MiningLaunchForm; message: string; expiresAt: number
-  status: 'issued' | 'verified' | 'authorized' | 'registered'; createdAt: number
+  status: 'issued' | 'verified' | 'authorized' | 'registered' | 'expired'; createdAt: number
+  verifiedAtBlock?: Hex
+  expiryProof?: { number: Hex; hash: Hex; previousStatus: 'verified' | 'authorized' }
   authorization?: { requestId: string; form: MiningLaunchForm; expiresAt: number; tx: MiningTransaction }
 }
 export interface Execution {

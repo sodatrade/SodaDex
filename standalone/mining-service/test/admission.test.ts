@@ -85,3 +85,61 @@ describe('contract signature domains', () => {
     expect(await recoverTypedDataAddress({ ...conv, message: { ...conv.message, input: 101n }, signature: sig })).not.toBe(authority.address)
   })
 })
+
+describe('chain-proven admission expiry', () => {
+  it('reclaims an unbroadcast authorization only after chain expiry and keeps a one-use request tombstone', async () => {
+    const f = setup(); f.service.config.policy!.maxProjects = d.projects.length + 1
+    const sign = vi.fn(signer.signMessage), base = f.service
+    const initial = new Admission(base.config, d, f.repo, f.rpc, f.discovery, { ...signer, signMessage: sign }, () => now)
+    const challenge = initial.challenge(wallet.address, id, form)
+    const signature = await wallet.signMessage({ message: challenge.message })
+    const authorization = await initial.launch(wallet.address, id, signature)
+    const original = f.rpc.request.bind(f.rpc)
+    vi.spyOn(f.rpc, 'request').mockImplementation((m, p) => m === 'eth_getLogs' ? Promise.resolve([]) : original(m, p))
+    let chainTime = 1200n
+    const source = { ...f.discovery, verifyBase: async () => ({ number: '0x64' as const, hash: `0x${'ab'.repeat(32)}` as const, timestamp: chainTime }) }
+    const late = new Admission(base.config, d, f.repo, f.rpc, source, { ...signer, signMessage: sign }, () => 1400)
+    await late.reconcileExpired()
+    expect(f.repo.read().challenges[id].status).toBe('authorized')
+    expect(() => late.challenge(authority.address, '22222222-2222-4222-8222-222222222222', form)).toThrow('project_limit')
+    chainTime = 1400n; await late.reconcileExpired()
+    expect(f.repo.read().challenges[id].status).toBe('expired')
+    expect(late.challenge(authority.address, '22222222-2222-4222-8222-222222222222', form).status).toBe('issued')
+    expect(() => late.challenge(wallet.address, id, form)).toThrow('challenge_expired')
+    await expect(late.launch(wallet.address, id, signature)).rejects.toThrow('challenge_expired')
+    const expiry = decodeFunctionData({ abi: parseAbi(MINING_PRODUCT_WRITE_ABI.manager), data: authorization.tx.data }).args![3]
+    expect(expiry).toBe(1300n); expect(expiry).toBeLessThan(chainTime); expect(sign).toHaveBeenCalledTimes(1)
+  })
+  it('does not release an already-created but unregistered project; it recovers it from fixed factory logs', async () => {
+    const { encodeAbiParameters, encodeEventTopics, parseAbiParameters } = await import('viem')
+    const f = setup(), project = d.projects[0], matchingForm = { ...form, symbol: project.symbol }
+    const challenge = f.service.challenge(wallet.address, id, matchingForm)
+    await f.service.launch(wallet.address, id, await wallet.signMessage({ message: challenge.message }))
+    const eventAbi = parseAbi(['event TokenDeployed(address indexed token,address indexed manager,bytes32 salt)'])
+    const salt = keccak256(toHex(`${d.version}:${wallet.address.toLowerCase()}:${id}`))
+    const log = { address: d.contracts.launchFactory.address, blockNumber: '0x64', blockHash: `0x${'ab'.repeat(32)}`,
+      topics: encodeEventTopics({ abi: eventAbi, eventName: 'TokenDeployed', args: { token: project.token.address, manager: d.contracts.manager.address } }),
+      data: encodeAbiParameters(parseAbiParameters('bytes32'), [salt]) }
+    const original = f.rpc.request.bind(f.rpc)
+    vi.spyOn(f.rpc, 'request').mockImplementation((m, p) => m === 'eth_getLogs' ? Promise.resolve([log]) : original(m, p))
+    const source = { ...f.discovery, verifyBase: async () => ({ number: '0x64' as const, hash: `0x${'ab'.repeat(32)}` as const, timestamp: 1400n }) }
+    const late = new Admission(f.c, d, f.repo, f.rpc, source, signer, () => 1400)
+    await late.reconcileExpired()
+    expect(f.repo.read().challenges[id].status).toBe('registered')
+    expect(f.repo.read().projects[project.token.address.toLowerCase()]).toEqual(project)
+    expect(f.repo.read().challenges[id].expiryProof).toBeUndefined()
+  })
+  it('releases a verified request without a returned authorization and restores an expiry reservation on a proof reorg', async () => {
+    const f = setup(); f.service.challenge(wallet.address, id, form)
+    f.repo.change(s => { s.challenges[id].status = 'verified'; s.challenges[id].verifiedAtBlock = '0x64' })
+    const source = { ...f.discovery, verifyBase: async () => ({ number: '0x64' as const, hash: `0x${'ab'.repeat(32)}` as const, timestamp: 1400n }) }
+    const late = new Admission(f.c, d, f.repo, f.rpc, source, signer, () => 1400)
+    await late.reconcileExpired(); expect(f.repo.read().challenges[id].status).toBe('expired')
+    const old = f.repo.read().challenges[id].expiryProof!
+    f.repo.change(s => { s.challenges[id].expiryProof = { ...old, hash: `0x${'99'.repeat(32)}` } })
+    const earlierChain = { ...source, verifyBase: async () => ({ ...await source.verifyBase(), timestamp: 1200n }) }
+    const rewound = new Admission(f.c, d, f.repo, f.rpc, earlierChain, signer, () => 1400)
+    await rewound.reconcileExpired(); expect(f.repo.read().challenges[id].status).toBe('verified')
+    expect(f.repo.read().challenges[id].expiryProof).toBeUndefined()
+  })
+})
