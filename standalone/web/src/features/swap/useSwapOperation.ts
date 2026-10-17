@@ -27,6 +27,7 @@ export function useSwapOperation(wallet: WalletController) {
     void queryClient.invalidateQueries({ queryKey: ['balances'] })
     void queryClient.invalidateQueries({ queryKey: ['swap'] })
     void queryClient.invalidateQueries({ queryKey: ['liquidity'] })
+    void queryClient.resetQueries({ queryKey: ['trade-chart'] })
   }
   const save = (next: SubmittedTransaction): void => {
     recordRef.current = next

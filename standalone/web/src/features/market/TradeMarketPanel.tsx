@@ -1,6 +1,6 @@
 import './tradeMarket.css'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
-import { useState, type ReactElement } from 'react'
+import { useEffect, useState, type ReactElement } from 'react'
 import { Button, Icon } from '../../components/primitives'
 import { EXPLORER_URL, shortenAddress } from '../../domain/assets'
 import { tradeMarketMessages } from '../../i18n/tradeMarket'
@@ -17,6 +17,7 @@ export function TradeMarketPanel({ context, active = true }: { context?: TradeMa
   const { locale } = usePreferences(), m = tradeMarketMessages(locale), queryClient = useQueryClient()
   const [interval, setInterval] = useState<ChartInterval>('5m'), [mode, setMode] = useState<'line' | 'candles'>('line')
   const [range, setRange] = useState<{ fromBlock: number; toBlock: number }>()
+  const [paused, setPaused] = useState(false)
   const pool = context?.activePool
   const queryKey = ['trade-chart', pool?.protocol, pool?.id, interval, range]
   const chart = useInfiniteQuery({ queryKey, initialPageParam: {} as CursorPage, enabled: active && !!pool,
@@ -25,6 +26,10 @@ export function TradeMarketPanel({ context, active = true }: { context?: TradeMa
       if (pageParam.anchor && pageParam.anchor !== data.asOf.hash) throw new DataError('CHAIN_REORGANIZED')
       return data
     }, getNextPageParam: (data): CursorPage | undefined => data.nextCursor ? { cursor: data.nextCursor, anchor: data.asOf.hash } : undefined })
+  const { hasNextPage, isFetching, isError, fetchNextPage } = chart
+  useEffect(() => {
+    if (active && !paused && hasNextPage && !isFetching && !isError) void fetchNextPage()
+  }, [active, paused, hasNextPage, isFetching, isError, fetchNextPage])
   // A background or pagination error must not label the previous snapshot as current.
   const lastPage = chart.data?.pages.at(-1)
   const data = chart.isError || !pool ? undefined : lastPage
@@ -52,7 +57,7 @@ export function TradeMarketPanel({ context, active = true }: { context?: TradeMa
         <div><span>{m.volume}</span><strong title={volume?.from}>{volume?.from ?? '—'} {context!.from.symbol}</strong><small title={volume?.to}>{volume?.to ?? '—'} {context!.to.symbol}</small></div>
         <div><span>{m.change}</span><strong>{change === undefined ? '—' : `${change >= 0 ? '+' : ''}${change.toFixed(2)}%`}</strong></div></div>
         <p className="trade-market-coverage" role="status">{data.queryComplete ? m.complete : m.partial} · {m.scanned} #{data.coverage.fromBlock} – #{data.coverage.toBlock} / #{data.query.toBlock}</p>
-        {!data.queryComplete && <Button className="trade-market-load" onClick={() => void chart.fetchNextPage()} disabled={chart.isFetching}>{chart.isFetching ? m.loading : m.more}</Button>}
+        {!data.queryComplete && <Button className="trade-market-load" onClick={() => setPaused(!paused)}>{paused ? m.resume : m.pause}</Button>}
         <a className="trade-market-pool-link" href={`${EXPLORER_URL}/address/${pool!.address ?? LP_CONTRACTS.poolManager}`} target="_blank" rel="noreferrer" title={pool!.id}>{m.pool}: {shortenAddress(pool!.id)} <Icon name="external" size={12} /></a></>}
       <ChartRange onApply={setRange} /><p className="trade-market-muted">{m.currentNote} {m.note}</p>
     </section>

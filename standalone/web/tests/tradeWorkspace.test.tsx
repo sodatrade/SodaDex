@@ -81,11 +81,24 @@ describe('same-screen market and swap', () => {
     const next = chartFixture(marketV3, { candles: [...partial.candles, { ...partial.candles[0], time: 1700000700, bucketEndTime: 1700001000 }],
       trades: [...partial.trades, { ...partial.trades[0], id: `${marketHash}:1`, logIndex: 1, timestamp: 1700000701 }] })
     vi.mocked(api.getChart).mockResolvedValueOnce(partial).mockResolvedValueOnce(next)
-    mount(); await screen.findByText(/Partial scan/)
-    await userEvent.click(screen.getByRole('button', { name: 'Load more blocks' }))
+    mount()
     await screen.findByText(/Requested range scanned/)
     expect(screen.getAllByRole('row')).toHaveLength(3)
     expect(api.getChart).toHaveBeenLastCalledWith(expect.anything(), { interval: '5m', cursor: 'page-2' })
+  })
+  it('automatically scans to historical swaps and lets the user pause further requests', async () => {
+    const partial = chartFixture(marketV3, { queryComplete: false, nextCursor: 'page-2' })
+    let finish!: (value: api.ChartResponse) => void
+    vi.mocked(api.getChart).mockResolvedValueOnce(partial).mockImplementationOnce(() => new Promise(resolve => { finish = resolve }))
+      .mockResolvedValueOnce(chartFixture())
+    mount(); await waitFor(() => expect(api.getChart).toHaveBeenCalledTimes(2))
+    await userEvent.click(screen.getByRole('button', { name: 'Pause scan' }))
+    await act(async () => { finish({ ...partial, nextCursor: 'page-3' }) })
+    expect(api.getChart).toHaveBeenCalledTimes(2)
+    await userEvent.click(screen.getByRole('button', { name: 'Resume scan' }))
+    await screen.findByText(/Requested range scanned/)
+    expect(api.getChart).toHaveBeenLastCalledWith(expect.anything(), { interval: '5m', cursor: 'page-3' })
+    expect(wallet.session?.provider.request).not.toHaveBeenCalled()
   })
 
   it('preserves the mounted swap form while a real order panel occupies the slot', async () => {
@@ -117,8 +130,7 @@ describe('same-screen market and swap', () => {
   it('clears an expired cumulative scan and retries from the first page', async () => {
     const partial = chartFixture(marketV3, { queryComplete: false, nextCursor: 'expired', coverage: { fromBlock: 73361037, toBlock: 73363036, complete: false, nextFromBlock: 73363037 } })
     vi.mocked(api.getChart).mockResolvedValueOnce(partial).mockRejectedValueOnce(new api.DataError('CURSOR_EXPIRED')).mockResolvedValue(chartFixture())
-    mount(); await screen.findByText(/Partial scan/)
-    await userEvent.click(screen.getByRole('button', { name: 'Load more blocks' }))
+    mount()
     const region = screen.getByRole('region', { name: 'Pair market' })
     expect(await within(region).findByRole('alert')).toHaveTextContent('The scan changed or expired.')
     expect(within(region).queryByRole('img')).not.toBeInTheDocument(); expect(screen.queryByText('1 OKB = 125 USD₮0')).not.toBeInTheDocument()
