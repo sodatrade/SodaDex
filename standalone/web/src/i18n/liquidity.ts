@@ -1,5 +1,6 @@
 import type { Locale } from '../preferences/model'
 const zh = {
+  pair: '交易对', status: '状态',
   action: '操作', mint: '创建仓位', transfer: '转移仓位 NFT', burn: '销毁空仓位 NFT',
   transferHint: '整个仓位 NFT（包含流动性和待领取资产）会交给接收钱包。请核对完整地址。',
   burnHint: '仅可销毁流动性及待领取资产均为零的 NFT。销毁后此 Token ID 不再存在。',
@@ -7,8 +8,8 @@ const zh = {
   approvalNote: '以上为本次数量上限；已有足额授权会跳过。Permit2 路由授权使用本次预览期限。',
   claimable: '待领取资产（可能包含减仓本金）',
   poolFilterNote: '仅显示资产信息可读取的已发现池。',
-  title: '让资产，为流动出一份力。',
-  description: '创建测试池、管理仓位与领取资产。所有数据来自 X Layer。',
+  title: '流动性',
+  description: '创建池子、管理仓位与领取资产。',
   test: 'X Layer 主网 196 · 测试合约 · 使用真实资产与 OKB 手续费',
   pools: '池子',
   positions: '我的仓位',
@@ -123,6 +124,7 @@ const zh = {
 export type LiquidityMessageKey = keyof typeof zh
 type Messages = Record<LiquidityMessageKey, string>
 const en: Messages = {
+  pair: 'Pair', status: 'Status',
   action: 'Action', mint: 'Create position', transfer: 'Transfer position NFT', burn: 'Burn empty position NFT',
   transferHint: 'The recipient receives the entire NFT, including its liquidity and claimable assets. Check the full address.',
   burnHint: 'Only an NFT with zero liquidity and zero claimable assets can be burned. Its Token ID will cease to exist.',
@@ -131,8 +133,8 @@ const en: Messages = {
     'Approval caps apply to this operation. Sufficient existing allowances are reused. Permit2 router approval uses this review deadline.',
   claimable: 'Claimable assets (may include withdrawn principal)',
   poolFilterNote: 'Only discovered pools with readable asset metadata are shown.',
-  title: 'Put your assets in motion.',
-  description: 'Create test pools, manage positions and collect assets. Data comes from X Layer.',
+  title: 'Liquidity',
+  description: 'Create pools, manage positions and collect assets.',
   test: 'X Layer mainnet 196 · Test contracts · Real assets and OKB gas',
   pools: 'Pools',
   positions: 'My positions',
@@ -247,6 +249,7 @@ const en: Messages = {
   failed: 'Operation failed. Check submitted transactions; they will not be resent automatically.',
 }
 const yue: Messages = {
+  pair: '交易對', status: '狀態',
   action: '操作', mint: '建立倉位', transfer: '轉移倉位 NFT', burn: '銷毀空倉位 NFT',
   transferHint: '接收錢包會取得成個倉位 NFT，包括流動性同待領取資產。請核對完整地址。',
   burnHint: '只可以銷毀流動性同待領取資產都係零嘅 NFT。銷毀後呢個 Token ID 將唔再存在。',
@@ -254,8 +257,8 @@ const yue: Messages = {
   approvalNote: '以上係今次數量上限；已有足額授權會跳過。Permit2 路由授權用今次預覽期限。',
   claimable: '待領取資產（可能包括減倉本金）',
   poolFilterNote: '只顯示讀得到資產資料嘅已發現池。',
-  title: '畀資產，為流動出一分力。',
-  description: '建立測試池、管理倉位同領取資產。數據都嚟自 X Layer。',
+  title: '流動性',
+  description: '建立池子、管理倉位同領取資產。',
   test: 'X Layer 主網 196 · 測試合約 · 使用真實資產同 OKB 手續費',
   pools: '池子',
   positions: '我嘅倉位',

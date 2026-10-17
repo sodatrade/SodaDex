@@ -31,10 +31,10 @@ export function PositionCard({
           {pool.protocol.toUpperCase()} · #{position.tokenId.toString()}
         </span>
       </div>
-      <p className="lp-range-status">
+      <p className={`lp-range-status${position.liquidity > 0n && position.inRange ? ' is-in-range' : ''}`}>
         {l(position.liquidity === 0n ? 'closed' : position.inRange ? 'inRange' : 'outRange')}
       </p>
-      <dl className="lp-review">
+      <dl className="lp-review lp-position-values">
         <div>
           <dt>{l('position')}</dt>
           <dd>
@@ -71,19 +71,21 @@ export function PositionCard({
         >
           {l('collect')}
         </Button>
-        <Button onClick={() => onAction('transfer')} disabled={disabled}>{l('transfer')}</Button>
-        {position.liquidity === 0n && position.claimable0 === 0n && position.claimable1 === 0n &&
-          <Button onClick={() => onAction('burn')} disabled={disabled}>{l('burn')}</Button>}
       </div>
-      <a
-        className="lp-nft-link"
-        href={`${EXPLORER_URL}/nft/${manager}/${position.tokenId}`}
-        target="_blank"
-        rel="noreferrer"
-      >
-        {l('nft')} · #{position.tokenId.toString()}
-        <Icon name="external" size={14} />
-      </a>
+      <div className="lp-position-secondary">
+        <Button appearance="ghost" onClick={() => onAction('transfer')} disabled={disabled}>{l('transfer')}</Button>
+        {position.liquidity === 0n && position.claimable0 === 0n && position.claimable1 === 0n &&
+          <Button appearance="ghost" onClick={() => onAction('burn')} disabled={disabled}>{l('burn')}</Button>}
+        <a
+          className="lp-nft-link"
+          href={`${EXPLORER_URL}/nft/${manager}/${position.tokenId}`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {l('nft')} · #{position.tokenId.toString()}
+          <Icon name="external" size={14} />
+        </a>
+      </div>
     </Surface>
   )
 }

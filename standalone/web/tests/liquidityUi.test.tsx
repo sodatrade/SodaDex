@@ -505,8 +505,8 @@ describe('self-service liquidity UI', () => {
     }
   })
   it.each([
-    { locale: 'en', title: 'Put your assets in motion.', create: 'Create pool / position' },
-    { locale: 'yue-HK', title: '畀資產，為流動出一分力。', create: '建立池 / 新倉位' },
+    { locale: 'en', title: 'Liquidity', create: 'Create pool / position' },
+    { locale: 'yue-HK', title: '流動性', create: '建立池 / 新倉位' },
   ])('uses $locale for the LP entry and controls', async ({ locale, title, create }) => {
     localStorage.setItem(PREFERENCES_KEY, JSON.stringify({ locale, theme: 'light', currency: 'CNY' }))
     mount()

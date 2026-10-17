@@ -1,20 +1,19 @@
 import './liquidity.css'
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useState, type ReactElement } from 'react'
-import { formatUnits } from 'viem'
-import { Button, Icon, Surface } from '../../components/primitives'
+import { Button, Icon } from '../../components/primitives'
 import { CHAIN_ID } from '../../domain/assets'
 import { liquidityText } from '../../i18n/liquidity'
 import type { WalletController } from '../../lib/useWallet'
 import { listPools, listPositions } from '../../liquidity'
 import type { LiquidityPool, LiquidityPosition } from '../../liquidity/types'
 import { usePreferences } from '../../preferences/context'
-import { CurrencyLabel } from './CurrencyLabel'
 import { LiquidityPreviewDialog } from './LiquidityPreviewDialog'
 import { LiquidityTransactionStatus } from './LiquidityTransactionStatus'
 import { ManagePositionDialog } from './ManagePositionDialog'
 import { MintWizard } from './MintWizard'
 import { PoolDetailDialog } from './PoolDetailDialog'
+import { PoolList } from './PoolList'
 import { PositionCard } from './PositionCard'
 import { PositionLookup } from './PositionLookup'
 import { sameAddress } from './presentation'
@@ -118,7 +117,7 @@ export function LiquidityPage({ wallet, onConnect, onSwap }: Props): ReactElemen
       )}
       <LiquidityTransactionStatus operation={operation} l={l} />
       {tab === 'pools' ? (
-        <div className="lp-pool-list">
+        <div className="lp-pool-section">
           <p className="lp-muted">{l('poolFilterNote')}</p>
           {pools.isPending ? (
             <p role="status">{l('loading')}</p>
@@ -130,27 +129,7 @@ export function LiquidityPage({ wallet, onConnect, onSwap }: Props): ReactElemen
           ) : pools.data.length === 0 ? (
             <p className="lp-empty">{l('emptyPools')}</p>
           ) : (
-            pools.data.map((pool) => (
-              <Surface className="lp-pool" key={`${pool.protocol}:${pool.id}`}>
-                <div className="lp-pair">
-                  <CurrencyLabel currency={pool.currency0} />
-                  <span>/</span>
-                  <CurrencyLabel currency={pool.currency1} />
-                </div>
-                <span className="lp-pill">
-                  {pool.protocol.toUpperCase()} · {formatUnits(BigInt(pool.fee), 4)}%
-                </span>
-                <span className="lp-muted">{l(pool.initialized ? 'initialized' : 'notInitialized')}</span>
-                <div className="lp-actions">
-                  <Button appearance="ghost" onClick={() => setDetail(pool)}>
-                    {l('details')}
-                  </Button>
-                  <Button onClick={() => open({ kind: 'mint', pool })} disabled={busy}>
-                    {l('add')}
-                  </Button>
-                </div>
-              </Surface>
-            ))
+            <PoolList pools={pools.data} l={l} disabled={busy} onDetails={setDetail} onAdd={(pool) => open({ kind: 'mint', pool })} />
           )}
         </div>
       ) : (

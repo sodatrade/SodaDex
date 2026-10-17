@@ -161,7 +161,7 @@ describe('ready test pool user flow', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
     expect(POOLS.ready).toBe(true)
     await user.click(screen.getByRole('button', { name: pools }))
-    const poolPage = await screen.findByRole('region', { name: locale === 'en' ? 'Put your assets in motion.' : locale === 'yue-HK' ? '畀資產，為流動出一分力。' : '让资产，为流动出一份力。' })
+    const poolPage = await screen.findByRole('region', { name: locale === 'en' ? 'Liquidity' : locale === 'yue-HK' ? '流動性' : '流动性' })
     expect(within(poolPage).getByText('V3 · 0.01%')).toBeVisible()
     expect(within(poolPage).getByText('V4 · 0%')).toBeVisible()
     expect(requests).not.toContain('eth_sendTransaction')
