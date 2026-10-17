@@ -29,7 +29,8 @@ npm --prefix standalone/web run build
 npm --prefix standalone/web run build:mining-test
 ```
 
-1952 使用 `worker/wrangler.1952-test.jsonc`、独立名称 `sodadex-mining-test-1952` 和 `web/dist-mining-1952`，明确设置 `SODADEX_NETWORK_PROFILE=1952-mining-test`；不复用 `sodadex-preview` 或 `sodadex-orders-test`。发布前验证构建网络标记和 CSP hash。本轮公开合约已部署并核验，前端正在准备发布。
+1952 使用 `worker/wrangler.1952-test.jsonc`、独立名称 `sodadex-mining-test-1952` 和 `web/dist-mining-1952`，明确设置 `SODADEX_NETWORK_PROFILE=1952-mining-test`；不复用 `sodadex-preview` 或 `sodadex-orders-test`。发布前验证构建网络标记和 CSP hash。本轮公开合约已部署并核验，独立前端已发布：[https://sodadex-mining-test-1952.jsmsdx2025.workers.dev/](https://sodadex-mining-test-1952.jsmsdx2025.workers.dev/)。
+Cloudflare 版本 `094cfe97-58e1-44ad-b162-1779f1aa467c`，发布源码 `54aeed8d152ec17e37b1c7d132bac891fcc9ac0d`；[验收记录](../deployments/xlayer-1952/2026-10-17-products-acceptance.json)。
 
 矿机/FAB/市场的已核验地址、ABI、起始区块和读取/写模拟白名单已接到独立矿机应用。不能仅将 `dexEnabled` 改成 `true`：通用 DEX/订单/行情消费者仍是 196 专用，必须先完成对应 1952 适配和回归。新的 1952 settlement 与订单服务尚未部署前，限价单持续禁用。
 

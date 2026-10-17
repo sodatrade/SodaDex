@@ -249,11 +249,12 @@
   },
   "manifestFile": "products.json",
   "receiptsFile": "2026-10-17-products-receipts.json",
-  "publicFrontendDeployed": false,
+  "publicFrontendDeployed": true,
   "productionTouched": false,
   "chain196Touched": false,
   "pullRequests": [
     "https://github.com/sodatrade/SodaDex/pull/2",
     "https://github.com/okasplaunchpad/contract/pull/3"
-  ]
+  ],
+  "frontendRecord": "2026-10-17-products-acceptance.json"
 }
