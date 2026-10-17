@@ -29,14 +29,17 @@ export class Planner {
     const b = await this.discovery.verifyBase(this.rpc, this.d, this.c.expectedSigner)
     const projects = Object.values(this.repo.read().projects)
     const options: (MiningProject | undefined)[] = [...projects, undefined]
-    const start = this.repo.read().cursor % options.length
-    for (let n = 0; n < options.length; n++) {
-      const index = (start + n) % options.length
-      const p = options[index], result = p ? await this.project(p, b) : await this.purchase(b)
+    const index = this.repo.read().cursor % options.length, candidate = options[index]
+    try {
+      // One candidate per alarm bounds RPC work and prevents a quiet/broken project
+      // from starving other projects or the shared farm. Waiting never sends gas.
+      const result = candidate ? await this.project(candidate, b) : await this.purchase(b)
+      await assertCanonical(this.rpc, b)
+      return result ? { ...result, verifiedBlock: b } : undefined
+    } finally {
       this.repo.change(s => { s.cursor = (index + 1) % options.length })
-      if (result) { await assertCanonical(this.rpc, b); await this.repo.flush(); return { ...result, verifiedBlock: b } }
+      await this.repo.flush()
     }
-    await assertCanonical(this.rpc, b); await this.repo.flush(); return undefined
   }
   private async project(saved: MiningProject, b: Block): Promise<PreparedCall | undefined> {
     const p = await this.discovery.resolveProject(this.rpc, this.d, saved.token.address, this.c.expectedSigner, b)

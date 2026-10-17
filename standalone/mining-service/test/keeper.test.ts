@@ -20,7 +20,7 @@ describe('durable keeper', () => {
     const f = setup(); f.rpc.simulateFailure = true
     await expect(f.keeper.runOnce()).rejects.toThrow('simulation_reverted')
     expect(f.sign).not.toHaveBeenCalled(); expect(f.rpc.sent).toHaveLength(0); expect(f.repo.read().reservedWei).toBe('0')
-    f.rpc.simulateFailure = false; f.c.gasCapWei = 1n
+    f.rpc.simulateFailure = false; f.c.gasCapWei = 1n; f.repo.change(s => { s.cursor = 0 })
     await expect(f.keeper.runOnce()).rejects.toThrow('gas_budget_exhausted')
     expect(f.sign).not.toHaveBeenCalled(); expect(f.rpc.sent).toHaveLength(0)
   })
@@ -68,7 +68,7 @@ describe('durable keeper', () => {
   it('fails closed for unknown additional fees or receipt cost above the reservation', async () => {
     const f = setup(); f.rpc.set('operatorFeeScalar', 1)
     await expect(f.keeper.runOnce()).rejects.toThrow('additional_fee_model_changed'); expect(f.sign).not.toHaveBeenCalled()
-    f.rpc.set('operatorFeeScalar', 0); await f.keeper.runOnce(); const e = Object.values(f.repo.read().executions)[0]
+    f.rpc.set('operatorFeeScalar', 0); f.repo.change(s => { s.cursor = 0 }); await f.keeper.runOnce(); const e = Object.values(f.repo.read().executions)[0]
     f.rpc.receipts.set(e.hash, { ...receipt(e.hash), effectiveGasPrice: '0xffff' })
     await expect(f.keeper.runOnce()).rejects.toThrow('receipt_cost_exceeds_reserve')
     expect(f.repo.read().spentWei).toBe('0'); expect(f.repo.read().reservedWei).toBe(e.maxCostWei)
@@ -123,7 +123,7 @@ describe('live recovery and complete reorg accounting', () => {
     const first = Object.values(f.repo.read().executions)[0]
     f.rpc.receipts.set(first.hash, receipt(first.hash)); await f.keeper.runOnce()
     f.rpc.nonce = 1n; f.rpc.pendingNonce = 1n
-    await f.keeper.runOnce()
+    f.repo.change(s => { s.cursor = 0 }); await f.keeper.runOnce()
     const second = Object.values(f.repo.read().executions).find(e => e.nonce === 1)!
     f.rpc.receipts.set(second.hash, receipt(second.hash)); await f.keeper.runOnce()
     expect(f.repo.read().spentWei).toBe('42000')
@@ -143,7 +143,7 @@ describe('current business limits on raw recovery', () => {
     const f = setup(); f.rpc.set('balanceOf', 0n, d.contracts.fab.address)
     f.rpc.set('listingView', [wallet.address, d.contracts.circuits.address, 7n, 100n, 0, true])
     f.rpc.set('ownerOf', wallet.address); f.rpc.set('getApproved', d.contracts.circuitMarket.address); f.rpc.set('isApprovedForAll', false)
-    f.rpc.set('getAmountsIn', [1000n, 100n]); f.rpc.broadcastFailure = true
+    f.rpc.set('getAmountsIn', [1000n, 100n]); f.rpc.broadcastFailure = true; f.repo.change(s => { s.cursor = d.projects.length })
     await f.keeper.runOnce(); expect(f.rpc.sent).toHaveLength(1)
     f.c.policy!.allowedListingIds = []
     await expect(f.keeper.runOnce()).rejects.toThrow('purchase_policy_changed')
