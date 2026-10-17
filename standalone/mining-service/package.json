@@ -1,6 +1,32 @@
 {
-  "name":"@sodadex/mining-service","private":true,"version":"0.1.0","type":"module",
-  "engines":{"node":">=22.22.2"},
-  "scripts":{"test":"vitest run","typecheck":"tsc --noEmit","lint":"oxlint --config .oxlintrc.json --deny-warnings src test cloudflare","check":"npm run typecheck && npm run lint && npm test","dev:cloudflare":"node ../worker/node_modules/wrangler/bin/wrangler.js dev --config cloudflare/wrangler.test.jsonc --local --persist-to .data/cloudflare"},
-  "dependencies":{"viem":"2.49.0"},"devDependencies":{"@types/node":"22.18.0","oxlint":"1.73.0","typescript":"5.9.3","vitest":"5.0.5","vite":"8.1.3"},"overrides":{"viem":{"ws":"8.21.0"}}
+  "name": "@sodadex/mining-service",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.22.2"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint --config .oxlintrc.json --deny-warnings src test cloudflare",
+    "check": "npm run typecheck && npm run lint && npm test",
+    "dev:cloudflare": "node ../worker/node_modules/wrangler/bin/wrangler.js --cwd cloudflare dev --config wrangler.test.jsonc --local --persist-to ../.data/cloudflare",
+    "build:cloudflare": "node ../worker/node_modules/wrangler/bin/wrangler.js --cwd cloudflare deploy --config wrangler.test.jsonc --dry-run"
+  },
+  "dependencies": {
+    "viem": "2.49.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.18.0",
+    "oxlint": "1.73.0",
+    "typescript": "5.9.3",
+    "vitest": "5.0.5",
+    "vite": "8.1.3"
+  },
+  "overrides": {
+    "viem": {
+      "ws": "8.21.0"
+    }
+  }
 }
