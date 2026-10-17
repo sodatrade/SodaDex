@@ -18,6 +18,7 @@
     "mining-abi.ts",
     "mining-calls.ts",
     "mining-signed-calls.ts",
+    "mining-discovery.ts",
     "mining-math.ts"
   ]
 }

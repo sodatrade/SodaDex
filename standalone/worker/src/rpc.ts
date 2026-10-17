@@ -14,6 +14,7 @@ import { tradeRoute } from './trade-routes'
 import { networkProfile, type NetworkProfile } from '../../network-profile'
 import { validMiningRpcParams } from './mining-product-rpc'
 import { readMiningPending } from './mining-pending-rpc'
+import { MINING_PRODUCTS, type MiningDeploymentState } from '../../mining-products'
 const ADDRESS = /^0x[0-9a-fA-F]{40}$/
 const BLOCK = /^(latest|safe|finalized|pending|0x[0-9a-fA-F]+)$/
 const EMPTY_METHODS = new Set(['eth_chainId', 'eth_blockNumber', 'eth_gasPrice'])
@@ -31,13 +32,13 @@ function record(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 
-function validParams(method: string, params: unknown[], profile: NetworkProfile): boolean {
+function validParams(method: string, params: unknown[], profile: NetworkProfile, mining: MiningDeploymentState): boolean {
   if (EMPTY_METHODS.has(method)) return params.length === 0
   if (method === 'eth_getTransactionReceipt') return params.length === 1 && typeof params[0] === 'string' && /^0x[0-9a-fA-F]{64}$/.test(params[0])
   if (method === 'eth_getBlockByNumber') return params.length === 2 && typeof params[0] === 'string' && BLOCK.test(params[0]) && params[1] === false
   // 1952 base-contract reads have their own deployed-address and canonical ABI list.
   if (profile.chainId === 1952 && ['eth_call', 'eth_estimateGas', 'eth_getStorageAt', 'eth_getLogs'].includes(method))
-    return validMiningRpcParams(method, params)
+    return validMiningRpcParams(method, params, mining)
   if (!profile.dexEnabled && !['eth_getBalance', 'eth_getCode'].includes(method)) return false
   if (method === 'eth_getLogs') return params.length === 1 && validLogFilter(params[0])
   if (method === 'eth_estimateGas') return params.length === 1 && validContractRequest(params[0], true)
@@ -48,10 +49,10 @@ function validParams(method: string, params: unknown[], profile: NetworkProfile)
   return method === 'eth_call' && validContractRequest(params[0], false)
 }
 
-function parseRequest(value: unknown, profile: NetworkProfile): RpcRequest | null {
+function parseRequest(value: unknown, profile: NetworkProfile, mining: MiningDeploymentState): RpcRequest | null {
   if (!record(value) || value.jsonrpc !== '2.0' || typeof value.method !== 'string' || !Array.isArray(value.params)) return null
   if (!(typeof value.id === 'number' && Number.isSafeInteger(value.id)) && !(typeof value.id === 'string' && value.id.length <= 64)) return null
-  if (!validParams(value.method, value.params, profile)) return null
+  if (!validParams(value.method, value.params, profile, mining)) return null
   return value as unknown as RpcRequest
 }
 
@@ -62,7 +63,7 @@ export function rpcError(id: RpcId | null, code: number, message: string, status
   })
 }
 
-export async function proxyRpc(request: Request, upstreamFetch: typeof fetch = fetch, profile: NetworkProfile = networkProfile()): Promise<Response> {
+export async function proxyRpc(request: Request, upstreamFetch: typeof fetch = fetch, profile: NetworkProfile = networkProfile(), mining: MiningDeploymentState = MINING_PRODUCTS): Promise<Response> {
   if (request.method !== 'POST') return rpcError(null, -32600, 'POST required', 405)
   const origin = request.headers.get('Origin')
   if (origin && origin !== new URL(request.url).origin) return rpcError(null, -32600, 'Origin not allowed', 403)
@@ -97,7 +98,7 @@ export async function proxyRpc(request: Request, upstreamFetch: typeof fetch = f
   for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength }
   let body: unknown
   try { body = JSON.parse(new TextDecoder().decode(bytes)) } catch { return rpcError(null, -32700, 'Invalid JSON', 400) }
-  const rpc = parseRequest(body, profile)
+  const rpc = parseRequest(body, profile, mining)
   if (!rpc) return rpcError(null, -32600, 'Unsupported read request', 400)
 
   try {

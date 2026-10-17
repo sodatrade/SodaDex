@@ -4,10 +4,12 @@ import { referenceApi } from './reference-api'
 import { ordersApi } from './orders-api'
 import preferencesScript from '../../web/dist/preferences-script.json'
 import { networkProfile, publicNetworkProfile, type NetworkProfile } from '../../network-profile'
+import { miningApi, miningCatalog, type MiningApiBinding } from './mining-api'
 
 interface Env {
   ASSETS: { fetch(request: Request): Promise<Response> }
   ORDERS_API?: { fetch: typeof fetch }
+  MINING_API?: MiningApiBinding
   SODADEX_NETWORK_PROFILE?: string
 }
 
@@ -20,7 +22,9 @@ export default {
     if (path === '/api/network') return request.method === 'GET'
       ? Response.json(publicNetworkProfile(profile), { headers: { 'Cache-Control': 'no-store' } })
       : Response.json({ error: 'GET required' }, { status: 405 })
-    if (path === '/api/rpc') return proxyRpc(request, fetch, profile)
+    if (path === '/api/mining' || path.startsWith('/api/mining/')) return miningApi(request, env.MINING_API, profile)
+    if (path === '/api/rpc') return proxyRpc(request, fetch, profile,
+      profile.chainId === 1952 ? await miningCatalog(env.MINING_API, new URL(request.url).origin) : undefined)
     if (!profile.dexEnabled && (path === '/api/dex' || path.startsWith('/api/dex/') ||
       path === '/api/reference' || path.startsWith('/api/reference/') ||
       path === '/api/orders' || path.startsWith('/api/orders/')))

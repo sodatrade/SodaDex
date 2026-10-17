@@ -6,6 +6,7 @@
   "workers_dev": true,
   "preview_urls": false,
   "vars": { "SODADEX_NETWORK_PROFILE": "1952-mining-test" },
+  "services": [{ "binding": "MINING_API", "service": "sodadex-mining-api-test-1952" }],
   "assets": {
     "directory": "../web/dist-mining-1952",
     "binding": "ASSETS",
