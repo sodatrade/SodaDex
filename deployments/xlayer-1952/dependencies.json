@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "chainId": 1952,
   "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
-  "status": "preparation-only",
+  "status": "base-dependencies-verified-product-integration-pending",
   "dependencies": [
     {
       "role": "permit2",
@@ -10,14 +10,145 @@
       "expectedRuntimeSha256": "668c194b735d51df66e1795dee13be5b7110ec379429c99319904eb1bb5ac6bd",
       "sourceVerified": false
     },
-    { "role": "wokb", "address": null },
-    { "role": "fab", "address": null },
-    { "role": "mining", "address": null },
-    { "role": "circuits", "address": null },
-    { "role": "circuitMarket", "address": null },
-    { "role": "sodaV3Factory", "address": null },
-    { "role": "sodaV3PositionManager", "address": null },
-    { "role": "sodaV4PoolManager", "address": null },
-    { "role": "sodaV4PositionManager", "address": null }
-  ]
+    {
+      "role": "wokb",
+      "address": null
+    },
+    {
+      "role": "fab",
+      "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+      "expectedRuntimeSha256": "c4e3b3412d2f600e8dc32b8043fee23386115577a3f0288b6a1ebe30c38edd06",
+      "sourceVerified": true,
+      "verificationRecord": "2026-10-17-base-runtime.json"
+    },
+    {
+      "role": "mining",
+      "address": "0x7991d4a8493b9709365cd079dffc75e790007874",
+      "expectedRuntimeSha256": "81761725cf853082b50ab6857c420c4f69529e6c6eb3a88534b0e3771304d8fc",
+      "sourceVerified": true,
+      "verificationRecord": "2026-10-17-base-runtime.json"
+    },
+    {
+      "role": "circuits",
+      "address": "0x5ae194d008292ef9d02933a599070c9661be040c",
+      "expectedRuntimeSha256": "a5ae47e3848f9af83437a1d0ead12feab547e6ba2280403e40a070e376008d7c",
+      "sourceVerified": true,
+      "verificationRecord": "2026-10-17-base-runtime.json"
+    },
+    {
+      "role": "circuitMarket",
+      "address": "0xa619c4cf1264bc071a3827edd0b64252842471be",
+      "expectedRuntimeSha256": "81761725cf853082b50ab6857c420c4f69529e6c6eb3a88534b0e3771304d8fc",
+      "sourceVerified": true,
+      "verificationRecord": "2026-10-17-base-runtime.json"
+    },
+    {
+      "role": "sodaV3Factory",
+      "address": null
+    },
+    {
+      "role": "sodaV3PositionManager",
+      "address": null
+    },
+    {
+      "role": "sodaV4PoolManager",
+      "address": null
+    },
+    {
+      "role": "sodaV4PositionManager",
+      "address": null
+    },
+    {
+      "role": "DewebRewardAccounting",
+      "address": "0x9cef28ada76d6af3e7a2604b0b6ac1a3b65b39c3",
+      "expectedRuntimeSha256": "5d076a9d5e4b50167bb33cd0700b79132f013c06356847216d9125fb63dca0c5",
+      "sourceVerified": true,
+      "verificationRecord": "2026-10-17-base-runtime.json"
+    },
+    {
+      "role": "DewebMiningExtension",
+      "address": "0x8f7ef5ae53bc24072115c6ed4027087b9631dffa",
+      "expectedRuntimeSha256": "729f1990786074844d6197265baa2b67b48d9bd47317a2c5a47431cfae800b80",
+      "sourceVerified": true,
+      "verificationRecord": "2026-10-17-base-runtime.json"
+    },
+    {
+      "role": "PodNetlist",
+      "address": "0x95932dac0cc6edb43fb74fae147dcf96e5b807ed",
+      "expectedRuntimeSha256": "775d6cdcfea02474e2b123952366522aa05bcbe14823fb3b6a69963eb447b6b2",
+      "sourceVerified": true,
+      "verificationRecord": "2026-10-17-base-runtime.json"
+    },
+    {
+      "role": "transistorsImplementation",
+      "address": "0x484c58d937387ec34c5ae01ad796f0c5f801fd72",
+      "expectedRuntimeSha256": "5f21cb3c198b3368c7a337a6bc81aaa35260d77137407d1bb74e56ee36bfb5a4",
+      "sourceVerified": true,
+      "verificationRecord": "2026-10-17-base-runtime.json"
+    },
+    {
+      "role": "circuitsImplementation",
+      "address": "0x98f4dfbfab6fc37e59e00d6881e779b33b23b009",
+      "expectedRuntimeSha256": "f6d09d2fd4a4e03b94c3fac19ee2ae7e3a530849ea2a82b45c738a0f3537ec80",
+      "sourceVerified": true,
+      "verificationRecord": "2026-10-17-base-runtime.json"
+    },
+    {
+      "role": "factoryImplementation",
+      "address": "0x6b5c32ad97eb42230138e02a21b0e6d811fd713d",
+      "expectedRuntimeSha256": "3a7576a4ef351855b6779fd8b76f4477584aad60e26e3ded9589dda040adc3ad",
+      "sourceVerified": true,
+      "verificationRecord": "2026-10-17-base-runtime.json"
+    },
+    {
+      "role": "factory",
+      "address": "0xad6e6bd6feecd3ef77ead8779ffcf5d52521abca",
+      "expectedRuntimeSha256": "81761725cf853082b50ab6857c420c4f69529e6c6eb3a88534b0e3771304d8fc",
+      "sourceVerified": true,
+      "verificationRecord": "2026-10-17-base-runtime.json"
+    },
+    {
+      "role": "miningImplementation",
+      "address": "0xfe32078e62a43d88f65731da693950e6e221fe0b",
+      "expectedRuntimeSha256": "901ab8207ab2ada648be6d5aac9523ac1f964803867727d5613127e3eb26b912",
+      "sourceVerified": true,
+      "verificationRecord": "2026-10-17-base-runtime.json"
+    },
+    {
+      "role": "marketImplementation",
+      "address": "0xbdb90331b1c205bbfa84db7cbee6a53b24fc0e21",
+      "expectedRuntimeSha256": "8568bb22e0f440f575890429ad74dde131a41d8e1c78d55274e7de42f2505b1f",
+      "sourceVerified": true,
+      "verificationRecord": "2026-10-17-base-runtime.json"
+    },
+    {
+      "role": "lens",
+      "address": "0xcdb3efbdfe3858aba4d4d5c83e6bffa47848945e",
+      "expectedRuntimeSha256": "a5e18828a8c114b13773a27b204eb355527a5a7e5b7c85bc8687df3825ba88c5",
+      "sourceVerified": true,
+      "verificationRecord": "2026-10-17-base-runtime.json"
+    },
+    {
+      "role": "transistorBeacon",
+      "address": "0xb72356b2e945db20ec0c676309406ae79401b3cd",
+      "expectedRuntimeSha256": "a7086de92005560b5ef8d3b500ab4e6b9793edf9d9608b883963bda828ec38c6",
+      "sourceVerified": true,
+      "verificationRecord": "2026-10-17-base-runtime.json"
+    },
+    {
+      "role": "circuitBeacon",
+      "address": "0x62874cf0179b35fdec20947281aaf8f5dff3d15c",
+      "expectedRuntimeSha256": "a7086de92005560b5ef8d3b500ab4e6b9793edf9d9608b883963bda828ec38c6",
+      "sourceVerified": true,
+      "verificationRecord": "2026-10-17-base-runtime.json"
+    },
+    {
+      "role": "transistors",
+      "address": "0xd1bb400c5b0d1c65a0025b110cb7e942f168ae98",
+      "expectedRuntimeSha256": "f19da96affe89c144b4699ff7ea7bf509abbde804e82340bdeba5efce30569e8",
+      "sourceVerified": true,
+      "verificationRecord": "2026-10-17-base-runtime.json"
+    }
+  ],
+  "deploymentRecord": "2026-10-17-base-deployment.json"
 }

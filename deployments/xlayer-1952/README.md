@@ -1,7 +1,7 @@
 # 两套矿机业务 · X Layer 1952
 
-状态：开发中。这里保存独立测试网准备与后续部署证据，不替换 `xlayer-test/` 的 196 测试组。
-当前尚未部署矿机业务，没有把准备清单当作链上合约地址表。
+状态：基础依赖已在 1952 部署并核验，两套完整矿机业务仍在开发中。
+本目录与 `xlayer-test/` 的 196 测试组独立；实际地址和回执见下方部署记录。
 
 ## 责任与分支
 
@@ -14,7 +14,9 @@
 - FABX 源合约：`MinerWorkspace/pod-contract@4caabe00d0e4d198aac4576bc0ad27c8cca5ce54`。
   仅只读检查；本地预演从提交提取快照，保留原工作树及已有修改。
 
-owner locator 为当前 SodaDEX 矿机需求会话 `/root`。本阶段未提交、推送或修改生产。
+owner locator 为当前 SodaDEX 矿机需求会话 `/root`。本批已按用户授权提交、推送并创建
+[SodaDEX Draft PR #2](https://github.com/sodatrade/SodaDex/pull/2) 和
+[IGNIX Draft PR #3](https://github.com/okasplaunchpad/contract/pull/3)，均未合并。生产与 196 不变。
 
 ## 已核实的接口与资产
 
@@ -39,7 +41,7 @@ owner locator 为当前 SodaDEX 矿机需求会话 `/root`。本阶段未提交�
 - FAB 为 8 位；生产公开常量 `PREMINE=105000000000000`、`MAX_SUPPLY=2100000000000000`，
   即 5% 初始发行，非 PRD 写的“无预挖”。
 - 1952 的 owner 在区块 43754029 观测余额为 0.2 测试 OKB；Permit2 有代码且签名域匹配 1952，但源码重编译核验尚未完成。
-  当前未取得其他组件的可信 1952 部署记录，`dependencies.json` 使用 null，不能复制 196 地址填入。
+  该预部署观测不作为本批新合约的部署证明；最新基础依赖证据见下方，未部署的 DEX 组件仍使用 null。
 
 ## 文档问题与决定状态
 
@@ -93,7 +95,42 @@ python3 scripts/sodadex/prepare-mining-dependencies.py \
 输出 `plan.json` 中的地址明确标注为未部署，不填入 `dependencies.json`，也不发给同事当实际地址。
 
 下一批为真实矿场收益和受约束采购、碎片化 NFT／份额／收益记账，然后接发行和页面。
-1952 实际部署、兑换及跨模块对账须分别保存回执；生产组保持独立，尚不部署。
+后续矿机业务部署、兑换及跨模块对账须分别保存回执；生产组保持独立，尚不部署。
+
+## 1952 实际基础部署 · 2026-10-17
+
+16 笔交易全部成功，覆盖 17 个组件（含库、实现、代理和 beacon）。实际 gas 共 **0.000513486725674335 测试 OKB**，
+低于本阶段 **0.002 测试 OKB** 上限；附加 L1／operator 费用为零。Owner nonce 从 0 到 16。
+已逐字节核对 17 份运行码及库／immutable 地址，回读 59 个 getter 与 10 个代理槽，
+包括 TEST 名称、owner／factory／minter、零设置费、processor=6、boost=0 和实际部署时间。
+
+| 组件 | X Layer 1952 实际地址 |
+| --- | --- |
+| 测试 FAB | `0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff` |
+| NFT 工厂 | `0xad6e6bd6feecd3ef77ead8779ffcf5d52521abca` |
+| 挖矿合约 | `0x7991d4a8493b9709365cd079dffc75e790007874` |
+| 晶体管 NFT | `0xd1bb400c5b0d1c65a0025b110cb7e942f168ae98` |
+| 矿机 NFT | `0x5ae194d008292ef9d02933a599070c9661be040c` |
+| 矿机市场 | `0xa619c4cf1264bc071a3827edd0b64252842471be` |
+| 批量读取 Lens | `0xcdb3efbdfe3858aba4d4d5c83e6bffa47848945e` |
+
+- [完整组件与费用摘要](2026-10-17-base-deployment.json)
+- [16 笔成功回执](2026-10-17-base-receipts.json)
+- [运行码、getter 与代理槽核验](2026-10-17-base-runtime.json)
+- [依赖清单](dependencies.json)：只填写已部署且已核验组件，未部署项仍为空。
+- [部署后就绪检查](2026-10-17-post-deployment-readiness.json)：17 项运行码已核验；5 项未部署，Permit2 等待源码验证。
+
+本批只建立 FAB／NFT／挖矿／市场基础环境；尚未注册任务或铸造实际测试矿机，
+也未部署、接通真实募资金库、碎片化交易池和持有人收益账本。
+`configuredDependenciesReady` 仍应为 false：WOKB、DEX 组件尚未部署，Permit2 源码验证仍未完成。
+公开 196 测试站没有替换，1952 页面也没有发布。不能把本批依赖部署当作两套业务验收完成。
+
+下一阶段收益接口约束：固定 FABX 源码只有全局 `totalMined`，没有按
+矿机 key／收款人的累计实际实付 getter。第三方代领或挑战也能让托管地址收到 FAB，
+仅按主动 claim 的余额差会遗漏收益，仅按余额又会计入捐赠；接近总供应上限时不能
+用名义 pending 替代实付。下一批先补齐可核验的收益来源，再接具体矿场和项目分红接收器。
+当前 PodMining 实现运行码为 24,504 字节，后续增加接口还须通过实现体大小验证，不能仅验证逻辑。
+当前基础组仍是上述原提交源码，未升级任何生产或测试实现；后续测试源码扩展及升级须另存版本和回执。
 
 ## 本地实现与验证进度
 
