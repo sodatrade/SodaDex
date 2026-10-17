@@ -2,6 +2,7 @@ import './tradeMarket.css'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState, type ReactElement } from 'react'
 import { Button, Icon } from '../../components/primitives'
+import { TokenIcon } from '../../components/TokenIcon'
 import { EXPLORER_URL, shortenAddress } from '../../domain/assets'
 import { tradeMarketMessages } from '../../i18n/tradeMarket'
 import { LP_CONTRACTS } from '../../liquidity/config'
@@ -42,11 +43,12 @@ export function TradeMarketPanel({ context, active = true }: { context?: TradeMa
   const retry = (): void => { void queryClient.resetQueries({ queryKey, exact: true }) }
   const unavailable = !context || context.mode === 'loading' ? m.loading : context.mode === 'wrap' ? m.wrap : context.mode === 'unavailable' ? m.unavailable : m.noPool
   return <section className="trade-market-pane" aria-label={m.market}>
-    <section className="trade-market-chart-surface"><div className="trade-market-heading"><div><span className="trade-market-source">{m.source}</span>
-      <h2>{context ? `${context.from.symbol} / ${context.to.symbol}` : m.market}</h2><p>{pool ? `${source} · ${pool.protocol.toUpperCase()} · ${pool.fee / 10000}%` : 'X Layer · 196'}</p></div>
+    <section className="trade-market-chart-surface"><div className="trade-market-heading"><div className="trade-market-pair">
+      {context && <div className="trade-market-pair-icons" aria-hidden="true"><TokenIcon address={context.from.address} symbol={context.from.symbol} native={context.from.native} small /><TokenIcon address={context.to.address} symbol={context.to.symbol} native={context.to.native} small /></div>}
+      <div><h2>{context ? `${context.from.symbol} / ${context.to.symbol}` : m.market}</h2><p>{pool ? `${source} · ${pool.protocol.toUpperCase()} · ${pool.fee / 10000}%` : 'X Layer · 196'}</p></div></div>
       <Button appearance="icon" aria-label={m.retry} onClick={retry} disabled={!pool || chart.isFetching}><Icon name="refresh" size={17} /></Button></div>
       <div className="trade-market-price"><span>{m.title}</span><strong>{data ? `1 ${context!.from.symbol} = ${formatPrice(currentPrice, locale)} ${context!.to.symbol}` : '—'}</strong>
-        {data && <small>{m.snapshot} #{data.asOf.number} · {new Date(data.asOf.timestamp * 1000).toLocaleString(locale)}</small>}</div>
+        <small className="trade-market-source">{data ? `${m.snapshot} · ${new Date(data.asOf.timestamp * 1000).toLocaleString(locale)}` : m.source}</small></div>
       <div className="trade-chart-toolbar"><div role="group" aria-label={m.interval}>{CHART_INTERVALS.map((value) => <button key={value} aria-pressed={interval === value} onClick={() => setInterval(value)}>{value}</button>)}</div>
         <div role="group" aria-label={m.chartView}>{(['line', 'candles'] as const).map((value) => <button key={value} aria-pressed={mode === value} onClick={() => setMode(value)}>{m[value]}</button>)}</div></div>
       {!pool ? <p className="trade-market-empty" role="status">{unavailable}</p> : chart.isPending ? <p className="trade-market-empty" role="status">{m.loading}</p>
@@ -56,10 +58,13 @@ export function TradeMarketPanel({ context, active = true }: { context?: TradeMa
       {data && <><div className="trade-market-statistics"><div><span>{m.observed}</span><strong>{data.trades.length}</strong></div>
         <div><span>{m.volume}</span><strong title={volume?.from}>{volume?.from ?? '—'} {context!.from.symbol}</strong><small title={volume?.to}>{volume?.to ?? '—'} {context!.to.symbol}</small></div>
         <div><span>{m.change}</span><strong>{change === undefined ? '—' : `${change >= 0 ? '+' : ''}${change.toFixed(2)}%`}</strong></div></div>
-        <p className="trade-market-coverage" role="status">{data.queryComplete ? m.complete : m.partial} · {m.scanned} #{data.coverage.fromBlock} – #{data.coverage.toBlock} / #{data.query.toBlock}</p>
-        {!data.queryComplete && <Button className="trade-market-load" onClick={() => setPaused(!paused)}>{paused ? m.resume : m.pause}</Button>}
-        <a className="trade-market-pool-link" href={`${EXPLORER_URL}/address/${pool!.address ?? LP_CONTRACTS.poolManager}`} target="_blank" rel="noreferrer" title={pool!.id}>{m.pool}: {shortenAddress(pool!.id)} <Icon name="external" size={12} /></a></>}
-      <ChartRange onApply={setRange} /><p className="trade-market-muted">{m.currentNote} {m.note}</p>
+        <div className="trade-market-scan-status"><p className="trade-market-coverage" role="status"><span className="status-dot" />{data.queryComplete ? m.complete : m.partial}</p>
+          {!data.queryComplete && <Button appearance="ghost" className="trade-market-load" onClick={() => setPaused(!paused)}>{paused ? m.resume : m.pause}</Button>}</div></>}
+      <details className="trade-market-data-details"><summary>{m.snapshot}<Icon name="chevron" size={14} /></summary>
+        {data && <><p className="trade-market-muted">{m.snapshot} #{data.asOf.number} · {new Date(data.asOf.timestamp * 1000).toLocaleString(locale)}<br />{m.scanned} #{data.coverage.fromBlock} – #{data.coverage.toBlock} / #{data.query.toBlock}</p>
+          <a className="trade-market-pool-link" href={`${EXPLORER_URL}/address/${pool!.address ?? LP_CONTRACTS.poolManager}`} target="_blank" rel="noreferrer" title={pool!.id}>{m.pool}: {shortenAddress(pool!.id)} <Icon name="external" size={12} /></a></>}
+        <ChartRange onApply={setRange} /><p className="trade-market-muted">{m.currentNote} {m.note}</p>
+      </details>
     </section>
     {data && context && <TradeMarketTrades data={data} context={context} />}
   </section>

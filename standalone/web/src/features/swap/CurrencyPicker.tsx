@@ -29,9 +29,9 @@ export function CurrencyPicker({ currencies, selected, onSelect, onClose }: {
   const candidates = (reference.data ?? []).filter((c) => !currencies.some((v) => sameCurrency(c, v)) && `${c.symbol} ${c.name} ${c.address}`.toLowerCase().includes(query))
   const visible = currencies.filter((c) => `${c.symbol} ${c.name} ${c.address}`.toLowerCase().includes(query))
   return <Dialog title={m.choose} description={m.importNote} onClose={onClose}>
-    <label className="search-field"><Icon name="search" /><input autoFocus data-dialog-autofocus aria-label={m.search}
+    <div className="swap-token-picker"><label className="search-field"><Icon name="search" /><input autoFocus data-dialog-autofocus aria-label={m.search}
       placeholder={m.search} value={search} onChange={(e) => { setSearch(e.target.value); importer.reset() }} /></label>
-    <div className="asset-options swap-token-options">{visible.map((currency) => <button className="asset-option" key={currencyKey(currency)}
+    <div className="swap-token-scroll"><div className="asset-options swap-token-options">{visible.map((currency) => <button className="asset-option" key={currencyKey(currency)}
       aria-pressed={sameCurrency(currency, selected)} onClick={() => onSelect(currency)}>
       <CurrencyIcon currency={currency} /><span className="asset-option-label"><strong>{currency.symbol}</strong><span>{currency.native ? m.native : currency.name}</span>
         {!currency.native && <small>{shortenAddress(currency.address)}</small>}</span>{sameCurrency(currency, selected) && <Icon name="check" />}
@@ -48,6 +48,6 @@ export function CurrencyPicker({ currencies, selected, onSelect, onClose }: {
         <code className="swap-contract-address">{importer.data.address}</code>
         <Button appearance="primary" onClick={() => { if (importer.data) onSelect(importer.data) }}>{m.import}</Button></>}
     </div>}
-    {importer.error && <p role="alert" className="error-text">{m.invalidToken}</p>}
+    {importer.error && <p role="alert" className="error-text">{m.invalidToken}</p>}</div></div>
   </Dialog>
 }

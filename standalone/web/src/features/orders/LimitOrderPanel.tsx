@@ -2,7 +2,7 @@ import './orders.css'
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useMemo, useState, type ReactElement } from 'react'
 import { formatUnits } from 'viem'
-import { Button, Surface } from '../../components/primitives'
+import { Button, Icon, Surface } from '../../components/primitives'
 import { amountError, parseAmount } from '../../domain/amount'
 import { CHAIN_ID, EXPLORER_URL, type Protocol } from '../../domain/assets'
 import { rememberToken } from '../../domain/tokenCatalog'
@@ -71,11 +71,12 @@ export function LimitOrderPanel({ wallet, onConnect, onSwap, seed, onContextChan
       {!ready && <p role="status" className="order-readiness">{!deployment || deployment.executionEnabled !== true ? m.notReady : service.isError || service.data === false ? m.serviceFailed : m.loading}</p>}
       {deployment && <Button onClick={() => void service.refetch()} disabled={service.isFetching}>{m.retry}</Button>}
       <form onSubmit={(event) => { event.preventDefault(); preview() }}>
-        <div className="order-assets"><Button type="button" aria-label={m.input} disabled={locked} onClick={() => setSelector('from')}><CurrencyIcon currency={from} /><span>{from.symbol}</span></Button><span>→</span><Button type="button" aria-label={m.output} disabled={locked} onClick={() => setSelector('to')}><CurrencyIcon currency={to} /><span>{to.symbol}</span></Button></div>
-        <label>{m.pay}<input aria-label={m.pay} inputMode="decimal" value={amount} disabled={locked} onChange={e => { changed(); setAmount(e.target.value.slice(0, 100)) }} /></label>
-        <p className="order-note">{m.balance}: {balance.isFetching ? '…' : balance.isError || balance.data === undefined ? '—' : formatUnits(balance.data, from.decimals)} {from.symbol}</p>
-        <label>{m.minimum}<input aria-label={m.minimum} inputMode="decimal" value={minimum} disabled={locked} onChange={e => { changed(); setMinimum(e.target.value.slice(0, 100)) }} /></label>
-        <p className="order-note">{m.price}: {price ? `≈ ${price} ${to.symbol} / ${from.symbol}` : '—'}</p>
+        <div className="limit-amount-field"><label htmlFor="limit-pay-amount">{m.pay}</label><div className="limit-amount-row"><input id="limit-pay-amount" aria-label={m.pay} inputMode="decimal" placeholder="0" value={amount} disabled={locked} onChange={e => { changed(); setAmount(e.target.value.slice(0, 100)) }} />
+          <Button type="button" aria-label={m.input} disabled={locked} onClick={() => setSelector('from')}><CurrencyIcon currency={from} /><span>{from.symbol}</span><Icon name="chevron" size={14} /></Button></div>
+          <p className="order-note">{m.balance}: {balance.isFetching ? '…' : balance.isError || balance.data === undefined ? '—' : formatUnits(balance.data, from.decimals)} {from.symbol}</p></div>
+        <div className="limit-amount-field"><label htmlFor="limit-receive-amount">{m.minimum}</label><div className="limit-amount-row"><input id="limit-receive-amount" aria-label={m.minimum} inputMode="decimal" placeholder="0" value={minimum} disabled={locked} onChange={e => { changed(); setMinimum(e.target.value.slice(0, 100)) }} />
+          <Button type="button" aria-label={m.output} disabled={locked} onClick={() => setSelector('to')}><CurrencyIcon currency={to} /><span>{to.symbol}</span><Icon name="chevron" size={14} /></Button></div></div>
+        <p className="order-price"><span>{m.price}</span><strong>{price ? `≈ ${price} ${to.symbol} / ${from.symbol}` : '—'}</strong></p>
         <label>{m.expiry}<input aria-label={m.expiry} type="datetime-local" value={expiry} disabled={locked} onChange={e => { changed(); setExpiry(e.target.value) }} /></label><small className="order-note">{m.expiryNote}</small>
         <label>{m.pool}<select aria-label={m.pool} value={protocol} disabled={locked} onChange={e => { changed(); setProtocol(e.target.value as Protocol); setPoolId('') }}><option value="auto">V3 + V4</option><option value="v3">V3</option><option value="v4">V4</option></select></label>
         {available.length > 0 ? <select aria-label={`${m.pool} ID`} value={selected?.id} disabled={locked} onChange={e => { changed(); setPoolId(e.target.value) }}>{available.map(p => <option key={p.id} value={p.id}>{p.protocol.toUpperCase()} · {p.fee / 10000}% · {p.id}</option>)}</select> : <p className="order-note">{pools.isPending ? m.loading : pools.isError ? m.unavailable : m.noPool}</p>}

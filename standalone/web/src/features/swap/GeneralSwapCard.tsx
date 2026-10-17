@@ -118,7 +118,7 @@ export function GeneralSwapCard({ wallet, balances, balancesLoading, balancesErr
       : parsed.kind !== 'valid' ? t('enterAmount') : quote.isFetching ? m.quote : direction ? m[direction] : m.review
   return <>
     <Surface className="swap-card general-swap" aria-label={t('swapRegion')}>
-      <div className="swap-card-heading"><div><h2>{m.title}</h2><span className="card-caption">{m.subtitle}</span></div>
+      <div className="swap-card-heading"><h2>{m.title}</h2>
         <Button appearance="icon" aria-label={t('swapSettings')} onClick={() => setSettings(true)} disabled={locked}><Icon name="settings" /></Button></div>
       <AmountPanel currency={from} pay amount={payAmount} estimated={!direction && editedSide === 'to'} balance={balanceText(fromBalance, fromBuiltin, from)} disabled={locked}
         error={!!error && (editedSide === 'from' || error.code === 'amountInsufficient')} hint={validQuote && isExactOutput(validQuote) ? `${m.maximum}: ${formatUnits(validQuote.maximumIn, from.decimals)} ${from.symbol}${from.native ? ` · ${m.nativeMax}` : ''}` : from.native ? m.nativeMax : undefined} onSelect={() => setSelector('from')}
@@ -136,8 +136,9 @@ export function GeneralSwapCard({ wallet, balances, balancesLoading, balancesErr
       {!direction && quote.isError && <p role="alert" className="error-text">{m.noQuote} <button className="text-button" onClick={() => void quote.refetch()}>{m.reload}</button></p>}
       <div className="route-summary"><span><NetworkIcon small />X Layer</span><button onClick={() => setSettings(true)} disabled={locked}>
         {m.route} · {direction ? '1:1' : validQuote?.pool.protocol.toUpperCase() ?? (protocol === 'auto' ? m.auto : protocol.toUpperCase())}<Icon name="chevron" size={14} /></button></div>
-      {validQuote && !direction && <details className="swap-quote-details"><summary>{m.details}<span>{validQuote.pool.fee / 10000}% · {bps !== undefined ? bps / 100 : '—'}%</span></summary>
-        <TradeDetails quote={validQuote} /><p className="swap-notice">{m.singleHop}</p><p className="swap-notice">{m.impactNote}</p></details>}
+      {validQuote && !direction && <div className="swap-quote-summary"><TradeDetails quote={validQuote} scope="summary" />
+        <details className="swap-quote-details"><summary>{m.details}<Icon name="chevron" size={14} /></summary>
+          <TradeDetails quote={validQuote} scope="route" /><p className="swap-notice">{m.singleHop}</p><p className="swap-notice">{m.impactNote}</p></details></div>}
       {validQuote && !direction && isExactOutput(validQuote) && <p className="swap-notice">{m.standardTokens}</p>}
       <Button appearance="primary" className="swap-action" onClick={action} disabled={wallet.status !== 'idle' || (!!wallet.session && !wrongChain && (!enabled || locked || !quoteReady || (!direction && bps === undefined) || fromBalance === undefined))}>{label}</Button>
       <p className="swap-footnote"><span className="status-dot" />{m.test}</p>

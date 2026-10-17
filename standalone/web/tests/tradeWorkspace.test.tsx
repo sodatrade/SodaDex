@@ -33,6 +33,7 @@ describe('same-screen market and swap', () => {
   it('reads the pair market with no amount, quote request or wallet request', async () => {
     mount(); expect(await screen.findByText('1 OKB = 125 USD₮0')).toBeInTheDocument()
     expect(screen.getByText(/Pair pool · before a route quote/)).toBeInTheDocument()
+    expect(screen.getByText(/Pool snapshot ·/)).toBeVisible()
     expect(trades.getPoolTradeQuote).not.toHaveBeenCalled(); expect(wallet.session?.provider.request).not.toHaveBeenCalled()
   })
   it('switches to the actual Auto quote pool and reverses chart units with the swap', async () => {

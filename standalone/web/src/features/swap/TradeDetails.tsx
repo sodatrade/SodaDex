@@ -6,18 +6,19 @@ import { LP_CONTRACTS } from '../../liquidity/config'
 import { usePreferences } from '../../preferences/context'
 import { poolTradeCurrencies } from '../../trading/poolTrade'
 import { isExactOutput, priceImpact, quotedInput, type SwapPoolQuote } from './routes'
-export function TradeDetails({ quote }: { quote: SwapPoolQuote }): ReactElement {
+export function TradeDetails({ quote, scope = 'all' }: { quote: SwapPoolQuote; scope?: 'all' | 'summary' | 'route' }): ReactElement {
   const { locale } = usePreferences(), m = tradeMessages(locale)
   const [from, to] = poolTradeCurrencies(quote)
   const link = quote.pool.protocol === 'v3' ? quote.pool.address : LP_CONTRACTS.poolManager
   return <dl className="review-details swap-details">
-    {isExactOutput(quote) ? <><div><dt>{m.exactReceive}</dt><dd>{formatUnits(quote.amountOut, to.decimals)} {to.symbol}</dd></div>
+    {scope !== 'route' && <>{isExactOutput(quote) ? <><div><dt>{m.exactReceive}</dt><dd>{formatUnits(quote.amountOut, to.decimals)} {to.symbol}</dd></div>
       <div><dt>{m.maximum}</dt><dd>{formatUnits(quote.maximumIn, from.decimals)} {from.symbol}</dd></div></>
       : <div><dt>{m.minimum}</dt><dd title={formatUnits(quote.minimumOut, to.decimals)}>{formatUnits(quote.minimumOut, to.decimals)} {to.symbol}</dd></div>}
     <div><dt>{m.slippage}</dt><dd>{quote.slippageBps / 100}%</dd></div>
     <div><dt title={m.impactNote}>{m.impact}</dt><dd>{priceImpact(quote) ?? m.unknown}</dd></div>
     <div><dt>{m.fee}</dt><dd>{quote.pool.protocol.toUpperCase()} · {quote.pool.fee / 10000}%</dd></div>
-    <div><dt>{m.feeAmount}</dt><dd>{formatUnits(quotedInput(quote) * BigInt(quote.pool.fee) / 1000000n, from.decimals)} {from.symbol}</dd></div>
-    <div><dt>{m.pool}</dt><dd><a href={`${EXPLORER_URL}/address/${link}`} target="_blank" rel="noreferrer">{shortenAddress(quote.pool.id)}</a></dd></div>
+    </>}
+    {scope !== 'summary' && <><div><dt>{m.feeAmount}</dt><dd>{formatUnits(quotedInput(quote) * BigInt(quote.pool.fee) / 1000000n, from.decimals)} {from.symbol}</dd></div>
+      <div><dt>{m.pool}</dt><dd><a href={`${EXPLORER_URL}/address/${link}`} target="_blank" rel="noreferrer">{shortenAddress(quote.pool.id)}</a></dd></div></>}
   </dl>
 }

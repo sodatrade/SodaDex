@@ -51,6 +51,11 @@ async function amount(value = '0.000001'): Promise<void> {
 describe('main swap interactions', () => {
   it('shows pool fee/minimum and executes only after explicit confirmation', async () => {
     mount(); await amount(); expect(trades.executePoolTrade).not.toHaveBeenCalled()
+    expect(screen.getByText('Minimum received')).toBeVisible()
+    expect(screen.getByText('0.000995 USD₮0')).toBeVisible()
+    expect(screen.getByText('Price impact')).toBeVisible()
+    expect(screen.getByText('Slippage tolerance')).toBeVisible()
+    expect(screen.getByText('Pool fee')).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'Review swap' }))
     const dialog = screen.getByRole('dialog'); expect(within(dialog).getByText('0.000995 USD₮0')).toBeInTheDocument()
     await userEvent.click(within(dialog).getByRole('button', { name: 'Confirm swap' }))
