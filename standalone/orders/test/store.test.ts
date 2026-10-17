@@ -1,9 +1,10 @@
 import { chmodSync, lstatSync } from 'node:fs'
 import { DatabaseSync } from 'node:sqlite'
 import { afterEach, describe, expect, it } from 'vitest'
+import { keccak256 } from 'viem'
 import { orderId } from '../src/chain.ts'
 import { NonceConflict, OrderStore } from '../src/store.ts'
-import { environment, order, sign } from './fixture.ts'
+import { environment, executor, order, sign } from './fixture.ts'
 const cleanups: (() => void)[] = []
 afterEach(() => cleanups.splice(0).forEach(cleanup => cleanup()))
 describe('isolated durable order store', () => {
@@ -56,7 +57,11 @@ describe('isolated durable order store', () => {
     const value = order(), signature = await sign(value), observed = (await env.chain.observe()).observation
     const record = env.store.insert(orderId(value), value, signature, observed, 1000)
     env.store.update(record.order.id, { status: 'cancelled' }, 1001)
-    env.store.database.exec('DROP TABLE execution_resolutions;PRAGMA user_version=1')
+    const raw = await executor.signTransaction(await env.chain.plan(value, signature))
+    const hash = keccak256(raw)
+    env.store.prepare(record.order.id, hash, raw, executor.address, 0, 200000n, 1000000n, 1002)
+    env.store.finish(hash, false, 100000n)
+    env.store.database.exec('DROP TABLE execution_resolutions;DROP TABLE keeper_budget;DROP TABLE keeper_progress;PRAGMA user_version=1')
     env.store.close()
     const reopened = new OrderStore(env.path)
     try {
@@ -64,6 +69,11 @@ describe('isolated durable order store', () => {
       expect(reopened.privateOrder(record.order.id)?.signature).toBe(signature)
       expect(reopened.database.prepare('PRAGMA user_version').get()).toMatchObject({ user_version: 2 })
       expect(reopened.database.prepare('SELECT * FROM execution_resolutions').all()).toEqual([])
+      expect(reopened.gasCommitted()).toBe(100000n)
+      const saved = reopened.executionAtNonce(executor.address, 0)!
+      const state = { observation: observed, nonce: 0 }
+      reopened.restoreExecution(saved, state); reopened.restoreExecution(saved, state)
+      expect(reopened.gasCommitted()).toBe(200000n) // A stale retry cannot reserve the same gas twice.
     } finally { reopened.close() }
   })
   it('rejects a delayed chain read that started before a newer canonical state was stored', async () => {

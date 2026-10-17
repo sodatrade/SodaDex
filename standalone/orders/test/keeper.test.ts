@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { OrdersKeeper } from '../src/keeper.ts'
 import { OrdersService } from '../src/service.ts'
 import { OrderStore } from '../src/store.ts'
+import { ChainFailure } from '../src/chain-types.ts'
 import { environment, executor, order, sign } from './fixture.ts'
 const cleanups: (() => void)[] = []
 afterEach(() => cleanups.splice(0).forEach(cleanup => cleanup()))
@@ -150,5 +151,38 @@ describe('keeper exact execution and durable broadcast recovery', () => {
     expect(env.store.get(two.order.id)?.status).toBe('filled')
     expect(signed).toBe(2)
     expect(env.store.database.prepare('SELECT * FROM execution_resolutions WHERE hash=?').get(original.hash)).toBeUndefined()
+  })
+  it('bounds each cycle and persists round-robin progress so an unmet first order does not starve the next', async () => {
+    const env = environment(true); cleanups.push(env.cleanup)
+    const first = order(), second = order('2'), service = new OrdersService(env.config, env.store, env.chain)
+    await service.accept({ order: first, signature: await sign(first) })
+    const next = await service.accept({ order: second, signature: await sign(second) })
+    const simulated: string[] = []
+    env.chain.simulate = async value => { simulated.push(value.nonce); if (value.nonce === '1') throw new ChainFailure('price'); return 1n }
+    let signed = 0
+    const signer = { address: executor.address, async signTransaction(plan: Parameters<typeof executor.signTransaction>[0]) { signed++; return executor.signTransaction(plan) } }
+    const limits = { maxOrders: 1, maxRecoveries: 1, stopAfterRecovery: true }
+    await new OrdersKeeper(env.config, env.store, env.chain, signer).runOnce(limits)
+    expect(simulated).toEqual(['1']); expect(signed).toBe(0)
+    env.store.close()
+    const reopened = new OrderStore(env.path)
+    try {
+      await new OrdersKeeper(env.config, reopened, env.chain, signer).runOnce(limits)
+      expect(simulated).toEqual(['1', '2']); expect(signed).toBe(1)
+      expect(reopened.executions()[0].orderId).toBe(next.order.id)
+      await expect(new OrdersKeeper(env.config, reopened, env.chain, signer).runOnce({ maxOrders: 17 })).rejects.toThrow('bounds')
+    } finally { reopened.close() }
+  })
+  it('awaits the storage durability barrier before handing saved raw bytes to the network', async () => {
+    const env = environment(true); cleanups.push(env.cleanup)
+    const value = order(), service = new OrdersService(env.config, env.store, env.chain)
+    await service.accept({ order: value, signature: await sign(value) })
+    let release: (() => void) | undefined, calls = 0
+    env.store.driver.sync = () => ++calls === 1 ? new Promise<void>(resolve => { release = resolve }) : Promise.resolve()
+    const running = new OrdersKeeper(env.config, env.store, env.chain, { address: executor.address, signTransaction: plan => executor.signTransaction(plan) }).runOnce()
+    for (let tries = 0; tries < 100; tries++) { if (release) break; await new Promise<void>(resolve => setImmediate(resolve)) }
+    expect(release).toBeDefined(); expect(env.store.executions()).toHaveLength(1); expect(env.chain.broadcasts).toHaveLength(0)
+    release!(); await running
+    expect(env.chain.broadcasts).toHaveLength(1)
   })
 })

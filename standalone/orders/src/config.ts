@@ -1,4 +1,4 @@
-import { resolve } from 'node:path'
+import reviewed from '../../../deployments/orders-test.json' with { type: 'json' }
 import type { Address } from 'viem'
 export const FIXED = {
   chainId: 196 as const,
@@ -10,21 +10,26 @@ export const FIXED = {
   poolManager: '0x6B5C32aD97EB42230138e02a21B0E6d811FD713D' as Address,
   stateView: '0x7991D4a8493b9709365cD079DfFc75e790007874' as Address,
 }
-export interface OrdersConfig {
-  settlement: Address | null; rpcUrl: string; publicOrigin: string; databasePath: string
-  executionEnabled: boolean; gasBudgetWei: bigint; localTest: boolean
+export interface OrderRuntimeConfig {
+  settlement: Address | null; rpcUrl: string; publicOrigin: string; executionEnabled: boolean; gasBudgetWei: bigint
 }
-export function validateConfig(config: OrdersConfig): OrdersConfig {
+export interface OrdersConfig extends OrderRuntimeConfig { databasePath: string; localTest: boolean }
+export const reviewedSettlement = (): Address | null => reviewed.settlement as Address | null
+export function validateRuntime(config: OrderRuntimeConfig, localTest = false): OrderRuntimeConfig {
+  if (reviewed.schemaVersion !== 1 || reviewed.chainId !== 196 || reviewed.stage !== 'test' || typeof reviewed.executionEnabled !== 'boolean') throw Error('Invalid reviewed test deployment')
   const rpc = new URL(config.rpcUrl), origin = new URL(config.publicOrigin)
   if (rpc.username || rpc.password || rpc.search || rpc.hash || origin.username || origin.password || origin.origin !== config.publicOrigin) throw Error('Invalid orders service origin')
-  if (config.localTest) {
+  if (localTest) {
     if (rpc.protocol !== 'http:' || rpc.hostname !== '127.0.0.1' || rpc.pathname !== '/') throw Error('Local order tests require an owned loopback RPC')
-  } else if (config.rpcUrl !== FIXED.rpcUrl || config.settlement !== null) {
-    // The tracked deployment is still null. Enabling a remote address requires a reviewed deployment manifest update.
-    throw Error('Remote settlement deployment is not configured')
+  } else if (config.rpcUrl !== FIXED.rpcUrl || config.settlement !== reviewed.settlement || (config.settlement !== null && (reviewed.status !== 'ready' || reviewed.chainId !== 196 || reviewed.stage !== 'test'))) {
+    throw Error('Remote settlement must match the reviewed test deployment')
   }
   if (origin.protocol !== 'https:' && !(origin.protocol === 'http:' && ['127.0.0.1', 'localhost'].includes(origin.hostname))) throw Error('Orders service requires an explicit HTTPS or local origin')
   if (config.settlement !== null && (!/^0x[0-9a-fA-F]{40}$/.test(config.settlement) || /^0x0{40}$/.test(config.settlement))) throw Error('Invalid settlement configuration')
   if (config.gasBudgetWei < 0n || (config.executionEnabled && (config.settlement === null || config.gasBudgetWei === 0n))) throw Error('Execution requires a deployed settlement and explicit positive gas budget')
-  return { ...config, databasePath: resolve(config.databasePath) }
+  return { ...config }
+}
+
+export function validateConfig(config: OrdersConfig): OrdersConfig {
+  return { ...config, ...validateRuntime(config, config.localTest) }
 }

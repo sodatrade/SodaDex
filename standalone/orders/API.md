@@ -62,7 +62,7 @@ Permit2's unordered nonce bitmap is maker-global. A used Permit2 bit with this s
 {schemaVersion: 1, orders: PublicOrder[], nextCursor: string | null}
 ```
 
-List reads refresh every row in the requested page, including terminal observations, with bounded RPC concurrency; polling can therefore recover an orphaned cancellation. Upstream failures retain stored observations under the same rules as single reads. `nextCursor: null` means no older rows in this local store, not a complete scan of all on-chain orders. The service does not discover signatures from chain.
+Node list reads refresh the requested page, including terminal observations, with bounded RPC concurrency. Cloudflare refreshes up to six records per request with persistent round-robin progress and a 45-RPC event ceiling; other records retain their earlier observation. A single-order GET targets one record. In both runtimes, polling can therefore recover an orphaned cancellation. Upstream failures retain stored observations under the same rules as single reads. `nextCursor: null` means no older rows in this local store, not a complete scan of all on-chain orders. The service does not discover signatures from chain.
 
 ## Errors and cancellation
 

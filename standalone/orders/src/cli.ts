@@ -1,6 +1,6 @@
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { FIXED, validateConfig, type OrdersConfig } from './config.ts'
+import { FIXED, reviewedSettlement, validateConfig, type OrdersConfig } from './config.ts'
 import { OrderStore } from './store.ts'
 import { ViemOrderChain } from './chain.ts'
 import { OrdersService } from './service.ts'
@@ -14,7 +14,7 @@ function main(): void {
   if (configuredSettlement && !localTest) throw Error('Remote settlement is not deployed')
   const budget = process.env.ORDERS_GAS_BUDGET_WEI ?? '0'
   if (!/^(0|[1-9][0-9]*)$/.test(budget)) throw Error('Invalid orders gas budget')
-  const config: OrdersConfig = validateConfig({ settlement: configuredSettlement as Address ?? null, rpcUrl: process.env.ORDERS_RPC_URL ?? FIXED.rpcUrl, publicOrigin: process.env.ORDERS_PUBLIC_ORIGIN ?? 'http://127.0.0.1:3031', databasePath: process.env.ORDERS_DB_PATH ?? resolve(fileURLToPath(new URL('../.data/orders.sqlite', import.meta.url))), executionEnabled: process.env.ORDERS_EXECUTION_ENABLED === 'true', gasBudgetWei: BigInt(budget), localTest })
+  const config: OrdersConfig = validateConfig({ settlement: localTest ? configuredSettlement as Address ?? null : reviewedSettlement(), rpcUrl: process.env.ORDERS_RPC_URL ?? FIXED.rpcUrl, publicOrigin: process.env.ORDERS_PUBLIC_ORIGIN ?? 'http://127.0.0.1:3031', databasePath: process.env.ORDERS_DB_PATH ?? resolve(fileURLToPath(new URL('../.data/orders.sqlite', import.meta.url))), executionEnabled: process.env.ORDERS_EXECUTION_ENABLED === 'true', gasBudgetWei: BigInt(budget), localTest })
   if (config.executionEnabled) throw Error('CLI execution is disabled; inject a signer explicitly through the OrdersKeeper application API')
   const port = Number(process.env.ORDERS_PORT ?? '3031'), interval = Number(process.env.ORDERS_POLL_MS ?? '10000')
   if (!Number.isSafeInteger(port) || port < 1 || port > 65535 || !Number.isSafeInteger(interval) || interval < 1000) throw Error('Invalid orders listener or polling interval')

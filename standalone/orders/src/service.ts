@@ -1,15 +1,15 @@
 import type { Hex } from 'viem'
 import { parseLimitOrder } from '../../order-types.ts'
-import { FIXED, type OrdersConfig } from './config.ts'
+import { FIXED, type OrderRuntimeConfig } from './config.ts'
 import { orderId } from './chain.ts'
 import type { NonceObservation, OrderChain } from './chain-types.ts'
-import { OrderStore } from './store.ts'
+import { OrderRepository } from './repository.ts'
 import type { OrdersStatus, PublicOrder } from './types.ts'
 export class ServiceError extends Error {
   readonly code: string; readonly status: number
   constructor(status: number, code: string, message: string) { super(message); this.status = status; this.code = code }
 }
-export function reconcile(store: OrderStore, current: PublicOrder, state: NonceObservation, now: number): PublicOrder {
+export function reconcile(store: OrderRepository, current: PublicOrder, state: NonceObservation, now: number): PublicOrder {
   const derived = state.nonceStatus === 2 ? 'filled' : state.nonceStatus === 1 ? 'cancelled' : state.observation.timestamp >= Number(current.order.expiry) ? 'expired' : 'open'
   const rolledBack = ['filled', 'cancelled', 'expired'].includes(current.status) && current.status !== derived
   const recoveringRaw = store.hasExecution(current.id) || (rolledBack && state.previousObservationCanonical === false && store.hasExecution(current.id, true))
@@ -20,8 +20,11 @@ export function reconcile(store: OrderStore, current: PublicOrder, state: NonceO
   return store.applyChainObservation(current, { status, reason, observation: state.observation }, state.previousObservationCanonical, now)
 }
 export class OrdersService {
-  readonly config: OrdersConfig; readonly store: OrderStore; readonly chain: OrderChain; readonly now: () => number
-  constructor(config: OrdersConfig, store: OrderStore, chain: OrderChain, now = (): number => Math.floor(Date.now() / 1000)) { this.config = config; this.store = store; this.chain = chain; this.now = now }
+  readonly config: OrderRuntimeConfig; readonly store: OrderRepository; readonly chain: OrderChain; readonly now: () => number; readonly maxListRefresh: number
+  constructor(config: OrderRuntimeConfig, store: OrderRepository, chain: OrderChain, now = (): number => Math.floor(Date.now() / 1000), options: {maxListRefresh?: number} = {}) {
+    this.config = config; this.store = store; this.chain = chain; this.now = now; this.maxListRefresh = options.maxListRefresh ?? 100
+    if (!Number.isInteger(this.maxListRefresh) || this.maxListRefresh < 1 || this.maxListRefresh > 100) throw Error('Invalid list refresh bound')
+  }
   async status(): Promise<OrdersStatus> {
     let ready = false
     if (this.config.settlement !== null) { try { ready = await this.chain.ready() } catch { /* Expose readiness only, never upstream diagnostics or encoded signatures. */ } }
@@ -57,13 +60,15 @@ export class OrdersService {
   async list(maker: string, limit: number, cursor?: string): Promise<{ orders: PublicOrder[]; nextCursor: string | null }> {
     const page = this.store.list(maker, limit, cursor)
     if (this.config.settlement === null) return page
-    const orders: PublicOrder[] = []
+    const ids = this.store.refreshIds(maker, page.orders.map(order => order.id), this.maxListRefresh)
+    const selected = page.orders.filter(order => ids.includes(order.id))
+    const refreshed = new Map<Hex, PublicOrder>()
     // A terminal row must also be rechecked: list polling is how clients recover after a reorganization.
     // Bound RPC concurrency instead of issuing up to one hundred simultaneous signature-state reads.
-    for (let start = 0; start < page.orders.length; start += 4) {
-      const batch = page.orders.slice(start, start + 4)
-      orders.push(...await Promise.all(batch.map(async current => await this.get(current.id) ?? current)))
+    for (let start = 0; start < selected.length; start += 4) {
+      const batch = selected.slice(start, start + 4)
+      for (const order of await Promise.all(batch.map(async current => await this.get(current.id) ?? current))) refreshed.set(order.id, order)
     }
-    return { orders, nextCursor: page.nextCursor }
+    return { orders: page.orders.map(order => refreshed.get(order.id) ?? order), nextCursor: page.nextCursor }
   }
 }

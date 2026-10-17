@@ -1,0 +1,17 @@
+{
+  "$schema": "../../worker/node_modules/wrangler/config-schema.json",
+  "name": "sodadex-orders-test",
+  "main": "index.ts",
+  "compatibility_date": "2026-10-17",
+  "workers_dev": true,
+  "preview_urls": false,
+  "durable_objects": { "bindings": [{ "name": "ORDERS", "class_name": "SodaOrders" }] },
+  "migrations": [{ "tag": "sodadex-orders-test-v1", "new_sqlite_classes": ["SodaOrders"] }],
+  "vars": {
+    "ORDERS_PUBLIC_ORIGIN": "https://sodadex-preview.jsmsdx2025.workers.dev",
+    "ORDERS_POLL_MS": "10000",
+    "ORDERS_EXECUTION_ENABLED": "false",
+    "ORDERS_GAS_BUDGET_WEI": "0"
+  },
+  "observability": { "enabled": false }
+}

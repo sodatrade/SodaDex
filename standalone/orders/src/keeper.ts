@@ -1,13 +1,12 @@
-import { randomUUID } from 'node:crypto'
 import type { ExecutionSigner, KeeperNonceObservation, OrderChain } from './chain-types.ts'
 import { ChainFailure } from './chain-types.ts'
-import type { OrdersConfig } from './config.ts'
-import { GasBudgetExceeded, OrderStore, type StoredExecution } from './store.ts'
+import type { OrderRuntimeConfig } from './config.ts'
+import { GasBudgetExceeded, OrderRepository, type StoredExecution } from './repository.ts'
 import { reconcile } from './service.ts'
 import { validateSignedExecution, validateStoredExecution } from './signed-transaction.ts'
 export class OrdersKeeper {
-  readonly config: OrdersConfig; readonly store: OrderStore; readonly chain: OrderChain; readonly signer: ExecutionSigner | undefined; readonly now: () => number
-  constructor(config: OrdersConfig, store: OrderStore, chain: OrderChain, signer?: ExecutionSigner, now = (): number => Math.floor(Date.now() / 1000)) {
+  readonly config: OrderRuntimeConfig; readonly store: OrderRepository; readonly chain: OrderChain; readonly signer: ExecutionSigner | undefined; readonly now: () => number
+  constructor(config: OrderRuntimeConfig, store: OrderRepository, chain: OrderChain, signer?: ExecutionSigner, now = (): number => Math.floor(Date.now() / 1000)) {
     if (config.executionEnabled && !signer) throw Error('Execution requires an explicitly injected signer')
     this.config = config; this.store = store; this.chain = chain; this.signer = signer; this.now = now
   }
@@ -43,22 +42,25 @@ export class OrdersKeeper {
     const status = ['open', 'pending'].includes(current.status) ? 'pending' : current.status
     if (this.store.gasCommitted() > this.config.gasBudgetWei) { this.store.update(current.id, { status, reason: 'gas_budget' }, this.now()); return }
     try {
+      await this.store.durable()
       const hash = await this.chain.broadcast(attempt.rawTransaction)
       if (hash !== attempt.hash) throw new ChainFailure('unavailable')
       this.store.broadcast(attempt.hash)
       this.store.update(current.id, { status, reason: null }, this.now())
     } catch { this.store.update(current.id, { status, reason: 'broadcast_unknown' }, this.now()) }
   }
-  async runOnce(): Promise<{ processed: number; busy: boolean }> {
-    const owner = randomUUID()
+  async runOnce(options: { maxOrders?: number; maxRecoveries?: number; stopAfterRecovery?: boolean } = {}): Promise<{ processed: number; busy: boolean }> {
+    const maxOrders = options.maxOrders ?? 16, maxRecoveries = options.maxRecoveries ?? 16
+    if (![maxOrders, maxRecoveries].every(value => Number.isInteger(value) && value >= 0 && value <= 16)) throw Error('Keeper cycle bounds must be 0..16')
+    const owner = crypto.randomUUID()
     if (!this.store.acquire(owner)) return { processed: 0, busy: true }
     let processed = 0
     try {
       if (this.config.settlement === null || !await this.chain.ready()) return { processed, busy: false }
-      for (const attempt of this.store.executions()) { await this.recover(attempt); processed++ }
+      for (const attempt of this.store.executions(maxRecoveries)) { await this.recover(attempt); processed++ }
       // An unresolved signed nonce is recovered first. Never create a replacement or a new signed nonce blindly.
-      if (this.store.executions().length) return { processed, busy: false }
-      for (const current of this.store.eligible()) {
+      if (this.store.hasAnyExecution() || (options.stopAfterRecovery && processed > 0)) return { processed, busy: false }
+      for (const current of this.store.nextEligible(maxOrders)) {
         const stored = this.store.privateOrder(current.id)!
         let latest
         try { latest = reconcile(this.store, current, await this.chain.observe(current.order, current.observation ?? undefined), this.now()) } catch { this.store.update(current.id, { status: current.status, reason: 'chain_unavailable' }, this.now()); continue }
@@ -76,12 +78,13 @@ export class OrdersKeeper {
           const raw = await this.signer.signTransaction(plan)
           const hash = await validateSignedExecution(raw, plan, this.signer.address)
           const attempt = this.store.prepare(current.id, hash, raw, this.signer.address, plan.nonce, maximum, this.config.gasBudgetWei, this.now())
+          await this.store.durable()
           await this.recover(attempt)
           processed++
           // Wait for the receipt/recovery before selecting another keeper nonce.
-          if (this.store.executions().length) break
+          if (this.store.hasAnyExecution()) break
         } catch (error) {
-          if (this.store.executions().length) break
+          if (this.store.hasAnyExecution()) break
           this.store.update(current.id, { status: 'open', reason: error instanceof GasBudgetExceeded ? 'gas_budget' : 'chain_unavailable' }, this.now())
         }
       }

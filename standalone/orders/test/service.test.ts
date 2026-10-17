@@ -94,4 +94,16 @@ describe('signed order admission and authoritative state', () => {
     env.chain.status = 1
     expect((await service.get(accepted.order.id))?.status).toBe('cancelled')
   })
+  it('rotates a bounded list refresh instead of leaving older terminal rows permanently stale', async () => {
+    const env = environment(true); cleanups.push(env.cleanup)
+    const service = new OrdersService(env.config, env.store, env.chain, undefined, { maxListRefresh: 1 })
+    for (const nonce of ['1', '2', '3']) { const value = order(nonce); await service.accept({ order: value, signature: await sign(value) }) }
+    env.chain.status = 1
+    const first = await service.list(order().maker, 100)
+    expect(first.orders.filter(value => value.status === 'cancelled')).toHaveLength(1)
+    const anotherService = new OrdersService(env.config, env.store, env.chain, undefined, { maxListRefresh: 1 })
+    await anotherService.list(order().maker, 100)
+    const third = await anotherService.list(order().maker, 100)
+    expect(third.orders.every(value => value.status === 'cancelled')).toBe(true)
+  })
 })

@@ -1,7 +1,7 @@
 import { BaseError, ContractFunctionRevertedError, TransactionReceiptNotFoundError, createPublicClient, decodeErrorResult, decodeEventLog, encodeFunctionData, hashStruct, hashTypedData, http, verifyTypedData, type Address, type Hex, type PublicClient } from 'viem'
 import { orderMessage, orderTypedData, ORDER_TYPES, type SodaLimitOrder } from '../../order-types.ts'
 import { SETTLEMENT_ABI, PERMIT_ABI } from './abi.ts'
-import { FIXED, type OrdersConfig } from './config.ts'
+import { FIXED, type OrderRuntimeConfig } from './config.ts'
 import { ChainFailure, type ExecutionPlan, type ExecutionReceipt, type KeeperNonceObservation, type NonceObservation, type OrderChain } from './chain-types.ts'
 import type { ChainObservation } from './types.ts'
 const same = (a: string, b: string): boolean => a.toLowerCase() === b.toLowerCase()
@@ -27,8 +27,8 @@ function minimumFailure(error: ContractFunctionRevertedError): boolean {
 }
 export class ViemOrderChain implements OrderChain {
   readonly client: PublicClient
-  readonly config: OrdersConfig
-  constructor(config: OrdersConfig, client?: PublicClient) {
+  readonly config: OrderRuntimeConfig
+  constructor(config: OrderRuntimeConfig, client?: PublicClient) {
     this.config = config
     this.client = client ?? createPublicClient({ transport: http(config.rpcUrl, { timeout: 12_000, retryCount: 0, fetchOptions: { redirect: 'error' } }) })
   }

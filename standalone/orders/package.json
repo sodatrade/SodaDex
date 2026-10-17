@@ -11,8 +11,11 @@
     "test": "vitest run",
     "test:integration": "node --experimental-sqlite --experimental-strip-types test/integration.mjs",
     "typecheck": "tsc --noEmit",
-    "lint": "oxlint --config .oxlintrc.json --deny-warnings src test",
-    "check": "npm run typecheck && npm run lint && npm test"
+    "lint": "oxlint --config .oxlintrc.json --deny-warnings src test cloudflare",
+    "check": "npm run typecheck && npm run lint && npm test",
+    "test:cloudflare": "node --experimental-strip-types test/cloudflare-runtime.mjs",
+    "test:cloudflare:integration": "node --experimental-strip-types test/cloudflare-runtime.mjs --integration",
+    "dev:cloudflare": "node ../worker/node_modules/wrangler/bin/wrangler.js dev --config cloudflare/wrangler.test.jsonc --local --persist-to .data/cloudflare"
   },
   "dependencies": {
     "viem": "2.49.0"

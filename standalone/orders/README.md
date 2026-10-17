@@ -1,6 +1,6 @@
 # SodaDEX 本地订单服务
 
-这是独立的 Node 22 服务，负责接收已签名限价单、保存订单、核对链上状态和运行 keeper。它使用自己的 SQLite 文件，不连接 IGNIX 数据库。当前测试合约部署地址仍为 `null`；默认可启动查询服务，但不接单、不签名、不广播。没有部署到 AWS、IGNIX 或公网。
+订单核心提供 Node 22 和 Cloudflare SQLite Durable Object 两种适配器，负责接收已签名限价单、保存订单、核对链上状态和运行 keeper。Node 使用自己的 SQLite 文件，云端使用私有 DO SQL；不连接 IGNIX 数据库。当前测试合约部署地址仍为 `null`；默认可启动查询服务，但不接单、不签名、不广播。没有部署到 AWS、IGNIX 或公网。
 
 ## 启动和检查
 
@@ -33,7 +33,7 @@ npm start
 
 `server.ts` 限制来源、JSON 请求大小和公开字段；`service.ts` 使用共享 `order-types.ts` 验证订单字段、Permit2 域、签名及 nonce。`chain.ts` 只调用固定 SodaDEX 合约，使用链上时间核对到期，EOA 与 ERC1271 签名都经验证；固定区块的读取完成后再次核对区块哈希。
 
-`store.ts` 保存 maker/nonce 唯一的订单和独立执行记录。订单签名、已签交易和原始交易仅保存在本服务的私有 SQLite 文件中，公开 API 从不返回这些字段。主数据库要求 0600，新目录默认 0700，WAL 使用 SQLite 的同目录权限；备份应在关闭服务后复制整个数据库，或使用一致性 SQLite 备份，不要只复制仍在运行的主文件。当前 schema 为 v2；启动时对本服务 v1 数据库进行增量迁移，保留所有订单、签名和执行记录，只增加 keeper nonce 证据表。
+`store.ts` 保存 maker/nonce 唯一的订单和独立执行记录。订单签名、已签交易和原始交易仅保存在本服务的私有 SQLite 文件中，公开 API 从不返回这些字段。主数据库要求 0600，新目录默认 0700，WAL 使用 SQLite 的同目录权限；备份应在关闭服务后复制整个数据库，或使用一致性 SQLite 备份，不要只复制仍在运行的主文件。当前 schema 为 v2；启动时对本服务 v1 数据库进行增量迁移，保留所有订单、签名和执行记录，补充 keeper nonce 证据、预算总额和轮询进度，保留旧执行费用。
 
 `keeper.ts` 先核对链上 nonce，再原样模拟 `execute(order, signature)`。未达到签名最低到账时保留 `open/awaiting_price`。模拟不通过不签名、不广播，也不降低最低到账。实际执行只接受调用方注入的 `ExecutionSigner`；不读取任何钱包文件、助记词或私钥环境变量。maker 仅需对 canonical Permit2 进行明确的 ERC20 输入金额授权，keeper 钱包只支付 gas。
 
@@ -75,4 +75,4 @@ npm run test:integration
 
 验收覆盖 V3/V4 的四种真实路由、receiver 实际到账和 maker 精确扣款；另覆盖广播成功但响应丢失后的数据库重启恢复、未达最低到账、maker 撤单、链上到期、终态幂等和 HTTP 敏感字段隔离。实际 Anvil `snapshot/revert` 会撤销已观察到的取消，验证同高度不同哈希后恢复 open 并成功成交；还验证取消前已保存但未发送的原始交易在重启后确实上链 revert，再让下一单成交。纯逻辑与 HTTP 测试运行 `npm test`；它们不等同于已上线验收。
 
-公开接口见 [API.md](./API.md)。
+公开接口见 [API.md](./API.md)。Cloudflare 本地验收、部署准备和回退步骤见 [CLOUDFLARE.md](./CLOUDFLARE.md)。
