@@ -66,3 +66,16 @@
   .app-shell .header-connect { padding: 9px; }
   .app-shell .header-connect > span { max-width: 78px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 }
+/* Trading keeps the original order component mounted beside its read-only market. */
+.app-shell .trade-layout { max-width: 1240px; padding: 32px 28px 64px; }
+.trade-terminal { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(360px, 1fr); gap: 24px; align-items: start; }
+.trade-order-column { min-width: 0; position: sticky; top: 24px; }
+.trade-order-column > [hidden] { display: none; }
+@media (max-width: 1000px) {
+  .trade-terminal { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .trade-market-pane { display: contents; }
+  .trade-market-chart-surface { order: 1; }
+  .trade-order-column { order: 2; position: static; width: min(540px, 100%); margin: 0 auto; }
+  .trade-market-activity { order: 3; }
+}
+@media (max-width: 700px) { .app-shell .trade-layout { padding: 24px 12px 48px; } .trade-terminal { gap: 20px; } }

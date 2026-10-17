@@ -1,0 +1,60 @@
+.trade-market-pane { min-width: 0; }
+.trade-market-chart-surface { min-width: 0; background: var(--soda-surface); border: 1px solid var(--soda-line); border-radius: 20px; padding: 22px; }
+.trade-market-heading { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; }
+.trade-market-source { color: var(--soda-muted); font-size: 10px; letter-spacing: .5px; }
+.trade-market-heading h2 { font-size: 21px; font-weight: 500; letter-spacing: -.5px; line-height: 1.3; margin: 7px 0 6px; overflow-wrap: anywhere; }
+.trade-market-heading > div { line-height: 1.4; }
+.trade-market-heading p { font-size: 11px; color: var(--soda-muted); margin: 0; }
+.trade-market-price { display: grid; gap: 8px; margin: 20px 0 18px; }
+.trade-market-price > span { color: var(--soda-muted); font-size: 11px; }
+.trade-market-price > strong { font-size: clamp(21px, 2.2vw, 30px); font-weight: 500; letter-spacing: -.7px; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.trade-market-price > small { font-size: 10px; color: var(--soda-muted); }
+.trade-chart-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; padding: 0 0 16px; border-bottom: 1px solid var(--soda-line-soft); }
+.trade-chart-toolbar > div { display: flex; gap: 4px; }
+.trade-chart-toolbar button { background: none; border: 0; border-radius: 6px; color: var(--soda-muted); min-width: 35px; min-height: 34px; padding: 6px 8px; font-size: 11px; }
+.trade-chart-toolbar button[aria-pressed="true"] { background: var(--soda-raised); color: var(--soda-text); }
+.trade-chart-toolbar button:hover { background: var(--soda-hover); }
+.trade-price-chart { margin: 16px 0; }
+.trade-price-chart figcaption { display: flex; flex-wrap: wrap; gap: 5px 11px; color: var(--soda-muted); font-size: 10px; min-height: 26px; font-variant-numeric: tabular-nums; }
+.trade-price-chart figcaption > span:first-child { color: var(--soda-text); }
+.trade-chart-frame { display: grid; grid-template-columns: minmax(0, 1fr) 66px; height: 220px; gap: 10px; }
+.trade-chart-frame svg { display: block; width: 100%; height: 220px; overflow: visible; }
+.trade-chart-axis { display: flex; flex-direction: column; justify-content: space-between; padding: 10px 0; font-size: 10px; color: var(--soda-muted); text-align: right; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.trade-chart-times { display: flex; justify-content: space-between; gap: 12px; margin: 5px 76px 0 0; font-size: 10px; color: var(--soda-muted); }
+.trade-market-empty { display: grid; align-content: center; justify-items: center; text-align: center; gap: 12px; min-height: 270px; padding: 24px 12px; color: var(--soda-muted); font-size: 13px; line-height: 1.7; }
+.trade-market-empty p { margin: 0; }
+.trade-market-statistics { display: grid; grid-template-columns: .7fr 1.6fr 1fr; gap: 16px; padding: 12px 0; border-top: 1px solid var(--soda-line-soft); border-bottom: 1px solid var(--soda-line-soft); }
+.trade-market-statistics > div { display: grid; gap: 6px; align-content: start; min-width: 0; }
+.trade-market-statistics span { font-size: 10px; color: var(--soda-muted); }
+.trade-market-statistics strong { font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.trade-market-statistics small { font-size: 11px; color: var(--soda-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.trade-market-coverage { color: var(--soda-muted); font-size: 10px; line-height: 1.6; margin: 16px 0 10px; }
+.trade-market-load { font-size: 11px; min-height: 36px; }
+.trade-market-pool-link { display: flex; align-items: center; gap: 5px; color: var(--soda-muted); font-size: 10px; margin-top: 14px; }
+.trade-chart-range { font-size: 11px; color: var(--soda-muted); margin-top: 16px; }
+.trade-chart-range summary { cursor: pointer; min-height: 28px; }
+.trade-chart-range form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px; margin-top: 8px; }
+.trade-chart-range label { display: grid; gap: 7px; flex: 1; min-width: 110px; }
+.trade-chart-range input { min-width: 0; width: 100%; border: 1px solid var(--soda-line); background: var(--soda-field); color: var(--soda-text); border-radius: 7px; padding: 9px; font-size: 11px; }
+.trade-chart-range .button { font-size: 11px; min-height: 34px; padding: 8px 10px; }
+.trade-market-muted { font-size: 10px; color: var(--soda-muted); line-height: 1.7; margin: 12px 0 0; }
+.trade-market-activity { min-width: 0; margin-top: 22px; }
+.trade-market-section-heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin: 0 2px 12px; }
+.trade-market-section-heading h3 { font-size: 14px; font-weight: 500; margin: 0; }
+.trade-market-section-heading > span { color: var(--soda-muted); font-size: 10px; }
+.trade-market-table-scroll { overflow: auto; max-height: 250px; border: 1px solid var(--soda-line); border-radius: 12px; background: var(--soda-surface); }
+.trade-market-activity table { width: 100%; border-collapse: collapse; text-align: left; white-space: nowrap; font-size: 10px; }
+.trade-market-activity th { padding: 13px 12px; font-weight: 400; color: var(--soda-muted); background: var(--soda-surface); position: sticky; top: 0; }
+.trade-market-activity td { padding: 12px; border-top: 1px solid var(--soda-line-soft); max-width: 150px; overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums; }
+.trade-market-activity a { display: flex; align-items: center; gap: 4px; }
+@media (max-width: 1000px) { .trade-market-activity { margin-top: 0; } }
+@media (max-width: 700px) {
+  .trade-market-chart-surface { padding: 18px 14px; border-radius: 18px; }
+  .trade-market-price { margin: 18px 0 16px; }
+  .trade-market-price > strong { font-size: 24px; }
+  .trade-chart-frame, .trade-chart-frame svg { height: 170px; }
+  .trade-chart-frame { grid-template-columns: minmax(0, 1fr) 60px; gap: 7px; }
+  .trade-chart-times { margin-right: 67px; }
+  .trade-market-statistics { gap: 12px; grid-template-columns: .7fr 1.5fr 1fr; }
+  .trade-market-statistics strong { font-size: 12px; }
+}

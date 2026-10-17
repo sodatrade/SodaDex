@@ -1,6 +1,6 @@
 import './swap.css'
 import { useQuery } from '@tanstack/react-query'
-import { useState, type ReactElement } from 'react'
+import { useEffect, useMemo, useState, type ReactElement } from 'react'
 import { formatUnits, type Address } from 'viem'
 import { Button, Icon, NetworkIcon, Surface } from '../../components/primitives'
 import { amountError, formatBalance, parseAmount } from '../../domain/amount'
@@ -14,6 +14,7 @@ import type { Currency } from '../../liquidity/types'
 import { usePreferences } from '../../preferences/context'
 import { publicSwapsEnabled } from '../../trading/config'
 import type { TradeIdentity } from '../../trading/types'
+import { marketContext, type TradeMarketContext } from '../trade/context'
 import { AmountPanel } from './AmountPanel'
 import { CurrencyPicker } from './CurrencyPicker'
 import { bestPoolQuote, currencyKey, matchingPools, sameCurrency, slippageValue, wrapDirection } from './routes'
@@ -24,7 +25,7 @@ import { useTokenCatalog } from './useTokenCatalog'
 import { useSwapOperation, type SwapReview } from './useSwapOperation'
 interface Props {
   wallet: WalletController; balances: Record<AssetId, bigint> | undefined
-  balancesLoading: boolean; balancesError: boolean; onConnect: () => void; onCreatePool?: () => void
+  balancesLoading: boolean; balancesError: boolean; onConnect: () => void; onCreatePool?: () => void; onContextChange?: (context: TradeMarketContext) => void
 }
 function builtin(currency: Currency): AssetId | undefined {
   if (currency.native) return 'okb'
@@ -34,7 +35,7 @@ function builtin(currency: Currency): AssetId | undefined {
 async function customBalance(currency: Currency, address: Address): Promise<bigint> {
   return hexQuantity(await rpc('eth_call', [{ to: currency.address, data: `0x70a08231${address.slice(2).padStart(64, '0')}` }, 'latest']))
 }
-export function GeneralSwapCard({ wallet, balances, balancesLoading, balancesError, onConnect, onCreatePool }: Props): ReactElement {
+export function GeneralSwapCard({ wallet, balances, balancesLoading, balancesError, onConnect, onCreatePool, onContextChange }: Props): ReactElement {
   const { locale, t } = usePreferences(), m = tradeMessages(locale)
   const [from, setFrom] = useState<Currency>(NATIVE_CURRENCY)
   const [to, setTo] = useState<Currency>(KNOWN_CURRENCIES.find((c) => c.address.toLowerCase() === STABLE_ADDRESS.toLowerCase()) ?? KNOWN_CURRENCIES[2])
@@ -65,6 +66,10 @@ export function GeneralSwapCard({ wallet, balances, balancesLoading, balancesErr
     queryFn: () => bestPoolQuote(matches, parsed.kind === 'valid' ? parsed.units : 0n, bps ?? 50),
     enabled: !direction && matches.length > 0 && parsed.kind === 'valid' && !error && bps !== undefined,
     retry: false, refetchInterval: 15_000 })
+  const context = useMemo(() => marketContext({ from, to, protocol, pools: pools.data, loading: pools.isPending,
+    failed: pools.isError, quote: quote.isError ? undefined : quote.data }),
+    [from, to, protocol, pools.data, pools.isPending, pools.isError, quote.data, quote.isError])
+  useEffect(() => { onContextChange?.(context) }, [context, onContextChange])
   const currencies = [...KNOWN_CURRENCIES, ...imported, ...catalog, ...(pools.data ?? []).flatMap((p) => [p.currency0, p.currency1])]
     .filter((c, index, all) => all.findIndex((v) => currencyKey(v) === currencyKey(c)) === index)
   const changed = (): void => { operation.cancel(); operation.reset(); setReview(undefined) }

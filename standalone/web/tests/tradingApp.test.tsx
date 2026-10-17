@@ -17,6 +17,7 @@ import { CONTRACTS, POOLS } from '../src/trading/config'
 import * as policy from '../../trading-policy'
 import * as receipts from '../src/trading/receipts'
 import { TradeError } from '../src/trading/types'
+import { chartFixture } from './tradeMarketFixture'
 const owner = '0x1111111111111111111111111111111111111111'
 const hash = `0x${'a'.repeat(64)}` as Hex
 const deploymentReady = POOLS.ready
@@ -63,6 +64,11 @@ beforeEach(() => {
     'fetch',
     vi.fn(async (url: unknown, options?: RequestInit) => {
       if (String(url).startsWith('/api/reference/')) return new Response(JSON.stringify({ schemaVersion: 1, chainId: 196, source: 'uniswap', readOnly: true, tokens: [] }))
+      if (String(url).startsWith('/api/dex/chart')) {
+        const query = new URL(String(url), 'http://localhost').searchParams
+        const selected = fixturePools.find((pool) => pool.id === query.get('pool'))!
+        return new Response(JSON.stringify(chartFixture(selected, { interval: query.get('interval') as '5m', candles: [], trades: [], priceToken1PerToken0: null })))
+      }
       if (String(url).startsWith('/api/dex/pools')) return new Response(JSON.stringify({ schemaVersion: 1, chainId: 196,
         asOf: { number: 73400320, hash, timestamp: 1000 }, coverage: { fromBlock: 73361037, toBlock: 73400320, complete: true, nextFromBlock: null }, nextCursor: null,
         pools: fixturePools.map((pool) => ({ protocol: pool.protocol, id: pool.id, address: pool.address ?? null, token0: pool.currency0.address,

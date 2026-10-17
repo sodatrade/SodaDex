@@ -27,7 +27,7 @@ const hash = (v: unknown): v is string => typeof v === 'string' && /^0x[\da-f]{6
 const address = (v: unknown): v is string => typeof v === 'string' && /^0x[\da-f]{40}$/i.test(v)
 const raw = (v: unknown): boolean => typeof v === 'string' && /^\d+$/.test(v)
 export class DataError extends Error {
-  constructor(public readonly code: 'CHAIN_REORGANIZED' | 'CURSOR_EXPIRED' | 'UNAVAILABLE') { super(code) }
+  constructor(public readonly code: 'CHAIN_REORGANIZED' | 'CURSOR_EXPIRED' | 'CHART_RANGE_TOO_LARGE' | 'UNAVAILABLE') { super(code) }
 }
 function envelope(v: unknown): v is Record<string, unknown> {
   if (!record(v) || v.schemaVersion !== 1 || v.chainId !== 196 || !record(v.asOf) || !record(v.coverage)) return false
@@ -48,7 +48,10 @@ async function get(path: string): Promise<unknown> {
   const response = await fetch(path, { signal: AbortSignal.timeout(30_000) })
   if (!response.ok) {
     const body: unknown = await response.json().catch(() => undefined)
-    throw new DataError(record(body) && (body.code === 'CHAIN_REORGANIZED' || body.code === 'CURSOR_EXPIRED') ? body.code : 'UNAVAILABLE')
+    const knownCode = record(body) && (body.code === 'CHAIN_REORGANIZED' || body.code === 'CURSOR_EXPIRED' || body.code === 'CHART_RANGE_TOO_LARGE') ? body.code : undefined
+    // Older chart Workers returned this exact bounded-query error without a code.
+    const legacyRangeLimit = path.startsWith('/api/dex/chart?') && record(body) && body.error === 'Chart range exceeds 5000 trades; choose a narrower block range'
+    throw new DataError(knownCode ?? (legacyRangeLimit ? 'CHART_RANGE_TOO_LARGE' : 'UNAVAILABLE'))
   }
   return response.json() as Promise<unknown>
 }
@@ -101,4 +104,56 @@ export function mergeEvents(pages: EventsResponse[]): DexEvent[] {
   for (const page of pages) for (const e of page.events)
     if (e.blockHash === canonical.get(e.blockNumber)) events.set(e.id, e)
   return [...events.values()].sort((a, b) => b.blockNumber - a.blockNumber || b.logIndex - a.logIndex)
+}
+
+export const CHART_INTERVALS = ['1m', '5m', '1h', '4h', '1d'] as const
+export type ChartInterval = typeof CHART_INTERVALS[number]
+export interface ChartCandle {
+  time: number; bucketEndTime: number; open: string | null; high: string | null; low: string | null; close: string | null
+  sqrtPriceOpenX96: string; sqrtPriceHighX96: string; sqrtPriceLowX96: string; sqrtPriceCloseX96: string
+  volume0Raw: string; volume1Raw: string; tradeCount: number; firstBlock: number; lastBlock: number
+}
+export interface ChartTrade {
+  id: string; blockNumber: number; blockHash: string; transactionHash: string; logIndex: number; timestamp: number
+  amount0Raw: string; amount1Raw: string; volume0Raw: string; volume1Raw: string; sqrtPriceX96: string
+  priceToken1PerToken0: string | null; sender: string; recipient: string | null
+}
+/** The newest cursor response replaces the earlier cumulative arrays. */
+export interface ChartResponse {
+  schemaVersion: 1; chainId: 196; asOf: ChainBlock; coverage: Coverage; pool: DexPool; token0: DexToken; token1: DexToken
+  interval: ChartInterval; query: { fromBlock: number; toBlock: number }; priceToken1PerToken0: string | null
+  priceUnavailableReason: string | null; candles: ChartCandle[]; trades: ChartTrade[]; queryComplete: boolean; nextCursor: string | null
+}
+export interface ChartQuery { interval: ChartInterval; fromBlock?: number; toBlock?: number; cursor?: string }
+const decimalPrice = (v: unknown): boolean => v === null || (typeof v === 'string' && /^\d+(\.\d+)?$/.test(v))
+function candle(v: unknown): boolean {
+  return record(v) && integer(v.time) && integer(v.bucketEndTime) && v.bucketEndTime > v.time &&
+    ['open', 'high', 'low', 'close'].every((key) => decimalPrice(v[key])) &&
+    ['sqrtPriceOpenX96', 'sqrtPriceHighX96', 'sqrtPriceLowX96', 'sqrtPriceCloseX96', 'volume0Raw', 'volume1Raw'].every((key) => raw(v[key])) &&
+    integer(v.tradeCount) && integer(v.firstBlock) && integer(v.lastBlock)
+}
+function chartTrade(v: unknown): boolean {
+  return record(v) && typeof v.id === 'string' && integer(v.blockNumber) && hash(v.blockHash) && hash(v.transactionHash) &&
+    integer(v.logIndex) && integer(v.timestamp) && ['amount0Raw', 'amount1Raw'].every((key) => typeof v[key] === 'string' && /^-?\d+$/.test(v[key])) &&
+    raw(v.volume0Raw) && raw(v.volume1Raw) && raw(v.sqrtPriceX96) && decimalPrice(v.priceToken1PerToken0) &&
+    address(v.sender) && (v.recipient === null || address(v.recipient))
+}
+export async function getChart(p: DexPool, query: ChartQuery): Promise<ChartResponse> {
+  const params = new URLSearchParams({ pool: p.id, protocol: p.protocol, token0: p.token0, token1: p.token1,
+    fee: String(p.fee), tickSpacing: String(p.tickSpacing), hooks: p.hooks, interval: query.interval })
+  for (const key of ['fromBlock', 'toBlock', 'cursor'] as const) if (query[key] !== undefined) params.set(key, String(query[key]))
+  const v = await get(`/api/dex/chart?${params}`)
+  if (!envelope(v) || !pool(v.pool) || !token(v.token0) || !token(v.token1) || !record(v.query) ||
+    !integer(v.query.fromBlock) || !integer(v.query.toBlock) || v.query.fromBlock > v.query.toBlock ||
+    v.interval !== query.interval || !decimalPrice(v.priceToken1PerToken0) ||
+    !(v.priceUnavailableReason === null || typeof v.priceUnavailableReason === 'string') ||
+    !Array.isArray(v.candles) || !v.candles.every(candle) || !Array.isArray(v.trades) || !v.trades.every(chartTrade) ||
+    typeof v.queryComplete !== 'boolean' || !(v.nextCursor === null || typeof v.nextCursor === 'string')) throw new Error('Invalid chart data')
+  const result = v as unknown as ChartResponse
+  if (result.pool.protocol !== p.protocol || result.pool.id.toLowerCase() !== p.id.toLowerCase() ||
+    result.token0.address.toLowerCase() !== p.token0.toLowerCase() || result.token1.address.toLowerCase() !== p.token1.toLowerCase() ||
+    result.pool.token0.toLowerCase() !== p.token0.toLowerCase() || result.pool.token1.toLowerCase() !== p.token1.toLowerCase() ||
+    result.pool.fee !== p.fee || result.pool.tickSpacing !== p.tickSpacing || result.pool.hooks.toLowerCase() !== p.hooks.toLowerCase() ||
+    result.queryComplete !== (result.nextCursor === null)) throw new Error('Mismatched chart data')
+  return result
 }

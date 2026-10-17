@@ -16,7 +16,7 @@ import { useWallet } from './lib/useWallet'
 import { usePreferences } from './preferences/context'
 import { PreferencesProvider } from './preferences/PreferencesProvider'
 import { POOLS, publicSwapsEnabled } from './trading/config'
-const GeneralSwapCard = lazy(async () => ({ default: (await import('./features/swap/GeneralSwapCard')).GeneralSwapCard }))
+const TradeWorkspace = lazy(async () => ({ default: (await import('./features/trade/TradeWorkspace')).TradeWorkspace }))
 const PortfolioPage = lazy(async () => ({ default: (await import('./features/portfolio/PortfolioPage')).PortfolioPage }))
 const ExplorePage = lazy(async () => ({ default: (await import('./features/explore/ExplorePage')).ExplorePage }))
 const LiquidityPage = lazy(async () => ({ default: (await import('./features/liquidity/LiquidityPage')).LiquidityPage }))
@@ -101,25 +101,11 @@ function AppContent(): ReactElement {
               {m.bridge}<Icon name="external" size={14} />
             </a>
           </div>
-          <div className="trade-workspace">
-            <Suspense fallback={<p role="status">{t('reading')}</p>}>
-              <GeneralSwapCard
-                wallet={wallet}
-                balances={currentBalances}
-                balancesLoading={balances.isFetching && !balances.data}
-                balancesError={balances.isError || network.isError}
-                onConnect={() => setWalletOpen(true)}
-                onCreatePool={() => navigate('pools')}
-              />
-            </Suspense>
-            <div className="trade-meta">
-              <span>
-                <Icon name="layers" size={15} />
-                {t(POOLS.ready ? 'poolsReady' : 'deploymentPending')}
-              </span>
-              <span>{t('platformZero')}</span>
-            </div>
-          </div>
+          <Suspense fallback={<p role="status">{t('reading')}</p>}>
+            <TradeWorkspace wallet={wallet} balances={currentBalances} active={page === 'swap'}
+              balancesLoading={balances.isFetching && !balances.data} balancesError={balances.isError || network.isError}
+              onConnect={() => setWalletOpen(true)} onCreatePool={() => navigate('pools')} />
+          </Suspense>
         </div>
         {primaryPage(page) === 'portfolio' ? (
           <Suspense fallback={<p className="content-page" role="status">{t('reading')}</p>}>
