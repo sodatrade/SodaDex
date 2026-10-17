@@ -30,8 +30,13 @@ export class Admission {
       const reserved = Object.values(s.challenges).filter(c => c.status !== 'issued' && c.status !== 'registered' && c.status !== 'expired')
       if (Object.keys(s.projects).length + reserved.length >= p.maxProjects ||
           Object.values(s.challenges).filter(c => c.status !== 'issued' && c.status !== 'expired' && same(c.address, address)).length >= p.maxProjectsPerWallet) throw new ServiceError('project_limit')
-      if (Object.values(s.challenges).some(c => c.status === 'issued' && same(c.address, address)) ||
-          Object.values(s.challenges).filter(c => c.status === 'issued').length >= p.maxProjects * 2) throw new ServiceError('challenge_pending')
+      // Unverified requests are replaceable cache entries, never wallet/project locks.
+      // Only a valid personal signature below can claim non-evictable admission quota.
+      const issued = Object.values(s.challenges).filter(c => c.status === 'issued').toSorted((a, b) => a.createdAt - b.createdAt)
+      while (issued.length >= p.maxProjects * 2) {
+        const oldest = issued.shift()!
+        delete s.challenges[oldest.requestId]
+      }
       const expiresAt = this.now() + 300
       const value: Challenge = { address, requestId, form, expiresAt, status: 'issued', createdAt: this.now(),
         message: challengeMessage(this.config, this.d, address, requestId, form, expiresAt) }

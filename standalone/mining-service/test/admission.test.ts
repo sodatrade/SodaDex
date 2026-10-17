@@ -143,3 +143,31 @@ describe('chain-proven admission expiry', () => {
     expect(f.repo.read().challenges[id].expiryProof).toBeUndefined()
   })
 })
+
+
+describe('unverified challenges cannot lock issuance', () => {
+  it('allows the victim wallet to request another challenge without any attacker signature', () => {
+    const f = setup()
+    f.service.challenge(wallet.address, id, form)
+    const victim = f.service.challenge(wallet.address, '22222222-2222-4222-8222-222222222222', form)
+    expect(victim.status).toBe('issued')
+    expect(victim.address).toBe(wallet.address)
+  })
+  it('evicts only unverified entries at a bounded limit; new legitimate challenges remain available', async () => {
+    const f = setup(); f.c.policy!.maxProjects = 2; f.c.policy!.maxProjectsPerWallet = 2
+    const verified = f.service.challenge(wallet.address, id, form)
+    await f.service.launch(wallet.address, id, await wallet.signMessage({ message: verified.message }))
+    // The existing static project plus this one verified request exactly fill the hard quota.
+    // Use a larger policy solely to isolate the bounded unverified-cache behavior below.
+    f.c.policy!.maxProjects = 10
+    for (let n = 1; n <= 50; n++) f.service.challenge(authority.address, `${n.toString(16).padStart(8, '0')}-2222-4222-8222-222222222222`, form)
+    expect(Object.values(f.repo.read().challenges).filter(c => c.status === 'issued')).toHaveLength(20)
+    const fresh = f.service.challenge(wallet.address, 'ffffffff-2222-4222-8222-222222222222', form)
+    expect(fresh.status).toBe('issued')
+    expect(f.repo.read().challenges[id].status).toBe('authorized')
+    expect(Object.values(f.repo.read().challenges).filter(c => c.status === 'issued')).toHaveLength(20)
+    // Unverified entries have not consumed the remaining launch quota.
+    const signature = await wallet.signMessage({ message: fresh.message })
+    expect((await f.service.launch(wallet.address, fresh.requestId, signature)).tx.from).toBe(wallet.address)
+  })
+})
