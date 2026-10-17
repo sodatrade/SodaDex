@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "mode": "owned-anvil-only",
+  "chainId": 196,
+  "fixtureTransactions": 19,
+  "signedExecutions": 7,
+  "orphanedFillRawReplays": 1,
+  "results": [
+    {
+      "protocol": 3,
+      "inputToken": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+      "outputToken": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+      "amountIn": "1000000000000",
+      "minAmountOut": "1",
+      "received": "114",
+      "status": "filled",
+      "txHash": "0xc1535eb763efe53851e068ea24351e88bd7d5529805d40f62421591966d3ae8b",
+      "gasCostWei": "318710002230970",
+      "restartRecovered": true
+    },
+    {
+      "protocol": 3,
+      "inputToken": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+      "outputToken": "0x0000000000000000000000000000000000000000",
+      "amountIn": "10",
+      "minAmountOut": "1",
+      "received": "78887558409",
+      "status": "filled",
+      "txHash": "0x438b21643ad5adda1a653ce618e0fcc1279b59364ef66898ef8216665f0fa724",
+      "gasCostWei": "319803002238621",
+      "restartRecovered": false
+    },
+    {
+      "protocol": 4,
+      "inputToken": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+      "outputToken": "0x0000000000000000000000000000000000000000",
+      "amountIn": "10",
+      "minAmountOut": "1",
+      "received": "84085442346",
+      "status": "filled",
+      "txHash": "0xdaeb59641688f851595c2260b140ae053eafb8d6adbaf90180f1d2faad7abb94",
+      "gasCostWei": "247254001730778",
+      "restartRecovered": false
+    },
+    {
+      "protocol": 4,
+      "inputToken": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+      "outputToken": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+      "amountIn": "30000000000",
+      "minAmountOut": "1",
+      "received": "2",
+      "status": "filled",
+      "txHash": "0xc83c66b99289bed352a0a966e0f5955965f8be6a5d123e8ca1b9212dc40e9462",
+      "gasCostWei": "277549001942843",
+      "restartRecovered": false
+    }
+  ],
+  "reorg": {
+    "orphanedCancellationBlock": {
+      "blockNumber": "73368576",
+      "blockHash": "0x463d8b2f717848471d0fae1f128f5dd54cd67956226a644a129de60f19909625",
+      "timestamp": 1792209655
+    },
+    "restoredObservation": {
+      "blockNumber": "73368576",
+      "blockHash": "0x7cd6f214bc35da968dcfe60991846b403e5b705904f98c611a29b20f15ad9c4b",
+      "timestamp": 1792209655
+    },
+    "restoredStatus": "open",
+    "signaturePreserved": true,
+    "subsequentlyFilled": true,
+    "orphanedFillReplayedWithoutSigning": true
+  },
+  "cancelledPendingRecovery": {
+    "txHash": "0x20745552981e2eaa4c571419f8b9083d77b030ce0a218bbc19370333360bc60e",
+    "reverted": true,
+    "gasCostWei": "51785000362495",
+    "nextOrderFilled": true,
+    "eachOrderSignedOnce": true
+  },
+  "failedMinimumStayedOpen": true,
+  "nonceUnchangedOnFailure": true,
+  "makerCancellationObserved": true,
+  "chainExpiryObserved": true,
+  "executionPausePreservesReads": true,
+  "idempotentTerminalSubmission": true,
+  "httpSecretsRedacted": true,
+  "databasePrivate": true,
+  "gasCommittedWei": "1756618012296326",
+  "gasBudgetWei": "10000000000000000"
+}

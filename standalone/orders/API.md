@@ -17,7 +17,7 @@ Canonical wire order and typed-data helpers: `../order-types.ts`. Stable DTOs: `
 }
 ```
 
-HTTP 200 describes readiness; it does not imply execution is enabled. The current undeployed configuration has `settlement: null`, both booleans false, and reason `NOT_DEPLOYED`.
+HTTP 200 describes readiness; it does not imply execution is enabled. An explicitly undeployed configuration has `settlement: null`, both booleans false, and reason `NOT_DEPLOYED`.
 
 A ready settlement with execution disabled retains its address and returns `EXECUTION_PAUSED`, with both booleans false. New admission is paused. Existing idempotent submissions and public reads remain available, including authoritative cancellation/expiry checks.
 

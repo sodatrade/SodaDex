@@ -1,0 +1,278 @@
+{
+  "sourceCommit": "bd0e63adecb6237d46c4cab2f4b41565f9b3240b",
+  "versionId": "15d6bd63-d573-47fd-ace9-a6fda6805bc2",
+  "backendVersionId": "3b5c4d49-cbb7-4ecb-b215-95831de83af4",
+  "checkedAt": "2026-10-17T03:46:28.489Z",
+  "site": "https://sodadex-preview.jsmsdx2025.workers.dev/",
+  "assetsMatched": 42,
+  "assetsTotal": 42,
+  "rpcHttpStatus": 200,
+  "chainId": "0xc4",
+  "ordersHttpStatus": 200,
+  "ordersStatus": {
+    "schemaVersion": 1,
+    "service": "sodadex-orders",
+    "chainId": 196,
+    "settlement": "0xE713AfD6133207df18662080e2B0F7e456AeEBA5",
+    "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+    "wrappedNative": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+    "testDeployment": true,
+    "executionEnabled": true,
+    "acceptingOrders": true,
+    "reason": null
+  },
+  "assets": [
+    {
+      "file": "assets/context-BaKQJfWt.js",
+      "status": 200,
+      "sha256": "9e794771a62be0cf41f814526eaaa25e5d2c72b2a7c05aa0508143cbfcb16194",
+      "matched": true
+    },
+    {
+      "file": "assets/CurrencyLabel-BTwMgwCb.js",
+      "status": 200,
+      "sha256": "60421ce78a4d21bc2e859016c55dd53b92b7f1ee310627eec451446432093a94",
+      "matched": true
+    },
+    {
+      "file": "assets/ExplorePage-Bcb03ejl.css",
+      "status": 200,
+      "sha256": "2087306cdf8937320d740b4b32a3a3176fe21d572078b335a26afa9b6812796a",
+      "matched": true
+    },
+    {
+      "file": "assets/ExplorePage-C1ntE6U_.js",
+      "status": 200,
+      "sha256": "a39d0df857c74a8de4f9ba6f01b79edbaf7e59584bd87e4f1ea565ce3eae760d",
+      "matched": true
+    },
+    {
+      "file": "assets/HistoryPage-BMvhcgWC.js",
+      "status": 200,
+      "sha256": "697b99037471430e7c0bfda5d636755d2c7046aba006790d540ee5588e3251bd",
+      "matched": true
+    },
+    {
+      "file": "assets/HistoryPage-DhBVaXJ2.css",
+      "status": 200,
+      "sha256": "a946842042b34a94a1fc1727cac0d2c8671e0ce8ff027958a6daa62db7d50dd3",
+      "matched": true
+    },
+    {
+      "file": "assets/index-CL_w_aca.js",
+      "status": 200,
+      "sha256": "5bc9fb79a73d6f7be721c0fe3ec1019d2a9142801a6a5a43da9369f06da190f1",
+      "matched": true
+    },
+    {
+      "file": "assets/index-DMk7k6uK.css",
+      "status": 200,
+      "sha256": "dd9b33049968a8bcc20bb054be2d8db7e320e7f75c4ad907aff131ce1ac4bec2",
+      "matched": true
+    },
+    {
+      "file": "assets/Inter-normal.var-BsKWvCjH.ttf",
+      "status": 200,
+      "sha256": "c3b7c80beacfc5c4c486826ed9ace8cbfd074aabb9fdb4638967fa3e29554e91",
+      "matched": true
+    },
+    {
+      "file": "assets/LimitOrderPanel-CDHjidkv.js",
+      "status": 200,
+      "sha256": "18294485bd4cd901b2a575bca13e3c67b4033b951e04567f49427a27f1326085",
+      "matched": true
+    },
+    {
+      "file": "assets/LimitOrderPanel-DnHYHfn3.css",
+      "status": 200,
+      "sha256": "cc13c47215a7a02c381d2100e09664814164fcc9c210345e2d5b26fee01cef0a",
+      "matched": true
+    },
+    {
+      "file": "assets/liquidity-Fxgfu1Sy.js",
+      "status": 200,
+      "sha256": "8df93ea39b00cddb887768569650c9abac75d6cc78cf0e53d918a587070828ad",
+      "matched": true
+    },
+    {
+      "file": "assets/LiquidityPage-C9tk6LYU.css",
+      "status": 200,
+      "sha256": "fa1fd254cebe51dd508126be76ec97a6572535720a37f08a38f23d9e2fc77ce7",
+      "matched": true
+    },
+    {
+      "file": "assets/LiquidityPage-DsLgEX7b.js",
+      "status": 200,
+      "sha256": "cd2f7800a6b0cdc3c056205aaa9a4d7503c6f8834b1798d75ab7696716e03912",
+      "matched": true
+    },
+    {
+      "file": "assets/okb.png",
+      "status": 200,
+      "sha256": "be310dd7ec1349c0b353c0a4d17b4c6905b5b51301787690631860eadefbc996",
+      "matched": true
+    },
+    {
+      "file": "assets/PoolQuotePanel-C_uI9b6R.js",
+      "status": 200,
+      "sha256": "e9f8b9f4675b1d6c3b6a0542e0e059fd9e76c20c679eb335c3edae83db68ac3b",
+      "matched": true
+    },
+    {
+      "file": "assets/poolQuotes-L5QpSekR.js",
+      "status": 200,
+      "sha256": "fdb41d83ae0ee6043dcd58eb17e7c072ac9b3d23dd41856a3ac3a384939f2c56",
+      "matched": true
+    },
+    {
+      "file": "assets/pools-Ca227QvL.js",
+      "status": 200,
+      "sha256": "9b6a800547a8df8781124ed234477a26e6441bcfc9bf8f4f2e40218ab99bf6d3",
+      "matched": true
+    },
+    {
+      "file": "assets/PortfolioPage-B2CZBP6g.js",
+      "status": 200,
+      "sha256": "363441173fa60c971d6ec33af03e3a463fb191e8b1805d210a98a9ab9fe56e4a",
+      "matched": true
+    },
+    {
+      "file": "assets/PortfolioPage-DcbQzCsJ.css",
+      "status": 200,
+      "sha256": "e6f57f05bc27c811973f62675f89d10c995bba39ff959c046d05d8123bdea14e",
+      "matched": true
+    },
+    {
+      "file": "assets/SOURCES.md",
+      "status": 200,
+      "sha256": "b23d977b3272d8385ef3466ddf186792b6b5432e4599ef014f6b1bc3804273ff",
+      "matched": true
+    },
+    {
+      "file": "assets/TokenIcon-DI08yj51.js",
+      "status": 200,
+      "sha256": "b6104e796df0b81c2e3d7d51f1e1fb9a0e66cd480785a881f5c60459b476d08e",
+      "matched": true
+    },
+    {
+      "file": "assets/tokens/0x14a686103854dab7b8801e31979caa595835b25d.png",
+      "status": 200,
+      "sha256": "74e4b655a3b66f4efcfe3012f813c1f9ddc7c8a81e08329e07a89f13e64fe1c7",
+      "matched": true
+    },
+    {
+      "file": "assets/tokens/0x4ae46a509f6b1d9056937ba4500cb143933d2dc8.png",
+      "status": 200,
+      "sha256": "15a525a24b41ddf569ec4d8b583d91968fb4c4e60b961d3c550d9db35a412da8",
+      "matched": true
+    },
+    {
+      "file": "assets/tokens/0x505000008de8748dbd4422ff4687a4fc9beba15b.png",
+      "status": 200,
+      "sha256": "254681b94fff81cb3ea2a7590f5160598545a613297a6eeb21e455d127739d96",
+      "matched": true
+    },
+    {
+      "file": "assets/tokens/0x74b7f16337b8972027f6196a17a631ac6de26d22.png",
+      "status": 200,
+      "sha256": "32aa99cbdc067c7e8609c1b016b6a9d91e41e59ead9692f25278dcc08701b467",
+      "matched": true
+    },
+    {
+      "file": "assets/tokens/0xafeab3b85b6a56cf5f02317f0f7a23340eb983d7.png",
+      "status": 200,
+      "sha256": "d84678fdea64c2c3a0e62adc5f9f6304b9f3352b62f21335feb2a04f907c8ae3",
+      "matched": true
+    },
+    {
+      "file": "assets/tokens/0xb7c00000bcdeef966b20b3d884b98e64d2b06b4f.png",
+      "status": 200,
+      "sha256": "8c70c36d640cc15675744749b858e50dd9a3d801be450c98dce01db3fbdc008e",
+      "matched": true
+    },
+    {
+      "file": "assets/tokens/0xc5015b9d9161dca7e18e32f6f25c4ad850731fd4.png",
+      "status": 200,
+      "sha256": "6e48057801b656fc2658e7b12c7893e7b8ace26dc0b8f246f376b8cf955b3129",
+      "matched": true
+    },
+    {
+      "file": "assets/tokens/0xe7b000003a45145decf8a28fc755ad5ec5ea025a.png",
+      "status": 200,
+      "sha256": "70172b0352cf49d468d670543841a8d73ad1b1ff0f2ff678c8bff0d69b219808",
+      "matched": true
+    },
+    {
+      "file": "assets/TradeWorkspace-BAPjbyMy.css",
+      "status": 200,
+      "sha256": "3c9e6723aa00aa88fa58fd8912bb05531fdea396b7b06a6d05e752579f889685",
+      "matched": true
+    },
+    {
+      "file": "assets/TradeWorkspace-D34dDKlJ.js",
+      "status": 200,
+      "sha256": "14b645132a68aadae91f86caa2087972f02e44fbd6a26759d3e2f8cbe144d6e5",
+      "matched": true
+    },
+    {
+      "file": "assets/trading-policy-RiXm3TGl.js",
+      "status": 200,
+      "sha256": "57b1c3133edad5f941e243b1bbb9570978000aea1a30a35e9055a1b314614f68",
+      "matched": true
+    },
+    {
+      "file": "assets/usdt0.png",
+      "status": 200,
+      "sha256": "df5238a34df0255a1356485cd6939c521c125e22a25d43fe6d3ca0c98eab0403",
+      "matched": true
+    },
+    {
+      "file": "assets/useInfiniteQuery-CahdLOld.js",
+      "status": 200,
+      "sha256": "68ee08db27233f7cff2dbddee4cb7a6023e5cee56acf2cfbfc7214ff140d7c53",
+      "matched": true
+    },
+    {
+      "file": "assets/useMutation-DWgVpzDe.js",
+      "status": 200,
+      "sha256": "8770e804ca93019c5e45ed6d807aacd60404e5ba188bafbd757f78ac768b450b",
+      "matched": true
+    },
+    {
+      "file": "assets/walletExecution-WduaUGR0.js",
+      "status": 200,
+      "sha256": "f725749e8f8bb6e744e0395ba8b05b9b188408cb38a3462473041fa4fba00b86",
+      "matched": true
+    },
+    {
+      "file": "assets/wokb.png",
+      "status": 200,
+      "sha256": "5ce174b09a097862e25741ca77eea51a26ad3e64621f8e61003c44ae080cf6fa",
+      "matched": true
+    },
+    {
+      "file": "assets/xlayer.svg",
+      "status": 200,
+      "sha256": "f837468b7de4079c832bcd8d410d0c4cb90002f9e8f331e32a2e2b72a399eb88",
+      "matched": true
+    },
+    {
+      "file": "brand.svg",
+      "status": 200,
+      "sha256": "6762ccb350e717e96d13445ca80da96b9c2bede59e1a69b1c3bc2cbf21b99e5c",
+      "matched": true
+    },
+    {
+      "file": "index.html",
+      "status": 200,
+      "sha256": "1056b97d05b01bc70023f992d294ceb38baa9b7e133274532b1b4f3a250c7a66",
+      "matched": true
+    },
+    {
+      "file": "preferences-script.json",
+      "status": 200,
+      "sha256": "8aabb800ae162745d485e03b7ad5424eac8030e13dcdb1e529102713816763be",
+      "matched": true
+    }
+  ]
+}

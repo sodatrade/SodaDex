@@ -1,6 +1,6 @@
 # SodaDEX 测试前端
 
-独立构建的 SodaDEX 界面，复用本仓库的 Mycelium 样式工厂。`web/` 保存界面、钱包连接状态和交易流程；`worker/` 提供静态文件及同源 RPC 代理。它不依赖上游缺失的 `tools/uniswap-nx`。
+独立构建的 SodaDEX 界面，复用本仓库的 Mycelium 样式工厂。`web/` 保存界面、钱包连接状态和交易流程；`worker/` 提供静态文件、同源 RPC 和固定订单 Service Binding 代理；`orders/` 的独立 Cloudflare Worker/SQLite Durable Object 持久化限价单并使用专用 keeper 结算。它不依赖上游缺失的 `tools/uniswap-nx`。
 
 ## 本地运行
 
@@ -92,7 +92,7 @@ Cloudflare 凭证使用本机 Wrangler 登录状态，不进入源码或前端�
 
 `#swap` 为自有测试池的通用选币、报价、预览与钱包兑换入口；`#pools` 管理自有 Factory／PoolManager 下的 V3/V4 池与 PositionManager NFT。LP 默认滑点对齐此 fork 的上游源码回退值：一般为 2.5%，含原生币的 V4 为 0.05%，可手动修改；这里不使用 Uniswap 的远程配置或报价服务，因此不宣称复制其动态自动滑点。
 
-`#market` 按池查看链上价格、区块区间轨迹、交易量和费用估算；估算费用并非持有人实际可领取收入。V4 PoolManager 的总余额不作为单池资产余额。`#history` 分页扫描合约事件，支持钱包过滤、公开交易哈希回执查询和本浏览器提交记录；扫描游标过期或区块重组时须重启扫描。Cloudflare Cache 只保存可回收的扫描状态，没有永久索引、D1、AWS、自动调度或新增付费资源。
+`#market` 按池查看链上价格、区块区间轨迹、交易量和费用估算；估算费用并非持有人实际可领取收入。V4 PoolManager 的总余额不作为单池资产余额。`#history` 分页扫描合约事件，支持钱包过滤、公开交易哈希回执查询和本浏览器提交记录；扫描游标过期或区块重组时须重启扫描。Cloudflare Cache 只保存可回收的扫描状态，行情扫描没有永久索引、D1 或 AWS；限价单另用持久化 SQLite Durable Object 和有待办才运行的 alarm。
 
 交易公开元数据保存在浏览器 `sodadex.transactions.v1`；LP 另保存最后一笔待确认记录用于刷新恢复。浏览器不保存签名、私钥或 keystore。刷新后只查询回执，不自动续签下一笔授权或重发交易。清除浏览器存储会移除本设备记录，链上事件和哈希查询仍可使用。
 
@@ -110,3 +110,9 @@ npm --prefix standalone/web test
 ```
 
 这些状态和 runtime 是本地验收输入，不提交 Git。完整 fixture 测试包含 5 项 LP、7 项通用池交易/包装及 3 项发送集成用例；缺少任何关键 fixture 的跳过不计作通过。新导航与功能范围见 [web/README.md](web/README.md)。`#explore`/`#market`/`#history`/`#reference` 是探索页子 Tab，`#portfolio`/`#assets`/`#nfts`/`#activity` 是投资组合子 Tab；刷新和浏览器前进后退可恢复对应页面。官方参考池只读，钱包活动仅为 SodaDEX 事件和本浏览器记录，不宣称完整全链资产索引。
+
+## 测试限价单
+
+交易页选择「限价单」，确认 ERC20 输入、最低接收量、到期时间及自有 V3/V4 池，再在钱包中确认有限 Permit2 授权和完整订单签名。后台通过固定 `ORDERS_API` Service Binding 接收订单，SQLite Durable Object 保留签名、状态、原始执行交易和累计 gas 预算；keeper 只支付 gas，成交资产直接给签名 receiver。前端不读取本机 owner 或 keeper 密钥。挂单最低接收量不会被后台降低；撤单由 maker 调用测试 settlement 的 `cancel(nonce)`。
+
+部署地址和开关见 [orders-test.json](../deployments/orders-test.json)，实际部署、微量成交及撤单回执见 [orders-receipts.json](../deployments/xlayer-test/orders-receipts.json)，运行和暂停步骤见 [orders/CLOUDFLARE.md](orders/CLOUDFLARE.md)。Node CLI 默认只读；公开测试站使用独立云端服务，生产合约保持未部署。

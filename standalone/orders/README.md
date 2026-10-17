@@ -1,6 +1,6 @@
-# SodaDEX 本地订单服务
+# SodaDEX 订单服务
 
-订单核心提供 Node 22 和 Cloudflare SQLite Durable Object 两种适配器，负责接收已签名限价单、保存订单、核对链上状态和运行 keeper。Node 使用自己的 SQLite 文件，云端使用私有 DO SQL；不连接 IGNIX 数据库。当前测试合约部署地址仍为 `null`；默认可启动查询服务，但不接单、不签名、不广播。没有部署到 AWS、IGNIX 或公网。
+订单核心提供 Node 22 和 Cloudflare SQLite Durable Object 两种适配器，负责接收已签名限价单、保存订单、核对链上状态和运行 keeper。Node 使用自己的 SQLite 文件，云端使用私有 DO SQL；不连接 IGNIX 数据库。Cloudflare 测试服务已接入 X Layer 196 的 SodaDEX 测试结算合约；当前地址、开关和 API 来源见 `../../deployments/orders-test.json`，实际回执见 `../../deployments/xlayer-test/orders-receipts.json`。Node CLI 保持只读，不读取 owner 钱包；专用云端 keeper 的配置见 [CLOUDFLARE.md](CLOUDFLARE.md)。
 
 ## 启动和检查
 
@@ -13,7 +13,7 @@ npm run check
 npm start
 ```
 
-默认监听 `127.0.0.1:3031`，数据库为本包 `.data/orders.sqlite`。`GET /v1/status` 返回 `NOT_DEPLOYED`；提交订单返回 503。这是真实部署状态，不是已接入生产服务的占位成功。
+默认监听 `127.0.0.1:3031`，数据库为本包 `.data/orders.sqlite`。Node CLI 没有显式 signer，`GET /v1/status` 对已核验合约返回 `EXECUTION_PAUSED`，新订单提交返回 503。公开测试站通过独立云端服务接单，不能用 CLI 的状态推断云端状态。
 
 | 配置 | 默认值与约束 |
 | --- | --- |
@@ -27,7 +27,7 @@ npm start
 | `ORDERS_GAS_BUDGET_WEI` | 默认 `0`；启用执行必须显式配置正整数累计 gas 预算 |
 | `ORDERS_EXECUTION_ENABLED` | 默认关闭；CLI 拒绝开启，执行需程序显式注入 signer |
 
-远程 settlement 当前没有已审核的部署地址。即使提供环境变量，本实现也不会在远程自动启用订单执行。未来上线需要同时更新部署配置、固定合约校验和对应验收。
+远程 settlement 必须匹配根目录已审核的测试部署地址。Node CLI 即使提供执行环境变量也不会自动启用 signer；云端需要 reviewed 开关、显式正累计预算、匹配专用 keeper Secret 和轮询配置共同满足。
 
 ## 数据流和职责
 
@@ -55,7 +55,7 @@ Permit2 nonce 是 maker 的全局 bitmap；若它已被其他用途消耗，而�
 
 暂停执行也会暂停接收新订单：已部署地址仍保留，状态返回 `EXECUTION_PAUSED`。既有订单可查询、幂等重提，并继续核对 maker 已完成的链上撤单和到期。暂停不会删除订单记录或伪装成合约尚未部署。
 
-gas 预算按本数据库所有执行累计：未确认交易保留 `gas × gasPrice` 上限，确认后记实际 `gasUsed × effectiveGasPrice`。重启会保留累计用量。单个数据库同一时刻只允许一个 keeper 周期；跨主机多实例和外部使用相同 keeper 钱包不在本地服务支持范围内。若原交易长期未确认，服务会停留等待状态；应先核查原 hash，不要删除数据库强制重新签名。
+gas 预算按本数据库所有执行累计：未确认交易保留 `gas × gasPrice` 上限，确认后记实际 `gasUsed × effectiveGasPrice`。只有固定 fee oracle 证明附加费用为零时才可按 gas-only 核算，签前、广播/恢复前和回执历史区块都会核验；不符合即停止并保留预留。重启会保留累计用量。单个数据库同一时刻只允许一个 keeper 周期；跨主机多实例和外部使用相同 keeper 钱包不在本地服务支持范围内。若原交易长期未确认，服务会停留等待状态；应先核查原 hash，不要删除数据库强制重新签名。
 
 ## 本地执行注入
 
@@ -68,6 +68,7 @@ gas 预算按本数据库所有执行累计：未确认交易保留 `gas × gasP
 ```sh
 SODADEX_LP_FORK_STATE=/绝对路径/owned-state.json \
 SODADEX_LP_STATEVIEW_CODE=/绝对路径/stateview-code.json \
+SODADEX_ORDER_FEE_ORACLE_FILE=/绝对路径/fee-oracle-fixture.json \
 npm run test:integration
 ```
 

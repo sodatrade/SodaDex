@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "mode": "real-xlayer-test-through-public-frontend-proxy",
+  "chainId": 196,
+  "settlement": "0xE713AfD6133207df18662080e2B0F7e456AeEBA5",
+  "maker": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+  "principalStableRaw": "20",
+  "principalStableDisplay": "0.00002 USD₮0",
+  "orders": [
+    {
+      "case": "v3",
+      "id": "0xb0794cb06510b2026c56ae67bf4bc6672253b1f3dbba2dcfbb2546e2b6f782f4",
+      "order": {
+        "chainId": 196,
+        "settlement": "0xE713AfD6133207df18662080e2B0F7e456AeEBA5",
+        "maker": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+        "inputToken": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+        "outputToken": "0x0000000000000000000000000000000000000000",
+        "amountIn": "10",
+        "minAmountOut": "75251621231",
+        "receiver": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+        "nonce": "5380494400369702216746679541282419766213434416498070187624",
+        "expiry": "1792215517",
+        "protocol": 3,
+        "pool": {
+          "currency0": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+          "currency1": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+          "fee": 100,
+          "tickSpacing": 1,
+          "hooks": "0x0000000000000000000000000000000000000000"
+        }
+      },
+      "quoteWei": "75629770082",
+      "status": "filled",
+      "txHash": "0x1708e2e320bc6bc04c89ecbbe8953ff3540b128c06cc6d1a9393c1312e7f5332",
+      "receivedWei": "75629770082",
+      "gasCostWei": "6611262000000",
+      "observation": {
+        "blockNumber": "73439432",
+        "blockHash": "0x45ac8df142296fcddecfe1634a4b4b5d445145af5ad00df1f1721958d803f4f4",
+        "timestamp": 1792208468
+      }
+    },
+    {
+      "case": "v4",
+      "id": "0x0723262840db37b8fca348ee13906f984afab373a837d99290589e878687714e",
+      "order": {
+        "chainId": 196,
+        "settlement": "0xE713AfD6133207df18662080e2B0F7e456AeEBA5",
+        "maker": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+        "inputToken": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+        "outputToken": "0x0000000000000000000000000000000000000000",
+        "amountIn": "10",
+        "minAmountOut": "83520511835",
+        "receiver": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+        "nonce": "2877586735813254575754425061210283354121756686342710796113",
+        "expiry": "1792215693",
+        "protocol": 4,
+        "pool": {
+          "currency0": "0x0000000000000000000000000000000000000000",
+          "currency1": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+          "fee": 0,
+          "tickSpacing": 1,
+          "hooks": "0x0000000000000000000000000000000000000000"
+        }
+      },
+      "quoteWei": "83940212900",
+      "status": "filled",
+      "txHash": "0xaa687c80c19939f1c6987061fbb6ca580079af154b869fa6741f53bdadff996c",
+      "receivedWei": "83940212900",
+      "gasCostWei": "5549607000000",
+      "observation": {
+        "blockNumber": "73439488",
+        "blockHash": "0xc06471b7857be60a6e8fd3db053190bfab353dc217c05531f3813368f82b87c6",
+        "timestamp": 1792208524
+      }
+    },
+    {
+      "case": "cancel",
+      "id": "0x103ee0a5780707f76ed25cb0cda3a94d2c37136f6f237b20a8216dde3b97b944",
+      "order": {
+        "chainId": 196,
+        "settlement": "0xE713AfD6133207df18662080e2B0F7e456AeEBA5",
+        "maker": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+        "inputToken": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+        "outputToken": "0x0000000000000000000000000000000000000000",
+        "amountIn": "10",
+        "minAmountOut": "170141183460469231731687303715884105728",
+        "receiver": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+        "nonce": "1161490852865163339088628402686785267798363344473589063648",
+        "expiry": "1792215777",
+        "protocol": 4,
+        "pool": {
+          "currency0": "0x0000000000000000000000000000000000000000",
+          "currency1": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+          "fee": 0,
+          "tickSpacing": 1,
+          "hooks": "0x0000000000000000000000000000000000000000"
+        }
+      },
+      "quoteWei": "0",
+      "status": "cancelled",
+      "observation": {
+        "blockNumber": "73439648",
+        "blockHash": "0xfa2ca834ac144d00d35653c936f1fb8f8d9344a4d02f499681d8e2e9437fb373",
+        "timestamp": 1792208684
+      }
+    }
+  ],
+  "emptySettlementBalances": true,
+  "routerAllowancesZero": true,
+  "orderListTerminalCount": 3,
+  "productionContractsModified": false
+}
