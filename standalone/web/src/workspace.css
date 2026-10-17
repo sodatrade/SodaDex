@@ -46,6 +46,14 @@
 .app-shell .preference-group legend, .app-shell .preference-select > label { color: var(--soda-text); font-size: 13px; font-weight: 550; }
 .app-shell .preference-select select { min-height: 48px; border-radius: 10px; background: var(--soda-surface); }
 .app-shell .search-categories button[aria-pressed="true"] { color: var(--soda-highlight); background: var(--soda-accent-dim); }
+.global-search-dialog .soda-dialog-body { display: flex; flex-direction: column; max-height: min(680px, calc(100svh - 32px)); overflow: hidden; }
+.global-search-dialog .dialog-header, .global-search-dialog .dialog-description, .global-search-dialog .search-field, .global-search-dialog .search-categories { flex-shrink: 0; }
+.global-search-dialog .dialog-description { margin-bottom: 4px; }
+.global-search-dialog .global-search-results { flex: 0 1 auto; min-height: 140px; overflow-y: auto; overscroll-behavior: contain; margin: 0 -8px; padding: 0 8px; }
+.global-search-dialog .asset-option { min-height: 64px; padding: 12px 10px; border-radius: 8px; }
+.global-search-dialog .asset-option-label { min-width: 0; }
+.global-search-dialog .asset-option-label > span { overflow-wrap: anywhere; line-height: 1.5; }
+.global-search-dialog .search-section-heading { font-size: 12px; margin: 8px 0; }
 @media (max-width: 1100px) {
   .app-shell .site-header { gap: 24px; }
   .app-shell .main-nav { gap: 20px; }
@@ -70,7 +78,7 @@
   .app-shell .brand .soda-mark { width: 26px; height: 26px; }
   .app-shell .header-actions { gap: 0; }
   .app-shell .network-badge { display: none; }
-  .app-shell .header-tool { width: 34px; min-height: 40px; }
+  .app-shell .header-tool { width: 44px; min-height: 44px; }
   .app-shell .header-connect { padding: 9px 12px; font-size: 11px; }
   .app-shell .header-connect > svg { display: none; }
   .app-shell .header-connect > span { max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

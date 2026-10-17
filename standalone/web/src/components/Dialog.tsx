@@ -8,9 +8,10 @@ interface DialogProps {
   children: ReactNode
   onClose: () => void
   onEscape?: () => boolean
+  className?: string
 }
 
-export function Dialog({ title, description, children, onClose, onEscape }: DialogProps): ReactElement {
+export function Dialog({ title, description, children, onClose, onEscape, className }: DialogProps): ReactElement {
   const ref = useRef<HTMLDialogElement>(null)
   const id = useId()
   const { t } = usePreferences()
@@ -25,7 +26,7 @@ export function Dialog({ title, description, children, onClose, onEscape }: Dial
   return (
     <dialog
       ref={ref}
-      className="dialog"
+      className={className ? `dialog ${className}` : 'dialog'}
       aria-labelledby={`${id}-title`}
       aria-describedby={description ? `${id}-description` : undefined}
       onClose={(event) => {

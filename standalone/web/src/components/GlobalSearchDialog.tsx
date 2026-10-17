@@ -73,7 +73,7 @@ export function GlobalSearchDialog({
   }
 
   return (
-    <Dialog title={t('globalSearch')} description={t('globalSearchDescription')} onClose={onClose} onEscape={escape}>
+    <Dialog className="global-search-dialog" title={t('globalSearch')} description={t('globalSearchDescription')} onClose={onClose} onEscape={escape}>
       <label className="search-field global-search-field">
         <Icon name="search" />
         <input
