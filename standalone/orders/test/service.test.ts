@@ -1,8 +1,9 @@
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { orderTypedData } from '../../order-types.ts'
 import { FIXED } from '../src/config.ts'
 import { OrdersService } from '../src/service.ts'
-import { environment, maker, order, sign } from './fixture.ts'
+import { environment, executor, maker, order, sign } from './fixture.ts'
+import { OrdersKeeper } from '../src/keeper.ts'
 const cleanups: (() => void)[] = []
 afterEach(() => cleanups.splice(0).forEach(cleanup => cleanup()))
 describe('signed order admission and authoritative state', () => {
@@ -57,5 +58,40 @@ describe('signed order admission and authoritative state', () => {
     expect((await paused.get(accepted.order.id))?.status).toBe('cancelled')
     expect((await paused.accept({ order: value, signature })).order.status).toBe('cancelled')
     expect(env.chain.broadcasts).toHaveLength(0)
+  })
+  it('restores a reorged cancellation from a canonical snapshot without letting duplicate submissions reset a real terminal state', async () => {
+    const env = environment(true); cleanups.push(env.cleanup)
+    const service = new OrdersService(env.config, env.store, env.chain), value = order(), signature = await sign(value)
+    const accepted = await service.accept({ order: value, signature })
+    env.chain.status = 1
+    expect((await service.get(accepted.order.id))?.status).toBe('cancelled')
+    env.chain.status = 0; env.chain.previousCanonical = false
+    expect(await service.get(accepted.order.id)).toMatchObject({ status: 'open', reason: null })
+    expect(env.store.privateOrder(accepted.order.id)?.signature).toBe(signature)
+    env.chain.status = 1; env.chain.previousCanonical = true
+    expect((await service.get(accepted.order.id))?.status).toBe('cancelled')
+    expect((await service.accept({ order: value, signature })).order.status).toBe('cancelled')
+    expect(env.store.update(accepted.order.id, { status: 'open' }, 1001).status).toBe('cancelled')
+  })
+  it('keeps the cancel entry recoverable when an old terminal observation cannot be proven orphaned', async () => {
+    const env = environment(true); cleanups.push(env.cleanup)
+    const service = new OrdersService(env.config, env.store, env.chain), value = order(), signature = await sign(value)
+    const accepted = await service.accept({ order: value, signature })
+    env.chain.status = 1; await service.get(accepted.order.id)
+    env.chain.status = 0
+    expect(await service.get(accepted.order.id)).toMatchObject({ status: 'open', reason: 'chain_unavailable' })
+  })
+  it('keeps a globally consumed Permit2 nonce cancellable, but never simulates or signs it as executable', async () => {
+    const env = environment(true); cleanups.push(env.cleanup)
+    const service = new OrdersService(env.config, env.store, env.chain), value = order(), signature = await sign(value)
+    const accepted = await service.accept({ order: value, signature })
+    env.chain.status = 1; await service.get(accepted.order.id)
+    env.chain.status = 0; env.chain.previousCanonical = false; env.chain.permitNonceUsed = true
+    expect(await service.get(accepted.order.id)).toMatchObject({ status: 'open', reason: 'nonce_unavailable' })
+    const simulate = vi.spyOn(env.chain, 'simulate'), signing = vi.fn().mockRejectedValue(Error('must not sign'))
+    await new OrdersKeeper(env.config, env.store, env.chain, { address: executor.address, signTransaction: signing }).runOnce()
+    expect(simulate).not.toHaveBeenCalled(); expect(signing).not.toHaveBeenCalled(); expect(env.chain.broadcasts).toHaveLength(0)
+    env.chain.status = 1
+    expect((await service.get(accepted.order.id))?.status).toBe('cancelled')
   })
 })

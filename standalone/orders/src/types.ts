@@ -1,7 +1,7 @@
 import type { Address, Hex } from 'viem'
 import type { SodaLimitOrder } from '../../order-types.ts'
 export type OrderStatus = 'open' | 'pending' | 'filled' | 'cancelled' | 'expired'
-export type OrderReason = 'awaiting_price' | 'simulation_failed' | 'execution_disabled' | 'gas_budget' | 'broadcast_unknown' | 'transaction_reverted' | 'chain_unavailable' | null
+export type OrderReason = 'awaiting_price' | 'simulation_failed' | 'execution_disabled' | 'gas_budget' | 'broadcast_unknown' | 'transaction_reverted' | 'chain_unavailable' | 'nonce_unavailable' | null
 export interface ChainObservation { blockNumber: string; blockHash: Hex; timestamp: number }
 export interface PublicOrder {
   id: Hex; order: SodaLimitOrder; status: OrderStatus; reason: OrderReason; txHash: Hex | null

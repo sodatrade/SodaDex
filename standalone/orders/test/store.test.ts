@@ -51,4 +51,29 @@ describe('isolated durable order store', () => {
     expect(env.store.acquire('b')).toBe(true)
     env.store.release('b')
   })
+  it('migrates its own v1 database without removing signatures or terminal records', async () => {
+    const env = environment(); cleanups.push(env.cleanup)
+    const value = order(), signature = await sign(value), observed = (await env.chain.observe()).observation
+    const record = env.store.insert(orderId(value), value, signature, observed, 1000)
+    env.store.update(record.order.id, { status: 'cancelled' }, 1001)
+    env.store.database.exec('DROP TABLE execution_resolutions;PRAGMA user_version=1')
+    env.store.close()
+    const reopened = new OrderStore(env.path)
+    try {
+      expect(reopened.get(record.order.id)?.status).toBe('cancelled')
+      expect(reopened.privateOrder(record.order.id)?.signature).toBe(signature)
+      expect(reopened.database.prepare('PRAGMA user_version').get()).toMatchObject({ user_version: 2 })
+      expect(reopened.database.prepare('SELECT * FROM execution_resolutions').all()).toEqual([])
+    } finally { reopened.close() }
+  })
+  it('rejects a delayed chain read that started before a newer canonical state was stored', async () => {
+    const env = environment(); cleanups.push(env.cleanup)
+    const value = order(), observed = (await env.chain.observe()).observation
+    const original = env.store.insert(orderId(value), value, await sign(value), observed, 1000).order
+    const newer = { ...observed, blockNumber: '101', blockHash: `0x${'b'.repeat(64)}` as const }
+    const cancelled = env.store.applyChainObservation(original, { status: 'cancelled', observation: newer }, true, 1001)
+    const delayed = env.store.applyChainObservation(original, { status: 'open', observation: observed }, false, 1002)
+    expect(delayed).toEqual(cancelled)
+    expect(env.store.update(original.id, { status: 'open' }, 1003).status).toBe('cancelled')
+  })
 })

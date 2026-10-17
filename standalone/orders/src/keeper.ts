@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto'
-import type { ExecutionSigner, OrderChain } from './chain-types.ts'
+import type { ExecutionSigner, KeeperNonceObservation, OrderChain } from './chain-types.ts'
 import { ChainFailure } from './chain-types.ts'
 import type { OrdersConfig } from './config.ts'
 import { GasBudgetExceeded, OrderStore, type StoredExecution } from './store.ts'
@@ -11,6 +11,15 @@ export class OrdersKeeper {
     if (config.executionEnabled && !signer) throw Error('Execution requires an explicitly injected signer')
     this.config = config; this.store = store; this.chain = chain; this.signer = signer; this.now = now
   }
+  private async restoreKnownNonce(signer: ExecutionSigner['address'], state: KeeperNonceObservation): Promise<boolean> {
+    const prior = this.store.executionAtNonce(signer, state.nonce)
+    if (!prior || ['prepared', 'broadcast'].includes(prior.status)) return false
+    const order = this.store.privateOrder(prior.orderId)
+    if (!order || await this.chain.receipt(prior.hash, order.public.order)) throw new ChainFailure('unavailable')
+    // A reorg may undo even a previously confirmed nonce-consumption proof. Recover the saved raw bytes first.
+    this.store.restoreExecution(prior, state)
+    return true
+  }
   async recover(attempt: StoredExecution): Promise<void> {
     const stored = this.store.privateOrder(attempt.orderId)
     if (!stored) throw Error('Prepared execution has no order')
@@ -18,20 +27,27 @@ export class OrdersKeeper {
     const receipt = await this.chain.receipt(attempt.hash, stored.public.order)
     if (receipt) {
       if (receipt.gasCostWei < 0n || receipt.gasCostWei > attempt.maxCostWei) throw new ChainFailure('unavailable')
+      const observed = await this.chain.observe(stored.public.order, stored.public.observation ?? undefined)
+      if (receipt.succeeded && (!receipt.filled || observed.nonceStatus !== 2)) throw new ChainFailure('unavailable')
+      let current = reconcile(this.store, stored.public, observed, this.now())
       this.store.finish(attempt.hash, receipt.succeeded, receipt.gasCostWei)
-      if (receipt.succeeded && receipt.filled) this.store.update(attempt.orderId, { status: 'filled', reason: null, observation: receipt.observation, txHash: attempt.hash }, this.now())
-      else reconcile(this.store, this.store.update(attempt.orderId, { status: 'open', reason: 'transaction_reverted', observation: receipt.observation }, this.now()), await this.chain.observe(stored.public.order), this.now())
+      current = reconcile(this.store, current, { ...observed, previousObservationCanonical: true }, this.now())
+      this.store.update(attempt.orderId, { status: current.status, reason: receipt.succeeded || !['open', 'pending'].includes(current.status) ? current.reason : 'transaction_reverted', txHash: current.status === 'filled' && !receipt.succeeded ? null : attempt.hash }, this.now())
       return
     }
-    const current = reconcile(this.store, stored.public, await this.chain.observe(stored.public.order), this.now())
-    if (!['open', 'pending'].includes(current.status) || !this.config.executionEnabled || !this.signer || this.signer.address.toLowerCase() !== attempt.signer.toLowerCase()) return
-    if (this.store.gasCommitted() > this.config.gasBudgetWei) { this.store.update(current.id, { status: 'pending', reason: 'gas_budget' }, this.now()); return }
+    const current = reconcile(this.store, stored.public, await this.chain.observe(stored.public.order, stored.public.observation ?? undefined), this.now())
+    const keeperNonce = await this.chain.keeperNonce(attempt.signer)
+    if (keeperNonce.nonce > attempt.nonce) { this.store.resolveConsumedNonce(attempt, keeperNonce); return }
+    if (keeperNonce.nonce < attempt.nonce && await this.restoreKnownNonce(attempt.signer, keeperNonce)) return
+    if (!this.config.executionEnabled || !this.signer || this.signer.address.toLowerCase() !== attempt.signer.toLowerCase()) return
+    const status = ['open', 'pending'].includes(current.status) ? 'pending' : current.status
+    if (this.store.gasCommitted() > this.config.gasBudgetWei) { this.store.update(current.id, { status, reason: 'gas_budget' }, this.now()); return }
     try {
       const hash = await this.chain.broadcast(attempt.rawTransaction)
       if (hash !== attempt.hash) throw new ChainFailure('unavailable')
       this.store.broadcast(attempt.hash)
-      this.store.update(current.id, { status: 'pending', reason: null }, this.now())
-    } catch { this.store.update(current.id, { status: 'pending', reason: 'broadcast_unknown' }, this.now()) }
+      this.store.update(current.id, { status, reason: null }, this.now())
+    } catch { this.store.update(current.id, { status, reason: 'broadcast_unknown' }, this.now()) }
   }
   async runOnce(): Promise<{ processed: number; busy: boolean }> {
     const owner = randomUUID()
@@ -45,14 +61,16 @@ export class OrdersKeeper {
       for (const current of this.store.eligible()) {
         const stored = this.store.privateOrder(current.id)!
         let latest
-        try { latest = reconcile(this.store, current, await this.chain.observe(current.order), this.now()) } catch { this.store.update(current.id, { status: current.status, reason: 'chain_unavailable' }, this.now()); continue }
-        if (!['open', 'pending'].includes(latest.status)) continue
+        try { latest = reconcile(this.store, current, await this.chain.observe(current.order, current.observation ?? undefined), this.now()) } catch { this.store.update(current.id, { status: current.status, reason: 'chain_unavailable' }, this.now()); continue }
+        if (!['open', 'pending'].includes(latest.status) || latest.reason === 'nonce_unavailable' || latest.reason === 'chain_unavailable') continue
         try { await this.chain.simulate(current.order, stored.signature, this.signer?.address ?? current.order.maker) } catch (error) {
           this.store.update(current.id, { status: 'open', reason: error instanceof ChainFailure && error.kind === 'price' ? 'awaiting_price' : 'simulation_failed' }, this.now()); continue
         }
         if (!this.config.executionEnabled || !this.signer) { this.store.update(current.id, { status: 'open', reason: 'execution_disabled' }, this.now()); continue }
         try {
           const plan = await this.chain.plan(current.order, stored.signature, this.signer.address)
+          if (await this.restoreKnownNonce(this.signer.address, await this.chain.keeperNonce(this.signer.address))) break
+          if (this.store.executionAtNonce(this.signer.address, plan.nonce)) throw new ChainFailure('unavailable')
           const maximum = plan.gas * plan.gasPrice
           if (this.store.gasCommitted() + maximum > this.config.gasBudgetWei) throw new GasBudgetExceeded()
           const raw = await this.signer.signTransaction(plan)

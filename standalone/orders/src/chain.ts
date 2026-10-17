@@ -2,7 +2,7 @@ import { BaseError, ContractFunctionRevertedError, TransactionReceiptNotFoundErr
 import { orderMessage, orderTypedData, ORDER_TYPES, type SodaLimitOrder } from '../../order-types.ts'
 import { SETTLEMENT_ABI, PERMIT_ABI } from './abi.ts'
 import { FIXED, type OrdersConfig } from './config.ts'
-import { ChainFailure, type ExecutionPlan, type ExecutionReceipt, type NonceObservation, type OrderChain } from './chain-types.ts'
+import { ChainFailure, type ExecutionPlan, type ExecutionReceipt, type KeeperNonceObservation, type NonceObservation, type OrderChain } from './chain-types.ts'
 import type { ChainObservation } from './types.ts'
 const same = (a: string, b: string): boolean => a.toLowerCase() === b.toLowerCase()
 export function orderId(order: SodaLimitOrder): Hex { return hashTypedData(orderTypedData(order, FIXED.permit2)) }
@@ -49,7 +49,7 @@ export class ViemOrderChain implements OrderChain {
       return chainId === 196n && test && constants.every((value, index) => same(value, expected[index]))
     } catch { throw new ChainFailure('unavailable') }
   }
-  async observe(order: SodaLimitOrder): Promise<NonceObservation> {
+  async observe(order: SodaLimitOrder, previous?: ChainObservation): Promise<NonceObservation> {
     try {
       const block = observation(await this.client.getBlock({ blockTag: 'latest' }))
       const blockNumber = BigInt(block.blockNumber)
@@ -59,8 +59,27 @@ export class ViemOrderChain implements OrderChain {
         this.client.readContract({ address: FIXED.permit2, abi: PERMIT_ABI, functionName: 'nonceBitmap', args: [order.maker, nonce >> 8n], blockNumber }),
       ])
       if (![0, 1, 2].includes(status)) throw new ChainFailure('unavailable')
+      let previousObservationCanonical: boolean | null = null
+      if (previous) {
+        if (BigInt(previous.blockNumber) > blockNumber) previousObservationCanonical = false
+        else {
+          try {
+            const old = await this.client.getBlock({ blockNumber: BigInt(previous.blockNumber) })
+            previousObservationCanonical = old.hash ? same(old.hash, previous.blockHash) : null
+          } catch { /* The current snapshot is usable, but a missing old header is not proof of finality. */ }
+        }
+      }
       await this.confirmObservation(block)
-      return { observation: block, nonceStatus: status as 0 | 1 | 2, permitNonceUsed: (bitmap & (1n << (nonce & 255n))) !== 0n }
+      return { observation: block, nonceStatus: status as 0 | 1 | 2, permitNonceUsed: (bitmap & (1n << (nonce & 255n))) !== 0n, previousObservationCanonical }
+    } catch { throw new ChainFailure('unavailable') }
+  }
+  async keeperNonce(address: Address): Promise<KeeperNonceObservation> {
+    try {
+      const block = observation(await this.client.getBlock({ blockTag: 'latest' }))
+      const nonce = await this.client.getTransactionCount({ address, blockNumber: BigInt(block.blockNumber) })
+      if (!Number.isSafeInteger(nonce) || nonce < 0) throw new ChainFailure('unavailable')
+      await this.confirmObservation(block)
+      return { observation: block, nonce }
     } catch { throw new ChainFailure('unavailable') }
   }
   async verifySignature(order: SodaLimitOrder, signature: Hex, at: ChainObservation): Promise<boolean> {

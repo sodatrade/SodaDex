@@ -11,9 +11,13 @@ export class ServiceError extends Error {
 }
 export function reconcile(store: OrderStore, current: PublicOrder, state: NonceObservation, now: number): PublicOrder {
   const derived = state.nonceStatus === 2 ? 'filled' : state.nonceStatus === 1 ? 'cancelled' : state.observation.timestamp >= Number(current.order.expiry) ? 'expired' : 'open'
-  if (['filled', 'cancelled', 'expired'].includes(current.status) && current.status !== derived) return store.update(current.id, { status: current.status, reason: 'chain_unavailable' }, now)
-  const status = derived === 'open' ? current.status : derived
-  return store.update(current.id, { status, reason: status === 'open' || status === 'pending' ? current.reason : null, observation: state.observation }, now)
+  const rolledBack = ['filled', 'cancelled', 'expired'].includes(current.status) && current.status !== derived
+  const recoveringRaw = store.hasExecution(current.id) || (rolledBack && state.previousObservationCanonical === false && store.hasExecution(current.id, true))
+  const status = derived === 'open' && recoveringRaw ? 'pending' : derived
+  const reason = derived !== 'open' ? null : state.permitNonceUsed ? 'nonce_unavailable'
+    : rolledBack ? state.previousObservationCanonical === false ? null : 'chain_unavailable'
+    : current.reason === 'nonce_unavailable' || current.reason === 'chain_unavailable' ? null : current.reason
+  return store.applyChainObservation(current, { status, reason, observation: state.observation }, state.previousObservationCanonical, now)
 }
 export class OrdersService {
   readonly config: OrdersConfig; readonly store: OrderStore; readonly chain: OrderChain; readonly now: () => number
@@ -35,7 +39,7 @@ export class OrdersService {
     const id = orderId(order)
     const existing = this.store.get(id)
     if (!existing && !readiness.acceptingOrders) throw new ServiceError(503, 'EXECUTION_PAUSED', 'New order admission is paused')
-    const state = await this.chain.observe(order)
+    const state = await this.chain.observe(order, existing?.observation ?? undefined)
     if (!await this.chain.verifySignature(order, signature, state.observation)) throw new ServiceError(401, 'INVALID_SIGNATURE', 'Order signature is invalid')
     if (existing) return { order: reconcile(this.store, existing, state, this.now()), created: false }
     if (state.nonceStatus !== 0 || state.permitNonceUsed) throw new ServiceError(409, 'NONCE_UNAVAILABLE', 'Maker nonce is unavailable on chain')
@@ -46,8 +50,20 @@ export class OrdersService {
     const current = this.store.get(id)
     if (!current) return null
     if (this.config.settlement === null) return current
-    try { return reconcile(this.store, current, await this.chain.observe(current.order), this.now()) } catch {
+    try { return reconcile(this.store, current, await this.chain.observe(current.order, current.observation ?? undefined), this.now()) } catch {
       return ['filled', 'cancelled', 'expired'].includes(current.status) ? current : this.store.update(id, { status: current.status, reason: 'chain_unavailable' }, this.now())
     }
+  }
+  async list(maker: string, limit: number, cursor?: string): Promise<{ orders: PublicOrder[]; nextCursor: string | null }> {
+    const page = this.store.list(maker, limit, cursor)
+    if (this.config.settlement === null) return page
+    const orders: PublicOrder[] = []
+    // A terminal row must also be rechecked: list polling is how clients recover after a reorganization.
+    // Bound RPC concurrency instead of issuing up to one hundred simultaneous signature-state reads.
+    for (let start = 0; start < page.orders.length; start += 4) {
+      const batch = page.orders.slice(start, start + 4)
+      orders.push(...await Promise.all(batch.map(async current => await this.get(current.id) ?? current)))
+    }
+    return { orders, nextCursor: page.nextCursor }
   }
 }

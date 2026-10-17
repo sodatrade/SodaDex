@@ -41,4 +41,38 @@ describe('ERC1271 typed signature adapter', () => {
       await expect(adapter.simulate(order(), '0x01', order().maker)).rejects.toMatchObject({ kind: 'simulation' })
     } finally { env.cleanup() }
   })
+  it('compares an old terminal block header against the canonical pinned snapshot', async () => {
+    const env = environment()
+    try {
+      const at = (await env.chain.observe()).observation
+      const getBlock = vi.fn().mockResolvedValueOnce({ number: 101n, hash: `0x${'b'.repeat(64)}`, timestamp: 1001n })
+        .mockResolvedValueOnce({ hash: `0x${'c'.repeat(64)}` }).mockResolvedValueOnce({ hash: `0x${'b'.repeat(64)}` })
+      const client = { getBlock, readContract: vi.fn().mockResolvedValueOnce(0).mockResolvedValueOnce(0n) } as unknown as PublicClient
+      const state = await new ViemOrderChain(env.config, client).observe(order(), at)
+      expect(state.previousObservationCanonical).toBe(false)
+      expect(state.observation.blockNumber).toBe('101')
+      expect(getBlock).toHaveBeenNthCalledWith(2, { blockNumber: 100n })
+      expect(getBlock).toHaveBeenNthCalledWith(3, { blockNumber: 101n })
+    } finally { env.cleanup() }
+  })
+  it('does not pretend an unavailable old header proves the terminal block canonical', async () => {
+    const env = environment()
+    try {
+      const at = (await env.chain.observe()).observation
+      const getBlock = vi.fn().mockResolvedValueOnce({ number: 101n, hash: `0x${'b'.repeat(64)}`, timestamp: 1001n })
+        .mockRejectedValueOnce(Error('old header unavailable')).mockResolvedValueOnce({ hash: `0x${'b'.repeat(64)}` })
+      const client = { getBlock, readContract: vi.fn().mockResolvedValueOnce(0).mockResolvedValueOnce(0n) } as unknown as PublicClient
+      expect((await new ViemOrderChain(env.config, client).observe(order(), at)).previousObservationCanonical).toBeNull()
+    } finally { env.cleanup() }
+  })
+  it('checks a confirmed keeper nonce against a canonical block rather than a pending mempool nonce', async () => {
+    const env = environment()
+    try {
+      const at = (await env.chain.observe()).observation
+      const getTransactionCount = vi.fn().mockResolvedValue(3)
+      const client = { getBlock: vi.fn().mockResolvedValue({ number: 100n, hash: at.blockHash, timestamp: 1000n }), getTransactionCount } as unknown as PublicClient
+      expect(await new ViemOrderChain(env.config, client).keeperNonce(order().maker)).toMatchObject({ nonce: 3, observation: at })
+      expect(getTransactionCount).toHaveBeenCalledWith({ address: order().maker, blockNumber: 100n })
+    } finally { env.cleanup() }
+  })
 })

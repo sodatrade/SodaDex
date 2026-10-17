@@ -4,11 +4,16 @@ import { dirname } from 'node:path'
 import { keccak256, type Address, type Hex } from 'viem'
 import type { SodaLimitOrder } from '../../order-types.ts'
 import type { ChainObservation, OrderReason, OrderStatus, PublicOrder } from './types.ts'
+import type { KeeperNonceObservation } from './chain-types.ts'
 const APPLICATION_ID = 0x534f4441
 const terminal = (status: OrderStatus): boolean => ['filled', 'cancelled', 'expired'].includes(status)
 interface OrderRow { id: Hex; maker: string; nonce: string; order_json: string; signature: Hex; status: OrderStatus; reason: OrderReason; tx_hash: Hex | null; created_at: number; updated_at: number; observation_json: string | null }
 export interface StoredOrder { public: PublicOrder; signature: Hex }
-export interface StoredExecution { id: number; orderId: Hex; hash: Hex; rawTransaction: Hex; signer: Address; nonce: number; maxCostWei: bigint; status: 'prepared' | 'broadcast' | 'confirmed' | 'reverted'; actualCostWei: bigint | null }
+export interface StoredExecution { id: number; orderId: Hex; hash: Hex; rawTransaction: Hex; signer: Address; nonce: number; maxCostWei: bigint; status: 'prepared' | 'broadcast' | 'confirmed' | 'reverted' | 'nonce_consumed'; actualCostWei: bigint | null }
+interface OrderUpdate { status: OrderStatus; reason?: OrderReason; observation?: ChainObservation; txHash?: Hex | null }
+function execution(row: Record<string, unknown>): StoredExecution {
+  return { id: Number(row.id), orderId: row.order_id as Hex, hash: row.hash as Hex, rawTransaction: row.raw_tx as Hex, signer: row.signer as Address, nonce: Number(row.nonce), maxCostWei: BigInt(String(row.max_cost)), status: row.status as StoredExecution['status'], actualCostWei: row.actual_cost === null ? null : BigInt(String(row.actual_cost)) }
+}
 export class NonceConflict extends Error {}
 export class GasBudgetExceeded extends Error {}
 function view(row: OrderRow): PublicOrder {
@@ -27,11 +32,12 @@ export class OrderStore {
     const tables = probe.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").all()
     probe.close()
     if (application.application_id !== APPLICATION_ID && (application.application_id !== 0 || tables.length !== 0)) throw Error('Refusing a database not owned by SodaDEX orders')
-    if (application.application_id === APPLICATION_ID && version.user_version !== 1) throw Error('Unsupported orders database version')
+    if (application.application_id === APPLICATION_ID && ![1, 2].includes(version.user_version)) throw Error('Unsupported orders database version')
     this.database = new DatabaseSync(path)
-    this.database.exec(`PRAGMA application_id=${APPLICATION_ID}; PRAGMA user_version=1; PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; PRAGMA busy_timeout=5000;
+    this.database.exec(`PRAGMA application_id=${APPLICATION_ID}; PRAGMA user_version=2; PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; PRAGMA busy_timeout=5000;
       CREATE TABLE IF NOT EXISTS orders(id TEXT PRIMARY KEY,maker TEXT NOT NULL,nonce TEXT NOT NULL,order_json TEXT NOT NULL,signature TEXT NOT NULL,status TEXT NOT NULL,reason TEXT,tx_hash TEXT,created_at INTEGER NOT NULL,updated_at INTEGER NOT NULL,observation_json TEXT,UNIQUE(maker,nonce));
       CREATE TABLE IF NOT EXISTS executions(id INTEGER PRIMARY KEY,order_id TEXT NOT NULL,hash TEXT UNIQUE NOT NULL,raw_tx TEXT NOT NULL,signer TEXT NOT NULL,nonce INTEGER NOT NULL,max_cost TEXT NOT NULL,status TEXT NOT NULL,actual_cost TEXT,UNIQUE(signer,nonce));
+      CREATE TABLE IF NOT EXISTS execution_resolutions(hash TEXT PRIMARY KEY,observation_json TEXT NOT NULL,confirmed_nonce INTEGER NOT NULL);
       CREATE TABLE IF NOT EXISTS keeper_guard(id INTEGER PRIMARY KEY CHECK(id=1),owner TEXT NOT NULL,pid INTEGER NOT NULL);`)
   }
   close(): void { this.database.close() }
@@ -55,12 +61,34 @@ export class OrderStore {
     return { orders: selected.map(view), nextCursor: rows.length > limit ? String(selected.at(-1)!.sequence) : null }
   }
   eligible(): PublicOrder[] { return (this.database.prepare("SELECT * FROM orders WHERE status IN ('open','pending') ORDER BY rowid").all() as unknown as OrderRow[]).map(view) }
-  update(id: Hex, state: { status: OrderStatus; reason?: OrderReason; observation?: ChainObservation; txHash?: Hex | null }, now: number): PublicOrder {
+  update(id: Hex, state: OrderUpdate, now: number): PublicOrder {
     const current = this.get(id)
     if (!current) throw Error('Order not found')
     if (terminal(current.status) && state.status !== current.status) return current
     this.database.prepare('UPDATE orders SET status=?,reason=?,tx_hash=?,updated_at=?,observation_json=? WHERE id=?').run(state.status, state.reason ?? null, state.txHash === undefined ? current.txHash : state.txHash, now, state.observation ? JSON.stringify(state.observation) : JSON.stringify(current.observation), id)
     return this.get(id)!
+  }
+  hasExecution(id: Hex, includeFinished = false): boolean {
+    return !!this.database.prepare(`SELECT 1 FROM executions WHERE order_id=? ${includeFinished ? '' : "AND status IN ('prepared','broadcast')"} LIMIT 1`).get(id)
+  }
+  // Only an authoritative, hash-checked chain observation may undo a terminal state.
+  // Compare the caller's starting observation so a delayed HTTP read cannot undo a newer result.
+  applyChainObservation(expected: PublicOrder, state: OrderUpdate & { observation: ChainObservation }, previousCanonical: boolean | null, now: number): PublicOrder {
+    this.database.exec('BEGIN IMMEDIATE')
+    try {
+      const current = this.get(expected.id)
+      if (!current) throw Error('Order not found')
+      if (current.status !== expected.status || JSON.stringify(current.observation) !== JSON.stringify(expected.observation)) { this.database.exec('COMMIT'); return current }
+      if (terminal(current.status) && current.status !== state.status && previousCanonical === false) {
+        // A reverted chain can make a previously mined keeper nonce usable again. Recover its exact raw transaction first.
+        this.database.prepare("UPDATE executions SET status='prepared',actual_cost=NULL WHERE order_id=? AND status IN ('confirmed','reverted','nonce_consumed')").run(current.id)
+        this.database.prepare('DELETE FROM execution_resolutions WHERE hash IN (SELECT hash FROM executions WHERE order_id=?)').run(current.id)
+      }
+      const txHash = state.txHash === undefined ? previousCanonical === false && terminal(current.status) && !this.hasExecution(current.id) ? null : current.txHash : state.txHash
+      this.database.prepare('UPDATE orders SET status=?,reason=?,tx_hash=?,updated_at=?,observation_json=? WHERE id=?').run(state.status, state.reason ?? null, txHash, now, JSON.stringify(state.observation), current.id)
+      this.database.exec('COMMIT')
+      return this.get(current.id)!
+    } catch (error) { this.database.exec('ROLLBACK'); throw error }
   }
   acquire(owner: string): boolean {
     this.database.exec('BEGIN IMMEDIATE')
@@ -76,7 +104,20 @@ export class OrderStore {
   release(owner: string): void { this.database.prepare('DELETE FROM keeper_guard WHERE id=1 AND owner=?').run(owner) }
   executions(): StoredExecution[] {
     const rows = this.database.prepare("SELECT * FROM executions WHERE status IN ('prepared','broadcast') ORDER BY id").all() as Record<string, unknown>[]
-    return rows.map(row => ({ id: Number(row.id), orderId: row.order_id as Hex, hash: row.hash as Hex, rawTransaction: row.raw_tx as Hex, signer: row.signer as Address, nonce: Number(row.nonce), maxCostWei: BigInt(String(row.max_cost)), status: row.status as StoredExecution['status'], actualCostWei: row.actual_cost === null ? null : BigInt(String(row.actual_cost)) }))
+    return rows.map(execution)
+  }
+  executionAtNonce(signer: Address, nonce: number): StoredExecution | null {
+    const row = this.database.prepare('SELECT * FROM executions WHERE signer=? AND nonce=?').get(signer.toLowerCase(), nonce)
+    return row ? execution(row) : null
+  }
+  restoreExecution(attempt: StoredExecution, state: KeeperNonceObservation): void {
+    if (state.nonce > attempt.nonce) throw Error('Keeper nonce is still consumed on the observed chain')
+    this.database.exec('BEGIN IMMEDIATE')
+    try {
+      this.database.prepare("UPDATE executions SET status='prepared',actual_cost=NULL WHERE hash=?").run(attempt.hash)
+      this.database.prepare('DELETE FROM execution_resolutions WHERE hash=?').run(attempt.hash)
+      this.database.exec('COMMIT')
+    } catch (error) { this.database.exec('ROLLBACK'); throw error }
   }
   gasCommitted(): bigint {
     return (this.database.prepare('SELECT max_cost,actual_cost FROM executions').all() as { max_cost: string; actual_cost: string | null }[]).reduce((sum, row) => sum + BigInt(row.actual_cost ?? row.max_cost), 0n)
@@ -94,4 +135,14 @@ export class OrderStore {
   }
   broadcast(hash: Hex): void { this.database.prepare("UPDATE executions SET status='broadcast' WHERE hash=? AND status='prepared'").run(hash) }
   finish(hash: Hex, succeeded: boolean, actualCostWei: bigint): void { this.database.prepare("UPDATE executions SET status=?,actual_cost=? WHERE hash=?").run(succeeded ? 'confirmed' : 'reverted', String(actualCostWei), hash) }
+  resolveConsumedNonce(attempt: StoredExecution, state: KeeperNonceObservation): void {
+    if (state.nonce <= attempt.nonce) throw Error('No canonical evidence that keeper nonce was consumed')
+    this.database.exec('BEGIN IMMEDIATE')
+    try {
+      this.database.prepare('INSERT OR REPLACE INTO execution_resolutions(hash,observation_json,confirmed_nonce) VALUES(?,?,?)').run(attempt.hash, JSON.stringify(state.observation), state.nonce)
+      // Keep the reserved maximum: the missing original receipt does not justify claiming an actual fee of zero.
+      this.database.prepare("UPDATE executions SET status='nonce_consumed',actual_cost=NULL WHERE hash=?").run(attempt.hash)
+      this.database.exec('COMMIT')
+    } catch (error) { this.database.exec('ROLLBACK'); throw error }
+  }
 }

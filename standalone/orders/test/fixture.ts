@@ -5,7 +5,8 @@ import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { keccak256, verifyTypedData, type Address, type Hex } from 'viem'
 import { orderTypedData, type SodaLimitOrder } from '../../order-types.ts'
 import { executionData } from '../src/chain.ts'
-import { ChainFailure, type ExecutionPlan, type ExecutionReceipt, type NonceObservation, type OrderChain } from '../src/chain-types.ts'
+import { ChainFailure, type ExecutionPlan, type ExecutionReceipt, type KeeperNonceObservation, type NonceObservation, type OrderChain } from '../src/chain-types.ts'
+import type { ChainObservation } from '../src/types.ts'
 import { FIXED, validateConfig, type OrdersConfig } from '../src/config.ts'
 import { OrderStore } from '../src/store.ts'
 export const maker = privateKeyToAccount(generatePrivateKey())
@@ -17,13 +18,15 @@ export function order(nonce = '1'): SodaLimitOrder {
 }
 export const sign = async (value: SodaLimitOrder): Promise<Hex> => maker.signTypedData(orderTypedData(value, FIXED.permit2))
 export class FakeChain implements OrderChain {
-  timestamp = 1000; status: 0 | 1 | 2 = 0; permitNonceUsed = false; readyValue = true; failSimulation = false; failBroadcast = false; completedReceipt: ExecutionReceipt | null = null; signedNonce = 0; broadcasts: Hex[] = []; onBroadcast: (() => void) | null = null
+  timestamp = 1000; status: 0 | 1 | 2 = 0; permitNonceUsed = false; readyValue = true; failSimulation = false; failBroadcast = false; completedReceipt: ExecutionReceipt | null = null; signedNonce = 0; keeperNonceValue = 0; previousCanonical = true; broadcasts: Hex[] = []; onBroadcast: (() => void) | null = null
+  statuses = new Map<string, 0 | 1 | 2>(); receipts = new Map<Hex, ExecutionReceipt>()
   async ready(): Promise<boolean> { return this.readyValue }
-  async observe(): Promise<NonceObservation> { return { observation: { blockNumber: '100', blockHash: `0x${'a'.repeat(64)}`, timestamp: this.timestamp }, nonceStatus: this.status, permitNonceUsed: this.permitNonceUsed } }
+  async observe(value?: SodaLimitOrder, previous?: ChainObservation): Promise<NonceObservation> { return { observation: { blockNumber: '100', blockHash: `0x${'a'.repeat(64)}`, timestamp: this.timestamp }, nonceStatus: value ? this.statuses.get(value.nonce) ?? this.status : this.status, permitNonceUsed: this.permitNonceUsed, previousObservationCanonical: previous ? this.previousCanonical : null } }
+  async keeperNonce(): Promise<KeeperNonceObservation> { return { observation: (await this.observe()).observation, nonce: this.keeperNonceValue } }
   async verifySignature(value: SodaLimitOrder, signature: Hex): Promise<boolean> { try { return await verifyTypedData({ address: value.maker, ...orderTypedData(value, FIXED.permit2), signature }) } catch { return false } }
   async simulate(value: SodaLimitOrder): Promise<bigint> { if (this.failSimulation) throw new ChainFailure('price'); return BigInt(value.minAmountOut) }
   async plan(value: SodaLimitOrder, signature: Hex): Promise<ExecutionPlan> { return { chainId: 196, to: settlement, data: executionData(value, signature), value: 0n, nonce: this.signedNonce, gas: 100000n, gasPrice: 2n } }
-  async receipt(): Promise<ExecutionReceipt | null> { return this.completedReceipt }
+  async receipt(hash?: Hex): Promise<ExecutionReceipt | null> { return hash ? this.receipts.get(hash) ?? (this.completedReceipt?.hash === hash ? this.completedReceipt : null) : this.completedReceipt }
   async broadcast(rawTransaction: Hex): Promise<Hex> { this.broadcasts.push(rawTransaction); this.onBroadcast?.(); if (this.failBroadcast) throw new ChainFailure('unavailable'); return keccak256(rawTransaction) }
 }
 export function environment(executionEnabled = false): { folder: string; path: string; config: OrdersConfig; store: OrderStore; chain: FakeChain; cleanup: () => void } {

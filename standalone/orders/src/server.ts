@@ -37,7 +37,7 @@ export function createOrdersServer(service: OrdersService): Server {
       if (url.pathname === '/v1/orders' && request.method === 'GET') {
         const maker = url.searchParams.get('maker'), limit = url.searchParams.get('limit') ?? '50', cursor = url.searchParams.get('cursor')
         if ([...url.searchParams.keys()].some(key => !['maker', 'limit', 'cursor'].includes(key) || url.searchParams.getAll(key).length !== 1) || !maker || !/^0x[0-9a-fA-F]{40}$/.test(maker) || !/^[1-9][0-9]*$/.test(limit) || Number(limit) > 100 || (cursor !== null && !/^[1-9][0-9]{0,18}$/.test(cursor))) throw new ServiceError(400, 'VALIDATION_FAILED', 'Invalid maker or pagination')
-        json(response, 200, { schemaVersion: 1, ...service.store.list(maker, Number(limit), cursor ?? undefined) }); return
+        json(response, 200, { schemaVersion: 1, ...await service.list(maker, Number(limit), cursor ?? undefined) }); return
       }
       const match = /^\/v1\/orders\/(0x[0-9a-fA-F]{64})$/.exec(url.pathname)
       if (match && request.method === 'GET' && !url.search) {

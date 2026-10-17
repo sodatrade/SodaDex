@@ -34,7 +34,7 @@ type PublicOrder = {
   status: 'open' | 'pending' | 'filled' | 'cancelled' | 'expired'
   reason: 'awaiting_price' | 'simulation_failed' | 'execution_disabled'
     | 'gas_budget' | 'broadcast_unknown' | 'transaction_reverted'
-    | 'chain_unavailable' | null
+    | 'chain_unavailable' | 'nonce_unavailable' | null
   txHash: Hex | null
   createdAt: number
   updatedAt: number
@@ -50,7 +50,9 @@ type PublicOrder = {
 
 ## GET /v1/orders/:id
 
-Returns `{schemaVersion: 1, order: PublicOrder}`, or 404 `NOT_FOUND`. Refreshes settlement nonce and chain expiry before returning. A temporary upstream failure preserves the stored record and marks nonterminal orders `chain_unavailable`. Observed terminal states are preserved; a conflicting later observation is marked for verification instead of silently reopening an order.
+Returns `{schemaVersion: 1, order: PublicOrder}`, or 404 `NOT_FOUND`. Refreshes settlement nonce and chain expiry before returning. A temporary upstream failure preserves the stored record and marks nonterminal orders `chain_unavailable`. The adapter checks the current snapshot hash and the preceding observation's block hash. A canonical snapshot can roll back an orphaned filled/cancelled/expired observation; ordinary local updates and duplicate insertion cannot undo a terminal state. If the old header cannot establish the rollback, a conflicting current open nonce is exposed as recoverable `open/chain_unavailable`, rather than falsely claiming cancellation remains authoritative.
+
+Permit2's unordered nonce bitmap is maker-global. A used Permit2 bit with this settlement's nonce still open is `open/nonce_unavailable`: the maker can cancel it, but the keeper neither simulates nor signs it. It is never inferred to be filled without settlement evidence.
 
 ## GET /v1/orders?maker=...&limit=...&cursor=...
 
@@ -60,7 +62,7 @@ Returns `{schemaVersion: 1, order: PublicOrder}`, or 404 `NOT_FOUND`. Refreshes 
 {schemaVersion: 1, orders: PublicOrder[], nextCursor: string | null}
 ```
 
-List results are stored observations; the keeper periodically refreshes nonterminal state. Read a single order to request a fresh chain observation. `nextCursor: null` means no older rows in this local store, not a complete scan of all on-chain orders. The service does not discover signatures from chain.
+List reads refresh every row in the requested page, including terminal observations, with bounded RPC concurrency; polling can therefore recover an orphaned cancellation. Upstream failures retain stored observations under the same rules as single reads. `nextCursor: null` means no older rows in this local store, not a complete scan of all on-chain orders. The service does not discover signatures from chain.
 
 ## Errors and cancellation
 
