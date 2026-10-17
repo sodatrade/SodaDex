@@ -1,6 +1,7 @@
 import { decodeFunctionData, encodeFunctionData, parseAbi, type Abi, type Hex } from 'viem'
 import { MINING_PRODUCT_READ_ABI, MINING_PRODUCT_WRITE_ABI } from './mining-abi'
 import type { MiningAddress, MiningContractIdentity, MiningProductDeployment } from './mining-products'
+import { validMiningSignedCall } from './mining-signed-calls'
 
 export const IMPLEMENTATION_SLOT = '0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc'
 export type MiningReadRole = keyof typeof MINING_PRODUCT_READ_ABI
@@ -40,7 +41,7 @@ const positive = (v: unknown): v is bigint => typeof v === 'bigint' && v > 0n &&
 
 /** Restrict simulations to the same fixed destinations the wallet UI can submit. */
 export function validMiningProductCall(value: unknown, d: MiningProductDeployment, write: boolean, now = Math.floor(Date.now() / 1000)): boolean {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return false
+  if (d.chainId !== 1952 || !value || typeof value !== 'object' || Array.isArray(value)) return false
   const tx = value as Record<string, unknown>
   if (Object.keys(tx).some((k) => !(write ? ['from', 'to', 'data', 'value'] : ['to', 'data']).includes(k)) ||
       !address(tx.to) || typeof tx.data !== 'string' || !/^0x[0-9a-fA-F]+$/.test(tx.data) || tx.data.length > 4098) return false
@@ -62,6 +63,8 @@ export function validMiningProductCall(value: unknown, d: MiningProductDeploymen
   if (target.write === 'router' && name === 'swapExactETHForTokens') return nativeValue > 0n && positive(a[0]) && Array.isArray(a[1]) &&
     a[1].length === 2 && is(a[1][0], c.wrappedNative.address) && is(a[1][1], c.fab.address) && is(a[2], tx.from) && deadline(a[3])
   if (nativeValue !== 0n) return false
+  const signed = validMiningSignedCall(target.write, name, a, d, now)
+  if (signed !== undefined) return signed
   if (name === 'approve') {
     if (target.write === 'circuits') return is(a[0], c.fragmentVault.address) && typeof a[1] === 'bigint'
     const spenders = is(tx.to, c.fab.address) ? [c.fragmentPool.address, c.manager.address, c.router.address, c.liquidityHelper.address]
