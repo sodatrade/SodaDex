@@ -12,49 +12,49 @@
 :root {
   font-family: "Soda Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
   font-synthesis: none;
-  --soda-bg: #121017;
-  --soda-surface: #1b1821;
-  --soda-raised: #25212e;
-  --soda-field: #211d28;
-  --soda-hover: #302a3a;
-  --soda-text: #f6f3fa;
-  --soda-muted: #b3a9c0;
-  --soda-faint: #a599b4;
-  --soda-line: #3c3448;
-  --soda-line-soft: #302939;
-  --soda-accent: #b65ae9;
-  --soda-accent-hover: #c579ee;
-  --soda-accent-text: #180b22;
-  --soda-highlight: #d4a0f0;
-  --soda-accent-dim: #32223e;
+  --soda-bg: #09090b;
+  --soda-surface: #101013;
+  --soda-raised: #1b1b21;
+  --soda-field: #19191e;
+  --soda-hover: #25252d;
+  --soda-text: #f5f5f7;
+  --soda-muted: #a5a5b0;
+  --soda-faint: #91919e;
+  --soda-line: #2d2d35;
+  --soda-line-soft: #232329;
+  --soda-accent: #f33aa6;
+  --soda-accent-hover: #ff67bc;
+  --soda-accent-text: #190c15;
+  --soda-highlight: #ff80ca;
+  --soda-accent-dim: #321524;
   --soda-warning: #e6bd73;
   --soda-error: #f6a3af;
-  --soda-overlay: #14101985;
-  --soda-shadow: 0 8px 28px #0000001a;
-  --soda-radius-card: 16px;
-  --soda-radius-control: 10px;
-  --soda-page-width: 1320px;
+  --soda-overlay: #050508b8;
+  --soda-shadow: 0 16px 56px #00000024;
+  --soda-radius-card: 20px;
+  --soda-radius-control: 8px;
+  --soda-page-width: 1400px;
   color: var(--soda-text);
   background: var(--soda-bg);
   color-scheme: dark;
 }
 
 :root[data-theme="light"] {
-  --soda-bg: #f6f5f8;
+  --soda-bg: #faf9fb;
   --soda-surface: #ffffff;
-  --soda-raised: #f1eef5;
-  --soda-field: #f5f4f7;
-  --soda-hover: #ece8f1;
-  --soda-text: #201d29;
-  --soda-muted: #746e80;
-  --soda-faint: #7d7589;
-  --soda-line: #e7e4ec;
-  --soda-line-soft: #efedf3;
-  --soda-accent: #a23be2;
-  --soda-accent-hover: #8a29c5;
+  --soda-raised: #f3f1f5;
+  --soda-field: #f5f3f6;
+  --soda-hover: #eeebf0;
+  --soda-text: #17151b;
+  --soda-muted: #696372;
+  --soda-faint: #78717f;
+  --soda-line: #e7e2e9;
+  --soda-line-soft: #efecf1;
+  --soda-accent: #c02580;
+  --soda-accent-hover: #a61c6d;
   --soda-accent-text: #ffffff;
-  --soda-highlight: #8a29c5;
-  --soda-accent-dim: #f3e9fb;
+  --soda-highlight: #b51e78;
+  --soda-accent-dim: #fbeaf4;
   --soda-warning: #946315;
   --soda-error: #bb364d;
   --soda-shadow: 0 4px 20px #29203005;
@@ -62,7 +62,7 @@
 }
 
 * { box-sizing: border-box; }
-body { margin: 0; min-width: 320px; background: var(--soda-bg); color: var(--soda-text); font-family: inherit; }
+body { margin: 0; min-width: 0; background: var(--soda-bg); color: var(--soda-text); font-family: inherit; }
 button, input { font: inherit; }
 button, a, input { -webkit-tap-highlight-color: transparent; }
 button { cursor: pointer; }

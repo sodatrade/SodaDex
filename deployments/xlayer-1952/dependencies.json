@@ -8,7 +8,8 @@
       "role": "permit2",
       "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
       "expectedRuntimeSha256": "668c194b735d51df66e1795dee13be5b7110ec379429c99319904eb1bb5ac6bd",
-      "sourceVerified": false
+      "sourceVerified": true,
+      "verificationRecord": "2026-10-17-permit2-runtime.json"
     },
     {
       "role": "wokb",

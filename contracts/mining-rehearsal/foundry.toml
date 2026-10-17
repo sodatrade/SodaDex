@@ -10,6 +10,7 @@ optimizer_runs = 50
 via_ir = true
 allow_paths = ["../../.analysis/mining-1952/fabx-snapshot"]
 remappings = [
+  "fabx-baseline/=../../.analysis/mining-1952/fabx-snapshot/",
   "fabx/=../../.analysis/mining-1952/fabx-snapshot/",
   "forge-std/=../../.analysis/mining-1952/fabx-snapshot/lib/forge-std/src/",
   "@openzeppelin/contracts/=../../.analysis/mining-1952/fabx-snapshot/lib/openzeppelin/contracts/",

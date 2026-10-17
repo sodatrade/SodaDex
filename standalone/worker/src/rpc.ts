@@ -12,6 +12,8 @@ import { registeredPool } from './pool-registration'
 import { validContractRequest } from './trade-requests'
 import { tradeRoute } from './trade-routes'
 import { networkProfile, type NetworkProfile } from '../../network-profile'
+import { validMiningRpcParams } from './mining-product-rpc'
+import { readMiningPending } from './mining-pending-rpc'
 const ADDRESS = /^0x[0-9a-fA-F]{40}$/
 const BLOCK = /^(latest|safe|finalized|pending|0x[0-9a-fA-F]+)$/
 const EMPTY_METHODS = new Set(['eth_chainId', 'eth_blockNumber', 'eth_gasPrice'])
@@ -33,7 +35,9 @@ function validParams(method: string, params: unknown[], profile: NetworkProfile)
   if (EMPTY_METHODS.has(method)) return params.length === 0
   if (method === 'eth_getTransactionReceipt') return params.length === 1 && typeof params[0] === 'string' && /^0x[0-9a-fA-F]{64}$/.test(params[0])
   if (method === 'eth_getBlockByNumber') return params.length === 2 && typeof params[0] === 'string' && BLOCK.test(params[0]) && params[1] === false
-  // No 1952 contract allowlist is deployed yet. Never validate its requests against 196 contracts.
+  // 1952 base-contract reads have their own deployed-address and canonical ABI list.
+  if (profile.chainId === 1952 && ['eth_call', 'eth_estimateGas', 'eth_getStorageAt', 'eth_getLogs'].includes(method))
+    return validMiningRpcParams(method, params)
   if (!profile.dexEnabled && !['eth_getBalance', 'eth_getCode'].includes(method)) return false
   if (method === 'eth_getLogs') return params.length === 1 && validLogFilter(params[0])
   if (method === 'eth_estimateGas') return params.length === 1 && validContractRequest(params[0], true)
@@ -108,23 +112,23 @@ export async function proxyRpc(request: Request, upstreamFetch: typeof fetch = f
         identity.result !== profile.chainHex || Object.hasOwn(identity, 'error'))
         return rpcError(rpc.id, -32000, 'RPC network mismatch', 502)
     }
-    if ((rpc.method === 'eth_call' || rpc.method === 'eth_estimateGas') && isRecord(rpc.params[0])) {
+    if (profile.dexEnabled && (rpc.method === 'eth_call' || rpc.method === 'eth_estimateGas') && isRecord(rpc.params[0])) {
       const tx = rpc.params[0]
       if (typeof tx.to === 'string' && same(tx.to, deployment.contracts.universalRouter) && typeof tx.data === 'string' && typeof tx.from === 'string') {
         const route = tradeRoute(tx.data as `0x${string}`, tx.from, BigInt(String(tx.value ?? '0x0')))
         if (route && !await registeredPool(route, 'trade', String(rpc.params[1] ?? 'latest'), upstreamFetch)) return rpcError(rpc.id, -32600, 'Pool is not registered or initialized', 400)
       }
     }
-    if (rpc.method === 'eth_call' && isRecord(rpc.params[0]) && typeof rpc.params[0].to === 'string' && typeof rpc.params[0].data === 'string') {
+    if (profile.dexEnabled && rpc.method === 'eth_call' && isRecord(rpc.params[0]) && typeof rpc.params[0].to === 'string' && typeof rpc.params[0].data === 'string') {
       const quote = quoteRequest(rpc.params[0].to, rpc.params[0].data as `0x${string}`)
       if (quote && !await registeredPool(quote, 'quote', String(rpc.params[1]), upstreamFetch)) return rpcError(rpc.id, -32600, 'Pool is not registered or initialized', 400)
     }
-    if ((rpc.method === 'eth_call' || rpc.method === 'eth_estimateGas') && isRecord(rpc.params[0])) {
+    if (profile.dexEnabled && (rpc.method === 'eth_call' || rpc.method === 'eth_estimateGas') && isRecord(rpc.params[0])) {
       const tx = rpc.params[0]
       if (typeof tx.from === 'string' && typeof tx.to === 'string' && typeof tx.data === 'string' && validLiquidityRequest(tx.to, tx.data as `0x${string}`, tx.from, BigInt(String(tx.value ?? '0x0'))) &&
         !await validLiquidityContext(tx.to, tx.data as `0x${string}`, tx.from, BigInt(String(tx.value ?? '0x0')), String(rpc.params[1] ?? 'latest'), upstreamFetch)) return rpcError(rpc.id, -32600, 'LP ownership or currencies do not match', 400)
     }
-    if (rpc.method === 'eth_call' && isRecord(rpc.params[0]) && typeof rpc.params[0].to === 'string' && typeof rpc.params[0].data === 'string' && contractReadKind(rpc.params[0].to, rpc.params[0].data as `0x${string}`) === 'pool') {
+    if (profile.dexEnabled && rpc.method === 'eth_call' && isRecord(rpc.params[0]) && typeof rpc.params[0].to === 'string' && typeof rpc.params[0].data === 'string' && contractReadKind(rpc.params[0].to, rpc.params[0].data as `0x${string}`) === 'pool') {
       if (!same(rpc.params[0].to, pools.v3.address)) {
         const [factory, token0, token1, fee] = await Promise.all(['factory', 'token0', 'token1', 'fee'].map((name) => call(V3_POOL_READ, String((rpc.params[0] as Record<string, unknown>).to), name, [], String(rpc.params[1]), upstreamFetch)))
         if (typeof factory !== 'string' || !same(factory, deployment.contracts.v3Factory)) return rpcError(rpc.id, -32600, 'Foreign pool', 400)
@@ -132,7 +136,8 @@ export async function proxyRpc(request: Request, upstreamFetch: typeof fetch = f
         if (typeof registered !== 'string' || !same(registered, rpc.params[0].to)) return rpcError(rpc.id, -32600, 'Foreign pool', 400)
       }
     }
-    const upstream = await upstreamFetch(profile.rpcUrl, {
+    const guardedPending = profile.chainId === 1952 && rpc.params.includes('pending')
+    const upstream = guardedPending ? undefined : await upstreamFetch(profile.rpcUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'User-Agent': 'SodaDex/1.0' },
       body: JSON.stringify(rpc),
@@ -140,8 +145,8 @@ export async function proxyRpc(request: Request, upstreamFetch: typeof fetch = f
       // Workers supports manual/follow. A redirect is rejected by !upstream.ok.
       redirect: 'manual',
     })
-    if (!upstream.ok) return rpcError(rpc.id, -32000, 'RPC temporarily unavailable', 502)
-    const value: unknown = await upstream.json()
+    if (upstream && !upstream.ok) return rpcError(rpc.id, -32000, 'RPC temporarily unavailable', 502)
+    const value: unknown = guardedPending ? await readMiningPending(rpc, profile, upstreamFetch) : await upstream?.json()
     if (!record(value) || value.jsonrpc !== '2.0' || value.id !== rpc.id) return rpcError(rpc.id, -32000, 'Invalid RPC response', 502)
     const hasResult = Object.hasOwn(value, 'result')
     const hasError = Object.hasOwn(value, 'error')

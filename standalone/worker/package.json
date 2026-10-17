@@ -10,9 +10,10 @@
     "dev": "wrangler dev --port 8787",
     "check": "npm run typecheck && npm run lint && npm test",
     "typecheck": "tsc --noEmit",
-    "lint": "cd .. && worker/node_modules/.bin/oxlint --config worker/.oxlintrc.json --deny-warnings worker/src worker/test trading-policy.ts network-profile.ts",
+    "lint": "cd .. && worker/node_modules/.bin/oxlint --config worker/.oxlintrc.json --deny-warnings worker/src worker/test trading-policy.ts network-profile.ts mining-contracts.ts mining-products.ts mining-abi.ts mining-calls.ts mining-math.ts",
     "test": "vitest run",
-    "deploy:test": "wrangler deploy"
+    "deploy:test": "wrangler deploy",
+    "deploy:mining-test": "node ../../scripts/sodadex/check-mining-web-build.mjs && wrangler deploy --config wrangler.1952-test.jsonc"
   },
   "devDependencies": {
     "oxlint": "1.73.0",

@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "chainId": 1952,
+  "state": "pending",
+  "reason": "The new business contracts have only been validated locally; this stage has not broadcast",
+  "contracts": {},
+  "projects": []
+}

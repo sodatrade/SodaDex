@@ -6,6 +6,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 from mining_source import foundry_env
+from fee_policy import PROFILES, require_test_profile
 
 SPEC = importlib.util.spec_from_file_location("mining_preparation", Path(__file__).with_name("prepare-mining-dependencies.py"))
 MODULE = importlib.util.module_from_spec(SPEC)
@@ -13,6 +14,33 @@ SPEC.loader.exec_module(MODULE)
 
 
 class PreparationTest(unittest.TestCase):
+    def test_production_fee_profile_stops_before_rpc_source_or_forge(self):
+        arguments = ["prepare", "--fabx-source", "/unused", "--output", "/unused-output",
+                     "--fee-profile", str(PROFILES["production"])]
+        with patch("sys.argv", arguments), patch.object(MODULE.READINESS, "rpc_read") as read, \
+                patch.object(MODULE, "source_snapshot") as source, patch.object(MODULE.subprocess, "run") as forge:
+            with self.assertRaisesRegex(ValueError, "Invalid 1952 test fee profile"):
+                MODULE.main()
+        read.assert_not_called()
+        source.assert_not_called()
+        forge.assert_not_called()
+
+    def test_successful_preparation_records_checked_fee_digest_without_network(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "evidence"
+            arguments = ["prepare", "--fabx-source", "/unused", "--output", str(output)]
+            result = type("Result", (), {"returncode": 0, "stderr": "", "stdout":
+                          "\n".join(json.dumps(item) for item in self._simulation())})()
+            with patch("sys.argv", arguments), patch.object(MODULE, "preflight", return_value=10**18), \
+                    patch.object(MODULE, "source_snapshot", return_value=Path("/snapshot")), \
+                    patch.object(MODULE, "foundry_env", return_value={}), \
+                    patch.object(MODULE.subprocess, "run", return_value=result), patch("builtins.print"):
+                self.assertEqual(MODULE.main(), 0)
+            metadata = json.loads((output / "metadata.json").read_text())
+            self.assertEqual(metadata["feeConfigurationSha256"], require_test_profile(PROFILES["test"])["configurationSha256"])
+            self.assertFalse(metadata["signed"])
+            self.assertFalse(metadata["broadcastPerformed"])
+
     def test_mainnet_response_stops_before_balance_and_forge(self):
         calls = []
         def read(url, method, params):

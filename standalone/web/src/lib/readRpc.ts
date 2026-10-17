@@ -2,7 +2,7 @@ import { NETWORK } from '../network'
 
 export type ReadMethod =
   | 'eth_chainId' | 'eth_blockNumber' | 'eth_getBalance' | 'eth_call' | 'eth_getBlockByNumber'
-  | 'eth_estimateGas' | 'eth_getTransactionReceipt' | 'eth_gasPrice' | 'eth_getCode' | 'eth_getLogs'
+  | 'eth_estimateGas' | 'eth_getTransactionReceipt' | 'eth_gasPrice' | 'eth_getCode' | 'eth_getLogs' | 'eth_getStorageAt'
 
 export function isAddress(value: unknown): value is `0x${string}` {
   return typeof value === 'string' && /^0x[0-9a-fA-F]{40}$/.test(value)

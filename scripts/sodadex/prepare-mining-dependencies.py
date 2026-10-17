@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 import subprocess
 from mining_source import FABX_SOURCE, foundry_env, source_snapshot
+from fee_policy import PROFILES, require_test_profile
 
 SPEC = importlib.util.spec_from_file_location("mining_readiness", Path(__file__).with_name("check-mining-testnet.py"))
 READINESS = importlib.util.module_from_spec(SPEC)
@@ -87,7 +88,9 @@ def main():
     parser.add_argument("--fabx-source", type=Path, required=True)
     parser.add_argument("--rpc", choices=READINESS.RPC_URLS, default=READINESS.RPC_URLS[0])
     parser.add_argument("--output", type=Path, required=True, help="New evidence directory; never overwritten")
+    parser.add_argument("--fee-profile", type=Path, default=PROFILES["test"])
     args = parser.parse_args()
+    fees = require_test_profile(args.fee_profile)
     balance = preflight(args.rpc, READINESS.rpc_read)
     snapshot = source_snapshot(root, args.fabx_source)
     args.output.mkdir(parents=True, exist_ok=False)
@@ -102,6 +105,8 @@ def main():
                 "signed": False, "command": command,
                 "scriptSha256": hashlib.sha256((root / "contracts/mining-rehearsal/script/PrepareFabx1952.s.sol").read_bytes()).hexdigest(),
                 "scope": "Proposed test dependencies only; addresses in simulation are NOT deployed"}
+    metadata["feeConfigurationSha256"] = fees["configurationSha256"]
+    metadata["feeConfigurationScope"] = "Lowest test parameters checked; only base setup fees are implemented by this script"
     exit_code = result.returncode
     if exit_code == 0:
         try:
