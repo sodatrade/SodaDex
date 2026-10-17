@@ -32,7 +32,7 @@
     "testEconomicParametersMayBeChosen": true
   },
   "authorization": "User explicitly approved 2026-10-17: current-phase gas up to 0.0025 TEST OKB, principal up to 0.001 TEST OKB and 10,000 TEST-FAB; commit/push current requirement branches and update Draft PRs #2/#3 without merge; deploy1952 test products and isolated frontend. No196 or production deployment authorized.",
-  "onChainExecutionStatus": "not started",
+  "onChainExecutionStatus": "completed and verified: 102 successful public1952 transactions; see2026-10-17-products-deployment.json",
   "postAdmissionPromotion": {
     "backing": "base weight only; no loss from promotion",
     "premiumRewards": "current vault beneficiaries",

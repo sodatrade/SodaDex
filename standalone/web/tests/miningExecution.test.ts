@@ -25,6 +25,17 @@ describe('1952 wallet execution and recoverable hashes', () => {
     await expect(executeMiningCall(c, { from: MINING_TEST_ACCOUNT, to: c.deployment.contracts.fragmentVault.address, value: '0x0', data: miningData('fragmentVault', 'claim') }, 'claim')).rejects.toThrow('miningIdentityChanged')
     expect(request.mock.calls.some(([r]) => r.method === 'eth_sendTransaction')).toBe(false)
   })
+  it('does not open a wallet transaction when pending simulation times out', async () => {
+    const { c, request, submitted } = fixture(), read = c.read
+    c.read = async (method, params) => {
+      if (method === 'eth_call' && params?.includes('pending')) throw new DOMException('Timed out', 'TimeoutError')
+      return read(method, params)
+    }
+    await expect(executeMiningCall(c, { from: MINING_TEST_ACCOUNT, to: c.deployment.contracts.fragmentVault.address,
+      value: '0x0', data: miningData('fragmentVault', 'claim') }, 'claim')).rejects.toThrow('Timed out')
+    expect(request.mock.calls.some(([r]) => r.method === 'eth_sendTransaction')).toBe(false)
+    expect(submitted).toHaveLength(0)
+  })
   it('keeps the hash if the wallet changes during approval and prevents the next step', async () => {
     const { c, request, submitted } = fixture()
     let current = c.identity

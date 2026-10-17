@@ -25,19 +25,19 @@
 # 默认196构建不改变现有发布配置
 npm --prefix standalone/web run build
 
-# 在独立工作树中构建1952准备页；不得用原196发布命令发布此构建
-VITE_SODADEX_NETWORK_PROFILE=1952-mining-test npm --prefix standalone/web run build
+# 构建1952独立资源，不覆盖默认dist
+npm --prefix standalone/web run build:mining-test
 ```
 
-此改动没有创建或修改云端部署。1952 使用 `worker/wrangler.1952-test.jsonc`、独立名称 `sodadex-mining-test-1952` 和 `web/dist-mining-1952`，明确设置 `SODADEX_NETWORK_PROFILE=1952-mining-test`；不复用 `sodadex-preview` 或 `sodadex-orders-test`。发布前验证构建网络标记和 CSP hash；当前尚未发布。
+1952 使用 `worker/wrangler.1952-test.jsonc`、独立名称 `sodadex-mining-test-1952` 和 `web/dist-mining-1952`，明确设置 `SODADEX_NETWORK_PROFILE=1952-mining-test`；不复用 `sodadex-preview` 或 `sodadex-orders-test`。发布前验证构建网络标记和 CSP hash。本轮公开合约已部署并核验，前端正在准备发布。
 
-真实部署完成后，将矿机/FAB/市场的已核验地址、ABI、起始区块和读取/写模拟白名单接到独立矿机应用。不能仅将 `dexEnabled` 改成 `true`：现有 DEX/订单/行情消费者仍是 196 专用，必须先完成对应 1952 适配和回归。新的 1952 settlement 与订单服务尚未部署前，限价单持续禁用。
+矿机/FAB/市场的已核验地址、ABI、起始区块和读取/写模拟白名单已接到独立矿机应用。不能仅将 `dexEnabled` 改成 `true`：通用 DEX/订单/行情消费者仍是 196 专用，必须先完成对应 1952 适配和回归。新的 1952 settlement 与订单服务尚未部署前，限价单持续禁用。
 
 默认白天和中英粤偏好复用现有实现。pending 时显示准备页；ready 后按实际运行码、UUPS 槽、NFT beacon 和业务绑定逐项核验，再显示募资分红、矿机碎片、收益和本机交易记录。所有写操作由连接的钱包确认，前端不读取部署钱包。
 
 ## 独立测试站发布准备
 
-先完成公开1952回执与 `deployments/xlayer-1952/products.json`，再人工发布。当前只提供配置，尚未上传。
+公开1952已完成102笔成功交易，回执与运行码复核通过，`deployments/xlayer-1952/products.json` 已为ready。按以下独立入口人工发布。
 
 ```sh
 npm --prefix standalone/web run build

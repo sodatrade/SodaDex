@@ -1,8 +1,131 @@
 {
   "schemaVersion": 1,
   "chainId": 1952,
-  "state": "pending",
-  "reason": "The new business contracts have only been validated locally; this stage has not broadcast",
-  "contracts": {},
-  "projects": []
+  "state": "ready",
+  "version": "phase2-9eb904673520-43780614",
+  "genesisBlock": "43777919",
+  "sourceHistoryVersion": 2,
+  "templateId": 0,
+  "contracts": {
+    "fab": {
+      "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+      "runtimeKeccak256": "0x86db90746e828aa8cbcf3865caa1c0d4e41b1de70e4d31e83d3da7c1a7b9a37e"
+    },
+    "mining": {
+      "address": "0x7991d4a8493b9709365cd079dffc75e790007874",
+      "runtimeKeccak256": "0x4b3f47b98351b0a6b71d62aba102bc9b9146c0737e7371537e4fed66085a825c",
+      "implementation": {
+        "address": "0x1d59446d84e2470015dc926d9df7d83a2395d264",
+        "runtimeKeccak256": "0x291a2b4cdceb800fdaa40732544ab92bc326a73e3acfcb3b015c85baa1ccaddf"
+      }
+    },
+    "circuits": {
+      "address": "0x5ae194d008292ef9d02933a599070c9661be040c",
+      "runtimeKeccak256": "0xb18af365019dfafda604e3ffac90cdd0f5d505f7c27dc8505f520f07aee0aa22",
+      "beacon": {
+        "address": "0x62874Cf0179B35fdeC20947281Aaf8f5DFF3D15c",
+        "runtimeKeccak256": "0x9a5acc831a4c6c25818b9de264b5dc8c9f82a47079f4576acc88d79ce85de4b1",
+        "implementation": {
+          "address": "0x98F4DFBfAb6fC37e59e00d6881E779B33b23b009",
+          "runtimeKeccak256": "0x96004f0b1992ac9ca0caa5540a487d72381ee66f8054706c21d1471330448008"
+        }
+      }
+    },
+    "circuitMarket": {
+      "address": "0xa619c4cf1264bc071a3827edd0b64252842471be",
+      "runtimeKeccak256": "0x4b3f47b98351b0a6b71d62aba102bc9b9146c0737e7371537e4fed66085a825c",
+      "implementation": {
+        "address": "0xbdb90331b1c205bbfa84db7cbee6a53b24fc0e21",
+        "runtimeKeccak256": "0x3da9eeb25dcea9aa657e544bdd20c2a370d58ca0ff16dbdc34126dbdae81b181"
+      }
+    },
+    "nftFactory": {
+      "address": "0xad6e6bd6feecd3ef77ead8779ffcf5d52521abca",
+      "runtimeKeccak256": "0x4b3f47b98351b0a6b71d62aba102bc9b9146c0737e7371537e4fed66085a825c",
+      "implementation": {
+        "address": "0x6b5c32ad97eb42230138e02a21b0e6d811fd713d",
+        "runtimeKeccak256": "0xfb56740a84af94c7819cef4a48c1561431277bfce2f0ca71e91812c0b6c2eb74"
+      }
+    },
+    "manager": {
+      "address": "0xe713afd6133207df18662080e2b0f7e456aeeba5",
+      "runtimeKeccak256": "0x9224dd2dfd5cd24b0b670c32cff4c4ceab8cede8c493f6f0c726c832cb46a1f1",
+      "implementation": {
+        "address": "0xba3e5a8933ef1eee4a0208bb1d27ab3a4e2c8fb7",
+        "runtimeKeccak256": "0x07dee79f33c54639514ea33f20712f9494ae6c8aa0bff6975afc59561db72327"
+      }
+    },
+    "launchFactory": {
+      "address": "0xad79ebca3d44c830bd1fc67af2eb2d257a9b976f",
+      "runtimeKeccak256": "0xf52c658c6207ffc2c9793b99e8b2d9246e9a39535cb60a13578e2c0d7aa71d81"
+    },
+    "registry": {
+      "address": "0xd595ecd77fa64e679addc8b4ba98c5edd14ea3f1",
+      "runtimeKeccak256": "0xbd8c48bf345539ccf9cb61e6cd5428a8d4da4c6f793e20cb01265e2d32306c74"
+    },
+    "miningFactory": {
+      "address": "0xc5e7fd4b379afd2e93c3def70989e9bb14815b1d",
+      "runtimeKeccak256": "0x9a5a24dd473b175760b7b76d61488e0918083cb0f465ad26b47ed16dca759f3e"
+    },
+    "farm": {
+      "address": "0x0e51055559be68416210eae41d7e31df890b5708",
+      "runtimeKeccak256": "0x49d89384cf4c608fdec8bd274f03995305139d95d89f96d30d44eb313a1089b3"
+    },
+    "router": {
+      "address": "0xd7e58272181d6b56af5b10a12f519ba4a85914e7",
+      "runtimeKeccak256": "0xefe4a2691ba1cf63757f99e047d21c0a828e0edf0f4501f905700165bae77af6"
+    },
+    "v2Factory": {
+      "address": "0x378e840010bcb4af361cc838ad54f1ea57d76e3b",
+      "runtimeKeccak256": "0xbab145d02e7005f0d84c6c1639d39b799b0ea16df99ebbdaf5a14d9da820b4e0"
+    },
+    "wrappedNative": {
+      "address": "0xda5bc8bc981d9b2f5df2b0c7e5aed044993709fa",
+      "runtimeKeccak256": "0xe524bd0c25f819b88ff6694c74b8757e843232d912f1d88fc5f924da716e8aaf"
+    },
+    "v2Locker": {
+      "address": "0xb34a3ffa2dc4c72619f3033368b4a45c66b021ec",
+      "runtimeKeccak256": "0x6ecfbbb6e5410f772f9af845ac3af90941a1f64332e4c841d5a2563e5a010bee"
+    },
+    "liquidityHelper": {
+      "address": "0x0b4fae1834210d47702bbc45d01e66f89aeb314d",
+      "runtimeKeccak256": "0xb1545e703aecbc3bfce4a44e689b6417e949f0d9239c116d9c7ca5ca2689900a"
+    },
+    "fragmentVault": {
+      "address": "0xed377733590639e0a4ec7cd14df7509c7b2ca87d",
+      "runtimeKeccak256": "0xe5ecd4578c58a1c01de3ac3a24a46fc86c034a345f2eaec5de379fe86c14265e"
+    },
+    "fragmentPool": {
+      "address": "0x6f1666231685cf8fc45b355a9eba8afd9ba6d2fa",
+      "runtimeKeccak256": "0x698b2d21fcb9b413007d83c12400825fc9c37a18b70d0013e27c788109a4e124"
+    },
+    "minerBuyer": {
+      "address": "0x842b7bf61f2cb4be8aacac6adece3244c2a6f6ab",
+      "runtimeKeccak256": "0xc96f1823653b14d432fc4d95502ba4e0e054d62bf30898173c8bc63f768ac296"
+    }
+  },
+  "projects": [
+    {
+      "symbol": "TEST-A",
+      "token": {
+        "address": "0xf71c2666394361016b10A3310C7A6d4F15Af0934",
+        "runtimeKeccak256": "0xd9e795626672ef48d8e7a7cc3bd904713b4fe71f7611a1fdc391f7354e399a4b"
+      },
+      "vault": {
+        "address": "0x4acE41319812BD273CBc010C39EBed3B3162deB7",
+        "runtimeKeccak256": "0x9bd5dcdaa5db3822be0bf156d26ecca341460f8778817f683d461833369a340e"
+      },
+      "holder": {
+        "address": "0xc4D4d2367ddfb3632FA9b025e27a0671E35A81Dc",
+        "runtimeKeccak256": "0xe0d880cfa1ddeef7721160135bca1b1588f5a5f1190af0a444339ab1674f0cac"
+      },
+      "pair": {
+        "address": "0xc3C595d36881a72B6646512b7f9ceC19Ea16e384",
+        "runtimeKeccak256": "0x5b83bdbcc56b2e630f2807bbadd2b0c21619108066b92a58de081261089e9ce5"
+      }
+    }
+  ],
+  "testListingIds": [
+    "2"
+  ]
 }

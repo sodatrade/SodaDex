@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "chainId": 1952,
   "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
-  "status": "base-dependencies-verified-product-integration-pending",
+  "status": "mining-products-verified; general V3 dependencies not deployed",
   "dependencies": [
     {
       "role": "permit2",
@@ -13,7 +13,10 @@
     },
     {
       "role": "wokb",
-      "address": null
+      "address": "0xda5bc8bc981d9b2f5df2b0c7e5aed044993709fa",
+      "expectedRuntimeSha256": "cfbbcde6216d96d738807622bbcf9903033ddafba4cbcba85bf62536209f0086",
+      "sourceVerified": true,
+      "verificationRecord": "2026-10-17-products-deployment.json"
     },
     {
       "role": "fab",
@@ -53,25 +56,31 @@
     },
     {
       "role": "sodaV4PoolManager",
-      "address": null
+      "address": "0xa877e551a15e4d2b045097224b438392ece44b24",
+      "expectedRuntimeSha256": "20772d8e1e6c454f831af6beff1d3b5bea0e77bd85c009e6c9d268c4a70c70fd",
+      "sourceVerified": true,
+      "verificationRecord": "2026-10-17-products-deployment.json"
     },
     {
       "role": "sodaV4PositionManager",
-      "address": null
+      "address": "0x53e436b5ea25f35bbefab3459b685f426913254f",
+      "expectedRuntimeSha256": "63ecbd7148332be92f9b6b0327022ad42bdd3d4219a2734372779fbfc137f59a",
+      "sourceVerified": true,
+      "verificationRecord": "2026-10-17-products-deployment.json"
     },
     {
       "role": "DewebRewardAccounting",
-      "address": "0x9cef28ada76d6af3e7a2604b0b6ac1a3b65b39c3",
-      "expectedRuntimeSha256": "5d076a9d5e4b50167bb33cd0700b79132f013c06356847216d9125fb63dca0c5",
+      "address": "0xe8738389c2027bfcd4ac0dde764df9f170eb9750",
+      "expectedRuntimeSha256": "e960a2fa5f4850229628c9f9ce0cfbd761d42b6d3dc79f5d0f764a573d78a1c0",
       "sourceVerified": true,
-      "verificationRecord": "2026-10-17-base-runtime.json"
+      "verificationRecord": "2026-10-17-products-deployment.json"
     },
     {
       "role": "DewebMiningExtension",
-      "address": "0x8f7ef5ae53bc24072115c6ed4027087b9631dffa",
-      "expectedRuntimeSha256": "729f1990786074844d6197265baa2b67b48d9bd47317a2c5a47431cfae800b80",
+      "address": "0x2becd78e05fb33b0588e9cf61e65afee9dc7428f",
+      "expectedRuntimeSha256": "4fcca8aa0b401977ca51e2f123136a044d73d44254bfc31bac657e0c21eab385",
       "sourceVerified": true,
-      "verificationRecord": "2026-10-17-base-runtime.json"
+      "verificationRecord": "2026-10-17-products-deployment.json"
     },
     {
       "role": "PodNetlist",
@@ -110,10 +119,10 @@
     },
     {
       "role": "miningImplementation",
-      "address": "0xfe32078e62a43d88f65731da693950e6e221fe0b",
-      "expectedRuntimeSha256": "901ab8207ab2ada648be6d5aac9523ac1f964803867727d5613127e3eb26b912",
+      "address": "0x1d59446d84e2470015dc926d9df7d83a2395d264",
+      "expectedRuntimeSha256": "a1d38715b7cb57bbad67fe19874e44c7b5e248174a57470115993b45ade173eb",
       "sourceVerified": true,
-      "verificationRecord": "2026-10-17-base-runtime.json"
+      "verificationRecord": "2026-10-17-products-deployment.json"
     },
     {
       "role": "marketImplementation",
@@ -149,7 +158,14 @@
       "expectedRuntimeSha256": "f19da96affe89c144b4699ff7ea7bf509abbde804e82340bdeba5efce30569e8",
       "sourceVerified": true,
       "verificationRecord": "2026-10-17-base-runtime.json"
+    },
+    {
+      "role": "FabxRewardHistory",
+      "address": "0x5abe8f32072b46e67816db5991033e06d3b000d1",
+      "expectedRuntimeSha256": "5c0de070cbf851c00440aa702b8318522bed050f52519ec8ad8488ad8aed38ae",
+      "sourceVerified": true,
+      "verificationRecord": "2026-10-17-products-deployment.json"
     }
   ],
-  "deploymentRecord": "2026-10-17-base-deployment.json"
+  "deploymentRecord": "2026-10-17-products-deployment.json"
 }

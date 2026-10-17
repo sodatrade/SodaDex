@@ -9,6 +9,16 @@ const quantity = (value: unknown): bigint => {
 }
 const fresh = (latest: unknown, pending: unknown): boolean => record(latest) && record(pending) &&
   quantity(pending.number) >= quantity(latest.number) && quantity(pending.timestamp) >= quantity(latest.timestamp)
+const retryDelays = [1000, 2000, 4000, 4000, 4000] as const
+
+function waitForRetry(ms: number, signal: AbortSignal): Promise<void> {
+  signal.throwIfAborted()
+  return new Promise((resolve, reject) => {
+    const abort = (): void => { clearTimeout(timer); reject(signal.reason) }
+    const timer = setTimeout(() => { signal.removeEventListener('abort', abort); resolve() }, ms)
+    signal.addEventListener('abort', abort, { once: true })
+  })
+}
 
 /** The official 1952 RPC sometimes routes pending reads to an obsolete backend.
  * Batch freshness probes with the requested read; retry only stale/invalid reads.
@@ -24,8 +34,11 @@ export async function readMiningPending(rpc: RpcRequest, profile: NetworkProfile
   if (target) probes.push(['eth_getCode', [target, 'latest']], ['eth_getCode', [target, 'pending']])
   if (sender) probes.push(['eth_getTransactionCount', [sender, 'latest']], ['eth_getTransactionCount', [sender, 'pending']])
   const operations = [...probes, [rpc.method, rpc.params] as [string, unknown[]]]
-  const signal = AbortSignal.timeout(12_000)
+  // A stale backend has persisted for 12 seconds in live 1952 observations.
+  // Spread the six read attempts across 15 seconds, within one total deadline.
+  const signal = AbortSignal.timeout(20_000)
   for (let attempt = 0; attempt < 6; attempt++) {
+    if (attempt > 0) await waitForRetry(retryDelays[attempt - 1], signal)
     signal.throwIfAborted()
     const response = await upstreamFetch(profile.rpcUrl, {
       method: 'POST', headers: { 'Content-Type': 'application/json', 'User-Agent': 'SodaDex/1.0' },
@@ -34,6 +47,7 @@ export async function readMiningPending(rpc: RpcRequest, profile: NetworkProfile
     })
     if (!response.ok) throw new Error('Mining pending RPC unavailable')
     const body: unknown = await response.json()
+    signal.throwIfAborted()
     if (!Array.isArray(body) || body.length !== operations.length || body.some((item: unknown) => !record(item) || item.jsonrpc !== '2.0' || !Number.isInteger(item.id))) continue
     const replies = new Map((body as RpcReply[]).map((item) => [item.id, item]))
     if (replies.size !== operations.length || operations.some((_, id) => !replies.has(id))) continue

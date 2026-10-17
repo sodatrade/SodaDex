@@ -18,7 +18,8 @@ export async function rpc(method: ReadMethod, params: unknown[] = []): Promise<u
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'X-SodaDEX-Network-Profile': NETWORK.id },
     body: JSON.stringify({ jsonrpc: '2.0', id: method, method, params }),
-    signal: AbortSignal.timeout(12_000),
+    // Cover the Worker network check and bounded stale-pending backoff on 1952.
+    signal: AbortSignal.timeout(NETWORK.id === '1952-mining-test' && params.includes('pending') ? 35_000 : 12_000),
   })
   if (!response.ok) throw new Error('暂时无法连接 X Layer 节点')
   const body: unknown = await response.json()
