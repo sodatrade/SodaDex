@@ -30,12 +30,15 @@ export function useLimitOperation(wallet: WalletController, deployment: OrderDep
     const now = wallet.getIdentity()
     return !!now && now.chainId === CHAIN_ID && now.provider === review.identity.provider && now.revision === review.identity.revision && now.address.toLowerCase() === review.identity.address.toLowerCase() && revision.current === review.revision
   }
+  const assertReadCurrent = (generation: number, identity: TradeIdentity | undefined): void => {
+    const now = wallet.getIdentity()
+    if (generation !== revision.current || identity?.revision !== now?.revision || identity?.provider !== now?.provider || identity?.chainId !== now?.chainId || identity?.address !== now?.address) throw new TradeError('tradeIdentityChanged')
+  }
   const observe = async (saved: OrderSubmission): Promise<OrderSubmission> => {
     if (!deployment) throw new TradeError('tradeNotReady')
     const generation = revision.current, identity = wallet.getIdentity()
     const recovery = await readOrderChainState(saved.order, deployment).catch(() => { throw new TradeError('tradeUnavailable') })
-    const now = wallet.getIdentity()
-    if (generation !== revision.current || identity?.revision !== now?.revision || identity?.provider !== now?.provider || identity?.chainId !== now?.chainId || identity?.address !== now?.address) throw new TradeError('tradeIdentityChanged')
+    assertReadCurrent(generation, identity)
     const next = { ...saved, recovery }
     saveOrderSubmission(next, deployment); setSubmission(next)
     return next
@@ -82,8 +85,9 @@ export function useLimitOperation(wallet: WalletController, deployment: OrderDep
   const querySubmission = async (): Promise<void> => {
     if (!submission || !deployment || checking || busy) return
     setChecking(true); setAbsent(false)
-    try { const found = await getOrder(submission.id, deployment); setResult(found); setAbsent(!found); setError(undefined); invalidate() }
-    catch { setError('tradeUnavailable') } finally { setChecking(false) }
+    const generation = revision.current, identity = wallet.getIdentity()
+    try { const found = await getOrder(submission.id, deployment); assertReadCurrent(generation, identity); setResult(found); setAbsent(!found); setError(undefined); invalidate() }
+    catch (cause) { setError(cause instanceof TradeError ? cause.code : 'tradeUnavailable') } finally { setChecking(false) }
   }
   const recheck = async (): Promise<void> => {
     const pending = tx.current
@@ -112,13 +116,19 @@ export function useLimitOperation(wallet: WalletController, deployment: OrderDep
   const newOrder = async (): Promise<void> => {
     if (busy || checking || !submission || !deployment || hasPending()) return
     setChecking(true); setError(undefined)
+    const generation = revision.current, identity = wallet.getIdentity()
     try {
-      const next = await observe(submission)
-      if (next.recovery?.status === 'open' || hasPending()) return
-      saveOrderSubmission({ ...next, released: true }, deployment)
-      revision.current += 1; setSubmission(undefined); setResult(undefined); setConfirmed(false)
-      tx.current = undefined; setRecord(undefined); setProgress(undefined)
-    } catch (cause) { setError(tradeError(cause)) } finally { setChecking(false) }
+      const found = await getOrder(submission.id, deployment)
+      assertReadCurrent(generation, identity)
+      setResult(found); setAbsent(!found)
+      // A fresh acknowledgement releases only local focus. The service still tracks the live order.
+      const next = found ? submission : await observe(submission)
+      assertReadCurrent(generation, identity)
+      if ((!found && next.recovery?.status === 'open') || hasPending()) return
+      saveOrderSubmission({ ...next, released: true, releaseSource: found ? 'service' : 'chain' }, deployment)
+      revision.current += 1; setSubmission(undefined); setResult(undefined); setConfirmed(false); setAbsent(false)
+      tx.current = undefined; setRecord(undefined); setProgress(undefined); invalidate()
+    } catch (cause) { setError(cause instanceof TradeError ? cause.code : 'tradeUnavailable') } finally { setChecking(false) }
   }
   return { busy, progress, error, record, confirmed, checking, submission, result, absent,
     unresolved: record?.status === 'pending', current, execute, querySubmission, recheck, queryChain, chainTerminal, canCancelSubmission, newOrder,

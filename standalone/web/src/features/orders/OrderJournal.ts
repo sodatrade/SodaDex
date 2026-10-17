@@ -4,7 +4,7 @@ import { WOKB_ADDRESS } from '../../domain/assets'
 import { CONTRACTS } from '../../trading/config'
 import type { OrderChainState } from './signing'
 import type { OrderDeployment } from './config'
-export interface OrderSubmission { id: Hex; order: SodaLimitOrder; submittedAt: number; recovery?: OrderChainState; released?: boolean }
+export interface OrderSubmission { id: Hex; order: SodaLimitOrder; submittedAt: number; recovery?: OrderChainState; released?: boolean; releaseSource?: 'service' | 'chain' }
 const key = 'sodadex.order-submissions.v1'
 /** Only the public order and digest survive reloads. Never persist its Permit2 signature. */
 export function readOrderSubmissions(deployment: OrderDeployment): OrderSubmission[] {
@@ -18,7 +18,9 @@ export function readOrderSubmissions(deployment: OrderDeployment): OrderSubmissi
         const id = hashTypedData(orderTypedData(order, CONTRACTS.permit2))
         if (v.id !== id || typeof v.submittedAt !== 'number' || !Number.isSafeInteger(v.submittedAt)) return []
         const recovery = readRecovery(v.recovery)
-        return [{ id, order, submittedAt: v.submittedAt, ...(recovery ? { recovery, released: v.released === true && recovery.status !== 'open' } : {}) }]
+        // These are public focus markers, never proof that a signature is invalid or a service is ready.
+        const released = v.released === true && (v.releaseSource === 'service' || (recovery && recovery.status !== 'open'))
+        return [{ id, order, submittedAt: v.submittedAt, ...(recovery ? { recovery } : {}), ...(released ? { released: true, releaseSource: v.releaseSource === 'service' ? 'service' as const : 'chain' as const } : {}) }]
       } catch { return [] }
     })
   } catch { return [] }
