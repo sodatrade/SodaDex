@@ -83,10 +83,6 @@ function AppContent(): ReactElement {
       <a className="skip-link" href="#main">
         {t('skipMain')}
       </a>
-      <div className="ambient" aria-hidden="true">
-        <div className="ambient-halo" />
-        <div className="ambient-grid" />
-      </div>
       <Header
         page={page}
         onPageChange={navigate}

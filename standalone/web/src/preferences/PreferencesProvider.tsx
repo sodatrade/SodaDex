@@ -15,7 +15,7 @@ export function PreferencesProvider({ children }: { children: ReactNode }): Reac
     document.querySelector('meta[name="description"]')?.setAttribute('content', t('pageDescription'))
     document
       .querySelector('meta[name="theme-color"]')
-      ?.setAttribute('content', preferences.theme === 'light' ? '#f6f5f8' : '#121017')
+      ?.setAttribute('content', preferences.theme === 'light' ? '#faf9fb' : '#09090b')
   }, [preferences, t])
 
   const value = useMemo(

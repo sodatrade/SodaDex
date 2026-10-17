@@ -19,7 +19,7 @@ interface HeaderProps {
 }
 
 export function Header({ page, onPageChange, wallet, onWallet, onSearch, onPreferences }: HeaderProps): ReactElement {
-  const { t, locale } = usePreferences()
+  const { t, locale, currency } = usePreferences()
   const m = workspaceMessages(locale)
   const group = primaryPage(page)
   const pages: { id: Page; name: string }[] = [
@@ -51,19 +51,20 @@ export function Header({ page, onPageChange, wallet, onWallet, onSearch, onPrefe
         <IgnixLaunchLink />
       </nav>
       <div className="header-actions">
-        <span className="network-badge">
-          <NetworkIcon />
-          <span>X Layer</span>
-        </span>
         <Button
-          appearance="icon"
-          className="header-tool"
+          appearance="ghost"
+          className="header-search"
           aria-label={t('globalSearch')}
           aria-haspopup="dialog"
           onClick={onSearch}
         >
           <Icon name="search" />
+          <span>{t('globalSearchPlaceholder')}</span>
         </Button>
+        <span className="network-badge">
+          <NetworkIcon />
+          <span>X Layer</span>
+        </span>
         <Button
           appearance="primary"
           className="header-connect"
@@ -75,12 +76,13 @@ export function Header({ page, onPageChange, wallet, onWallet, onSearch, onPrefe
         </Button>
         <Button
           appearance="icon"
-          className="header-tool"
+          className="header-tool header-preferences"
           aria-label={t('preferences')}
           aria-haspopup="dialog"
           onClick={onPreferences}
         >
-          <Icon name="more" />
+          <Icon name="settings" size={18} />
+          <span>{currency}</span>
         </Button>
       </div>
     </header>

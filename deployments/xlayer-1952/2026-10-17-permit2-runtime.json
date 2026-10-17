@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "chainId": 1952,
+  "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+  "blockNumber": "43767528",
+  "blockHash": "0x8ae3be44ff540959dd79b5d3e9e49f48268656563607abeac3a8aadeab530ea2",
+  "productSnapshot": "1bbcc48c52d39e0038cf3c7704192deef53649b003ba245ee8f4bd197ebde569",
+  "runtimeBytes": 9152,
+  "runtimeSha256": "668c194b735d51df66e1795dee13be5b7110ec379429c99319904eb1bb5ac6bd",
+  "runtimeKeccak256": "0xccb128e805f07937ea67258dca64d9a9e4e2dfafe8133ccf677e0c651a0c5753",
+  "domain": "0xc4040bdaa9a8662b903e2a275c018a3910c18c691a3e5cf78ca1b383a5d95a41",
+  "immutableSlots": [
+    {
+      "length": 32,
+      "start": 6945,
+      "value": "0x00000000000000000000000000000000000000000000000000000000000007a0"
+    },
+    {
+      "length": 32,
+      "start": 6983,
+      "value": "0xc4040bdaa9a8662b903e2a275c018a3910c18c691a3e5cf78ca1b383a5d95a41"
+    }
+  ],
+  "runtimeIncludingImmutablesMatches": true,
+  "domainMatches": true
+}

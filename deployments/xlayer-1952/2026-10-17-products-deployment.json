@@ -1,0 +1,260 @@
+{
+  "schemaVersion": 1,
+  "chainId": 1952,
+  "status": "phase2-deployed-and-verified",
+  "checkedAtUtc": "2026-10-17T12:19:02.374Z",
+  "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+  "sourceCommits": {
+    "sodadex": "9eb904673520a017d5f583960a2ff34634c5e04d",
+    "ignix": "c5ab57dab8583a387a1b3499d183bd2e00e5855e"
+  },
+  "recoverySourceCommits": {
+    "sodadex": "bc56a24c16d5e0519219166d30e52fb18782a307",
+    "ignix": "c5ab57dab8583a387a1b3499d183bd2e00e5855e"
+  },
+  "sourceHistoryVersion": 2,
+  "transactionCount": 102,
+  "firstBlock": "43777919",
+  "lastBlock": "43780614",
+  "verificationBlock": "43780643",
+  "verificationBlockHash": "0xbdf870e4575d6022417d04bda1220fc8ccdd65c1456f3afeb93622a02befd262",
+  "gasBudgetWei": "2500000000000000",
+  "actualGasFeeWei": "2136241206812055",
+  "additionalFeeWei": "0",
+  "principal": {
+    "fabRaw": "668609292095",
+    "fabDecimals": 8,
+    "nativeWei": "100010000000000"
+  },
+  "principalCaps": {
+    "fabRaw": "1000000000000",
+    "nativeWei": "1000000000000000"
+  },
+  "ownerBalanceWei": "197250282067513610",
+  "ownerNonce": "118",
+  "business": {
+    "completed": true,
+    "token": "0xf71c2666394361016b10A3310C7A6d4F15Af0934",
+    "vault": "0x4acE41319812BD273CBc010C39EBed3B3162deB7",
+    "holder": "0xc4D4d2367ddfb3632FA9b025e27a0671E35A81Dc",
+    "pair": "0xc3C595d36881a72B6646512b7f9ceC19Ea16e384",
+    "retailListingIds": [
+      "2"
+    ],
+    "protectionSeconds": 86400,
+    "protectionEndsAt": "1792325025",
+    "taxedV2SwapsDuringProtection": true,
+    "fabPrincipalUpperBound": "668609292095",
+    "nativePrincipalUpperBound": "100010000000000",
+    "productionTouched": false
+  },
+  "runtimeChecks": [
+    {
+      "name": "FabxRewardHistory",
+      "address": "0x5abe8f32072b46e67816db5991033e06d3b000d1",
+      "runtimeKeccak256": "0xc9d1bf8555859aa296f2ef322d5e31f2b3aad87ff522735ff844096430c54791",
+      "runtimeSha256": "5c0de070cbf851c00440aa702b8318522bed050f52519ec8ad8488ad8aed38ae",
+      "codeBytes": 7256
+    },
+    {
+      "name": "DewebRewardAccounting",
+      "address": "0xe8738389c2027bfcd4ac0dde764df9f170eb9750",
+      "runtimeKeccak256": "0xd39435ac7158ef2af739317ae07a0de64a8727c3ab4a725431d8857c8bc45a48",
+      "runtimeSha256": "e960a2fa5f4850229628c9f9ce0cfbd761d42b6d3dc79f5d0f764a573d78a1c0",
+      "codeBytes": 7586
+    },
+    {
+      "name": "DewebMiningExtension",
+      "address": "0x2becd78e05fb33b0588e9cf61e65afee9dc7428f",
+      "runtimeKeccak256": "0x929fa59c5900a9310ffda37e4ffb5cae02af0b784cd695a85f2dd9310cf0046d",
+      "runtimeSha256": "4fcca8aa0b401977ca51e2f123136a044d73d44254bfc31bac657e0c21eab385",
+      "codeBytes": 6693
+    },
+    {
+      "name": "PodMining",
+      "address": "0x1d59446d84e2470015dc926d9df7d83a2395d264",
+      "runtimeKeccak256": "0x291a2b4cdceb800fdaa40732544ab92bc326a73e3acfcb3b015c85baa1ccaddf",
+      "runtimeSha256": "a1d38715b7cb57bbad67fe19874e44c7b5e248174a57470115993b45ade173eb",
+      "codeBytes": 24228
+    },
+    {
+      "name": "WETH9",
+      "address": "0xda5bc8bc981d9b2f5df2b0c7e5aed044993709fa",
+      "runtimeKeccak256": "0xe524bd0c25f819b88ff6694c74b8757e843232d912f1d88fc5f924da716e8aaf",
+      "runtimeSha256": "cfbbcde6216d96d738807622bbcf9903033ddafba4cbcba85bf62536209f0086",
+      "codeBytes": 2227
+    },
+    {
+      "name": "UniswapV2Factory",
+      "address": "0x378e840010bcb4af361cc838ad54f1ea57d76e3b",
+      "runtimeKeccak256": "0xbab145d02e7005f0d84c6c1639d39b799b0ea16df99ebbdaf5a14d9da820b4e0",
+      "runtimeSha256": "3abc53f12a9cb8ae37ebfada9efc261c1ab4c2759d161e341a49bf67df3f8321",
+      "codeBytes": 13859
+    },
+    {
+      "name": "UniswapV2Router02",
+      "address": "0xd7e58272181d6b56af5b10a12f519ba4a85914e7",
+      "runtimeKeccak256": "0xefe4a2691ba1cf63757f99e047d21c0a828e0edf0f4501f905700165bae77af6",
+      "runtimeSha256": "2a8dede85c7778014a3d98800f5488bcadfce521bc7388a7939ad8b824227bde",
+      "codeBytes": 21943
+    },
+    {
+      "name": "PoolManager",
+      "address": "0xa877e551a15e4d2b045097224b438392ece44b24",
+      "runtimeKeccak256": "0xe2d7dbbf180aee9898256edcf6855a93d5644900f3374c824ec2f0a958b11f24",
+      "runtimeSha256": "20772d8e1e6c454f831af6beff1d3b5bea0e77bd85c009e6c9d268c4a70c70fd",
+      "codeBytes": 24009
+    },
+    {
+      "name": "PositionDescriptor",
+      "address": "0x39358e5327e5913200d684eb1de45139b6d533d9",
+      "runtimeKeccak256": "0x880de2b06a8c18cb7e9dfdfdec2750152a1c411bc3b4eb3c90362329e904222a",
+      "runtimeSha256": "d3bf71d30f56622035cec94aab0c34742f44ff22ff4ea6e8738c514d985c2282",
+      "codeBytes": 14852
+    },
+    {
+      "name": "PositionManager",
+      "address": "0x53e436b5ea25f35bbefab3459b685f426913254f",
+      "runtimeKeccak256": "0xc4f37d8ee76e981eedf38d6a7097571542ed7537a1cb0bc345eebf212e974331",
+      "runtimeSha256": "63ecbd7148332be92f9b6b0327022ad42bdd3d4219a2734372779fbfc137f59a",
+      "codeBytes": 20078
+    },
+    {
+      "name": "V4Quoter",
+      "address": "0x3cc31df9dfe75e25961d5e03bb0158a669db529f",
+      "runtimeKeccak256": "0xbf1888b0544cfe1d284f6fd7f949324fcc5f5289fb1f61f71b9c53b3dbdbbc0c",
+      "runtimeSha256": "9a438cdb395382d2a3298321044e9462c158fd0536fe78ed11bcd7a9df1e3186",
+      "codeBytes": 6118
+    },
+    {
+      "name": "VaultRegistry",
+      "address": "0xd595ecd77fa64e679addc8b4ba98c5edd14ea3f1",
+      "runtimeKeccak256": "0xbd8c48bf345539ccf9cb61e6cd5428a8d4da4c6f793e20cb01265e2d32306c74",
+      "runtimeSha256": "773935cde06584fc8ead98c3075a78447e54d4d24c52654e6d97af9060d5d9f7",
+      "codeBytes": 892
+    },
+    {
+      "name": "IgnixLaunchFactory",
+      "address": "0xad79ebca3d44c830bd1fc67af2eb2d257a9b976f",
+      "runtimeKeccak256": "0xf52c658c6207ffc2c9793b99e8b2d9246e9a39535cb60a13578e2c0d7aa71d81",
+      "runtimeSha256": "49fa23b6832112b8155737eb17c3914832ebf3803b21108a580ef83096030020",
+      "codeBytes": 13562
+    },
+    {
+      "name": "CurveTrading",
+      "address": "0xe0cde1061e0443fa14053b96935435640446059d",
+      "runtimeKeccak256": "0x66847b06b7071359bc2fd772784ec65cfffe251446bdd68af9de083a04f116ea",
+      "runtimeSha256": "f4b1c8ee2056e8ea13aa2b16ef5c8823236443a4843c293000c8cf08a4485456",
+      "codeBytes": 3822
+    },
+    {
+      "name": "LaunchLogic",
+      "address": "0x8218e76363c37231d8b1d875569560c794cb5d88",
+      "runtimeKeccak256": "0x2cac60d9eb22c2e8ed014a44d7b802f9c77af55242d7342a0d12cba99f143ed6",
+      "runtimeSha256": "5b4a61e3c7c34723216ec2895b6bd44af4c587f7a21775273104c6f365cc3a19",
+      "codeBytes": 7456
+    },
+    {
+      "name": "V2Graduation",
+      "address": "0x067015a474a54fcdf601090df3b25c247b42433a",
+      "runtimeKeccak256": "0x37c0d233b8a40bd1878b7bfde042895676b3e4d25a1753fb090970fcdec60e5c",
+      "runtimeSha256": "4a4a5cc22e693d213398e80dbcb1e46b8c72adf28efb2b7c28de0375c3596bdf",
+      "codeBytes": 3797
+    },
+    {
+      "name": "IgnixManager",
+      "address": "0xba3e5a8933ef1eee4a0208bb1d27ab3a4e2c8fb7",
+      "runtimeKeccak256": "0x07dee79f33c54639514ea33f20712f9494ae6c8aa0bff6975afc59561db72327",
+      "runtimeSha256": "dbaf79786d640a4cf6666d8eadeede618c054f54f1bdc27e6d8449080f0f6cb6",
+      "codeBytes": 20479
+    },
+    {
+      "name": "ManagerProxy",
+      "address": "0xe713afd6133207df18662080e2b0f7e456aeeba5",
+      "runtimeKeccak256": "0x9224dd2dfd5cd24b0b670c32cff4c4ceab8cede8c493f6f0c726c832cb46a1f1",
+      "runtimeSha256": "3e3c8c2793a72567a600ae25193fc21a84840539fa8cd79c1b95a43795e80ba0",
+      "codeBytes": 130
+    },
+    {
+      "name": "IgnixLpLocker",
+      "address": "0x51fed808786609d308032dcf9446d80f45050d3b",
+      "runtimeKeccak256": "0x11a733e4ed159e5640e2b3484f6538d38993731719f1dd32ff870b5a2c545324",
+      "runtimeSha256": "89be2b6303449cbddbcb895a771d8fb48618f40ecd9959630b21286b6799e8fb",
+      "codeBytes": 3546
+    },
+    {
+      "name": "IgnixV2Locker",
+      "address": "0xb34a3ffa2dc4c72619f3033368b4a45c66b021ec",
+      "runtimeKeccak256": "0x6ecfbbb6e5410f772f9af845ac3af90941a1f64332e4c841d5a2563e5a010bee",
+      "runtimeSha256": "b592d8c236c1b57439ae71c0b267fa7ceb2547c7eb78fe4cab71551a3ed3d7f5",
+      "codeBytes": 4691
+    },
+    {
+      "name": "IgnixLiquidityHelper",
+      "address": "0x0b4fae1834210d47702bbc45d01e66f89aeb314d",
+      "runtimeKeccak256": "0xb1545e703aecbc3bfce4a44e689b6417e949f0d9239c116d9c7ca5ca2689900a",
+      "runtimeSha256": "d6f0bbb3882249ac0b5a97126c3bd9f855b47ff57a6fcb1f001f85fbf3a053fd",
+      "codeBytes": 7589
+    },
+    {
+      "name": "IgnixV4Router",
+      "address": "0x227fdfa240e0f250075eaee80d91f9f466522a36",
+      "runtimeKeccak256": "0x133a7d4208c8348bb5fafcdddfd409891ff38e330751486c4b673e77eebfc771",
+      "runtimeSha256": "79cad6fed8d5ba59c77130c7da8f389adbe921c08f3f62cd5f70959f1e3cf977",
+      "codeBytes": 4205
+    },
+    {
+      "name": "MiningProjectFactory",
+      "address": "0xc5e7fd4b379afd2e93c3def70989e9bb14815b1d",
+      "runtimeKeccak256": "0x9a5a24dd473b175760b7b76d61488e0918083cb0f465ad26b47ed16dca759f3e",
+      "runtimeSha256": "35af59cc921064e6449a844ead81903b6cb8414eb05c7b4373811d50d58cb19d",
+      "codeBytes": 22868
+    },
+    {
+      "name": "FabMiningFarm",
+      "address": "0x0e51055559be68416210eae41d7e31df890b5708",
+      "runtimeKeccak256": "0x49d89384cf4c608fdec8bd274f03995305139d95d89f96d30d44eb313a1089b3",
+      "runtimeSha256": "48dddd874341bfc94dad5fa2d0a1cd6bfeb64f7db9c1890d838cccd3097168fa",
+      "codeBytes": 17330
+    },
+    {
+      "name": "FabFragmentVault",
+      "address": "0xed377733590639e0a4ec7cd14df7509c7b2ca87d",
+      "runtimeKeccak256": "0xe5ecd4578c58a1c01de3ac3a24a46fc86c034a345f2eaec5de379fe86c14265e",
+      "runtimeSha256": "dbb15d4411b3afe65c0b2d02801099efb6cd455a309bd118da89a09970083dc2",
+      "codeBytes": 9913
+    },
+    {
+      "name": "FabFragmentPool",
+      "address": "0x6f1666231685cf8fc45b355a9eba8afd9ba6d2fa",
+      "runtimeKeccak256": "0x698b2d21fcb9b413007d83c12400825fc9c37a18b70d0013e27c788109a4e124",
+      "runtimeSha256": "324d0d4534772a5f08739b31dec308e62e09b3b2ee7072ad271e734161c0acbe",
+      "codeBytes": 7494
+    },
+    {
+      "name": "FabMinerTestBuyer",
+      "address": "0x842b7bf61f2cb4be8aacac6adece3244c2a6f6ab",
+      "runtimeKeccak256": "0xc96f1823653b14d432fc4d95502ba4e0e054d62bf30898173c8bc63f768ac296",
+      "runtimeSha256": "f4bfe0541a383c7ff98e981903627ca3ec28d906e2ab9056893ad86edff2391e",
+      "codeBytes": 2065
+    }
+  ],
+  "minerNftBeacon": {
+    "address": "0x62874Cf0179B35fdeC20947281Aaf8f5DFF3D15c",
+    "runtimeKeccak256": "0x9a5acc831a4c6c25818b9de264b5dc8c9f82a47079f4576acc88d79ce85de4b1",
+    "implementation": {
+      "address": "0x98F4DFBfAb6fC37e59e00d6881E779B33b23b009",
+      "runtimeKeccak256": "0x96004f0b1992ac9ca0caa5540a487d72381ee66f8054706c21d1471330448008"
+    }
+  },
+  "manifestFile": "products.json",
+  "receiptsFile": "2026-10-17-products-receipts.json",
+  "publicFrontendDeployed": true,
+  "productionTouched": false,
+  "chain196Touched": false,
+  "pullRequests": [
+    "https://github.com/sodatrade/SodaDex/pull/2",
+    "https://github.com/okasplaunchpad/contract/pull/3"
+  ],
+  "frontendRecord": "2026-10-17-products-acceptance.json"
+}

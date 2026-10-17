@@ -3,14 +3,20 @@
     "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "Bundler",
-    "resolveJsonModule": true,
     "strict": true,
+    "resolveJsonModule": true,
     "skipLibCheck": true,
     "noEmit": true
   },
   "include": [
     "trading-policy.ts",
     "order-types.ts",
-    "order-deployment.ts"
+    "order-deployment.ts",
+    "network-profile.ts",
+    "mining-contracts.ts",
+    "mining-products.ts",
+    "mining-abi.ts",
+    "mining-calls.ts",
+    "mining-math.ts"
   ]
 }

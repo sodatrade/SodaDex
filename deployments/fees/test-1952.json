@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "stage": "test",
+  "chainId": 1952,
+  "fees": {
+    "setup": {
+      "cpuCreationWei": "0",
+      "transistorUnitPriceWei": "0",
+      "transistorMintProtocolWei": "0",
+      "tapeoutWei": "0",
+      "nftMarketBps": 0
+    },
+    "mining": {
+      "listingFeeRaw": "0",
+      "snipeStartBps": 0,
+      "snipeMins": 0,
+      "v2ProtocolEnabled": 0,
+      "curveBuyPlatformBps": 100,
+      "curveSellPlatformBps": 100,
+      "graduationLpPlatformShareBps": 5000,
+      "buyTaxBps": 100,
+      "sellTaxBps": 100,
+      "protocolShareOfTaxBps": 100,
+      "creatorShareOfNetTaxBps": 0,
+      "outputPlatformBps": 0,
+      "v2LpBps": 30
+    },
+    "fragmentation": {
+      "tradeBps": 50,
+      "platformShareOfFeeBps": 3000,
+      "outputServiceBps": 0,
+      "depositBps": 0,
+      "redeemBps": 0
+    },
+    "dex": {
+      "v3LpPips": 0,
+      "v3ProtocolDenominator": 0,
+      "v4LpPips": 0,
+      "v4ProtocolPips": 0,
+      "interfaceBps": 0,
+      "limitOrderCommissionBps": 0
+    }
+  },
+  "recipients": {
+    "miningCurvePlatform": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+    "lockedLpPlatform": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+    "lockedLpCreator": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+    "v2Protocol": "0x0000000000000000000000000000000000000000",
+    "factoryProtocol": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+    "transistorCreator": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+    "tapeoutTreasury": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+    "marketProtocol": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+    "miningTaxPlatform": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+    "miningOutputPlatform": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+    "miningCreator": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+    "fragmentTradePlatform": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+    "fragmentServicePlatform": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+    "v3Protocol": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+    "v4Protocol": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+    "feeAdmin": "0x6ecf746b078d46391f8C425B150153212F7C0545"
+  },
+  "assetAllocation": {
+    "fabPremineBps": 500,
+    "fabPremineRecipient": "0x6ecf746b078d46391f8C425B150153212F7C0545"
+  },
+  "launchRules": {
+    "graduationProtectionSeconds": 86400
+  },
+  "operations": {
+    "distributionGas": "sponsored-by-test-operator",
+    "limitOrderGas": "sponsored-by-test-keeper",
+    "feeChanges": "test-only; production requires separate product decision"
+  },
+  "approval": {
+    "state": "test-only",
+    "approvedBy": null,
+    "decisionReference": null,
+    "configurationSha256": null
+  }
+}

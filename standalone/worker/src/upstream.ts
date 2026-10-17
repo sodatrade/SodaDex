@@ -1,6 +1,7 @@
 import { decodeFunctionResult, encodeFunctionData, type Abi, type Address, type Hex } from 'viem'
 import { record } from './contracts'
-export const RPC_URL = 'https://rpc.ignix.bot/rpc/196'
+import { networkProfile } from '../../network-profile'
+export const RPC_URL = networkProfile().rpcUrl
 export class RpcUnavailable extends Error {}
 export async function rpc(method: string, params: unknown[], upstreamFetch: typeof fetch = fetch): Promise<unknown> {
   const response = await upstreamFetch(RPC_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', 'User-Agent': 'SodaDex/1.0' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }), redirect: 'manual', signal: AbortSignal.timeout(12_000) })

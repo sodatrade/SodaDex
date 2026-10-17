@@ -1,0 +1,9 @@
+{
+  "baseCommit": "4caabe00d0e4d198aac4576bc0ad27c8cca5ce54",
+  "patchSha256": "e8fec71075f60ae10f4418f12e13a59afc59104ac5ff24ab4ecaa042488f9939",
+  "patchedFileSha256": {
+    "src/pod/PodMining.sol": "e61406304bff6d1da3770594a576718587c163e81e832b5a8e63191f0a3642b9",
+    "src/pod/lib/DewebRewardAccounting.sol": "04a6ca2b534a65700cc40b1b35f9c757bcfa769a50e8e0f24503bc660162930a",
+    "src/pod/lib/DewebMiningExtension.sol": "497122a0ca0f9294c23e361c427c6d5c5fa7b1efbb80dda219252bd4cd751948"
+  }
+}

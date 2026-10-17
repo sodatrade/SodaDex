@@ -16,7 +16,7 @@ export function preferencesPrepaint(): Plugin {
           tag: 'style',
           injectTo: 'head-prepend',
           children:
-            'html{background:#f6f5f8;color-scheme:light}html[data-theme="dark"]{background:#121017;color-scheme:dark}',
+            'html{background:#faf9fb;color-scheme:light}html[data-theme="dark"]{background:#09090b;color-scheme:dark}',
         },
         { tag: 'script', injectTo: 'head-prepend', children: script },
       ],

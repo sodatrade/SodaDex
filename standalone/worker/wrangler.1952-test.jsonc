@@ -1,0 +1,15 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "sodadex-mining-test-1952",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-16",
+  "workers_dev": true,
+  "preview_urls": false,
+  "vars": { "SODADEX_NETWORK_PROFILE": "1952-mining-test" },
+  "assets": {
+    "directory": "../web/dist-mining-1952",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": true
+  }
+}
