@@ -100,3 +100,42 @@ UniversalRouter simulations support **single-hop, exact-input trades in self-cre
 The shared `publicSwapsEnabled` policy still controls Router execution and positive Permit2 Router approval simulations. Finite Permit2 Router approval may name any nonzero ERC20 token; its spender remains the active Router, amount is below the uint160 unlimited sentinel and expiration is positive and below the uint48 unlimited sentinel. Resets remain available while swaps are paused. Official WOKB alone supports canonical `deposit()` with positive matching native value and `withdraw(uint256)` with positive finite amount and zero native value. Wrapping is independent of the swap pause and does not introduce token transfers or other write selectors. The Worker only simulates; the browser wallet confirms and broadcasts.
 
 LP simulation remains limited to active NPMs, canonical business operations, finite approvals, wallet recipients/refunds and current NFT ownership/currency bindings. No NFT transfers/operator approvals are introduced.
+
+## Timestamp charts
+
+`GET /api/dex/chart?pool=V3AddressOrV4PoolId&interval=1m|5m|1h|4h|1d[&fromBlock=N&toBlock=N&cursor=...]`
+
+The pool/key parameters follow market (`protocol` may be supplied and must match). Custom V3 pools use the same own-Factory registry verification. Custom V4 keys use their canonical hash and an initialized own StateView snapshot. Existing `/market` fields and behavior are unchanged.
+
+`interval` is required. Default range is **deployment block 73361037 through the first response's asOf block**, never an assumed 24-hour window. A supplied toBlock is clamped to that observation head. The pool/token metadata and current price are read at this fixed asOf block. Unix timestamps are seconds and candle buckets align to UTC.
+
+```ts
+interface ChartTrade {
+  id:string;blockNumber:number;blockHash:string;transactionHash:string;logIndex:number;timestamp:number;
+  amount0Raw:string;amount1Raw:string; // Signed deltas exactly as emitted by the protocol.
+  volume0Raw:string;volume1Raw:string; // Absolute values, independently per currency.
+  sqrtPriceX96:string;priceToken1PerToken0:string|null;sender:string;recipient:string|null;
+}
+interface ChartCandle {
+  time:number;bucketEndTime:number;
+  open:string|null;high:string|null;low:string|null;close:string|null;
+  sqrtPriceOpenX96:string;sqrtPriceHighX96:string;sqrtPriceLowX96:string;sqrtPriceCloseX96:string;
+  volume0Raw:string;volume1Raw:string;tradeCount:number;firstBlock:number;lastBlock:number;
+}
+interface ChartResponse {
+  schemaVersion:1;chainId:196;asOf:Block;coverage:Coverage;pool:Pool;token0:Token;token1:Token;
+  interval:'1m'|'5m'|'1h'|'4h'|'1d';query:{fromBlock:number;toBlock:number};
+  priceToken1PerToken0:string|null;priceUnavailableReason:string|null;
+  candles:ChartCandle[];trades:ChartTrade[];queryComplete:boolean;nextCursor:string|null;
+}
+```
+
+Each successful page returns **cumulative candles and trades for that scan**. Replace the arrays with the latest response rather than adding volumes/counts again. Both the first and subsequent pages may be incomplete. `query` preserves the full requested range; `coverage.fromBlock..toBlock` is the verified contiguous prefix processed so far, and nextFromBlock points to the next unprocessed block. Only queryComplete means the entire requested range has been processed. It does not imply finality or that the current UTC candle has ended.
+
+One HTTP request scans at most one 2000-block log range and reads headers for at most **eight distinct Swap blocks**. If there are more blocks containing trades, its pending log page is retained in the opaque cursor and subsequent requests continue timestamp validation without re-reading that log page. Each Swap block number/hash must match its fetched header; timestamp must be safe, nonnegative, not after asOf, and nondecreasing in canonical block/log order. The fixed range-end anchor is checked before continuation and after processing. The existing 409 restart contract applies to reorganization, mismatched hashes, parameter replay and expired/evicted cache state. RPC/decoding failures are errors rather than empty chart data.
+
+Only actual Swap events produce candles; untraded buckets stay absent. V3 positive amounts are pool input while V4 BalanceDelta uses negative input; consumers must interpret direction using protocol/token orientation. V4 Swap does not emit a recipient, so recipient is null. Sender is the event sender (often a router), not an inferred wallet.
+
+Price scaling and OHLC comparisons use BigInt, with decimal output rounded down after 320 fractional places. Missing token decimals produce null human price fields and priceUnavailableReason, while exact raw sqrt values, volumes, trade counts and verified timestamps remain available. Symbols/names may independently be null. Duplicate log identities are counted once; contradictory duplicates are rejected.
+
+A scan is limited to **5000 cumulative trades** to bound ephemeral Worker/cache memory. Exceeding it returns HTTP 400 requesting a narrower block range; no truncated result is presented as complete. The endpoint uses the existing expiring Cache API, not a durable market index, database, scheduler or new cloud resource. The exact exported response types are in `src/dex-chart-types.ts`.

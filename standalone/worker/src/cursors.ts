@@ -7,7 +7,7 @@ export interface CursorStore {
   put(value: object): Promise<string>
 }
 export interface ScanCursor {
-  kind: 'pools' | 'events'
+  kind: 'pools' | 'events' | 'chart'
   query: string
   asOf: Block
   anchor: Block
