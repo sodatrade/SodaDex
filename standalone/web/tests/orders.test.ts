@@ -93,6 +93,7 @@ describe('limit order wallet boundary', () => {
   it('rejects API records with a changed signed field or settlement', () => {
     const f = fixture(), value = { id: hashTypedData(orderTypedData(f.order, CONTRACTS.permit2)), order: f.order, status: 'open', reason: null, txHash: null, createdAt: 1, updatedAt: 2, observation: null }
     expect(decodeOrder(value, deployment).order.nonce).toBe('1')
+    expect(decodeOrder({ ...value, reason: 'nonce_unavailable' }, deployment).reason).toBe('nonce_unavailable')
     expect(() => decodeOrder({ ...value, order: { ...f.order, minAmountOut: '2' } }, deployment)).toThrow('digest')
     expect(() => decodeOrder({ ...value, order: { ...f.order, settlement: zeroAddress } }, deployment)).toThrow()
     const changed: SodaLimitOrder = { ...f.order, receiver: settlement }

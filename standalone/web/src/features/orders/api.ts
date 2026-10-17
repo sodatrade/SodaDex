@@ -4,7 +4,7 @@ import { WOKB_ADDRESS } from '../../domain/assets'
 import { CONTRACTS } from '../../trading/config'
 import type { OrderDeployment } from './config'
 export type OrderStatus = 'open' | 'pending' | 'filled' | 'cancelled' | 'expired'
-export type OrderReason = 'awaiting_price' | 'simulation_failed' | 'execution_disabled' | 'gas_budget' | 'broadcast_unknown' | 'transaction_reverted' | 'chain_unavailable' | null
+export type OrderReason = 'awaiting_price' | 'simulation_failed' | 'execution_disabled' | 'gas_budget' | 'broadcast_unknown' | 'transaction_reverted' | 'chain_unavailable' | 'nonce_unavailable' | null
 export interface PublicOrder {
   id: Hex; order: SodaLimitOrder; status: OrderStatus; reason: OrderReason; txHash: Hex | null; createdAt: number; updatedAt: number
   observation: { blockNumber: string; blockHash: Hex; timestamp: number } | null
@@ -12,7 +12,7 @@ export interface PublicOrder {
 const record = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v)
 const hash = (v: unknown): v is Hex => typeof v === 'string' && /^0x[\da-f]{64}$/i.test(v)
 const integer = (v: unknown): v is number => typeof v === 'number' && Number.isSafeInteger(v) && v >= 0
-const reasons = ['awaiting_price', 'simulation_failed', 'execution_disabled', 'gas_budget', 'broadcast_unknown', 'transaction_reverted', 'chain_unavailable']
+const reasons = ['awaiting_price', 'simulation_failed', 'execution_disabled', 'gas_budget', 'broadcast_unknown', 'transaction_reverted', 'chain_unavailable', 'nonce_unavailable']
 export function decodeOrder(value: unknown, deployment: OrderDeployment): PublicOrder {
   if (!record(value) || !hash(value.id) || !['open', 'pending', 'filled', 'cancelled', 'expired'].includes(String(value.status)) ||
     !(value.reason === null || reasons.includes(String(value.reason))) || !(value.txHash === null || hash(value.txHash)) ||
