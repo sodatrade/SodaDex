@@ -86,7 +86,7 @@ export function LimitOrderPanel({ wallet, onConnect, onSwap, seed, onContextChan
       {operation.error && !review && <p role="alert" className="error-text">{t(operation.error)}</p>}
       {operation.record && !review && <div className="order-submission"><a className="transaction-link" href={`${EXPLORER_URL}/tx/${operation.record.hash}`} target="_blank" rel="noreferrer">{m.tx}</a>
         {operation.unresolved && <><p className="order-note">{m.receiptRecovered}</p><Button onClick={() => void operation.recheck()} disabled={operation.busy || operation.checking}>{m.receipt}</Button></>}</div>}
-      <OrderSubmissionCard operation={operation} />
+      <OrderSubmissionCard operation={operation} wallet={wallet} deployment={deployment} currencies={currencies} />
     </Surface>
     <OrderList wallet={wallet} deployment={deployment} ready={!!deployment} currencies={currencies} operation={operation} active={active} />
     {selector && <CurrencyPicker currencies={selector === 'from' ? currencies.filter(c => !c.native) : currencies} selected={selector === 'from' ? from : to} onSelect={select} onClose={() => setSelector(undefined)} />}

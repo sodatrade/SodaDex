@@ -1,10 +1,10 @@
 import { decodeFunctionResult, encodeFunctionData, parseAbi, serializeTypedData, type Hex } from 'viem'
 import { orderTypedData, parseLimitOrder, type SodaLimitOrder } from '../../../../order-types'
 import { WOKB_ADDRESS } from '../../domain/assets'
-import { hexQuantity } from '../../lib/rpc'
+import { hexQuantity, rpc } from '../../lib/rpc'
 import { erc20Abi } from '../../trading/abis'
 import { CONTRACTS } from '../../trading/config'
-import { TradeError } from '../../trading/types'
+import { TradeError, type PublicRpc } from '../../trading/types'
 import { createExecutionSession, type ExecutionContext } from '../../trading/walletExecution'
 import type { OrderDeployment } from './config'
 export const orderReadAbi = parseAbi(['function nonceStatus(address maker,uint256 nonce) view returns (uint8)', 'function cancel(uint256 nonce)'])
@@ -52,4 +52,29 @@ export async function cancelLimitOrder(order: SodaLimitOrder, deployment: OrderD
   if (order.settlement.toLowerCase() !== deployment.settlement.toLowerCase() || order.maker.toLowerCase() !== context.identity.address.toLowerCase()) throw new TradeError('tradeUnavailable')
   const session = createExecutionSession(context, { requiresPublicSwaps: false }); await session.checkNetwork()
   return session.send({ from: order.maker, to: order.settlement, value: '0x0', data: encodeFunctionData({ abi: orderReadAbi, functionName: 'cancel', args: [BigInt(order.nonce)] }) }, 'tradeSending', 'swap')
+}
+
+export interface OrderChainState {
+  status: 'open' | 'cancelled' | 'filled' | 'expired'
+  blockNumber: string; blockHash: Hex; timestamp: number
+}
+/** Read one canonical block, never combine a latest nonce with a different block's time. */
+export async function readOrderChainState(order: SodaLimitOrder, deployment: OrderDeployment, read: PublicRpc = rpc): Promise<OrderChainState> {
+  parseLimitOrder(order, { ...CONTRACTS, settlement: deployment.settlement, wrappedNative: WOKB_ADDRESS })
+  if (hexQuantity(await read('eth_chainId')) !== 196n) throw new TradeError('tradeUnavailable')
+  const header = (value: unknown): { number: Hex; hash: Hex; timestamp: number } => {
+    if (!value || typeof value !== 'object' || !('number' in value) || !('hash' in value) || !('timestamp' in value) ||
+      typeof value.number !== 'string' || !/^0x[\da-f]+$/i.test(value.number) || typeof value.hash !== 'string' || !/^0x[\da-f]{64}$/i.test(value.hash)) throw new TradeError('tradeUnavailable')
+    const timestamp = hexQuantity(value.timestamp)
+    if (timestamp > BigInt(Number.MAX_SAFE_INTEGER) || hexQuantity(value.number) < BigInt(deployment.deploymentBlock)) throw new TradeError('tradeUnavailable')
+    return { number: value.number as Hex, hash: value.hash as Hex, timestamp: Number(timestamp) }
+  }
+  const first = header(await read('eth_getBlockByNumber', ['latest', false]))
+  const data = await read('eth_call', [{ to: deployment.settlement, data: encodeFunctionData({ abi: orderReadAbi, functionName: 'nonceStatus', args: [order.maker, BigInt(order.nonce)] }) }, first.number])
+  if (typeof data !== 'string' || !/^0x[\da-f]*$/i.test(data)) throw new TradeError('tradeUnavailable')
+  const status = decodeFunctionResult({ abi: orderReadAbi, functionName: 'nonceStatus', data: data as Hex })
+  const verified = header(await read('eth_getBlockByNumber', [first.number, false]))
+  if (verified.hash.toLowerCase() !== first.hash.toLowerCase() || hexQuantity(verified.number) !== hexQuantity(first.number) || verified.timestamp !== first.timestamp || ![0, 1, 2].includes(status)) throw new TradeError('tradeUnavailable')
+  return { status: status === 1 ? 'cancelled' : status === 2 ? 'filled' : BigInt(first.timestamp) >= BigInt(order.expiry) ? 'expired' : 'open',
+    blockNumber: hexQuantity(first.number).toString(), blockHash: first.hash, timestamp: first.timestamp }
 }

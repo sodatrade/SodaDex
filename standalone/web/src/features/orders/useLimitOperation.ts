@@ -13,7 +13,7 @@ import { readTransactions, recordTransaction, updateTransaction, type SubmittedT
 import { getOrder, orderServiceReady, submitOrder, type PublicOrder } from './api'
 import type { OrderDeployment } from './config'
 import { readOrderSubmissions, saveOrderSubmission, type OrderSubmission } from './OrderJournal'
-import { cancelLimitOrder, signLimitOrder } from './signing'
+import { cancelLimitOrder, readOrderChainState, signLimitOrder } from './signing'
 export interface LimitReview { order: SodaLimitOrder; identity: TradeIdentity; revision: number }
 export function useLimitOperation(wallet: WalletController, deployment: OrderDeployment | undefined, canSubmit: boolean) {
   const ready = useRef(canSubmit); ready.current = canSubmit
@@ -21,7 +21,7 @@ export function useLimitOperation(wallet: WalletController, deployment: OrderDep
   const [busy, setBusy] = useState(false), [progress, setProgress] = useState<TradeProgress>(), [error, setError] = useState<TradeErrorCode>()
   const [record, setRecord] = useState<SubmittedTransaction | undefined>(() => readTransactions().find((v) => v.status === 'pending' && ['limit approval', 'limit cancellation'].includes(v.kind)))
   const tx = useRef(record), [confirmed, setConfirmed] = useState(false), [checking, setChecking] = useState(false)
-  const [submission, setSubmission] = useState<OrderSubmission | undefined>(() => deployment ? readOrderSubmissions(deployment)[0] : undefined)
+  const [submission, setSubmission] = useState<OrderSubmission | undefined>(() => deployment ? readOrderSubmissions(deployment).find(v => !v.released) : undefined)
   const [result, setResult] = useState<PublicOrder>(), [absent, setAbsent] = useState(false)
   useEffect(() => () => { revision.current += 1 }, [])
   const invalidate = (): void => { void client.invalidateQueries({ queryKey: ['limit-orders'] }); void client.invalidateQueries({ queryKey: ['balances'] }) }
@@ -29,6 +29,16 @@ export function useLimitOperation(wallet: WalletController, deployment: OrderDep
   const current = (review: LimitReview): boolean => {
     const now = wallet.getIdentity()
     return !!now && now.chainId === CHAIN_ID && now.provider === review.identity.provider && now.revision === review.identity.revision && now.address.toLowerCase() === review.identity.address.toLowerCase() && revision.current === review.revision
+  }
+  const observe = async (saved: OrderSubmission): Promise<OrderSubmission> => {
+    if (!deployment) throw new TradeError('tradeNotReady')
+    const generation = revision.current, identity = wallet.getIdentity()
+    const recovery = await readOrderChainState(saved.order, deployment).catch(() => { throw new TradeError('tradeUnavailable') })
+    const now = wallet.getIdentity()
+    if (generation !== revision.current || identity?.revision !== now?.revision || identity?.provider !== now?.provider || identity?.chainId !== now?.chainId || identity?.address !== now?.address) throw new TradeError('tradeIdentityChanged')
+    const next = { ...saved, recovery }
+    saveOrderSubmission(next, deployment); setSubmission(next)
+    return next
   }
   const hasPending = (): boolean => tx.current?.status === 'pending'
   const execute = async (review: LimitReview, cancel = false): Promise<void> => {
@@ -50,7 +60,9 @@ export function useLimitOperation(wallet: WalletController, deployment: OrderDep
       if (cancel) {
         await cancelLimitOrder(review.order, deployment, context)
         if (tx.current) saveTx({ ...tx.current, status: 'success' })
-        setConfirmed(true); invalidate(); return
+        setConfirmed(true); invalidate()
+        if (submission && hashTypedData(orderTypedData(review.order, CONTRACTS.permit2)) === submission.id) await observe(submission)
+        return
       }
       const signature = await signLimitOrder(review.order, deployment, context)
       guard()
@@ -80,16 +92,37 @@ export function useLimitOperation(wallet: WalletController, deployment: OrderDep
     try {
       const status = await receiptStatus(rpc, pending.hash, pending.account, pending.to)
       if (status === 'pending') setError('tradePending')
-      else { saveTx({ ...pending, status: 'success' }); setError(undefined); setConfirmed(pending.kind === 'limit cancellation'); invalidate() }
+      else {
+        saveTx({ ...pending, status: 'success' }); setError(undefined); setConfirmed(pending.kind === 'limit cancellation'); invalidate()
+        if (pending.kind === 'limit cancellation' && submission && pending.account.toLowerCase() === submission.order.maker.toLowerCase() && pending.to.toLowerCase() === submission.order.settlement.toLowerCase()) await observe(submission)
+      }
     } catch (cause) {
       const code = tradeError(cause); setError(code)
       if (code === 'tradeReverted') { updateTransaction(pending.hash, 'reverted'); saveTx({ ...pending, status: 'reverted' }) }
     } finally { setChecking(false) }
   }
+  const chainTerminal = !!submission?.recovery && submission.recovery.status !== 'open'
+  const maker = wallet.getIdentity()
+  const canCancelSubmission = !!deployment && !!submission && maker?.chainId === CHAIN_ID && maker.address.toLowerCase() === submission.order.maker.toLowerCase()
+  const queryChain = async (): Promise<void> => {
+    if (!submission || !deployment || busy || checking) return
+    setChecking(true); setError(undefined)
+    try { await observe(submission) } catch (cause) { setError(tradeError(cause)) } finally { setChecking(false) }
+  }
+  const newOrder = async (): Promise<void> => {
+    if (busy || checking || !submission || !deployment || hasPending()) return
+    setChecking(true); setError(undefined)
+    try {
+      const next = await observe(submission)
+      if (next.recovery?.status === 'open' || hasPending()) return
+      saveOrderSubmission({ ...next, released: true }, deployment)
+      revision.current += 1; setSubmission(undefined); setResult(undefined); setConfirmed(false)
+      tx.current = undefined; setRecord(undefined); setProgress(undefined)
+    } catch (cause) { setError(tradeError(cause)) } finally { setChecking(false) }
+  }
   return { busy, progress, error, record, confirmed, checking, submission, result, absent,
-    unresolved: record?.status === 'pending', current, execute, querySubmission, recheck,
+    unresolved: record?.status === 'pending', current, execute, querySubmission, recheck, queryChain, chainTerminal, canCancelSubmission, newOrder,
     review: (order: SodaLimitOrder, identity: TradeIdentity): LimitReview => { setConfirmed(false); setProgress(undefined); setError(undefined); return { order, identity, revision: revision.current } },
-    newOrder: (): void => { if (!busy && result && tx.current?.status !== 'pending') { revision.current += 1; setSubmission(undefined); setResult(undefined); setError(undefined); setConfirmed(false) } },
     changed: (): void => { revision.current += 1; setError(undefined) },
   }
 }

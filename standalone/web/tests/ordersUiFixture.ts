@@ -14,7 +14,9 @@ export const orderDeployment: OrderDeployment = { chainId: 196, settlement: '0x7
 export function orderUiFixture() {
   let allowed = 0n, receiptTo: Hex = WOKB_ADDRESS, identity: WalletIdentity | undefined
   const methods: string[] = [], records: PublicOrder[] = []
-  let ready = true, timeout = false, missing = false, estimateFails = false
+  let ready = true, timeout = false, missing = false, estimateFails = false, dropPost = false, rejectCancel = false, stateFails = false
+  let chainTimestamp = 100n, chainBlock = 16n, chainHash = marketHash, fallbackNonceStatus = 0
+  const nonceStates = new Map<string, number>()
   const provider = { request: vi.fn(async ({ method, params }: { method: string; params?: unknown[] | object }) => {
     methods.push(method)
     if (method === 'eth_accounts') return [marketOwner]
@@ -22,6 +24,10 @@ export function orderUiFixture() {
     if (method === 'eth_signTypedData_v4') return `0x${'11'.repeat(65)}`
     if (method === 'eth_sendTransaction') {
       const tx = (params as { to: Hex; data: Hex }[])[0]; receiptTo = tx.to
+      if (tx.to.toLowerCase() === orderDeployment.settlement.toLowerCase()) {
+        if (rejectCancel) throw { code: 4001 }
+        const decoded = decodeFunctionData({ abi: orderReadAbi, data: tx.data }); nonceStates.set(`${marketOwner}:${decoded.args[0]}`, 1)
+      }
       if (tx.to.toLowerCase() === WOKB_ADDRESS.toLowerCase()) allowed = decodeFunctionData({ abi: erc20Abi, data: tx.data }).args[1] as bigint
       return marketHash
     }
@@ -38,6 +44,7 @@ export function orderUiFixture() {
       permit2: CONTRACTS.permit2, wrappedNative: WOKB_ADDRESS, reason: null, executionEnabled: ready, acceptingOrders: ready })
     if (url === '/api/orders' && options?.method === 'POST') {
       const body = JSON.parse(String(options.body)) as { order: SodaLimitOrder; signature: Hex }
+      if (dropPost) throw Error('POST never reached the service')
       const result = record(body.order); records.push(result)
       if (timeout) throw Error('network timeout')
       return json({ schemaVersion: 1, order: result })
@@ -47,7 +54,7 @@ export function orderUiFixture() {
     const body = JSON.parse(String(options?.body)) as { method: string; params?: unknown[] }
     let result: unknown
     if (body.method === 'eth_chainId') result = '0xc4'
-    else if (body.method === 'eth_getBlockByNumber') result = { timestamp: '0x64' }
+    else if (body.method === 'eth_getBlockByNumber') { if (stateFails) throw Error('chain unavailable'); result = { number: `0x${chainBlock.toString(16)}`, hash: chainHash, timestamp: `0x${chainTimestamp.toString(16)}` } }
     else if (body.method === 'eth_estimateGas') { if (estimateFails) throw Error('gas unavailable'); result = '0x186a0' }
     else if (body.method === 'eth_gasPrice') result = '0x1'
     else if (body.method === 'eth_getBalance') result = '0xde0b6b3a7640000'
@@ -55,12 +62,20 @@ export function orderUiFixture() {
     else if (body.method === 'eth_call') {
       const tx = body.params?.[0] as { to: Hex; data: Hex }
       if (tx.data.startsWith('0x70a08231')) result = `0x${(10n ** 18n).toString(16)}`
-      else if (tx.to.toLowerCase() === orderDeployment.settlement.toLowerCase()) result = encodeFunctionResult({ abi: orderReadAbi, functionName: 'nonceStatus', result: 0 })
+      else if (tx.to.toLowerCase() === orderDeployment.settlement.toLowerCase()) {
+        if (stateFails) throw Error('chain unavailable')
+        const call = decodeFunctionData({ abi: orderReadAbi, data: tx.data })
+        result = encodeFunctionResult({ abi: orderReadAbi, functionName: 'nonceStatus', result: nonceStates.get(`${String(call.args[0]).toLowerCase()}:${call.args[1]}`) ?? fallbackNonceStatus })
+      }
       else { const call = decodeFunctionData({ abi: erc20Abi, data: tx.data }); result = call.functionName === 'allowance'
         ? encodeFunctionResult({ abi: erc20Abi, functionName: 'allowance', result: allowed }) : encodeFunctionResult({ abi: erc20Abi, functionName: 'approve', result: true }) }
     } else throw Error(body.method)
     return json({ result })
   })
   return { wallet, provider, methods, records, fetcher, record, change: () => { identity = { ...identity!, revision: 2, address: '0x2222222222222222222222222222222222222222' }; wallet.session = { ...wallet.session!, ...identity } },
+    wrongChain: () => { identity = { ...identity!, chainId: 1, revision: identity!.revision + 1 }; wallet.session = { ...wallet.session!, ...identity } },
+    dropPost: () => { dropPost = true }, rejectCancel: () => { rejectCancel = true }, failState: () => { stateFails = true },
+    advance: () => { chainBlock += 1n; chainHash = `0x${'b'.repeat(64)}` },
+    chainTime: (value: bigint) => { chainTimestamp = value }, nonceStatus: (value: number) => { fallbackNonceStatus = value },
     notReady: () => { ready = false }, timeout: () => { timeout = true }, missing: () => { missing = true }, failGas: () => { estimateFails = true } }
 }
