@@ -30,16 +30,17 @@ const nonzeroSalt = (v: unknown): v is Hex => typeof v === 'string' && /^0x[0-9a
 const record = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v)
 const sameAddress = (v: unknown, expected: string): boolean => typeof v === 'string' && v.toLowerCase() === expected.toLowerCase()
 const utf8Length = (v: string): number => new TextEncoder().encode(v).length
+const hasAsciiControl = (v: string): boolean => Array.from(v).some((c) => c.charCodeAt(0) < 32 || c.charCodeAt(0) === 127)
 const deadline = (v: unknown, now: number, seconds: number): boolean =>
   uint256(v) && v >= BigInt(now) && v <= BigInt(now + seconds)
 
 function validLaunchForm(v: unknown): v is MiningLaunchForm {
   if (!record(v) || typeof v.name !== 'string' || !v.name.startsWith('TEST ') ||
-      v.name.trim() !== v.name || v.name.length <= 5 || utf8Length(v.name) > 64 ||
+      hasAsciiControl(v.name) || v.name.trim() !== v.name || v.name.length <= 5 || utf8Length(v.name) > 64 ||
       typeof v.symbol !== 'string' || !/^TEST-[A-Z0-9-]{1,20}$/.test(v.symbol) ||
       typeof v.metadataURI !== 'string' || utf8Length(v.metadataURI) > 256) return false
   if (v.metadataURI === '') return true
-  if (/\s/.test(v.metadataURI) || Array.from(v.metadataURI).some((c) => c.charCodeAt(0) < 32 || c.charCodeAt(0) === 127)) return false
+  if (/\s/.test(v.metadataURI) || hasAsciiControl(v.metadataURI)) return false
   try {
     const uri = new URL(v.metadataURI)
     return ['https:', 'ipfs:'].includes(uri.protocol) && uri.hostname.length > 0
@@ -48,6 +49,7 @@ function validLaunchForm(v: unknown): v is MiningLaunchForm {
 
 /** Normalize only user-controlled presentation fields. Invalid input never produces calldata. */
 export function normalizeMiningLaunchForm(form: MiningLaunchForm): MiningLaunchForm {
+  if (hasAsciiControl(form.name)) throw new Error('miningInvalidLaunch')
   const name = form.name.trim(), symbol = form.symbol.trim().toUpperCase()
   const result = { name: name.startsWith('TEST ') ? name : `TEST ${name}`,
     symbol: symbol.startsWith('TEST-') ? symbol : `TEST-${symbol}`, metadataURI: form.metadataURI.trim() }

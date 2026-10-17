@@ -47,6 +47,14 @@ describe('1952 signed launch policy', () => {
     expect(tx.data.length).toBeLessThanOrEqual(4098)
     expect(validMiningProductCall(tx, d, true, now)).toBe(true)
   })
+  it.each(['\n', '\r', '\r\n', '\t', '\0', '\x1b', '\x7f'])('rejects ASCII control characters in names before trimming or signing: %j', (control) => {
+    const d = miningTestDeployment()
+    for (const name of [`Mine${control}Other line`, `${control}Mine`, `Mine${control}`]) {
+      expect(() => normalizeMiningLaunchForm({ ...form, name })).toThrow('miningInvalidLaunch')
+      const p = { ...miningCreateParams(form, salt, d), name: `TEST ${name}` }
+      expect(validLaunch(d, launchArgs(d, p))).toBe(false)
+    }
+  })
   it.each([
     { name: '', symbol: 'A', metadataURI: '' },
     { name: '矿'.repeat(20), symbol: 'A', metadataURI: '' },
