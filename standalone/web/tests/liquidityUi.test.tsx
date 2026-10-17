@@ -150,6 +150,34 @@ async function prepareMint(user: ReturnType<typeof userEvent.setup>): Promise<HT
   return screen.findByRole('dialog', { name: '确认流动性操作' })
 }
 describe('self-service liquidity UI', () => {
+  it('reviews the entire position and exact transfer recipient before requesting the wallet', async () => {
+    const user = userEvent.setup(); mount()
+    await user.click(screen.getByRole('button', { name: '我的仓位' }))
+    await user.click(await screen.findByRole('button', { name: '转移仓位 NFT' }))
+    const editor = screen.getByRole('dialog', { name: /转移仓位 NFT/ })
+    await user.type(within(editor).getByLabelText('接收钱包'), other)
+    await user.click(within(editor).getByRole('button', { name: '预览流动性操作' }))
+    const review = await screen.findByRole('dialog', { name: '确认流动性操作' })
+    expect(within(review).getByText(other)).toBeVisible()
+    expect(within(review).getByText('#7')).toBeVisible()
+    expect(client.executeLiquidity).not.toHaveBeenCalled()
+    expect(client.prepareLiquidity).toHaveBeenCalledWith({ kind: 'transfer', position, recipient: other }, owner)
+    await user.click(within(review).getByRole('button', { name: '确认并打开钱包' }))
+    await waitFor(() => expect(client.executeLiquidity).toHaveBeenCalledOnce())
+  })
+  it('only offers empty-position burn after liquidity and claimable assets are zero', async () => {
+    const empty = { ...position, liquidity: 0n, amount0: 0n, amount1: 0n, claimable0: 0n, claimable1: 0n }
+    vi.mocked(client.listPositions).mockResolvedValue([empty])
+    const user = userEvent.setup(); mount()
+    await user.click(screen.getByRole('button', { name: '我的仓位' }))
+    await user.click(await screen.findByRole('button', { name: '销毁空仓位 NFT' }))
+    const editor = screen.getByRole('dialog', { name: /销毁空仓位 NFT/ })
+    expect(within(editor).getByText(/Token ID 不再存在/)).toBeVisible()
+    await user.click(within(editor).getByRole('button', { name: '预览流动性操作' }))
+    await screen.findByRole('dialog', { name: '确认流动性操作' })
+    expect(client.prepareLiquidity).toHaveBeenCalledWith({ kind: 'burn', position: empty }, owner)
+    expect(client.executeLiquidity).not.toHaveBeenCalled()
+  })
   it('shows real pool details without TVL or APR and requests connection only for an operation', async () => {
     const user = userEvent.setup(),
       { onConnect } = mount(setupWallet(false).wallet)

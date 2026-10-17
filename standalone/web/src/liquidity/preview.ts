@@ -1,4 +1,4 @@
-import { isAddress, type Address } from 'viem'
+import { isAddress, zeroAddress, type Address } from 'viem'
 import { hexQuantity, rpc } from '../lib/rpc'
 import { defaultLpSlippageBps, LP_CHAIN_ID, LP_CONTRACTS, LP_DEADLINE_SECONDS } from './config'
 import { buildLiquidityTransaction, liquidityManager } from './encoding'
@@ -27,6 +27,10 @@ export async function prepareLiquidity(
       operation = { ...operation, liquidity: current.liquidity * BigInt(operation.liquidityBps) / 10000n }
     }
     pool = current.pool
+    if (operation.kind === 'transfer' && (!isAddress(operation.recipient) || operation.recipient.toLowerCase() === zeroAddress))
+      throw new LiquidityError('invalidCurrency')
+    if (operation.kind === 'burn' && (current.liquidity !== 0n || current.claimable0 !== 0n || current.claimable1 !== 0n))
+      throw new LiquidityError('invalidAmount')
   } else if (!pool.initialized) {
     if (!operation.initialPrice) throw new LiquidityError('invalidPool')
     pool = initializePrice(pool, operation.initialPrice)
@@ -96,7 +100,7 @@ export async function prepareLiquidity(
     const min = p.burnAmountsWithSlippage(tolerance)
     minimum0 = BigInt(min.amount0.toString())
     minimum1 = BigInt(min.amount1.toString())
-  } else {
+  } else if (operation.kind === 'collect') {
     amount0 = operation.position.claimable0
     amount1 = operation.position.claimable1
   }

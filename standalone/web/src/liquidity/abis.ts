@@ -20,9 +20,11 @@ export const poolAbi = parseAbi([
 ])
 export const nftAbi = parseAbi([
   'function ownerOf(uint256) view returns (address)',
+  'function safeTransferFrom(address,address,uint256)',
   'event Transfer(address indexed from,address indexed to,uint256 indexed tokenId)',
 ])
 export const v3ManagerAbi = parseAbi([
+  'function burn(uint256) payable',
   'function balanceOf(address) view returns (uint256)',
   'function tokenOfOwnerByIndex(address,uint256) view returns (uint256)',
   'function positions(uint256) view returns (uint96,address,address,address,uint24,int24,int24,uint128,uint256,uint256,uint128,uint128)',

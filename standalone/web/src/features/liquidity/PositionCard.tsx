@@ -15,7 +15,7 @@ export function PositionCard({
   position: LiquidityPosition
   l: LiquidityText
   disabled: boolean
-  onAction: (kind: 'increase' | 'decrease' | 'collect') => void
+  onAction: (kind: 'increase' | 'decrease' | 'collect' | 'transfer' | 'burn') => void
 }): ReactElement {
   const pool = position.pool,
     manager = pool.protocol === 'v3' ? LP_CONTRACTS.v3Manager : LP_CONTRACTS.v4Manager
@@ -71,6 +71,9 @@ export function PositionCard({
         >
           {l('collect')}
         </Button>
+        <Button onClick={() => onAction('transfer')} disabled={disabled}>{l('transfer')}</Button>
+        {position.liquidity === 0n && position.claimable0 === 0n && position.claimable1 === 0n &&
+          <Button onClick={() => onAction('burn')} disabled={disabled}>{l('burn')}</Button>}
       </div>
       <a
         className="lp-nft-link"

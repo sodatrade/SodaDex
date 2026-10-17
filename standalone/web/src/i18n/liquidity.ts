@@ -1,5 +1,8 @@
 import type { Locale } from '../preferences/model'
 const zh = {
+  action: '操作', mint: '创建仓位', transfer: '转移仓位 NFT', burn: '销毁空仓位 NFT',
+  transferHint: '整个仓位 NFT（包含流动性和待领取资产）会交给接收钱包。请核对完整地址。',
+  burnHint: '仅可销毁流动性及待领取资产均为零的 NFT。销毁后此 Token ID 不再存在。',
   target: '操作合约',
   approvalNote: '以上为本次数量上限；已有足额授权会跳过。Permit2 路由授权使用本次预览期限。',
   claimable: '待领取资产（可能包含减仓本金）',
@@ -120,6 +123,9 @@ const zh = {
 export type LiquidityMessageKey = keyof typeof zh
 type Messages = Record<LiquidityMessageKey, string>
 const en: Messages = {
+  action: 'Action', mint: 'Create position', transfer: 'Transfer position NFT', burn: 'Burn empty position NFT',
+  transferHint: 'The recipient receives the entire NFT, including its liquidity and claimable assets. Check the full address.',
+  burnHint: 'Only an NFT with zero liquidity and zero claimable assets can be burned. Its Token ID will cease to exist.',
   target: 'Transaction contract',
   approvalNote:
     'Approval caps apply to this operation. Sufficient existing allowances are reused. Permit2 router approval uses this review deadline.',
@@ -241,6 +247,9 @@ const en: Messages = {
   failed: 'Operation failed. Check submitted transactions; they will not be resent automatically.',
 }
 const yue: Messages = {
+  action: '操作', mint: '建立倉位', transfer: '轉移倉位 NFT', burn: '銷毀空倉位 NFT',
+  transferHint: '接收錢包會取得成個倉位 NFT，包括流動性同待領取資產。請核對完整地址。',
+  burnHint: '只可以銷毀流動性同待領取資產都係零嘅 NFT。銷毀後呢個 Token ID 將唔再存在。',
   target: '操作合約',
   approvalNote: '以上係今次數量上限；已有足額授權會跳過。Permit2 路由授權用今次預覽期限。',
   claimable: '待領取資產（可能包括減倉本金）',

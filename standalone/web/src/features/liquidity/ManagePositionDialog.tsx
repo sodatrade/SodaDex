@@ -1,5 +1,5 @@
 import { useState, type ReactElement } from 'react'
-import { formatUnits } from 'viem'
+import { formatUnits, isAddress, zeroAddress } from 'viem'
 import { Dialog } from '../../components/Dialog'
 import { Button } from '../../components/primitives'
 import type { LiquidityText } from '../../i18n/liquidity'
@@ -13,7 +13,7 @@ import {
 import { decimalInput } from './presentation'
 interface Props {
   position: LiquidityPosition
-  kind: 'decrease' | 'collect'
+  kind: 'decrease' | 'collect' | 'transfer' | 'burn'
   l: LiquidityText
   disabled: boolean
   preparing: boolean
@@ -32,10 +32,16 @@ export function ManagePositionDialog({
   onClose,
 }: Props): ReactElement {
   const [percent, setPercent] = useState('100')
+  const [recipient, setRecipient] = useState('')
   const [slippage, setSlippage] = useState(formatUnits(BigInt(defaultLpSlippageBps(position.pool)), 2))
   const [localError, setError] = useState<LiquidityErrorCode>()
   const submit = (): void => {
     try {
+      if (kind === 'transfer') {
+        if (!isAddress(recipient) || recipient.toLowerCase() === zeroAddress) throw new LiquidityError('invalidCurrency')
+        onPreview({ kind, position, recipient }); return
+      }
+      if (kind === 'burn') { onPreview({ kind, position }); return }
       if (kind === 'collect') {
         onPreview({ kind, position })
         return
@@ -59,7 +65,7 @@ export function ManagePositionDialog({
   return (
     <Dialog
       title={`${l(kind)} · #${position.tokenId}`}
-      description={l(kind === 'decrease' ? 'removeHint' : 'collectHint')}
+      description={l(kind === 'decrease' ? 'removeHint' : kind === 'transfer' ? 'transferHint' : kind === 'burn' ? 'burnHint' : 'collectHint')}
       onClose={onClose}
     >
       <form
@@ -69,6 +75,7 @@ export function ManagePositionDialog({
           submit()
         }}
       >
+        {kind === 'transfer' && <label className="lp-field">{l('recipient')}<input data-dialog-autofocus value={recipient} placeholder="0x…" autoComplete="off" disabled={disabled} onChange={event => setRecipient(event.target.value.trim())} /></label>}
         {kind === 'decrease' && (
           <>
             <label className="lp-field">

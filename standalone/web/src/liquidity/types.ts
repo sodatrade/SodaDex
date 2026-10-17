@@ -61,6 +61,8 @@ export type LiquidityOperation =
   | { kind: 'increase'; position: LiquidityPosition; amount0: bigint; amount1: bigint; slippageBps?: number }
   | { kind: 'decrease'; position: LiquidityPosition; liquidity: bigint; liquidityBps?: number; slippageBps?: number }
   | { kind: 'collect'; position: LiquidityPosition }
+  | { kind: 'transfer'; position: LiquidityPosition; recipient: Address }
+  | { kind: 'burn'; position: LiquidityPosition }
 export interface LiquidityPreview {
   operation: LiquidityOperation
   owner: Address

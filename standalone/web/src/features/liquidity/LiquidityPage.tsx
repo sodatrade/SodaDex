@@ -26,7 +26,7 @@ interface Props {
 }
 type Editor =
   | { kind: 'mint'; pool?: LiquidityPool }
-  | { kind: 'increase' | 'decrease' | 'collect'; position: LiquidityPosition }
+  | { kind: 'increase' | 'decrease' | 'collect' | 'transfer' | 'burn'; position: LiquidityPosition }
 export function LiquidityPage({ wallet, onConnect, onSwap }: Props): ReactElement {
   const [tab, setTab] = useState<'pools' | 'positions'>('pools')
   const [detail, setDetail] = useState<LiquidityPool>()
@@ -217,7 +217,7 @@ export function LiquidityPage({ wallet, onConnect, onSwap }: Props): ReactElemen
           onClose={closeEditor}
         />
       )}
-      {editor && (editor.kind === 'decrease' || editor.kind === 'collect') && (
+      {editor && (editor.kind === 'decrease' || editor.kind === 'collect' || editor.kind === 'transfer' || editor.kind === 'burn') && (
         <ManagePositionDialog
           position={editor.position}
           kind={editor.kind}

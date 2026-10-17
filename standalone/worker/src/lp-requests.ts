@@ -2,6 +2,7 @@ import { decodeAbiParameters, decodeFunctionData, encodeAbiParameters, encodeFun
 import { deployment, same, ZERO } from './contracts'
 
 export const V3_LP = parseAbi([
+  'function safeTransferFrom(address,address,uint256)', 'function burn(uint256) payable',
   'function multicall(bytes[] data) payable returns(bytes[])',
   'function createAndInitializePoolIfNecessary(address token0,address token1,uint24 fee,uint160 sqrtPriceX96) payable returns(address)',
   'function mint((address token0,address token1,uint24 fee,int24 tickLower,int24 tickUpper,uint256 amount0Desired,uint256 amount1Desired,uint256 amount0Min,uint256 amount1Min,address recipient,uint256 deadline)) payable returns(uint256,uint128,uint256,uint256)',
@@ -12,6 +13,7 @@ export const V3_LP = parseAbi([
   'function sweepToken(address token,uint256 amountMinimum,address recipient) payable',
 ])
 export const V4_LP = parseAbi([
+  'function safeTransferFrom(address,address,uint256)',
   'function multicall(bytes[] data) payable returns(bytes[])',
   'function initializePool((address currency0,address currency1,uint24 fee,int24 tickSpacing,address hooks),uint160 sqrtPriceX96) payable returns(int24)',
   'function modifyLiquidities(bytes unlockData,uint256 deadline) payable',
@@ -19,6 +21,7 @@ export const V4_LP = parseAbi([
 const ACTIONS = parseAbiParameters('bytes,bytes[]')
 const MINT = parseAbiParameters('(address currency0,address currency1,uint24 fee,int24 tickSpacing,address hooks),int24,int24,uint256,uint128,uint128,address,bytes')
 const MODIFY = parseAbiParameters('uint256,uint256,uint128,uint128,bytes')
+const BURN = parseAbiParameters('uint256,uint128,uint128,bytes')
 const PAIR = parseAbiParameters('address,address')
 const TAKE = parseAbiParameters('address,address,address')
 const SWEEP = parseAbiParameters('address,address')
@@ -45,9 +48,15 @@ function validKey(key: { currency0: string; currency1: string; fee: number; tick
 function range(lower: number, upper: number): boolean { return lower >= -887272 && upper <= 887272 && lower < upper }
 function sqrt(value: bigint): boolean { return value >= 4295128739n && value < 1461446703485210103287273052203988822378723970342n }
 function finite(value: bigint): boolean { return value >= 0n && value < 2n ** 160n - 1n }
+function transfer(args: readonly unknown[], sender: string, value: bigint): boolean {
+  const [from, to, id] = args as readonly [Address, Address, bigint]
+  return same(from, sender) && !same(to, ZERO) && id > 0n && value === 0n
+}
 
 function v3(data: Hex, sender: string, value: bigint, nested = false): boolean {
   const decoded = canonicalDecode(V3_LP, data)
+  if (decoded.functionName === 'safeTransferFrom') return !nested && transfer(decoded.args, sender, value)
+  if (decoded.functionName === 'burn') return !nested && value === 0n && (decoded.args[0] as bigint) > 0n
   if (decoded.functionName === 'multicall') {
     if (nested) return false
     const [calls] = decoded.args as readonly [readonly Hex[]]
@@ -115,6 +124,7 @@ function v3(data: Hex, sender: string, value: bigint, nested = false): boolean {
 }
 function v4(data: Hex, sender: string, value: bigint, nested = false): boolean {
   const decoded = canonicalDecode(V4_LP, data)
+  if (decoded.functionName === 'safeTransferFrom') return !nested && transfer(decoded.args, sender, value)
   if (decoded.functionName === 'multicall') {
     const [calls] = decoded.args as readonly [readonly Hex[]]
     if (nested || calls.length !== 2 || canonicalDecode(V4_LP, calls[0]).functionName !== 'initializePool' || canonicalDecode(V4_LP, calls[1]).functionName !== 'modifyLiquidities' || !calls.every((call) => v4(call, sender, value, true))) return false
@@ -133,13 +143,18 @@ function v4(data: Hex, sender: string, value: bigint, nested = false): boolean {
   const [actions, inputs] = params(ACTIONS, unlock)
   const mint = actions === '0x020d14'
   const increase = actions === '0x00121214'
-  const decrease = actions === '0x0111'
+  const burn = actions === '0x0311'
+  const decrease = actions === '0x0111' || burn
   if ((!mint && !increase && !decrease) || inputs.length !== (decrease ? 2 : increase ? 4 : 3)) return false
   const [currency0, currency1] = decrease ? params(TAKE, inputs[1]) : increase
     ? [params(CURRENCY, inputs[1])[0], params(CURRENCY, inputs[2])[0]] : params(PAIR, inputs[1])
   if (!sorted(currency0, currency1)) return false
   if (decrease) {
     const [, , recipient] = params(TAKE, inputs[1])
+    if (burn) {
+      const [id, min0, min1, hookData] = params(BURN, inputs[0])
+      return id > 0n && min0 === 0n && min1 === 0n && hookData === '0x' && same(recipient, sender) && value === 0n
+    }
     const [id, liquidity, , , hookData] = params(MODIFY, inputs[0])
     return id > 0n && liquidity >= 0n && hookData === '0x' && same(recipient, sender) && value === 0n
   }

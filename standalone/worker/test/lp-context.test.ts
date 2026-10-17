@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { encodeAbiParameters, encodeFunctionData, encodeFunctionResult, parseAbiParameters, type Address, type Hex } from 'viem'
 import { validLiquidityContext } from '../src/lp-context'
-import { deployment, NFT_READ, V4_POSITION_READ, ZERO } from '../src/contracts'
+import { deployment, NFT_READ, V3_POSITION_READ, V4_POSITION_READ, ZERO } from '../src/contracts'
 import { V3_LP, V4_LP } from '../src/lp-requests'
 import { proxyRpc } from '../src/rpc'
 const owner = deployment.owner as Address
@@ -10,6 +10,25 @@ const stable = '0x2222222222222222222222222222222222222222'
 const withdraw = encodeFunctionData({ abi: V3_LP, functionName: 'decreaseLiquidity', args: [{ tokenId: 1n, liquidity: 1n, amount0Min: 0n, amount1Min: 0n, deadline: 2_000_000_000n }] })
 function readResult(value: Hex): Response { return Response.json({ jsonrpc: '2.0', id: 1, result: value }) }
 describe('LP ownership and pool context', () => {
+  it.each(['v3', 'v4'] as const)('binds %s NFT transfers to the current owner', async protocol => {
+    const to = protocol === 'v3' ? deployment.contracts.v3PositionManager : deployment.contracts.v4PositionManager
+    const abi = protocol === 'v3' ? V3_LP : V4_LP
+    const data = encodeFunctionData({ abi, functionName: 'safeTransferFrom', args: [owner, other, 1n] })
+    const upstream = vi.fn<typeof fetch>().mockResolvedValue(readResult(encodeFunctionResult({ abi: NFT_READ, functionName: 'ownerOf', result: other })))
+    expect(await validLiquidityContext(to, data, owner, 0n, '0x123', upstream)).toBe(false)
+    expect(upstream).toHaveBeenCalledOnce()
+  })
+  it('blocks V3 burn with liquidity or uncollected assets', async () => {
+    const data = encodeFunctionData({ abi: V3_LP, functionName: 'burn', args: [1n] })
+    for (const [liquidity, owed] of [[1n, 0n], [0n, 1n], [0n, 0n]]) {
+      const upstream = vi.fn<typeof fetch>().mockImplementation(async (_url, options) => {
+        const body = JSON.parse(String(options?.body)) as { params: { data: Hex }[] }
+        return readResult(body.params[0].data.startsWith('0x6352211e') ? encodeFunctionResult({ abi: NFT_READ, functionName: 'ownerOf', result: owner })
+          : encodeFunctionResult({ abi: V3_POSITION_READ, functionName: 'positions', result: [0n, owner, other, stable, 100, -10, 10, liquidity, 0n, 0n, owed, 0n] }))
+      })
+      expect(await validLiquidityContext(deployment.contracts.v3PositionManager, data, owner, 0n, '0x123', upstream)).toBe(liquidity + owed === 0n)
+    }
+  })
   it('blocks an increase/decrease for a different NFT owner before sending the requested simulation upstream', async () => {
     const upstream = vi.fn<typeof fetch>().mockResolvedValue(readResult(encodeFunctionResult({ abi: NFT_READ, functionName: 'ownerOf', result: other })))
     const request = new Request('https://soda.example/api/rpc', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 8, method: 'eth_estimateGas', params: [{ from: owner, to: deployment.contracts.v3PositionManager, data: withdraw }] }) })

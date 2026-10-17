@@ -23,6 +23,15 @@ function modify4(action: Hex, values: Hex[]): Hex {
   return encodeFunctionData({ abi: V4_LP, functionName: 'modifyLiquidities', args: [encodeAbiParameters(parseAbiParameters('bytes,bytes[]'), [action, values]), 2_000_000_000n] })
 }
 describe('canonical LP simulation boundary', () => {
+  it.each(['v3', 'v4'] as const)('allows canonical %s safe NFT transfer but blocks source/value/trailing substitutions', protocol => {
+    const abi = protocol === 'v3' ? V3_LP : V4_LP
+    const data = (from = owner, recipient: Address = other) => encodeFunctionData({ abi, functionName: 'safeTransferFrom', args: [from, recipient, 1n] })
+    expect(validContractRequest(tx(protocol, data()), true)).toBe(true)
+    expect(validContractRequest(tx(protocol, data(other)), true)).toBe(false)
+    expect(validContractRequest(tx(protocol, data(owner, ZERO as Address)), true)).toBe(false)
+    expect(validContractRequest(tx(protocol, data(), '0x1'), true)).toBe(false)
+    expect(validContractRequest(tx(protocol, `${data()}00`), true)).toBe(false)
+  })
   it('keeps finite LP approval and mint available independently of public swap pause', () => {
     const spy = vi.spyOn(policy, 'publicSwapsEnabled').mockReturnValue(false)
     const abi = parseAbi(['function approve(address,uint256)'])

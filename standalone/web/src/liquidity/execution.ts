@@ -8,6 +8,7 @@ import { LP_CHAIN_ID, LP_CONTRACTS } from './config'
 import { buildLiquidityTransaction, liquidityManager } from './encoding'
 import { call } from './rpc'
 import { refreshPool } from './pools'
+import { getPosition } from './positions'
 import {
   LiquidityError,
   type LiquidityErrorCode,
@@ -180,6 +181,11 @@ export async function executeLiquidity(preview: LiquidityPreview, c: LiquidityEx
     assertCurrent()
     if (current.initialized) throw new LiquidityError('poolChanged')
   } else if (preview.operation.kind !== 'mint') {
+    if (preview.operation.kind === 'burn') {
+      const current = await getPosition(preview.operation.position.protocol, preview.operation.position.tokenId, read)
+      assertCurrent()
+      if (current.liquidity !== 0n || current.claimable0 !== 0n || current.claimable1 !== 0n) throw new LiquidityError('poolChanged')
+    }
     const owner = await call(
       nftAbi,
       liquidityManager(preview.pool.protocol),

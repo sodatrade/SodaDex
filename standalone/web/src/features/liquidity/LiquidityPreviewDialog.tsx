@@ -29,6 +29,8 @@ export function LiquidityPreviewDialog({ operation, current, l, onClose }: Props
         <span className="lp-pill">{pool.protocol.toUpperCase()}</span>
       </div>
       <dl className="lp-review">
+        <div><dt>{l('action')}</dt><dd>{l(preview.operation.kind)}</dd></div>
+        {preview.operation.kind !== 'mint' && <div><dt>{l('tokenId')}</dt><dd>#{preview.operation.position.tokenId.toString()}</dd></div>}
         <div>
           <dt>{l('actual')}</dt>
           <dd>
@@ -68,8 +70,8 @@ export function LiquidityPreviewDialog({ operation, current, l, onClose }: Props
         <div>
           <dt>{l('recipient')}</dt>
           <dd>
-            <a href={`${EXPLORER_URL}/address/${preview.owner}`} target="_blank" rel="noreferrer">
-              {shortenAddress(preview.owner)}
+            <a href={`${EXPLORER_URL}/address/${preview.operation.kind === 'transfer' ? preview.operation.recipient : preview.owner}`} target="_blank" rel="noreferrer">
+              {preview.operation.kind === 'transfer' ? preview.operation.recipient : shortenAddress(preview.owner)}
             </a>
           </dd>
         </div>
@@ -86,6 +88,7 @@ export function LiquidityPreviewDialog({ operation, current, l, onClose }: Props
           <dd>{new Date(Number(preview.deadline) * 1000).toISOString().replace('T', ' ').replace('.000Z', ' UTC')}</dd>
         </div>
       </dl>
+      {(preview.operation.kind === 'transfer' || preview.operation.kind === 'burn') && <p className="lp-muted">{l(preview.operation.kind === 'transfer' ? 'transferHint' : 'burnHint')}</p>}
       <h3 className="lp-section-title">{l('approvals')}</h3>
       {preview.approvals.length === 0 ? (
         <p className="lp-muted">{l('noApprovals')}</p>

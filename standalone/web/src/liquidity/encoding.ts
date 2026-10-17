@@ -1,5 +1,5 @@
 import { encodeAbiParameters, encodeFunctionData, zeroAddress, type Address, type Hex } from 'viem'
-import { keyType, v3ManagerAbi, v4ManagerAbi } from './abis'
+import { keyType, nftAbi, v3ManagerAbi, v4ManagerAbi } from './abis'
 import { LP_CONTRACTS } from './config'
 import { poolKey } from './pools'
 import type { LiquidityPreview } from './types'
@@ -8,6 +8,18 @@ export function buildLiquidityTransaction(
   p: Omit<LiquidityPreview, 'transaction' | 'approvals'>,
 ): LiquidityPreview['transaction'] {
   const { pool, operation: op, owner, deadline } = p
+  const manager = liquidityManager(pool.protocol)
+  if (op.kind === 'transfer') return { from: owner, to: manager, value: '0x0',
+    data: encodeFunctionData({ abi: nftAbi, functionName: 'safeTransferFrom', args: [owner, op.recipient, op.position.tokenId] }) }
+  if (op.kind === 'burn') {
+    const unlock = encodeAbiParameters([{ type: 'bytes' }, { type: 'bytes[]' }], ['0x0311', [
+      encodeAbiParameters([{ type: 'uint256' }, { type: 'uint128' }, { type: 'uint128' }, { type: 'bytes' }], [op.position.tokenId, 0n, 0n, '0x']),
+      encodeAbiParameters([{ type: 'address' }, { type: 'address' }, { type: 'address' }], [pool.currency0.address, pool.currency1.address, owner]),
+    ]])
+    return { from: owner, to: manager, value: '0x0', data: pool.protocol === 'v3'
+      ? encodeFunctionData({ abi: v3ManagerAbi, functionName: 'burn', args: [op.position.tokenId] })
+      : encodeFunctionData({ abi: v4ManagerAbi, functionName: 'modifyLiquidities', args: [unlock, deadline] }) }
+  }
   const native0 = pool.currency0.native,
     native1 = pool.currency1.native
   const adding = op.kind === 'mint' || op.kind === 'increase'
