@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "name": "SodaDEX Test",
+  "phase": "test",
+  "status": "deployed-and-verified",
+  "chainId": 196,
+  "network": "X Layer mainnet",
+  "rpcUrl": "https://rpc.ignix.bot/rpc/196",
+  "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+  "nativeCurrency": "OKB",
+  "wrappedNative": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+  "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+  "contracts": {
+    "v3Factory": "0xa6109B7F4237d2aC28B8009FbD21B88cff194cFe",
+    "v3NFTDescriptor": "0x5aBE8f32072B46E67816DB5991033e06D3b000D1",
+    "v3TokenDescriptor": "0xe8738389c2027BfcD4ac0ddE764Df9F170EB9750",
+    "v3PositionManager": "0x2BeCd78E05FB33b0588e9cF61E65afeE9DC7428f",
+    "v3Quoter": "0x98F4DFBfAb6fC37e59e00d6881E779B33b23b009",
+    "v4PoolManager": "0x6B5C32aD97EB42230138e02a21B0E6d811FD713D",
+    "v4Descriptor": "0x1d59446D84e2470015dC926d9dF7d83A2395d264",
+    "v4PositionManager": "0x1f85377930011B701dd2940c526e32FD3aDaB730",
+    "v4Quoter": "0x7a188D4C46C9FE045A5875FecaeF9Bf00e4521fF",
+    "v4StateView": "0x7991D4a8493b9709365cD079DfFc75e790007874",
+    "unsupportedProtocol": "0x68Eca93437dF07bE4b2C3A67956ACe2dC87d2F39",
+    "universalRouter": "0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA"
+  },
+  "productionDeployment": "deferred",
+  "sourceDeploymentRecord": "receipts.json",
+  "brandingDeploymentRecord": "branding-receipts.json",
+  "poolRecord": "pools.json",
+  "sourceCommit": "f9b6f3a65915e925dbe2c7aaa8e899c1b538c334"
+}

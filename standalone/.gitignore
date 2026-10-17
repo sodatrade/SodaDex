@@ -1,0 +1,6 @@
+web/dist/
+web/test-results/
+web/playwright-report/
+worker/.wrangler/
+worker/.dev.vars
+worker/.env

@@ -30,7 +30,7 @@ test.each(auctions)('should inject metadata for valid auctions', async (auction)
   expect(body).toContain(`<meta property="og:url" content="${url}" data-rh="true">`)
   expect(injectedMetaTags).toContain('<meta property="twitter:title" content="Bid on ')
   expect(body).toContain(`<meta property="twitter:image" content="${auction.image}" data-rh="true">`)
-  expect(body).not.toContain('<meta property="og:title" content="Uniswap Interface" data-rh="true">')
+  expect(body).not.toContain('<meta property="og:title" content="SodaDex Test" data-rh="true">')
 })
 
 const invalidAuctions = [

@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "stage": "test-limit-settlement",
+  "recordedOn": "2026-10-17",
+  "frontendSourceCommit": "bd0e63adecb6237d46c4cab2f4b41565f9b3240b",
+  "frontendVersionId": "15d6bd63-d573-47fd-ace9-a6fda6805bc2",
+  "backendSourceCommit": "19c0f3d3e340e63f874c3341c1eaba6278be17af",
+  "backendVersionId": "3b5c4d49-cbb7-4ecb-b215-95831de83af4",
+  "site": "https://sodadex-preview.jsmsdx2025.workers.dev",
+  "settlement": "0xE713AfD6133207df18662080e2B0F7e456AeEBA5",
+  "scope": "Only SodaDEX test contracts on X Layer mainnet 196; production unchanged",
+  "checks": {
+    "web": {
+      "files": 35,
+      "passed": 349,
+      "skipped": 0,
+      "typecheck": true,
+      "lint": true,
+      "build": true,
+      "ownedChainFixturesProvided": true
+    },
+    "worker": {
+      "files": 18,
+      "passed": 121,
+      "skipped": 0,
+      "typecheck": true,
+      "lint": true,
+      "serviceBindingTransportTest": true
+    },
+    "orders": {
+      "files": 8,
+      "passed": 69,
+      "skipped": 0,
+      "typecheck": true,
+      "lint": true
+    },
+    "solidity": {
+      "passed": 19,
+      "failed": 0,
+      "skipped": 0,
+      "fuzzRuns": 256,
+      "invariantRuns": 64,
+      "invariantCalls": 4096,
+      "invariantReverts": 0,
+      "tool": "Foundry with native Solc 0.8.26, offline isolated output/cache",
+      "provenance": "Fresh delegated read-only verification during this stage before chain deployment; stdout in task tool record; exact wallclock not separately saved"
+    },
+    "artifact": {
+      "compiler": "0.8.26",
+      "optimizerRuns": 200,
+      "viaIR": true,
+      "evmVersion": "cancun",
+      "metadataBytecodeHash": "none",
+      "compilerInputSha256": "2ffebe4f705fa497232d7abe8aef420d3eef325472199e01552d4062efe5b0dc",
+      "freshCreationAndRuntimeMatched": true,
+      "trackedAbiMatched": true
+    },
+    "nodeIntegration": {
+      "passed": true,
+      "record": "orders-node-integration.json",
+      "scope": "four actual own V3/V4 routes; reorg, cancellation, expiry, ambiguous broadcast and restart recovery; owned Anvil only"
+    },
+    "durableObjectIntegration": {
+      "passed": true,
+      "record": "orders-do-integration.json",
+      "scope": "actual local workerd/SQLite, exact public oracle fixture, pause, restart same raw, budget and RPC bounds; owned Anvil only"
+    },
+    "publicRuntime": {
+      "record": "orders-http.json",
+      "assetsMatched": 42,
+      "assetsTotal": 42,
+      "chainId": "0xc4",
+      "ordersApiReady": true
+    },
+    "liveChain": {
+      "record": "orders-live-acceptance.json",
+      "fills": 2,
+      "cancellations": 1,
+      "principalStableRaw": "20",
+      "principalStableDisplay": "0.00002 USD\u20ae0",
+      "signedBy": "Existing encrypted local test owner keystore; owner key not exported",
+      "apiPath": "Public frontend same-origin /api/orders through fixed Cloudflare Service Binding"
+    },
+    "browser": {
+      "publicSiteReadinessAndLimitFormObserved": true,
+      "errors": 0,
+      "screenshot": "orders-live.jpg",
+      "publicBrowserWalletSigningPerformed": false,
+      "scope": "Public site form/readiness and console inspected; live witness signing used encrypted CLI wallet and same public API; wallet UI branches covered by component tests"
+    }
+  },
+  "initialFailuresResolved": [
+    {
+      "layer": "Web test configuration",
+      "finding": "absent-deployment UI test inherited the real now-ready default",
+      "resolution": "explicit module fixture; targeted50 and final full349 passed"
+    },
+    {
+      "layer": "Cloudflare live routing",
+      "finding": "public preview returned502 while standalone backend ready",
+      "resolution": "fixed ORDERS_API HTTP Service Binding; actual public API returns200 and real orders passed"
+    }
+  ],
+  "productionContractsModified": false,
+  "onchainReceipts": "../orders-receipts.json",
+  "independentReadOnlyHandoffReview": {
+    "publicRecordAndBudgetChecksPassed": 24,
+    "blockingFindings": 0,
+    "scope": "Public receipt arithmetic, manifest/service binding/source/version consistency; did not repeat chain writes"
+  }
+}

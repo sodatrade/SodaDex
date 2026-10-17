@@ -1,0 +1,20 @@
+SodaDEX limit settlement: original project implementation, MIT.
+
+Permit2 function/struct signatures and EIP-712 witness protocol follow
+Uniswap/permit2 (MIT), source commit cc56ad0f3439c502c246fc5cfcc3db92bb8b7219:
+https://github.com/Uniswap/permit2/tree/cc56ad0f3439c502c246fc5cfcc3db92bb8b7219
+
+Canonical Router command/action layout follows the already-deployed
+Universal Router 2.1.2 source pinned by this repository:
+https://github.com/Uniswap/universal-router/tree/802fe4c18f47300e0f183e2a42e9146ec2ea9fc3
+
+The LimitOrderReactor/LimitOrderLib design was reviewed as a reference for
+Permit2 witness settlement. No reactor implementation is copied or deployed;
+the reference itself retains GPL-2.0-or-later:
+https://github.com/Uniswap/UniswapX/blob/main/src/reactors/LimitOrderReactor.sol
+https://github.com/Uniswap/UniswapX/blob/main/src/lib/LimitOrderLib.sol
+
+Tests obtain canonical Permit2 runtime from the user's owned local rehearsal
+snapshot. Build tooling records its SHA-256 and does not edit its bytecode.
+Forge-std/ds-test are local test dependencies retaining their own licenses;
+they are not part of the settlement production compilation.

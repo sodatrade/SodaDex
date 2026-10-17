@@ -1,0 +1,19 @@
+[profile.default]
+src = "src"
+test = "test"
+out = "../../.analysis/orders/out"
+cache_path = "../../.analysis/orders/cache"
+solc_version = "0.8.26"
+evm_version = "cancun"
+optimizer = true
+optimizer_runs = 200
+via_ir = true
+allow_paths = ["../../.analysis/orders/deps"]
+remappings = ["forge-std/=../../.analysis/orders/deps/forge-std/src/", "ds-test/=../../.analysis/orders/deps/forge-std/lib/ds-test/src/"]
+fs_permissions = [{ access = "read", path = "../../.analysis/orders/fixtures" }]
+[fuzz]
+runs = 256
+[invariant]
+runs = 64
+depth = 64
+fail_on_revert = true

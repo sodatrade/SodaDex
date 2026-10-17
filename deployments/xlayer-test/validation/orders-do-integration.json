@@ -1,0 +1,21 @@
+{
+  "mode": "local-workerd-sqlite-do",
+  "undeployedStatusDisabled": true,
+  "fixedSingleActor": true,
+  "noNodePidTable": true,
+  "emptyQueueNoRpcOrSigner": true,
+  "actualOwnedAnvil": true,
+  "alarmPreparedDurableTransaction": true,
+  "fullRuntimeRestartPreservedHash": true,
+  "pauseKeptReadsAndBlockedNewOrders": true,
+  "gasReservationSurvivedRestart": true,
+  "budgetGateBlockedBroadcast": true,
+  "signingCalls": 1,
+  "txHash": "0x426088729c689895f4c80a6ec36c25069ed7d8ec3e8e755894abc8601a69ef75",
+  "status": "filled",
+  "amountReceived": "114",
+  "idleAlarmStoppedRpc": true,
+  "apiRpcCallsFor100RowPage": 21,
+  "apiRpcHardLimit": 45,
+  "privateFieldsRedacted": true
+}

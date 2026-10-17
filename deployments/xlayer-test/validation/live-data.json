@@ -1,0 +1,126 @@
+{
+  "status": "passed",
+  "origin": "https://sodadex-preview.jsmsdx2025.workers.dev",
+  "sourceCommit": "5b97994a6d0713f7f7b078a27ec64af547a42e83",
+  "versionId": "8548f2c6-ab0b-46a7-b971-a47888081aa1",
+  "pools": {
+    "pages": [
+      {
+        "asOf": 73378947,
+        "coverage": {
+          "fromBlock": 73361037,
+          "toBlock": 73363036,
+          "complete": false,
+          "nextFromBlock": 73363037
+        },
+        "discoveryComplete": false,
+        "nextCursor": true
+      },
+      {
+        "asOf": 73378947,
+        "coverage": {
+          "fromBlock": 73363037,
+          "toBlock": 73365036,
+          "complete": false,
+          "nextFromBlock": 73365037
+        },
+        "discoveryComplete": false,
+        "nextCursor": true
+      },
+      {
+        "asOf": 73378947,
+        "coverage": {
+          "fromBlock": 73365037,
+          "toBlock": 73367036,
+          "complete": false,
+          "nextFromBlock": 73367037
+        },
+        "discoveryComplete": false,
+        "nextCursor": true
+      },
+      {
+        "asOf": 73378947,
+        "coverage": {
+          "fromBlock": 73367037,
+          "toBlock": 73369036,
+          "complete": false,
+          "nextFromBlock": 73369037
+        },
+        "discoveryComplete": false,
+        "nextCursor": true
+      },
+      {
+        "asOf": 73378947,
+        "coverage": {
+          "fromBlock": 73369037,
+          "toBlock": 73370007,
+          "complete": false,
+          "nextFromBlock": null
+        },
+        "discoveryComplete": true,
+        "nextCursor": false
+      }
+    ],
+    "distinctPools": 2,
+    "complete": true
+  },
+  "markets": [
+    {
+      "protocol": "v3",
+      "pool": "0x5c6825eff223ba53744c2a19a0aec27033a432bd",
+      "coverage": {
+        "fromBlock": 73369484,
+        "toBlock": 73370007,
+        "complete": false,
+        "nextFromBlock": null
+      },
+      "price": "0.008416345251527577387812889632468771934065001477366408326467833950874613861181803689785942862781880597443989343091389789706472882477038877081491043295693086118852178911797778937398106791079044342041015625",
+      "pricePoints": 2,
+      "volume": {
+        "token0Raw": "215",
+        "token1Raw": "1823434226780"
+      },
+      "fees": {
+        "token0Raw": "0",
+        "token1Raw": "100000000",
+        "reason": "Estimated input fee over covered blocks; not claimable LP income"
+      },
+      "reserves": {
+        "token0Raw": "5807",
+        "token1Raw": "48822956087357",
+        "reason": null
+      },
+      "tvlUsd": null,
+      "apr": null
+    },
+    {
+      "protocol": "v4",
+      "pool": "0x326670fbdc54a57ec96182faebc60ce6f06e9073e0044e978805520be3c6983e",
+      "coverage": {
+        "fromBlock": 73369484,
+        "toBlock": 73370007,
+        "complete": false,
+        "nextFromBlock": null
+      },
+      "price": "118.927493865070565753249370736416118943293184099394503758273146288662592881163887383338235734505817254527710831733863306915775188296277055377547782200053916312754154205322265625",
+      "pricePoints": 2,
+      "volume": {
+        "token0Raw": "1846339219830",
+        "token1Raw": "216"
+      },
+      "fees": {
+        "token0Raw": "0",
+        "token1Raw": "0",
+        "reason": "Estimated input fee over covered blocks; not claimable LP income"
+      },
+      "reserves": {
+        "token0Raw": null,
+        "token1Raw": null,
+        "reason": "Singleton balance cannot be attributed to one pool"
+      },
+      "tvlUsd": null,
+      "apr": null
+    }
+  ],
+  "mainnetWrites": false
+}

@@ -3,6 +3,7 @@ import { zIndexes } from '@universe/mycelium'
 import { type CreateConnectorFn, createConnector } from 'wagmi'
 import { walletConnect } from 'wagmi/connectors'
 import UNIWALLET_ICON from '~/assets/wallets/uniswap-wallet-icon.png'
+import { APP_DESCRIPTION, APP_DISPLAY_NAME } from '~/branding'
 import { getConfig } from '~/config'
 import { instrumentWalletConnectRpc } from '~/connection/instrumentWalletConnectRpc'
 
@@ -45,14 +46,15 @@ export const INTERFACE_WC_STORAGE_PREFIX = 'interfaceWalletConnect'
 // production → the SignClient default wss://relay.walletconnect.com applies); the e2e harness
 // passes the hermetic in-process relay (see src/playwright/wc/localRelay.ts).
 export function makeWcParams({ relayUrl }: { relayUrl?: string } = {}) {
+  const origin = window.location.origin
   return {
     projectId: WALLET_CONNECT_PROJECT_ID,
     ...(relayUrl ? { relayUrl } : {}),
     metadata: {
-      name: 'Uniswap',
-      description: 'Uniswap Interface',
-      url: 'https://app.uniswap.org',
-      icons: ['https://app.uniswap.org/favicon.png'],
+      name: APP_DISPLAY_NAME,
+      description: APP_DESCRIPTION,
+      url: origin,
+      icons: [`${origin}/favicon.png`],
     },
     qrModalOptions: {
       themeVariables: {

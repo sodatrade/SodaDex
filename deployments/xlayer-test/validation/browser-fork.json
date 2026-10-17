@@ -1,0 +1,301 @@
+{
+  "schemaVersion": 1,
+  "environment": "owned localhost Anvil fork; these transaction hashes are not mainnet transactions",
+  "mainnetWrites": false,
+  "applicationSourceCommit": "f9b6f3a65915e925dbe2c7aaa8e899c1b538c334",
+  "scriptSha256": "bc2f939651b202f3849a3608025b94d5318845be48ac25aa9bf46782a781e274",
+  "forkSourceBlock": 73367513,
+  "date": "2026-10-16",
+  "validation": {
+    "passedSwaps": 4,
+    "evidence": "real browser + compiled Worker guard + owned Anvil contracts; fixture deployment mappings; no real-chain writes",
+    "results": [
+      {
+        "protocol": "V3",
+        "direction": "forward",
+        "amount": "0.000001",
+        "review": "最低接收\n0.000112 USD₮0\n滑点上限\n0.5%\n协议偏好\nV3 · 0.01%\n平台费 / 协议费\n0%\n网络\nX Layer · 196\n接收钱包\n0x6ecf…0545\n兑换合约\n0xda5B…09FA",
+        "hash": "0x6e17f8d885b8b569a06fda75bd4b417a1d4e8d9c8bd62e69dbb00533ca43f2fc",
+        "minimumRaw": "112",
+        "nativeDeltaExcludingGas": "-1000000000000",
+        "stableDeltaRaw": "112",
+        "swapEventVerified": true,
+        "receipt": {
+          "status": "0x1",
+          "to": "0xda5bc8bc981d9b2f5df2b0c7e5aed044993709fa",
+          "logs": 5
+        }
+      },
+      {
+        "protocol": "V3",
+        "direction": "reverse",
+        "amount": "0.0001",
+        "review": "最低接收\n0.000000859730224577 OKB\n滑点上限\n0.5%\n协议偏好\nV3 · 0.01%\n平台费 / 协议费\n0%\n网络\nX Layer · 196\n接收钱包\n0x6ecf…0545\n兑换合约\n0xda5B…09FA",
+        "hash": "0x486911d9c97c7d7276269d4c0052424016cef039c85347f03ee8b56bf3bbc17d",
+        "minimumRaw": "859730224577",
+        "nativeDeltaExcludingGas": "864050476961",
+        "stableDeltaRaw": "-100",
+        "swapEventVerified": true,
+        "receipt": {
+          "status": "0x1",
+          "to": "0xda5bc8bc981d9b2f5df2b0c7e5aed044993709fa",
+          "logs": 6
+        }
+      },
+      {
+        "protocol": "V4",
+        "direction": "forward",
+        "amount": "0.000001",
+        "review": "最低接收\n0.000112 USD₮0\n滑点上限\n0.5%\n协议偏好\nV4 · 0%\n平台费 / 协议费\n0%\n网络\nX Layer · 196\n接收钱包\n0x6ecf…0545\n兑换合约\n0xda5B…09FA",
+        "hash": "0x27e1a312e8002086445e5ca85e3c21e43d94996a9e2dce1ac2256e70860e5507",
+        "minimumRaw": "112",
+        "nativeDeltaExcludingGas": "-1000000000000",
+        "stableDeltaRaw": "112",
+        "swapEventVerified": true,
+        "receipt": {
+          "status": "0x1",
+          "to": "0xda5bc8bc981d9b2f5df2b0c7e5aed044993709fa",
+          "logs": 2
+        }
+      },
+      {
+        "protocol": "V4",
+        "direction": "reverse",
+        "amount": "0.0001",
+        "review": "最低接收\n0.000000866147984394 OKB\n滑点上限\n0.5%\n协议偏好\nV4 · 0%\n平台费 / 协议费\n0%\n网络\nX Layer · 196\n接收钱包\n0x6ecf…0545\n兑换合约\n0xda5B…09FA",
+        "hash": "0xd7d602423268f2319155b057a015e673f7df3ab87d112332867c4e0bf5901793",
+        "minimumRaw": "866147984394",
+        "nativeDeltaExcludingGas": "870500486828",
+        "stableDeltaRaw": "-100",
+        "swapEventVerified": true,
+        "receipt": {
+          "status": "0x1",
+          "to": "0xda5bc8bc981d9b2f5df2b0c7e5aed044993709fa",
+          "logs": 3
+        }
+      }
+    ],
+    "submittedTransactions": [
+      {
+        "hash": "0x6e17f8d885b8b569a06fda75bd4b417a1d4e8d9c8bd62e69dbb00533ca43f2fc",
+        "from": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+        "to": "0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA",
+        "value": "0xe8d4a51000",
+        "selector": "0x3593564c"
+      },
+      {
+        "hash": "0x2ae490a0fb32e18461e3716d1f2742f74fd263dc005ab400e9eaf1b7fef1faa3",
+        "from": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+        "to": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+        "value": "0x0",
+        "selector": "0x095ea7b3"
+      },
+      {
+        "hash": "0xceb50641a9919193fb1aff34f6d139d257f9514c508871e23eb8261d9051cb88",
+        "from": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+        "to": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+        "value": "0x0",
+        "selector": "0x87517c45"
+      },
+      {
+        "hash": "0x486911d9c97c7d7276269d4c0052424016cef039c85347f03ee8b56bf3bbc17d",
+        "from": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+        "to": "0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA",
+        "value": "0x0",
+        "selector": "0x3593564c"
+      },
+      {
+        "hash": "0x27e1a312e8002086445e5ca85e3c21e43d94996a9e2dce1ac2256e70860e5507",
+        "from": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+        "to": "0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA",
+        "value": "0xe8d4a51000",
+        "selector": "0x3593564c"
+      },
+      {
+        "hash": "0xe1132e547a3ba49dbe74b600824b2e1e964132fd86666c8cc23da5718a0313cc",
+        "from": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+        "to": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+        "value": "0x0",
+        "selector": "0x095ea7b3"
+      },
+      {
+        "hash": "0x9de73c4ebfde1ebea2bb621c9f6485f29fa372366d50e65f4d5014e28f74479c",
+        "from": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+        "to": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+        "value": "0x0",
+        "selector": "0x87517c45"
+      },
+      {
+        "hash": "0xd7d602423268f2319155b057a015e673f7df3ab87d112332867c4e0bf5901793",
+        "from": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+        "to": "0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA",
+        "value": "0x0",
+        "selector": "0x3593564c"
+      }
+    ],
+    "walletCalls": [
+      "eth_requestAccounts",
+      "eth_chainId",
+      "eth_accounts",
+      "eth_chainId",
+      "eth_accounts",
+      "eth_chainId",
+      "eth_sendTransaction",
+      "eth_accounts",
+      "eth_chainId",
+      "eth_accounts",
+      "eth_chainId",
+      "eth_sendTransaction",
+      "eth_accounts",
+      "eth_chainId",
+      "eth_accounts",
+      "eth_chainId",
+      "eth_sendTransaction",
+      "eth_accounts",
+      "eth_chainId",
+      "eth_accounts",
+      "eth_chainId",
+      "eth_sendTransaction",
+      "eth_accounts",
+      "eth_chainId",
+      "eth_accounts",
+      "eth_chainId",
+      "eth_sendTransaction",
+      "eth_accounts",
+      "eth_chainId",
+      "eth_accounts",
+      "eth_chainId",
+      "eth_sendTransaction",
+      "eth_accounts",
+      "eth_chainId",
+      "eth_accounts",
+      "eth_chainId",
+      "eth_sendTransaction",
+      "eth_accounts",
+      "eth_chainId",
+      "eth_accounts",
+      "eth_chainId",
+      "eth_sendTransaction"
+    ]
+  },
+  "buildFingerprint": {
+    "workerBundleSha256": "13bd01e83c1b2f0497e3995cfdb6c5a2e718b39ebdac8ed58d148f1e3db43b7c",
+    "webAssetSha256": {
+      "index.html": "8e7c9e7de96a5c0798a6be6ab4543d0e367134d9d70feee5f459bb48ff1dafca",
+      "brand.svg": "eaf5e3579216252e91040013e6e78f5b10b02b3de34c32c544d63197aee2dab0",
+      "preferences-script.json": "8aabb800ae162745d485e03b7ad5424eac8030e13dcdb1e529102713816763be",
+      "assets/xlayer.svg": "f837468b7de4079c832bcd8d410d0c4cb90002f9e8f331e32a2e2b72a399eb88",
+      "assets/okb.png": "be310dd7ec1349c0b353c0a4d17b4c6905b5b51301787690631860eadefbc996",
+      "assets/SOURCES.md": "a7e33e8850d71be0d33c3734487115221ee55ce71148df389283db945ffc4499",
+      "assets/Inter-Regular-Latin-BYtJb7jM.woff2": "9ebb07cb3efc1bbb2b84342914fdaed9493e4c6b2282fd1e7e4de2f4965a0599",
+      "assets/usdt0.png": "df5238a34df0255a1356485cd6939c521c125e22a25d43fe6d3ca0c98eab0403",
+      "assets/index-D5eIiCNM.js": "5e966bb6c4d25fc15a6088fb576118f3cb211ef141bfe9f7c23d4fb7482a760f",
+      "assets/index-BVLwdrlD.css": "9bcb10a16ed2fc74d0bab8ff72b2d3083f23523e4ee57b1bfa02adb707e55c6a",
+      "assets/wokb.png": "5ce174b09a097862e25741ca77eea51a26ad3e64621f8e61003c44ae080cf6fa"
+    },
+    "applicationSourceSha256": {
+      "standalone/web/src/App.tsx": "4cc84cc01e4fe8139bce096aaf5343a75456eebaee6c399582ff9332031b165b",
+      "standalone/web/src/main.tsx": "118662ddb6d07be0109fcfe075f6500edafae1e2d4de30ae6afad2a531a2fbd5",
+      "standalone/web/src/styles.css": "be324473d74400553d1abcd77b439bd305718979fa8c601e64fba3950d26163a",
+      "standalone/web/src/preferences/context.ts": "aab14c49295387dcf2a504b0e10b7ac6a81b4c2e8f2d034fd7766ef60f571323",
+      "standalone/web/src/preferences/model.ts": "2d4fe84e733cda5eb8aa30dfa9161ae5c9fb69209f07762f929625c36719dcb5",
+      "standalone/web/src/preferences/PreferencesProvider.tsx": "7398d495b70153809e168c285baabc68811d8ac3faee00add492e3c6255dd55f",
+      "standalone/web/src/components/AssetPage.tsx": "455e76d93039258e6dbc525369f02357c8493fdb2c92419d7107436c5067321d",
+      "standalone/web/src/components/primitives.tsx": "fc95fc17fe59639b25b4badd1daf0e3758b68a89676d1091f96f362bd946a8ca",
+      "standalone/web/src/components/SwapCard.tsx": "1a86b235329351bc3d93145e83b6f3dda488168fd2b3948ec82246da4904518e",
+      "standalone/web/src/components/WalletDialog.tsx": "ed34b171f9cad8ba81a64aab0ce13f3716fbab1b26bb4837ee12cbe91f030d3e",
+      "standalone/web/src/components/GlobalSearchDialog.tsx": "1ee2262bc2de12bbbedb5f2a695edee3359006aaea3c59bb98cd8a63219ddade",
+      "standalone/web/src/components/PoolsPage.tsx": "f297c44cdfd22ffd06e8753382c77978338d01b7e520fc754babb6d4a37901db",
+      "standalone/web/src/components/AssetDialog.tsx": "c2c60c429e75ceb506acecbd03fdfc56737cb6084a80bc7f09482b6d1dcec6c3",
+      "standalone/web/src/components/SettingsDialog.tsx": "9f36a7b0391cd0855b520414269258ade26ed3cfabf03e228c0e9fdc75378e52",
+      "standalone/web/src/components/Header.tsx": "7dbed33d25bf0a9a2b45888717a056143b1a1b838c7e79bceb9ed712e80a7ff6",
+      "standalone/web/src/components/Dialog.tsx": "92dea62d5fb8b3b373c1077b59c302b5fe5607a958e071bfff987b674e87c457",
+      "standalone/web/src/components/SwapAmountPanel.tsx": "04a1d552681df34f4ca3a46f53c374a93228ded6fe635189fa053ef74e51cd53",
+      "standalone/web/src/components/PreferencesDialog.tsx": "2f0e1d6fe56179c748d66a6e340e3da805194999af6d53a37b3d5b6aa9393f93",
+      "standalone/web/src/components/PoolRecords.tsx": "4ce8f6509d285a4652ddb6fb690bb7b6bd4eaaa8201af0b8444a8618725ba400",
+      "standalone/web/src/components/TradeConfirmation.tsx": "9c067ec87f251c30e89cafd9f7af75b68dc5e37d5e1274d9f3c7fdb6b83fb8cd",
+      "standalone/web/src/lib/wallet.ts": "aef6adc63e6376a7bdbd713623aaf5ce9a71783474c776cdf3f9a8981c4d3e50",
+      "standalone/web/src/lib/rpc.ts": "1d980d82be9c5ed49415ced10f31c8d0af9f19c6548e37b00b432616839d5c66",
+      "standalone/web/src/lib/useWallet.ts": "ea203ad97d806f6d061830d7aad9a29f6e5d65406d7ab70ce3d02c53bc238755",
+      "standalone/web/src/i18n/zh-CN.ts": "64d3544e3c181234519a8bdb5e5d5948f8fd46200df301fadbeebab9ead5890d",
+      "standalone/web/src/i18n/en.ts": "8665758b62ad25d5ae829c456d994223439f25df52a83cf066ab81ac6a4f9942",
+      "standalone/web/src/i18n/types.ts": "82eeff78eab496d4e0845fb99aaa1c751fb0e53b8a71397e26be31525bb84413",
+      "standalone/web/src/i18n/index.ts": "2dbc0d8cf3c4641f96f769c96c85eaf2251862c6cf44f30bbe0a493637bd33e3",
+      "standalone/web/src/i18n/yue-HK.ts": "ce47d167353988228303e6ebe16ae22e8bf20420b3709611328510e7a0329923",
+      "standalone/web/src/trading/abis.ts": "5a5c1959433720118ea0e58c84138c0eaf17b8712da2263b1ad0b00c1c99f634",
+      "standalone/web/src/trading/quotes.ts": "135b954a5b8c121c0f3aefaac686255259ce3d3f483350b56e1a984819ec6d18",
+      "standalone/web/src/trading/types.ts": "b0d7a3988f0cdf7b36e23b51c729ecd1a98d5fce62af56d9122546add5b478b4",
+      "standalone/web/src/trading/useTrade.ts": "6b4782d500148b3d2274a844d0787fff85479dd49fdd7b6a229f72f9b01ac7a1",
+      "standalone/web/src/trading/approvals.ts": "57d08a04274a03d32eb728b9daf47cced30b1e31a90f5456111a204f13f7fcdb",
+      "standalone/web/src/trading/encoding.ts": "cde63d32aea5e1c5be97f94f0ccc82b0dafdec5b93d2254e1311c80cffa37ed4",
+      "standalone/web/src/trading/config.ts": "b2c3ed91c69d12689cdfdb3429de25c66cb3f294b1ab862dd4da616b64b534a4",
+      "standalone/web/src/trading/execution.ts": "997b938412105722e65dc3269e4bfcfc4862f2874eafa9abeccbb16c9345c079",
+      "standalone/web/src/trading/receipts.ts": "7ee05b495a97662bcd59e983b1deb6fe271a4415d52677e96819a1dfa23833f4",
+      "standalone/web/src/domain/assets.ts": "689ce55167869d976bb5e756cc5b91b353feda85909c1bc2ac856b602de3796a",
+      "standalone/web/src/domain/amount.ts": "101cea7831641253d52706fd152a99bf137ef112990fa8c5d467c7b5d76b81a8",
+      "standalone/worker/src/rpc.ts": "4777db146bac40123740889931eab3cb8bd50e1c13ba605ba95cb36dff2a6f1d",
+      "standalone/worker/src/trade-requests.ts": "2cf083b47e7659456627e8df9a41f5f59cf342d6feffb19d70b7420367030fbe",
+      "standalone/worker/src/index.ts": "d1a60d315eba7b7668b91112cce79b55659a368f749a9d0ecb7a6e50104831f2"
+    },
+    "fixtureManifests": {
+      "active": {
+        "schemaVersion": 1,
+        "name": "SodaDEX Test",
+        "phase": "test",
+        "status": "owned-local-fork-fixture",
+        "chainId": 196,
+        "network": "X Layer mainnet",
+        "rpcUrl": "https://rpc.ignix.bot/rpc/196",
+        "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+        "nativeCurrency": "OKB",
+        "wrappedNative": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+        "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+        "contracts": {
+          "v3Factory": "0xa6109B7F4237d2aC28B8009FbD21B88cff194cFe",
+          "v3NFTDescriptor": "0x5aBE8f32072B46E67816DB5991033e06D3b000D1",
+          "v3TokenDescriptor": "0xe8738389c2027BfcD4ac0ddE764Df9F170EB9750",
+          "v3PositionManager": "0x2BeCd78E05FB33b0588e9cF61E65afeE9DC7428f",
+          "v3Quoter": "0x98F4DFBfAb6fC37e59e00d6881E779B33b23b009",
+          "v4PoolManager": "0x6B5C32aD97EB42230138e02a21B0E6d811FD713D",
+          "v4Descriptor": "0x1d59446D84e2470015dC926d9dF7d83A2395d264",
+          "v4PositionManager": "0x1f85377930011B701dd2940c526e32FD3aDaB730",
+          "v4Quoter": "0x7a188D4C46C9FE045A5875FecaeF9Bf00e4521fF",
+          "v4StateView": "0x7991D4a8493b9709365cD079DfFc75e790007874",
+          "unsupportedProtocol": "0x68Eca93437dF07bE4b2C3A67956ACe2dC87d2F39",
+          "universalRouter": "0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA"
+        },
+        "productionDeployment": "deferred",
+        "sourceDeploymentRecord": "receipts.json",
+        "brandingDeploymentRecord": null,
+        "poolRecord": "pools.json"
+      },
+      "pools": {
+        "schemaVersion": 1,
+        "chainId": 196,
+        "status": "ready",
+        "stable": {
+          "address": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+          "symbol": "USD₮0",
+          "decimals": 6
+        },
+        "v3": {
+          "address": "0x5c6825eff223ba53744c2a19a0aec27033a432bd",
+          "token0": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+          "token1": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+          "fee": 100,
+          "tickSpacing": 1
+        },
+        "v4": {
+          "poolId": "0x326670fbdc54a57ec96182faebc60ce6f06e9073e0044e978805520be3c6983e",
+          "currency0": "0x0000000000000000000000000000000000000000",
+          "currency1": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+          "fee": 0,
+          "tickSpacing": 1,
+          "hooks": "0x0000000000000000000000000000000000000000"
+        },
+        "slippageBps": 50,
+        "deadlineSeconds": 600
+      }
+    }
+  }
+}

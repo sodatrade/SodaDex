@@ -1,0 +1,109 @@
+{
+  "status": "passed",
+  "sourceCommit": "713d0db5591ed3d7765d5389ae8d713069332c01",
+  "versionId": "92aff647-7c0a-4c68-999b-2faa2c2c19a1",
+  "origin": "https://sodadex-preview.jsmsdx2025.workers.dev",
+  "checksPassed": 32,
+  "checks": {
+    "layout": {
+      "status": "passed",
+      "checks": [
+        "default light theme",
+        "actual own-pool quote without wallet",
+        "swap no overflow at 1440",
+        "explore no overflow at 1440",
+        "pools no overflow at 1440",
+        "portfolio no overflow at 1440",
+        "swap no overflow at 768",
+        "explore no overflow at 768",
+        "pools no overflow at 768",
+        "portfolio no overflow at 768",
+        "swap no overflow at 390",
+        "explore no overflow at 390",
+        "pools no overflow at 390",
+        "portfolio no overflow at 390",
+        "portfolio tokens route",
+        "tokens route survives reload",
+        "English trading labels",
+        "Cantonese trading labels",
+        "amount persists across navigation and locales",
+        "no signing or transaction requests",
+        "no browser runtime errors"
+      ],
+      "screenshots": [
+        "workspace-swap-1440.png",
+        "workspace-explore-1440.png",
+        "workspace-pools-1440.png",
+        "workspace-portfolio-1440.png",
+        "workspace-swap-768.png",
+        "workspace-explore-768.png",
+        "workspace-pools-768.png",
+        "workspace-portfolio-768.png",
+        "workspace-swap-390.png",
+        "workspace-explore-390.png",
+        "workspace-pools-390.png",
+        "workspace-portfolio-390.png"
+      ],
+      "walletMethods": [],
+      "runtimeErrors": [],
+      "mainnetWrites": false
+    },
+    "reference": {
+      "status": "passed",
+      "checks": [
+        "official candidate pools loaded from real RPC",
+        "V2 official candidates present",
+        "V3 official candidates present",
+        "V4 official candidates present",
+        "actual official V4 read-only quote",
+        "official reference has no approval or execution control",
+        "official browsing never asks wallet to sign"
+      ],
+      "poolCount": 8,
+      "protocols": [
+        "V2 \u00b7 0.3%",
+        "V3 \u00b7 0.01%",
+        "V3 \u00b7 0.05%",
+        "V3 \u00b7 0.3%",
+        "V4 \u00b7 0.01%",
+        "V4 \u00b7 0.05%",
+        "V4 \u00b7 0.3%",
+        "V4 \u00b7 1%"
+      ],
+      "quote": "0.000114 USD\u20ae0",
+      "walletMethods": [],
+      "mainnetWrites": false
+    },
+    "preview": {
+      "status": "passed",
+      "checks": [
+        "V3 has an explicit enabled wallet confirmation",
+        "V4 has an explicit enabled wallet confirmation",
+        "no wallet signing or submission",
+        "no browser runtime errors"
+      ],
+      "quotes": [
+        {
+          "protocol": "V3",
+          "amountIn": "0.000001 OKB",
+          "amountOut": "0.000115",
+          "minimum": "0.000115 USD\u20ae0"
+        },
+        {
+          "protocol": "V4",
+          "amountIn": "0.000001 OKB",
+          "amountOut": "0.000115",
+          "minimum": "0.000115 USD\u20ae0"
+        }
+      ],
+      "walletMethods": [
+        "eth_requestAccounts",
+        "eth_chainId"
+      ],
+      "runtimeErrors": [],
+      "confirmationClicked": false,
+      "mainnetWrites": false
+    }
+  },
+  "mainnetWrites": false
+}

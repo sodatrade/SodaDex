@@ -1,0 +1,29 @@
+{
+  "sourceCommit": "f6346b2fe4715aa30d2c04e3be801907a5d59180",
+  "versionId": "7a50bf92-3fa3-4fd9-abf0-11ea62e026c8",
+  "status": "passed",
+  "web": {
+    "typecheck": "passed",
+    "lint": "passed",
+    "build": "passed",
+    "testsPassed": 114,
+    "testFilesPassed": 15,
+    "testsSkipped": 0,
+    "anvilCasesPassed": 5
+  },
+  "worker": {
+    "typecheck": "passed",
+    "lint": "passed",
+    "testsPassed": 51,
+    "testFilesPassed": 9,
+    "testsSkipped": 0
+  },
+  "browser": {
+    "enabledMockChecksPassed": 50,
+    "ownedAnvilSwapsPassed": 4,
+    "ownedAnvilLpChecksPassed": 48,
+    "liveReadOnlyChecksPassed": 6,
+    "actualLivePreviews": 2
+  },
+  "scope": "Standalone test app, fixed manifest pools; no new real-chain writes; full monorepo checks remain blocked by missing tools/uniswap-nx."
+}

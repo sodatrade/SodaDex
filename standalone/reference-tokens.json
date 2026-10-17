@@ -1,0 +1,99 @@
+{
+  "name": "X Layer Default Token List",
+  "timestamp": "2025-11-27T00:00:00Z",
+  "version": {
+    "major": 1,
+    "minor": 0,
+    "patch": 0
+  },
+  "keywords": [
+    "xlayer",
+    "okb",
+    "mainnet"
+  ],
+  "tokens": [
+    {
+      "chainId": 196,
+      "address": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+      "decimals": 18,
+      "name": "Wrapped OKB",
+      "symbol": "WOKB",
+      "logoURI": "https://okx.com/cdn/web3/currency/token/small/196-0xe538905cf8410324e03a5a23c1c177a474d59b2b-107?v=1750421945476"
+    },
+    {
+      "chainId": 196,
+      "address": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+      "decimals": 6,
+      "name": "USD₮0",
+      "symbol": "USD₮0",
+      "logoURI": "https://okx.com/cdn/web3/currency/token/large/196-0x779ded0c9e1022225f8e0630b35a9b54be713736-107/type=default_90_0?v=1758597811461"
+    },
+    {
+      "chainId": 196,
+      "address": "0x74b7F16337b8972027F6196A17a631aC6dE26d22",
+      "decimals": 6,
+      "name": "USD Coin",
+      "symbol": "USDC",
+      "logoURI": "https://okx.com/cdn/web3/currency/token/large/637-0xbae207659db88bea0cbead6da0ed00aac12edcdda169e591cd41c94180b46f3b-107/type=default_90_0?v=1756203256814"
+    },
+    {
+      "chainId": 196,
+      "address": "0xC5015b9d9161Dca7e18e32f6f25C4aD850731Fd4",
+      "decimals": 18,
+      "name": "Dai Stablecoin",
+      "symbol": "DAI",
+      "logoURI": "https://okx.com/cdn/web3/currency/token/small/196-0xc5015b9d9161dca7e18e32f6f25c4ad850731fd4-1?v=1744949565136"
+    },
+    {
+      "chainId": 196,
+      "address": "0x4ae46a509F6b1D9056937BA4500cb143933D2dc8",
+      "decimals": 6,
+      "name": "Global Dollar",
+      "symbol": "USDG",
+      "logoURI": "https://okx.com/cdn/web3/currency/token/large/196-0x4ae46a509f6b1d9056937ba4500cb143933d2dc8-107/type=default_90_0?v=1759823460266"
+    },
+    {
+      "chainId": 196,
+      "address": "0xE7B000003A45145decf8a28FC755aD5eC5EA025A",
+      "decimals": 18,
+      "name": "OKX Wrapped ETH",
+      "symbol": "xETH",
+      "logoURI": "https://static.coinall.ltd/cdn/assets/imgs/984/F7DAB453A54E41668348307090146E36.png"
+    },
+    {
+      "chainId": 196,
+      "address": "0x505000008de8748dbd4422ff4687a4fc9beba15b",
+      "decimals": 9,
+      "name": "OKX Wrapped SOL",
+      "symbol": "xSOL",
+      "logoURI": "https://static.coinall.ltd/cdn/assets/imgs/787/817E899F4586412D85B0AB3771E8CCB4.png"
+    },
+    {
+      "chainId": 196,
+      "address": "0xAFeab3B85B6A56cF5F02317F0f7A23340eb983D7",
+      "decimals": 18,
+      "name": "OKX Wrapped Staked ETH",
+      "symbol": "xBETH",
+      "logoURI": "https://static.coinall.ltd/cdn/assets/imgs/245/00C72289BD7C4180A0317383462FEC59.png"
+    },
+    {
+      "chainId": 196,
+      "address": "0x14a686103854dab7b8801e31979caa595835b25d",
+      "decimals": 9,
+      "name": "OKX Wrapped Staked SOL",
+      "symbol": "xOKSOL",
+      "logoURI": "https://static.coinall.ltd/cdn/assets/imgs/907/15D5974EF3AF4016B9927F25296CDF4C.png"
+    },
+    {
+      "chainId": 196,
+      "address": "0xb7c00000bcdeef966b20b3d884b98e64d2b06b4f",
+      "decimals": 8,
+      "name": "OKX Wrapped BTC",
+      "symbol": "xBTC",
+      "logoURI": "https://okx.com/cdn/web3/currency/token/large/196-0xb7c00000bcdeef966b20b3d884b98e64d2b06b4f-107/type=default_90_0?v=1759829231572"
+    }
+  ],
+  "source": "https://raw.githubusercontent.com/okx/xlayer-tokenlist/main/xlayer.tokenlist.json",
+  "contentSha256": "7f90151402fdba147e31833edd13b485fa813337fbbc2ee56bd3d5539b823382",
+  "retrievedAt": "2026-10-16"
+}
