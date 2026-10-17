@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useRef, useState, type ReactElement } from 'react'
 import { formatUnits } from 'viem'
-import type { MiningProductDeployment } from '../../../mining-products'
+import type { MiningAddress, MiningProductDeployment } from '../../../mining-products'
 import { Dialog } from '../components/Dialog'
 import { Button } from '../components/primitives'
 import { formatBalance } from '../domain/amount'
@@ -9,32 +9,38 @@ import { hexQuantity, rpc } from '../lib/readRpc'
 import type { WalletController } from '../lib/useWallet'
 import { usePreferences } from '../preferences/context'
 import { MiningActionCard } from './ActionCard'
+import { AutomationPanel } from './AutomationPanel'
 import { executeMiningCall, type MiningStage } from './execution'
 import { MiningHistoryPanel } from './HistoryPanel'
 import { loadMiningJournal, saveMiningSubmission, type MiningSubmission } from './journal'
+import { LaunchProjectPanel } from './LaunchProjectPanel'
 import { miningMessages, type MiningMessageKey } from './messages'
+import { onlineMessages } from './onlineMessages'
 import { buildMiningPlan, type MiningAction, type MiningPlan } from './plans'
 import { miningUint, productRead, verifyMiningDeployment } from './protocol'
 import { MiningRewardsPanel } from './RewardsPanel'
+import { useOnlineCatalog } from './useOnlineCatalog'
 
-export function MiningProductsWorkspace({ deployment: d, wallet }: { deployment: MiningProductDeployment; wallet: WalletController }): ReactElement {
-  const { locale } = usePreferences(), m = miningMessages(locale), client = useQueryClient()
-  const [tab, setTab] = useState<'fundraising' | 'fragments' | 'positions' | 'history'>('fundraising')
-  const [projectIndex, setProjectIndex] = useState(0), [plan, setPlan] = useState<MiningPlan>()
+export function MiningProductsWorkspace({ deployment: base, wallet }: { deployment: MiningProductDeployment; wallet: WalletController }): ReactElement {
+  const { locale } = usePreferences(), m = miningMessages(locale), online = onlineMessages(locale), client = useQueryClient()
+  const [tab, setTab] = useState<'fundraising' | 'fragments' | 'positions' | 'history' | 'launch' | 'automation'>('fundraising')
+  const [projectToken, setProjectToken] = useState<MiningAddress | undefined>(base.projects[0]?.token.address), [plan, setPlan] = useState<MiningPlan>()
+  const catalog = useOnlineCatalog(base, projectToken), d = catalog.deployment
   const [stage, setStage] = useState<MiningStage>(), [error, setError] = useState<MiningMessageKey>()
   const [busy, setBusy] = useState(false), [storageFailed, setStorageFailed] = useState(false)
   const [entries, setEntries] = useState(() => loadMiningJournal(d)), activePlan = useRef<MiningPlan | undefined>(undefined)
   const inFlight = useRef(false)
-  const project = d.projects[projectIndex], account = wallet.session?.chainId === 1952 ? wallet.session.address : undefined
-  const ready = useQuery({ queryKey: ['mining-ready', d.version], queryFn: async () => { await verifyMiningDeployment(rpc, d); return true }, retry: false, refetchInterval: 30_000 })
+  const project = d.projects.find((p) => p.token.address.toLowerCase() === projectToken?.toLowerCase()) ?? d.projects[0]
+  const account = wallet.session?.chainId === 1952 ? wallet.session.address : undefined
+  const ready = useQuery({ queryKey: ['mining-ready', d.version, catalog.revision], queryFn: async () => { await verifyMiningDeployment(rpc, d); return true }, retry: false, refetchInterval: 30_000 })
   const paused = useQuery({ queryKey: ['mining-paused', d.version], enabled: ready.isSuccess,
     queryFn: () => productRead(rpc, d.contracts.mining.address, 'mining', 'paused'), retry: false, refetchInterval: 15_000 })
   const native = useQuery({ queryKey: ['native-balance', '1952-mining-test', account], enabled: ready.isSuccess && !!account,
     queryFn: async () => hexQuantity(await rpc('eth_getBalance', [account!, 'latest'])), retry: false, refetchInterval: 20_000 })
-  const protection = useQuery({ queryKey: ['mining-protection', d.version, project?.token.address], enabled: ready.isSuccess && !!project,
+  const protection = useQuery({ queryKey: ['mining-protection', d.version, catalog.revision, project?.token.address], enabled: ready.isSuccess && !!project,
     queryFn: async () => ({ active: await productRead(rpc, project!.token.address, 'projectToken', 'protectionActive'),
       until: miningUint(await productRead(rpc, project!.token.address, 'projectToken', 'protectionEndsAt')) }), retry: false, refetchInterval: 15_000 })
-  const balances = useQuery({ queryKey: ['mining-balances', d.version, account, project?.token.address], enabled: ready.isSuccess && !!account,
+  const balances = useQuery({ queryKey: ['mining-balances', d.version, catalog.revision, account, project?.token.address], enabled: ready.isSuccess && !!account,
     queryFn: async () => Promise.all([
       productRead(rpc, d.contracts.fab.address, 'fab', 'balanceOf', [account!]),
       productRead(rpc, d.contracts.fragmentVault.address, 'fragmentVault', 'balanceOf', [account!]),
@@ -75,8 +81,9 @@ export function MiningProductsWorkspace({ deployment: d, wallet }: { deployment:
     <div className="mining-workspace-bar"><span className={`mining-readiness${ready.isSuccess ? ' verified' : ''}`} role="status">
       {ready.isPending ? m.verifying : ready.isSuccess ? m.verified : m.versionError}</span>
       <Button disabled={ready.isFetching || busy} onClick={() => void client.invalidateQueries({ predicate: (q) => String(q.queryKey[0]).startsWith('mining-') })}>{m.refresh}</Button></div>
-    <nav className="mining-tabs" aria-label={m.ready}>{(['fundraising', 'fragments', 'positions', 'history'] as const).map((name) =>
-      <Button appearance={tab === name ? 'primary' : 'ghost'} aria-current={tab === name ? 'page' : undefined} key={name} onClick={() => setTab(name)}>{m[name]}</Button>)}</nav>
+    <nav className="mining-tabs" aria-label={m.ready}>{(['fundraising', 'fragments', 'positions', 'history', 'launch', 'automation'] as const).map((name) =>
+      <Button disabled={busy} appearance={tab === name ? 'primary' : 'ghost'} aria-current={tab === name ? 'page' : undefined} key={name} onClick={() => setTab(name)}>{name === 'launch' || name === 'automation' ? online[name] : m[name]}</Button>)}</nav>
+    {catalog.unavailable && <p className="dialog-note" role="status">{online.serviceUnavailable}</p>}
     {account && balances.data && <dl className="mining-balances">
       <div><dt><img className="mining-native-icon" src="/assets/okb.png" alt="" />TEST-OKB</dt><dd title={native.data === undefined ? undefined : formatUnits(native.data, 18)}>{native.data === undefined ? '—' : formatBalance(native.data, 18)}</dd></div>
       {[['TEST-FAB', 8], ['TEST-fFAB', 18], ['TEST-fFAB LP', 18], ...(project ? [[project.symbol, 18]] : []), ...(project?.pair ? [[`${project.symbol} LP`, 18]] : [])].map(([symbol, decimals], index) =>
@@ -84,8 +91,8 @@ export function MiningProductsWorkspace({ deployment: d, wallet }: { deployment:
     </dl>}
     {!account && <p className="dialog-note">{m.connect}</p>}
     {(tab === 'fundraising' || tab === 'positions') && !!d.projects.length && <div className="mining-project-select">
-      <label htmlFor="mining-project">{m.selectProject}</label><select id="mining-project" value={projectIndex} disabled={busy} onChange={(e) => setProjectIndex(Number(e.target.value))}>
-        {d.projects.map((p, index) => <option key={p.token.address} value={index}>{p.symbol}</option>)}</select></div>}
+      <label htmlFor="mining-project">{m.selectProject}</label><select id="mining-project" value={project?.token.address} disabled={busy} onChange={(e) => setProjectToken(e.target.value as MiningAddress)}>
+        {d.projects.map((p) => <option key={p.token.address} value={p.token.address}>{p.symbol}</option>)}</select></div>}
     {paused.data === true && <p className="mining-pause-note" role="status">{m.sourcePaused}</p>}
     {protection.data?.active === true && <p className="mining-pause-note" role="status">{m.protectionUntil} {new Date(Number(protection.data.until) * 1000).toLocaleString(locale)} · {m.protectionNote}</p>}
     {tab === 'fundraising' && (project ? <div className="mining-card-grid">
@@ -102,6 +109,9 @@ export function MiningProductsWorkspace({ deployment: d, wallet }: { deployment:
     </div>}
     {tab === 'positions' && <MiningRewardsPanel deployment={d} project={project} account={account} disabled={disabled} onPlan={selectPlan} />}
     {tab === 'history' && <MiningHistoryPanel entries={entries} onUpdate={update} />}
+    {tab === 'launch' && <LaunchProjectPanel deployment={d} wallet={wallet} disabled={disabled} onBusy={setBusy} onSubmission={update}
+      onRegistered={(registered) => { catalog.accept(registered); setProjectToken(registered.project.token.address); setTab('fundraising') }} />}
+    {tab === 'automation' && <AutomationPanel deployment={d} token={project?.token.address} disabled={!ready.isSuccess || busy} />}
     {stage && <p role="status">{m[stage]}</p>}{error && <p role="alert">{m[error]}</p>}
     {storageFailed && <p role="alert">{m.storageFailed} {entries.at(-1)?.hash}</p>}
     {plan && <Dialog title={m.review} description={m.testOnly} onEscape={() => busy} onClose={() => { if (!busy) { setPlan(undefined); activePlan.current = undefined } }}>
