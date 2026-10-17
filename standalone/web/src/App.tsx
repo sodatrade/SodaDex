@@ -2,6 +2,9 @@ import { useQuery } from '@tanstack/react-query'
 import { lazy, Suspense, useEffect, useState, type ReactElement } from 'react'
 import type { AssetSelection } from './components/AssetPage'
 import type { Address } from 'viem'
+import { orderMessages } from './i18n/orders'
+import type { TradeMarketContext } from './features/trade/context'
+import { WorkspaceTabs } from './features/workspace/WorkspaceTabs'
 import { workspaceMessages } from './i18n/workspace'
 import { EXPLORE_ROUTES, PORTFOLIO_ROUTES, exploreTab, isPage, portfolioTab, primaryPage } from './features/workspace/navigation'
 import './workspace.css'
@@ -17,6 +20,7 @@ import { usePreferences } from './preferences/context'
 import { PreferencesProvider } from './preferences/PreferencesProvider'
 import { POOLS, publicSwapsEnabled } from './trading/config'
 const TradeWorkspace = lazy(async () => ({ default: (await import('./features/trade/TradeWorkspace')).TradeWorkspace }))
+const LimitOrderPanel = lazy(async () => ({ default: (await import('./features/orders/LimitOrderPanel')).LimitOrderPanel }))
 const PortfolioPage = lazy(async () => ({ default: (await import('./features/portfolio/PortfolioPage')).PortfolioPage }))
 const ExplorePage = lazy(async () => ({ default: (await import('./features/explore/ExplorePage')).ExplorePage }))
 const LiquidityPage = lazy(async () => ({ default: (await import('./features/liquidity/LiquidityPage')).LiquidityPage }))
@@ -35,12 +39,14 @@ function AppContent(): ReactElement {
     return isPage(hash) ? hash : 'swap'
   }
   const [page, setPage] = useState<Page>(fromHash)
+  const [tradeMode, setTradeMode] = useState<'swap' | 'limit'>('swap')
+  const [orderContext, setOrderContext] = useState<TradeMarketContext>()
   const [walletOpen, setWalletOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [preferencesOpen, setPreferencesOpen] = useState(false)
   const [selectedAsset, setSelectedAsset] = useState<AssetSelection>()
   const { t, locale } = usePreferences()
-  const m = workspaceMessages(locale)
+  const m = workspaceMessages(locale), orders = orderMessages(locale)
   const [selectedToken, setSelectedToken] = useState<Address>()
   const wallet = useWallet()
   const network = useQuery({
@@ -104,7 +110,11 @@ function AppContent(): ReactElement {
           <Suspense fallback={<p role="status">{t('reading')}</p>}>
             <TradeWorkspace wallet={wallet} balances={currentBalances} active={page === 'swap'}
               balancesLoading={balances.isFetching && !balances.data} balancesError={balances.isError || network.isError}
-              onConnect={() => setWalletOpen(true)} onCreatePool={() => navigate('pools')} />
+              onConnect={() => setWalletOpen(true)} onCreatePool={() => navigate('pools')}
+              activeMode={tradeMode} orderMarketContext={orderContext}
+              orderModeControl={<WorkspaceTabs label={orders.modes} value={tradeMode} tabs={[{ id: 'swap', name: orders.swap }, { id: 'limit', name: orders.title }]} onChange={setTradeMode} />}
+              renderOrderPanel={(context) => <LimitOrderPanel wallet={wallet} seed={context} active={page === 'swap'}
+                onConnect={() => setWalletOpen(true)} onSwap={() => setTradeMode('swap')} onContextChange={setOrderContext} />} />
           </Suspense>
         </div>
         {primaryPage(page) === 'portfolio' ? (
