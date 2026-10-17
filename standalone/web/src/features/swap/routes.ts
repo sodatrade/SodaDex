@@ -1,6 +1,10 @@
 import { WOKB_ADDRESS, type Protocol } from '../../domain/assets'
 import type { Currency, LiquidityPool } from '../../liquidity/types'
 import { getPoolTradeQuote, type PoolTradeQuote } from '../../trading/poolTrade'
+import { getPoolExactOutputQuote, type PoolExactOutputQuote } from '../../trading/poolExactOutput'
+export type SwapPoolQuote = PoolTradeQuote | PoolExactOutputQuote
+export function isExactOutput(quote: SwapPoolQuote): quote is PoolExactOutputQuote { return 'tradeType' in quote && quote.tradeType === 'exactOutput' }
+export function quotedInput(quote: SwapPoolQuote): bigint { return isExactOutput(quote) ? quote.amountIn : quote.amount }
 export const currencyKey = (c: Currency): string => c.native ? 'native' : c.address.toLowerCase()
 export function sameCurrency(a: Currency, b: Currency): boolean { return currencyKey(a) === currencyKey(b) }
 function compatible(selected: Currency, pool: Currency, protocol: string): boolean {
@@ -26,6 +30,12 @@ export async function bestPoolQuote(candidates: ReturnType<typeof matchingPools>
   if (!valid.length) throw new Error('No route')
   return valid.reduce((best, quote) => quote.amountOut > best.amountOut ? quote : best)
 }
+export async function bestPoolExactOutputQuote(candidates: ReturnType<typeof matchingPools>, amountOut: bigint, slippageBps: number): Promise<PoolExactOutputQuote> {
+  const results = await Promise.allSettled(candidates.map(({ pool, zeroForOne }) => getPoolExactOutputQuote(pool, zeroForOne, amountOut, slippageBps)))
+  const valid = results.flatMap((r) => r.status === 'fulfilled' ? [r.value] : [])
+  if (!valid.length) throw new Error('No route')
+  return valid.reduce((best, quote) => quote.amountIn < best.amountIn ? quote : best)
+}
 export function wrapDirection(from: Currency, to: Currency): 'wrap' | 'unwrap' | undefined {
   if (from.native && !to.native && to.address.toLowerCase() === WOKB_ADDRESS.toLowerCase()) return 'wrap'
   if (to.native && !from.native && from.address.toLowerCase() === WOKB_ADDRESS.toLowerCase()) return 'unwrap'
@@ -37,10 +47,10 @@ export function slippageValue(value: string): number | undefined {
   const bps = Number(whole) * 100 + Number(fraction.padEnd(2, '0'))
   return Number.isInteger(bps) && bps > 0 && bps < 10000 ? bps : undefined
 }
-export function priceImpact(quote: PoolTradeQuote): string | undefined {
+export function priceImpact(quote: SwapPoolQuote): string | undefined {
   const squared = quote.pool.sqrtPriceX96 ** 2n, scale = 2n ** 192n
   if (!squared) return undefined
-  const afterFee = quote.amount * BigInt(1000000 - quote.pool.fee)
+  const afterFee = quotedInput(quote) * BigInt(1000000 - quote.pool.fee)
   const spotOut = quote.zeroForOne ? afterFee * squared / (1000000n * scale) : afterFee * scale / (1000000n * squared)
   if (spotOut <= 0n) return undefined
   const bps = (spotOut - quote.amountOut) * 10000n / spotOut

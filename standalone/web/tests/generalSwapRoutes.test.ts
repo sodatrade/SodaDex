@@ -3,8 +3,9 @@ import { zeroAddress } from 'viem'
 import { KNOWN_CURRENCIES } from '../src/liquidity/config'
 import type { Currency, LiquidityPool } from '../src/liquidity/types'
 import { WOKB_ADDRESS } from '../src/domain/assets'
-import { bestPoolQuote, matchingPools, priceImpact, slippageValue, wrapDirection } from '../src/features/swap/routes'
+import { bestPoolQuote, bestPoolExactOutputQuote, matchingPools, priceImpact, slippageValue, wrapDirection } from '../src/features/swap/routes'
 import * as trades from '../src/trading/poolTrade'
+import * as exact from '../src/trading/poolExactOutput'
 const [native, wrapped, stable] = KNOWN_CURRENCIES
 const pool: LiquidityPool = { protocol: 'v3', id: '0x1111111111111111111111111111111111111111', address: '0x1111111111111111111111111111111111111111',
   currency0: { ...native, address: WOKB_ADDRESS }, currency1: stable, fee: 500, tickSpacing: 10, sqrtPriceX96: 2n ** 96n, tick: 0, liquidity: 1n, initialized: true }
@@ -34,6 +35,17 @@ describe('registered pool selection', () => {
     const candidates = matchingPools([pool, { ...pool, fee: 100 }, { ...pool, fee: 3000 }], native, stable, 'auto')
     expect((await bestPoolQuote(candidates, 100n, 75)).pool.fee).toBe(500)
     expect(spy).toHaveBeenCalledWith(expect.anything(), true, 100n, 75); spy.mockRestore()
+  })
+  it('chooses the lowest required input for exact output without changing requested units', async () => {
+    const spy = vi.spyOn(exact, 'getPoolExactOutputQuote').mockImplementation(async (p, zeroForOne, amountOut, slippageBps = 50) => {
+      if (p.fee === 3000) throw Error('No liquidity')
+      const amountIn = p.fee === 500 ? 1000n : 900n
+      return { tradeType: 'exactOutput', pool: p, zeroForOne, amountOut, amountIn, maximumIn: exact.maximumInput(amountIn, slippageBps), slippageBps }
+    })
+    const candidates = matchingPools([pool, { ...pool, fee: 100 }, { ...pool, fee: 3000 }], stable, native, 'auto')
+    const quote = await bestPoolExactOutputQuote(candidates, 500000000000000000n, 75)
+    expect(quote).toMatchObject({ amountOut: 500000000000000000n, amountIn: 900n, maximumIn: 907n, zeroForOne: false, pool: { fee: 100 } })
+    expect(spy).toHaveBeenCalledWith(expect.anything(), false, 500000000000000000n, 75); spy.mockRestore()
   })
   it('recognizes only official wrap pairs and exact slippage decimals', () => {
     expect(wrapDirection(native, wrapped)).toBe('wrap'); expect(wrapDirection(wrapped, native)).toBe('unwrap')

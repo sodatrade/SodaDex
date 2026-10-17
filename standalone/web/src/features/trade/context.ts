@@ -1,6 +1,7 @@
 import type { Protocol } from '../../domain/assets'
 import type { Currency, LiquidityPool } from '../../liquidity/types'
 import type { PoolTradeQuote } from '../../trading/poolTrade'
+import type { PoolExactOutputQuote } from '../../trading/poolExactOutput'
 import { matchingPools, wrapDirection } from '../swap/routes'
 export interface TradeMarketContext {
   from: Currency; to: Currency; protocol: Protocol; candidatePools: readonly { pool: LiquidityPool; zeroForOne: boolean }[]
@@ -10,7 +11,7 @@ export interface TradeMarketContext {
 /** Market selection is read-only. It cannot select or alter the swap's reviewed transaction. */
 export function marketContext(input: {
   from: Currency; to: Currency; protocol: Protocol; pools: LiquidityPool[] | undefined
-  loading: boolean; failed: boolean; quote?: PoolTradeQuote
+  loading: boolean; failed: boolean; quote?: PoolTradeQuote | PoolExactOutputQuote
 }): TradeMarketContext {
   const { from, to, protocol } = input
   const candidates = matchingPools(input.pools ?? [], from, to, protocol)

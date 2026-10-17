@@ -4,11 +4,12 @@ import { CHAIN_ID } from '../../domain/assets'
 import { rpc } from '../../lib/rpc'
 import type { WalletController } from '../../lib/useWallet'
 import { executePoolTrade, type PoolTradeQuote } from '../../trading/poolTrade'
+import { executePoolExactOutput, type PoolExactOutputQuote } from '../../trading/poolExactOutput'
 import { executeWrap, type WrapRequest } from '../../trading/wrapping'
 import { receiptStatus } from '../../trading/receipts'
 import { tradeError, TradeError, type TradeErrorCode, type TradeIdentity, type TradeProgress } from '../../trading/types'
 import { readTransactions, recordTransaction, updateTransaction, type SubmittedTransaction } from '../history/journal'
-export type SwapReview = { kind: 'pool'; quote: PoolTradeQuote } | { kind: 'wrap'; request: WrapRequest }
+export type SwapReview = { kind: 'pool'; quote: PoolTradeQuote } | { kind: 'exactOutput'; quote: PoolExactOutputQuote } | { kind: 'wrap'; request: WrapRequest }
 const swapKinds = ['swap', 'wrap', 'unwrap', 'swap approval']
 function recoveredRecord(): SubmittedTransaction | undefined {
   return readTransactions().find((r) => r.status === 'pending' && swapKinds.includes(r.kind))
@@ -53,7 +54,8 @@ export function useSwapOperation(wallet: WalletController) {
           setProgress(next)
         },
       }
-      return review.kind === 'pool' ? executePoolTrade(review.quote, context) : executeWrap(review.request, context)
+      return review.kind === 'pool' ? executePoolTrade(review.quote, context) : review.kind === 'exactOutput'
+        ? executePoolExactOutput(review.quote, context) : executeWrap(review.request, context)
     },
     onSuccess: () => { if (recordRef.current) save({ ...recordRef.current, status: 'success' }); refresh() },
     onError: (cause) => {

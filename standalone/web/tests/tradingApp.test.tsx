@@ -144,16 +144,16 @@ describe('ready test pool user flow', () => {
     expect(requests.filter((m) => m === 'eth_sendTransaction')).toHaveLength(1)
   })
   it.each([
-    { locale: 'zh-CN', paused: '公开兑换已暂停', pay: '你将支付', pools: '流动性', receive: '预计接收数量', note: '公开兑换暂停期间仍可查看报价。' },
-    { locale: 'en', paused: 'Public swaps paused', pay: 'You pay', pools: 'Liquidity', receive: 'Estimated receive amount', note: 'Quotes remain available while public swaps are paused.' },
-    { locale: 'yue-HK', paused: '公開兌換已暫停', pay: '你會支付', pools: '流動性', receive: '預計收取數量', note: '公開兌換暫停期間仍可睇報價。' },
+    { locale: 'zh-CN', paused: '公开兑换已暂停', pay: '你将支付', pools: '流动性', receive: '你将收到', note: '公开兑换暂停期间仍可查看报价。' },
+    { locale: 'en', paused: 'Public swaps paused', pay: 'You pay', pools: 'Liquidity', receive: 'You receive', note: 'Quotes remain available while public swaps are paused.' },
+    { locale: 'yue-HK', paused: '公開兌換已暫停', pay: '你會支付', pools: '流動性', receive: '你會收到', note: '公開兌換暫停期間仍可睇報價。' },
   ])('shows read-only quotes but pauses new trades in $locale', async ({ locale, paused, pay, pools, receive, note }) => {
     vi.spyOn(policy, 'publicSwapsEnabled').mockReturnValue(false)
     localStorage.setItem(PREFERENCES_KEY, JSON.stringify({ locale }))
     const user = userEvent.setup()
     renderApp()
     await user.type(await screen.findByLabelText(pay), '1')
-    await waitFor(() => expect(screen.getByLabelText(receive)).toHaveTextContent('1.000001'))
+    await waitFor(() => expect(screen.getByLabelText(receive)).toHaveValue('1.000001'))
     expect(screen.getByText(note)).toBeVisible()
     expect(requests).toHaveLength(0)
     await connect(locale)
@@ -189,7 +189,7 @@ describe('ready test pool user flow', () => {
     const card = await screen.findByRole('region', { name: '资产兑换' })
     await user.type(within(card).getByLabelText('你将支付'), '0.0001')
     await waitFor(() => expect(within(card).getByRole('button', { name: '预览兑换' })).toBeEnabled())
-    expect(within(card).getByLabelText('预计接收数量')).toHaveTextContent('1.000001')
+    expect(within(card).getByLabelText('你将收到')).toHaveValue('1.000001')
     await user.click(within(card).getByRole('button', { name: '预览兑换' }))
     const dialog = screen.getByRole('dialog', { name: '预览兑换' })
     expect(within(dialog).getByText('0.995001 USD₮0')).toBeVisible()

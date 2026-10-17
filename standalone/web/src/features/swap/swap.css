@@ -28,3 +28,7 @@
 @media (max-width: 600px) { .general-swap .token-selector { gap: 6px; padding-left: 10px; padding-right: 10px; } .swap-slippage { font-size: 13px; } .swap-route-options { gap: 18px; } }
 .swap-token-options .asset-option-label strong { overflow-wrap: anywhere; }
 .swap-reference-label { margin: 20px 10px 4px; color: var(--soda-muted); font-size: 11px; }
+
+.general-swap .amount-label > span:first-child { min-width: 0; }
+.general-swap .swap-estimate { font-size: 10px; color: var(--soda-muted); }
+.general-swap .amount-row input { min-height: 44px; }

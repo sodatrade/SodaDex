@@ -9,22 +9,24 @@ import { usePreferences } from '../../preferences/context'
 import { publicSwapsEnabled } from '../../trading/config'
 import { CurrencyIcon } from './CurrencyPicker'
 import { TradeDetails } from './TradeDetails'
+import { quotedInput } from './routes'
 import type { SwapReview, useSwapOperation } from './useSwapOperation'
 export function SwapReviewDialog({ review, from, to, current, operation, onConfirm, onClose }: {
   review: SwapReview; from: Currency; to: Currency; current: boolean; operation: ReturnType<typeof useSwapOperation>; onConfirm: () => void; onClose: () => void
 }): ReactElement {
   const { locale, t } = usePreferences(), m = tradeMessages(locale)
-  const amount = review.kind === 'pool' ? review.quote.amount : review.request.amount
-  const output = review.kind === 'pool' ? review.quote.amountOut : amount
+  const amount = review.kind === 'wrap' ? review.request.amount : quotedInput(review.quote)
+  const output = review.kind === 'wrap' ? amount : review.quote.amountOut
   const done = operation.progress?.stage === 'tradeSucceeded' || !!operation.receiptMessage
   const paused = !publicSwapsEnabled()
   return <Dialog title={review.kind === 'wrap' ? m[review.request.direction] : m.review} description={m.test} onClose={onClose}>
     <div className="review-pair"><div><CurrencyIcon currency={from} /><strong>{formatUnits(amount, from.decimals)} {from.symbol}</strong></div>
       <Icon name="arrow" /><div><CurrencyIcon currency={to} /><strong>{formatUnits(output, to.decimals)} {to.symbol}</strong></div></div>
-    {review.kind === 'pool' ? <TradeDetails quote={review.quote} /> : <p className="dialog-note">{m.wrapping}</p>}
+    {review.kind !== 'wrap' ? <TradeDetails quote={review.quote} /> : <p className="dialog-note">{m.wrapping}</p>}
+    {review.kind === 'exactOutput' && <p className="dialog-note">{m.exactNote} {m.standardTokens}</p>}
     <p className="dialog-note">{m.gas}</p>
     {operation.progress && <p role="status" className="trade-status">{t(operation.progress.stage)}</p>}
-    {operation.error && <p role="alert" className="error-text">{t(operation.error)}</p>}
+    {operation.error && <p role="alert" className="error-text">{review.kind === 'exactOutput' && operation.error === 'tradeQuoteChanged' ? m.exactQuoteChanged : t(operation.error)}</p>}
     {!current && !done && <p role="alert" className="error-text">{m.stale}</p>}
     {paused && !done && <p role="status">{m.readonly}</p>}
     {operation.record && <a className="transaction-link" href={`${EXPLORER_URL}/tx/${operation.record.hash}`} target="_blank" rel="noreferrer">{m.submitted} {shortenAddress(operation.record.hash)} <Icon name="external" size={14} /></a>}
