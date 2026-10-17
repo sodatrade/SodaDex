@@ -4,7 +4,7 @@ SQLite Durable Object 后台部署在 `sodadex-orders-test`，复用 Node 订单
 
 ## 调用和持久化
 
-前端订单代理把 reviewed `apiOrigin` 指向此独立后台。公开路径保持 `/v1/status`、`/v1/orders` 和 `/v1/orders/:id`，字段见 `API.md`。Worker 只转发到一个固定 actor：`sodadex-orders:196:<reviewed settlement 小写地址>`，请求参数不能选 actor、RPC 或合约。暂停不改变地址，因此旧订单、原始交易和累计预算继续留在同一个 actor。
+前端订单代理把 reviewed `apiOrigin` 指向此独立后台，并通过固定 `ORDERS_API` Service Binding 调用 `sodadex-orders-test`。同账户 Worker 不能按普通公网 `fetch` 路径互调；采用 [Cloudflare HTTP Service Binding](https://developers.cloudflare.com/workers/runtime-apis/bindings/service-bindings/http/)，RPC 和浏览器接口保持原路径。公开路径保持 `/v1/status`、`/v1/orders` 和 `/v1/orders/:id`，字段见 `API.md`。Worker 只转发到一个固定 actor：`sodadex-orders:196:<reviewed settlement 小写地址>`，请求参数不能选 actor、RPC 或合约。暂停不改变地址，因此旧订单、原始交易和累计预算继续留在同一个 actor。
 
 `src/repository.ts` 保存订单 SQL、nonce 唯一性、状态、原始交易、预算和轮询进度。`store.ts` 是 Node 适配器，保留 0600、专用数据库探测、v1→v2 迁移和 PID 锁。云端 `cloudflare/sql.ts` 把相同 repository 接到私有 DO SQL；同步消费 cursor，以 `storage.transactionSync()` 包住事务，不执行 SQL BEGIN。DO 使用 actor 互斥，不保存 Node PID 或文件路径。这符合 [SQLite DO API](https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/) 的事务和 cursor 约束。
 

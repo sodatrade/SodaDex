@@ -5,6 +5,7 @@
   "compatibility_date": "2026-10-16",
   "workers_dev": true,
   "preview_urls": false,
+  "services": [{ "binding": "ORDERS_API", "service": "sodadex-orders-test" }],
   "assets": {
     "directory": "../web/dist",
     "binding": "ASSETS",
