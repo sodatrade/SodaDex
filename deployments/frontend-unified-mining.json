@@ -3,7 +3,7 @@
   "status": "live-unified-mining",
   "publishedOn": "2026-10-18",
   "sourceCommit": "d05ee016201a46aaac6a6d4cfcfd5513a77e7a48",
-  "scope": "Same-origin SodaDEX main frontend integration of FAB mining products; no contract changes or new chain writes.",
+  "scope": "Same-origin SodaDEX frontend integration of FAB mining products. The original frontend release validation and subsequent approved 1952 main-site wallet acceptance are recorded separately; production contracts are unchanged.",
   "frontend": {
     "worker": "sodadex-preview",
     "versionId": "0f582b7b-277d-4c35-ae4e-5e398a422973",
@@ -13,11 +13,20 @@
   },
   "service": {
     "worker": "sodadex-mining-api-test-1952",
-    "versionId": "41ea4f73-f7b5-4766-94e1-a9c6fe0a2512",
-    "serviceBuild": "online-1952-20261018-v7-unified-origin",
+    "versionId": "539078bd-d4aa-476f-bf65-e3d075879d60",
+    "serviceBuild": "online-1952-20261018-v8-unified-retest",
+    "sourceCommit": "53e04c8cee8453b2535f652d4ff135691b309c73",
     "storageMigration": false,
-    "budgetUnchanged": true,
-    "secretsChanged": false
+    "secretsChanged": false,
+    "budgetChangedByApprovedPlan": "xlayer-1952/2026-10-18-main-wallet-retest-approved-plan.json",
+    "previous": {
+      "worker": "sodadex-mining-api-test-1952",
+      "versionId": "41ea4f73-f7b5-4766-94e1-a9c6fe0a2512",
+      "serviceBuild": "online-1952-20261018-v7-unified-origin",
+      "storageMigration": false,
+      "budgetUnchanged": true,
+      "secretsChanged": false
+    }
   },
   "routing": {
     "dex": {
@@ -95,7 +104,7 @@
     "newWalletSignatures": 0,
     "newChainTransactions": 0,
     "productionContractsModified": false,
-    "scopeLimit": "This release used an isolated read-only wallet fixture. Prior 36 real Chrome/OKX transactions remain separate historical evidence."
+    "scopeLimit": "Initial integration release used an isolated read-only wallet fixture. The later mainSiteWalletAcceptance contains 34 new actual Chrome/OKX transactions; earlier 36 old-domain transactions remain separate."
   },
   "evidence": {
     "local-browser": "xlayer-1952/evidence/unified-frontend-2026-10-18/local-browser.json",
@@ -104,5 +113,15 @@
     "public-http": "xlayer-1952/evidence/unified-frontend-2026-10-18/public-http.json",
     "service-continuity": "xlayer-1952/evidence/unified-frontend-2026-10-18/service-continuity.json"
   },
-  "historicalRealWalletAcceptance": "xlayer-1952/2026-10-18-public-wallet-acceptance.json"
+  "historicalRealWalletAcceptance": "xlayer-1952/2026-10-18-public-wallet-acceptance.json",
+  "mainSiteWalletAcceptance": {
+    "record": "xlayer-1952/2026-10-18-main-wallet-acceptance.json",
+    "chainId": 1952,
+    "walletTransactions": 34,
+    "supportingTransactions": 9,
+    "canonicalSucceeded": 43,
+    "historyAfterReloadAndReconnect": 34,
+    "productionContractsModified": false,
+    "chain196Writes": false
+  }
 }

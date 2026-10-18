@@ -1,0 +1,1659 @@
+{
+  "capturedAt": "2026-10-18T04:02:03.887Z",
+  "chainId": 1952,
+  "readOnly": true,
+  "publicWrites": 0,
+  "signatures": 0,
+  "snapshot": {
+    "number": "0x29ce689",
+    "hash": "0x5d35cb6f100afcfbeb73bc8b6c105feb847dd2d09540b19673c5c84f6ad4e9ae"
+  },
+  "transactions": [
+    {
+      "role": "wallet",
+      "nonce": 170,
+      "hash": "0xd49be3857b32ff595122b5dba18f806138d5111d0b8bbd0911eafbb4b095abf2",
+      "to": "0xe713afd6133207df18662080e2b0f7e456aeeba5",
+      "method": "0xef44bdf2",
+      "status": 1,
+      "blockNumber": "0x29ce20d",
+      "blockHash": "0x851f3222917f2f3538c014a00e2262a55baebcaefe959d98faee0c331d02e134",
+      "feeWei": "189504658950464",
+      "valueWei": "0",
+      "events": [
+        {
+          "contract": "0x5c5018ee76abe07a2d1a9197865606864d315cef",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0xE713AfD6133207df18662080e2B0F7e456AeEBA5",
+            "value": "1000000000000000000000000000"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "3577406107"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "3577406107"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "3577406107"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "3577406107"
+          }
+        },
+        {
+          "contract": "0xe713afd6133207df18662080e2b0f7e456aeeba5",
+          "name": "TokenCreated",
+          "args": {
+            "token": "0x5c5018Ee76aBE07A2d1a9197865606864d315cEf",
+            "creator": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "quote": "0x7a188D4C46C9FE045A5875FecaeF9Bf00e4521fF",
+            "graduation": "500000000000",
+            "metadataURI": "",
+            "vault": "0x321e67c6b41694ee2908912294477ed52b2C138a",
+            "tracker": "0x65bd595A5688d4d0A03dE34ee0b53D5F98E712Ef",
+            "templateId": 0
+          }
+        }
+      ],
+      "fabOutRaw": "0",
+      "fabInRaw": "0",
+      "tokenOutRaw": "0",
+      "tokenInRaw": "0",
+      "tokenBurnedRaw": "0",
+      "tokenSentToDeadRaw": "0",
+      "lpMintedRaw": "0",
+      "lpOutRaw": "0"
+    },
+    {
+      "role": "wallet",
+      "nonce": 171,
+      "hash": "0x889913bda79de56843ae05def44cf20a8dcb24e0c2fdb35459fdee29fabbf144",
+      "to": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+      "method": "approve(address,uint256)",
+      "status": 1,
+      "blockNumber": "0x29ce24c",
+      "blockHash": "0xb92ae7631f3f3fae396f40f2816cf5adaeee4899fa9b7e9e12b18e490eb0026e",
+      "feeWei": "919380091938",
+      "valueWei": "0",
+      "events": [],
+      "fabOutRaw": "0",
+      "fabInRaw": "0",
+      "tokenOutRaw": "0",
+      "tokenInRaw": "0",
+      "tokenBurnedRaw": "0",
+      "tokenSentToDeadRaw": "0",
+      "lpMintedRaw": "0",
+      "lpOutRaw": "0"
+    },
+    {
+      "role": "wallet",
+      "nonce": 172,
+      "hash": "0x43566c583949c446a6a7f74ee0ffc0f184cc73f496b01e2d39ea98dc7f45ac63",
+      "to": "0xe713afd6133207df18662080e2b0f7e456aeeba5",
+      "method": "buy(address,uint256,uint256)",
+      "status": 1,
+      "blockNumber": "0x29ce25b",
+      "blockHash": "0x3b303157783bb99f1d18320e867fa640f07d20b2cc88fd07f422b7eca8df99d2",
+      "feeWei": "44967184496718",
+      "valueWei": "0",
+      "events": [
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "to": "0xE713AfD6133207df18662080e2B0F7e456AeEBA5",
+            "value": "10000000000"
+          }
+        },
+        {
+          "contract": "0x5c5018ee76abe07a2d1a9197865606864d315cef",
+          "name": "Transfer",
+          "args": {
+            "from": "0xE713AfD6133207df18662080e2B0F7e456AeEBA5",
+            "to": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "value": "59236871930711132874691012"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "80437497"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "80437497"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "80437497"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "80437497"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0xE713AfD6133207df18662080e2B0F7e456AeEBA5",
+            "to": "0x321e67c6b41694ee2908912294477ed52b2C138a",
+            "value": "100000000"
+          }
+        }
+      ],
+      "fabOutRaw": "10000000000",
+      "fabInRaw": "0",
+      "tokenOutRaw": "0",
+      "tokenInRaw": "59236871930711132874691012",
+      "tokenBurnedRaw": "0",
+      "tokenSentToDeadRaw": "0",
+      "lpMintedRaw": "0",
+      "lpOutRaw": "0"
+    },
+    {
+      "role": "wallet",
+      "nonce": 173,
+      "hash": "0xa2196aea0e0952bc45048a14ffca49a61d063c4ce360a8485e80dd4f5e9f944d",
+      "to": "0x5c5018ee76abe07a2d1a9197865606864d315cef",
+      "method": "approve(address,uint256)",
+      "status": 1,
+      "blockNumber": "0x29ce2db",
+      "blockHash": "0xa258ff62543f8ae215f4cccdd0eca3948885111cb7383cb98aaaeccf319dcec7",
+      "feeWei": "919680091968",
+      "valueWei": "0",
+      "events": [],
+      "fabOutRaw": "0",
+      "fabInRaw": "0",
+      "tokenOutRaw": "0",
+      "tokenInRaw": "0",
+      "tokenBurnedRaw": "0",
+      "tokenSentToDeadRaw": "0",
+      "lpMintedRaw": "0",
+      "lpOutRaw": "0"
+    },
+    {
+      "role": "wallet",
+      "nonce": 174,
+      "hash": "0x86a6658e6520c1771a0242ec81a9fe93d64bd39e54f9db29eded2dd65910a152",
+      "to": "0xe713afd6133207df18662080e2b0f7e456aeeba5",
+      "method": "sell(address,uint256,uint256)",
+      "status": 1,
+      "blockNumber": "0x29ce31a",
+      "blockHash": "0x021f8919a48dd6a0db2543e4c095ee3a34e03285459613bbb6b594b6a8f2ab72",
+      "feeWei": "43093044309304",
+      "valueWei": "0",
+      "events": [
+        {
+          "contract": "0x5c5018ee76abe07a2d1a9197865606864d315cef",
+          "name": "Transfer",
+          "args": {
+            "from": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "to": "0xE713AfD6133207df18662080e2B0F7e456AeEBA5",
+            "value": "1000000000000000000"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "196968742"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "196968742"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "196968742"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "196968742"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0xE713AfD6133207df18662080e2B0F7e456AeEBA5",
+            "to": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "value": "173"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0xE713AfD6133207df18662080e2B0F7e456AeEBA5",
+            "to": "0x321e67c6b41694ee2908912294477ed52b2C138a",
+            "value": "1"
+          }
+        }
+      ],
+      "fabOutRaw": "0",
+      "fabInRaw": "173",
+      "tokenOutRaw": "1000000000000000000",
+      "tokenInRaw": "0",
+      "tokenBurnedRaw": "0",
+      "tokenSentToDeadRaw": "0",
+      "lpMintedRaw": "0",
+      "lpOutRaw": "0"
+    },
+    {
+      "role": "wallet",
+      "nonce": 175,
+      "hash": "0x7a9887634ee3471bc97c691d55bac4411e4e4b76555e3ea7a503320b7e41301e",
+      "to": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+      "method": "approve(address,uint256)",
+      "status": 1,
+      "blockNumber": "0x29ce371",
+      "blockHash": "0x86d9d73505fa4a79fd25c97ca08d73fb089e2726e31d02c984f59f3f1a45b763",
+      "feeWei": "919620091962",
+      "valueWei": "0",
+      "events": [],
+      "fabOutRaw": "0",
+      "fabInRaw": "0",
+      "tokenOutRaw": "0",
+      "tokenInRaw": "0",
+      "tokenBurnedRaw": "0",
+      "tokenSentToDeadRaw": "0",
+      "lpMintedRaw": "0",
+      "lpOutRaw": "0"
+    },
+    {
+      "role": "wallet",
+      "nonce": 176,
+      "hash": "0x28b2b01a082bfdb0acd6724403ae9ae28ffc179297ac32ab4141078bf792b68d",
+      "to": "0xe713afd6133207df18662080e2b0f7e456aeeba5",
+      "method": "buy(address,uint256,uint256)",
+      "status": 1,
+      "blockNumber": "0x29ce381",
+      "blockHash": "0x3d9cd764955dee3c18c00651960ca8c950c6121749b745e754a6bebe7588b067",
+      "feeWei": "120353172035316",
+      "valueWei": "0",
+      "events": [
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "to": "0xE713AfD6133207df18662080e2B0F7e456AeEBA5",
+            "value": "500204081811"
+          }
+        },
+        {
+          "contract": "0x5c5018ee76abe07a2d1a9197865606864d315cef",
+          "name": "Transfer",
+          "args": {
+            "from": "0xE713AfD6133207df18662080e2B0F7e456AeEBA5",
+            "to": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "value": "740763129069288867125308988"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "106218746"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "106218746"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "106218746"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "106218746"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0xE713AfD6133207df18662080e2B0F7e456AeEBA5",
+            "to": "0x321e67c6b41694ee2908912294477ed52b2C138a",
+            "value": "5002040818"
+          }
+        },
+        {
+          "contract": "0x5c5018ee76abe07a2d1a9197865606864d315cef",
+          "name": "Transfer",
+          "args": {
+            "from": "0x77c20d8909C8bBE6F15c9710983e96D1c26bE939",
+            "to": "0x000000000000000000000000000000000000dEaD",
+            "value": "0"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x77c20d8909C8bBE6F15c9710983e96D1c26bE939",
+            "to": "0x000000000000000000000000000000000000dEaD",
+            "value": "0"
+          }
+        },
+        {
+          "contract": "0x5c5018ee76abe07a2d1a9197865606864d315cef",
+          "name": "Transfer",
+          "args": {
+            "from": "0xE713AfD6133207df18662080e2B0F7e456AeEBA5",
+            "to": "0x77c20d8909C8bBE6F15c9710983e96D1c26bE939",
+            "value": "200000000000000000000000000"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0xE713AfD6133207df18662080e2B0F7e456AeEBA5",
+            "to": "0x77c20d8909C8bBE6F15c9710983e96D1c26bE939",
+            "value": "499999999999"
+          }
+        },
+        {
+          "contract": "0x77c20d8909c8bbe6f15c9710983e96d1c26be939",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0000000000000000000000000000000000000000",
+            "value": "1000"
+          }
+        },
+        {
+          "contract": "0x77c20d8909c8bbe6f15c9710983e96d1c26be939",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0xB34a3ffA2Dc4c72619f3033368B4a45c66b021Ec",
+            "value": "9999999999989998999"
+          }
+        },
+        {
+          "contract": "0x77c20d8909c8bbe6f15c9710983e96d1c26be939",
+          "name": "Mint",
+          "args": {
+            "sender": "0xE713AfD6133207df18662080e2B0F7e456AeEBA5",
+            "amount0": "200000000000000000000000000",
+            "amount1": "499999999999"
+          }
+        },
+        {
+          "contract": "0xe713afd6133207df18662080e2b0f7e456aeeba5",
+          "name": "GraduatedV2",
+          "args": {
+            "token": "0x5c5018Ee76aBE07A2d1a9197865606864d315cEf",
+            "pair": "0x77c20d8909C8bBE6F15c9710983e96D1c26bE939",
+            "vault": "0x321e67c6b41694ee2908912294477ed52b2C138a",
+            "quoteInjected": "499999999999",
+            "tokenInjected": "200000000000000000000000000"
+          }
+        }
+      ],
+      "fabOutRaw": "500204081811",
+      "fabInRaw": "0",
+      "tokenOutRaw": "0",
+      "tokenInRaw": "740763129069288867125308988",
+      "tokenBurnedRaw": "0",
+      "tokenSentToDeadRaw": "0",
+      "lpMintedRaw": "0",
+      "lpOutRaw": "0"
+    },
+    {
+      "role": "wallet",
+      "nonce": 177,
+      "hash": "0x14588613a060104052397742a2824cf2b3ddaa8ddf6a806282141eeba1fb3cd4",
+      "to": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+      "method": "approve(address,uint256)",
+      "status": 1,
+      "blockNumber": "0x29ce3cf",
+      "blockHash": "0x3ad72dbc73d6082137e6198b3750a6ddf07e75ea13cce85b8b588a5d1bdf39be",
+      "feeWei": "919140091914",
+      "valueWei": "0",
+      "events": [],
+      "fabOutRaw": "0",
+      "fabInRaw": "0",
+      "tokenOutRaw": "0",
+      "tokenInRaw": "0",
+      "tokenBurnedRaw": "0",
+      "tokenSentToDeadRaw": "0",
+      "lpMintedRaw": "0",
+      "lpOutRaw": "0"
+    },
+    {
+      "role": "wallet",
+      "nonce": 178,
+      "hash": "0xe0e50ecdbb0535055763c8ee0bc60602baf03919067965f604269e7318515392",
+      "to": "0xd7e58272181d6b56af5b10a12f519ba4a85914e7",
+      "method": "swapExactTokensForTokensSupportingFeeOnTransferTokens(uint256,uint256,address[],address,uint256)",
+      "status": 1,
+      "blockNumber": "0x29ce3e1",
+      "blockHash": "0x76ed95bc7699996b5a898251d55e194146375422d867f56da38f59e75c60217a",
+      "feeWei": "44457564445756",
+      "valueWei": "0",
+      "events": [
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "to": "0x77c20d8909C8bBE6F15c9710983e96D1c26bE939",
+            "value": "100000000"
+          }
+        },
+        {
+          "contract": "0x5c5018ee76abe07a2d1a9197865606864d315cef",
+          "name": "Transfer",
+          "args": {
+            "from": "0x77c20d8909C8bBE6F15c9710983e96D1c26bE939",
+            "to": "0x321e67c6b41694ee2908912294477ed52b2C138a",
+            "value": "398720495134067707889"
+          }
+        },
+        {
+          "contract": "0x5c5018ee76abe07a2d1a9197865606864d315cef",
+          "name": "Transfer",
+          "args": {
+            "from": "0x77c20d8909C8bBE6F15c9710983e96D1c26bE939",
+            "to": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "value": "39473329018272703081042"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "98999996"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "98999996"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "98999996"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "98999996"
+          }
+        },
+        {
+          "contract": "0x77c20d8909c8bbe6f15c9710983e96d1c26be939",
+          "name": "Swap",
+          "args": {
+            "sender": "0xd7E58272181d6b56aF5B10a12f519bA4a85914e7",
+            "to": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "amount0In": "0",
+            "amount1In": "100000000",
+            "amount0Out": "39872049513406770788931",
+            "amount1Out": "0"
+          }
+        }
+      ],
+      "fabOutRaw": "100000000",
+      "fabInRaw": "0",
+      "tokenOutRaw": "0",
+      "tokenInRaw": "39473329018272703081042",
+      "tokenBurnedRaw": "0",
+      "tokenSentToDeadRaw": "0",
+      "lpMintedRaw": "0",
+      "lpOutRaw": "0"
+    },
+    {
+      "role": "wallet",
+      "nonce": 179,
+      "hash": "0x48f98c9c38a611d58278bdbd55bf2a8a114cedb5ccf27ed467822268efe75520",
+      "to": "0x5c5018ee76abe07a2d1a9197865606864d315cef",
+      "method": "approve(address,uint256)",
+      "status": 1,
+      "blockNumber": "0x29ce425",
+      "blockHash": "0xf7e46c0bb3a71e3903de9035bf34360a7552adc9e4c3178e55fab84e8b555278",
+      "feeWei": "919920091992",
+      "valueWei": "0",
+      "events": [],
+      "fabOutRaw": "0",
+      "fabInRaw": "0",
+      "tokenOutRaw": "0",
+      "tokenInRaw": "0",
+      "tokenBurnedRaw": "0",
+      "tokenSentToDeadRaw": "0",
+      "lpMintedRaw": "0",
+      "lpOutRaw": "0"
+    },
+    {
+      "role": "wallet",
+      "nonce": 180,
+      "hash": "0x77cf42e8789df036c5d3a36e29ca5ca2da4cdeec38c8c516841ba70b652979ee",
+      "to": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+      "method": "approve(address,uint256)",
+      "status": 1,
+      "blockNumber": "0x29ce433",
+      "blockHash": "0x8750b2eee3a8c5cb9d74a3fb576ab27f7732e7d2cb0a4e0fe28eef45daf97dda",
+      "feeWei": "919140091914",
+      "valueWei": "0",
+      "events": [],
+      "fabOutRaw": "0",
+      "fabInRaw": "0",
+      "tokenOutRaw": "0",
+      "tokenInRaw": "0",
+      "tokenBurnedRaw": "0",
+      "tokenSentToDeadRaw": "0",
+      "lpMintedRaw": "0",
+      "lpOutRaw": "0"
+    },
+    {
+      "role": "wallet",
+      "nonce": 181,
+      "hash": "0x0e6e7417dbd5ab791affe303b582354ba97d05948f7ecac8f5c3e0ab106aca3b",
+      "to": "0x0b4fae1834210d47702bbc45d01e66f89aeb314d",
+      "method": "addLiquidity(address,uint256,uint256,uint256,uint256,uint256)",
+      "status": 1,
+      "blockNumber": "0x29ce442",
+      "blockHash": "0xab6b503bf7ac13bc7bb1eabdb7a4f2b1c3fbe9e059ad24171e33008b8e4ced22",
+      "feeWei": "45623544562354",
+      "valueWei": "0",
+      "events": [
+        {
+          "contract": "0x5c5018ee76abe07a2d1a9197865606864d315cef",
+          "name": "Transfer",
+          "args": {
+            "from": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "to": "0x0B4fAe1834210d47702Bbc45d01e66f89aEb314d",
+            "value": "100000000000000000000"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "100031246"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "100031246"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "100031246"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "100031246"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "to": "0x0B4fAe1834210d47702Bbc45d01e66f89aEb314d",
+            "value": "1000000"
+          }
+        },
+        {
+          "contract": "0x5c5018ee76abe07a2d1a9197865606864d315cef",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0B4fAe1834210d47702Bbc45d01e66f89aEb314d",
+            "to": "0x77c20d8909C8bBE6F15c9710983e96D1c26bE939",
+            "value": "100000000000000000000"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0B4fAe1834210d47702Bbc45d01e66f89aEb314d",
+            "to": "0x77c20d8909C8bBE6F15c9710983e96D1c26bE939",
+            "value": "250099"
+          }
+        },
+        {
+          "contract": "0x77c20d8909c8bbe6f15c9710983e96d1c26be939",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "value": "5000979804044"
+          }
+        },
+        {
+          "contract": "0x77c20d8909c8bbe6f15c9710983e96d1c26be939",
+          "name": "Mint",
+          "args": {
+            "sender": "0xd7E58272181d6b56aF5B10a12f519bA4a85914e7",
+            "amount0": "100000000000000000000",
+            "amount1": "250099"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0B4fAe1834210d47702Bbc45d01e66f89aEb314d",
+            "to": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "value": "749901"
+          }
+        }
+      ],
+      "fabOutRaw": "1000000",
+      "fabInRaw": "749901",
+      "tokenOutRaw": "100000000000000000000",
+      "tokenInRaw": "0",
+      "tokenBurnedRaw": "0",
+      "tokenSentToDeadRaw": "0",
+      "lpMintedRaw": "5000979804044",
+      "lpOutRaw": "0"
+    },
+    {
+      "role": "wallet",
+      "nonce": 182,
+      "hash": "0xbaaa717a7f5f271c17a2a13ae9b844ff51d19d40d572955fcde9f4c7a0080f6e",
+      "to": "0x5c5018ee76abe07a2d1a9197865606864d315cef",
+      "method": "approve(address,uint256)",
+      "status": 1,
+      "blockNumber": "0x29ce495",
+      "blockHash": "0x321d0cd2ac98f0d8de42ff853dd0bd031b490f5531a4244c949f1695d90d1741",
+      "feeWei": "919920091992",
+      "valueWei": "0",
+      "events": [],
+      "fabOutRaw": "0",
+      "fabInRaw": "0",
+      "tokenOutRaw": "0",
+      "tokenInRaw": "0",
+      "tokenBurnedRaw": "0",
+      "tokenSentToDeadRaw": "0",
+      "lpMintedRaw": "0",
+      "lpOutRaw": "0"
+    },
+    {
+      "role": "wallet",
+      "nonce": 183,
+      "hash": "0x3889eb0a6c4f14787a6aa5475d6921b259e0eeb23f1363197b14099f7c5d0bec",
+      "to": "0xd7e58272181d6b56af5b10a12f519ba4a85914e7",
+      "method": "swapExactTokensForTokensSupportingFeeOnTransferTokens(uint256,uint256,address[],address,uint256)",
+      "status": 1,
+      "blockNumber": "0x29ce4a3",
+      "blockHash": "0x28fc19b7802d1ad4971483b82239a2ac693a0d39d609285b262a155ad7c61e17",
+      "feeWei": "50448445044844",
+      "valueWei": "0",
+      "events": [
+        {
+          "contract": "0x5c5018ee76abe07a2d1a9197865606864d315cef",
+          "name": "Transfer",
+          "args": {
+            "from": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "to": "0x321e67c6b41694ee2908912294477ed52b2C138a",
+            "value": "1000000000000000000"
+          }
+        },
+        {
+          "contract": "0x5c5018ee76abe07a2d1a9197865606864d315cef",
+          "name": "Transfer",
+          "args": {
+            "from": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "to": "0x77c20d8909C8bBE6F15c9710983e96D1c26bE939",
+            "value": "99000000000000000000"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "82499996"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "82499996"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "82499996"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "82499996"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "to": "0x65bd595A5688d4d0A03dE34ee0b53D5F98E712Ef",
+            "value": "80294802"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x77c20d8909C8bBE6F15c9710983e96D1c26bE939",
+            "to": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "value": "246855"
+          }
+        },
+        {
+          "contract": "0x77c20d8909c8bbe6f15c9710983e96d1c26be939",
+          "name": "Swap",
+          "args": {
+            "sender": "0xd7E58272181d6b56aF5B10a12f519bA4a85914e7",
+            "to": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "amount0In": "99000000000000000000",
+            "amount1In": "0",
+            "amount0Out": "0",
+            "amount1Out": "246855"
+          }
+        }
+      ],
+      "fabOutRaw": "0",
+      "fabInRaw": "246855",
+      "tokenOutRaw": "100000000000000000000",
+      "tokenInRaw": "0",
+      "tokenBurnedRaw": "0",
+      "tokenSentToDeadRaw": "0",
+      "lpMintedRaw": "0",
+      "lpOutRaw": "0"
+    },
+    {
+      "role": "wallet",
+      "nonce": 184,
+      "hash": "0xfeba0ac56c0ea4ab9f4c0e0ef414aad35b9552b6e592d392a64ce26fb6e8fe71",
+      "to": "0x77c20d8909c8bbe6f15c9710983e96d1c26be939",
+      "method": "approve(address,uint256)",
+      "status": 1,
+      "blockNumber": "0x29ce4ff",
+      "blockHash": "0x84bf467f58934aac94d44d0606afb4d71e5cc6a1690140a0d573d64c2299c64f",
+      "feeWei": "921480092148",
+      "valueWei": "0",
+      "events": [],
+      "fabOutRaw": "0",
+      "fabInRaw": "0",
+      "tokenOutRaw": "0",
+      "tokenInRaw": "0",
+      "tokenBurnedRaw": "0",
+      "tokenSentToDeadRaw": "0",
+      "lpMintedRaw": "0",
+      "lpOutRaw": "0"
+    },
+    {
+      "role": "wallet",
+      "nonce": 185,
+      "hash": "0x45e2955ad363d814b45f90ea3a48825ced24703b96786bce5444441cc3b57580",
+      "to": "0x0b4fae1834210d47702bbc45d01e66f89aeb314d",
+      "method": "removeLiquidity(address,uint256,uint256,uint256,uint256)",
+      "status": 1,
+      "blockNumber": "0x29ce50d",
+      "blockHash": "0x51f82038d5e73a0cbc5d465a15846e63b34d12e112e9857775208619583d5a08",
+      "feeWei": "48199964819996",
+      "valueWei": "0",
+      "events": [
+        {
+          "contract": "0x77c20d8909c8bbe6f15c9710983e96d1c26be939",
+          "name": "Transfer",
+          "args": {
+            "from": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "to": "0x0B4fAe1834210d47702Bbc45d01e66f89aEb314d",
+            "value": "5000979804044"
+          }
+        },
+        {
+          "contract": "0x77c20d8909c8bbe6f15c9710983e96d1c26be939",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0B4fAe1834210d47702Bbc45d01e66f89aEb314d",
+            "to": "0x77c20d8909C8bBE6F15c9710983e96D1c26bE939",
+            "value": "5000979804044"
+          }
+        },
+        {
+          "contract": "0x77c20d8909c8bbe6f15c9710983e96d1c26be939",
+          "name": "Transfer",
+          "args": {
+            "from": "0x77c20d8909C8bBE6F15c9710983e96D1c26bE939",
+            "to": "0x0000000000000000000000000000000000000000",
+            "value": "5000979804044"
+          }
+        },
+        {
+          "contract": "0x5c5018ee76abe07a2d1a9197865606864d315cef",
+          "name": "Transfer",
+          "args": {
+            "from": "0x77c20d8909C8bBE6F15c9710983e96D1c26bE939",
+            "to": "0x0B4fAe1834210d47702Bbc45d01e66f89aEb314d",
+            "value": "99999905558703393681"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x77c20d8909C8bBE6F15c9710983e96D1c26bE939",
+            "to": "0x0B4fAe1834210d47702Bbc45d01e66f89aEb314d",
+            "value": "250098"
+          }
+        },
+        {
+          "contract": "0x77c20d8909c8bbe6f15c9710983e96d1c26be939",
+          "name": "Burn",
+          "args": {
+            "sender": "0xd7E58272181d6b56aF5B10a12f519bA4a85914e7",
+            "to": "0x0B4fAe1834210d47702Bbc45d01e66f89aEb314d",
+            "amount0": "99999905558703393681",
+            "amount1": "250098"
+          }
+        },
+        {
+          "contract": "0x5c5018ee76abe07a2d1a9197865606864d315cef",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0B4fAe1834210d47702Bbc45d01e66f89aEb314d",
+            "to": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "value": "99999905558703393681"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "109312496"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "109312496"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "109312496"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "109312496"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "to": "0x65bd595A5688d4d0A03dE34ee0b53D5F98E712Ef",
+            "value": "106390614"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0B4fAe1834210d47702Bbc45d01e66f89aEb314d",
+            "to": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "value": "250098"
+          }
+        }
+      ],
+      "fabOutRaw": "0",
+      "fabInRaw": "250098",
+      "tokenOutRaw": "0",
+      "tokenInRaw": "99999905558703393681",
+      "tokenBurnedRaw": "0",
+      "tokenSentToDeadRaw": "0",
+      "lpMintedRaw": "0",
+      "lpOutRaw": "5000979804044"
+    },
+    {
+      "role": "wallet",
+      "nonce": 186,
+      "hash": "0x96c21b70fb99e7bf3b27cfc5ad2875e5b29ff7c390b8d8d40d917f73027c72f1",
+      "to": "0x5c5018ee76abe07a2d1a9197865606864d315cef",
+      "method": "approve(address,uint256)",
+      "status": 1,
+      "blockNumber": "0x29ce55b",
+      "blockHash": "0x3700d99ed836a51dda5f04f2422a5c12650678e53610ae196b6c96a1f66e9869",
+      "feeWei": "919680091968",
+      "valueWei": "0",
+      "events": [],
+      "fabOutRaw": "0",
+      "fabInRaw": "0",
+      "tokenOutRaw": "0",
+      "tokenInRaw": "0",
+      "tokenBurnedRaw": "0",
+      "tokenSentToDeadRaw": "0",
+      "lpMintedRaw": "0",
+      "lpOutRaw": "0"
+    },
+    {
+      "role": "wallet",
+      "nonce": 187,
+      "hash": "0x063d6d6789f02cc0b1b18e4bc71715ab7cfa12693f76fbec93248ab01271c9e7",
+      "to": "0x65bd595a5688d4d0a03de34ee0b53d5f98e712ef",
+      "method": "burnForBoost(uint256)",
+      "status": 1,
+      "blockNumber": "0x29ce567",
+      "blockHash": "0xbf27a3965c45560302e0cb095191dc58fa7725f4cf058c68a0a74ca858e9c241",
+      "feeWei": "47896204789620",
+      "valueWei": "0",
+      "events": [
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "92812496"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "92812496"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "92812496"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "92812496"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "to": "0x65bd595A5688d4d0A03dE34ee0b53D5F98E712Ef",
+            "value": "90331654"
+          }
+        },
+        {
+          "contract": "0x5c5018ee76abe07a2d1a9197865606864d315cef",
+          "name": "Transfer",
+          "args": {
+            "from": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "to": "0x000000000000000000000000000000000000dEaD",
+            "value": "1000000000000000000"
+          }
+        },
+        {
+          "contract": "0x65bd595a5688d4d0a03de34ee0b53d5f98e712ef",
+          "name": "BurnCreditCreated",
+          "args": {
+            "id": "0",
+            "account": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "amount": "1000000000000000000",
+            "expiresAt": "1792900412"
+          }
+        }
+      ],
+      "fabOutRaw": "0",
+      "fabInRaw": "0",
+      "tokenOutRaw": "1000000000000000000",
+      "tokenInRaw": "0",
+      "tokenBurnedRaw": "0",
+      "tokenSentToDeadRaw": "1000000000000000000",
+      "lpMintedRaw": "0",
+      "lpOutRaw": "0"
+    },
+    {
+      "role": "wallet",
+      "nonce": 188,
+      "hash": "0x3370fa64fc6f3733842b3ae609ab55dd3b213792b03280864bd78929c33710b5",
+      "to": "0x65bd595a5688d4d0a03de34ee0b53d5f98e712ef",
+      "method": "claim()",
+      "status": 1,
+      "blockNumber": "0x29ce640",
+      "blockHash": "0x91e96177bf4b8e9f9b1156f938fd4e89875a3b78f62cc39be771cb7c897da5f2",
+      "feeWei": "1567320156732",
+      "valueWei": "0",
+      "events": [
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x65bd595A5688d4d0A03dE34ee0b53D5F98E712Ef",
+            "to": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "value": "277017069"
+          }
+        },
+        {
+          "contract": "0x65bd595a5688d4d0a03de34ee0b53d5f98e712ef",
+          "name": "RewardsPaid",
+          "args": {
+            "account": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "amount": "277017069"
+          }
+        }
+      ],
+      "fabOutRaw": "0",
+      "fabInRaw": "277017069",
+      "tokenOutRaw": "0",
+      "tokenInRaw": "0",
+      "tokenBurnedRaw": "0",
+      "tokenSentToDeadRaw": "0",
+      "lpMintedRaw": "0",
+      "lpOutRaw": "0"
+    },
+    {
+      "role": "wallet",
+      "nonce": 189,
+      "hash": "0x5daa3caf8995b7c971851a6bdb59ee592db7ae14730b90c30bbd84a68fae6950",
+      "to": "0xd7e58272181d6b56af5b10a12f519ba4a85914e7",
+      "method": "swapExactETHForTokens(uint256,address[],address,uint256)",
+      "status": 1,
+      "blockNumber": "0x29ce674",
+      "blockHash": "0x3beaa18426b132edc202bbaa533b18c019523f71787fd8871cb051c2daefd609",
+      "feeWei": "2020700202070",
+      "valueWei": "1000000000000",
+      "events": [
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x930f2A0556DD5DE7cEb3fB0db731138B022D892E",
+            "to": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "value": "994280154"
+          }
+        }
+      ],
+      "fabOutRaw": "0",
+      "fabInRaw": "994280154",
+      "tokenOutRaw": "0",
+      "tokenInRaw": "0",
+      "tokenBurnedRaw": "0",
+      "tokenSentToDeadRaw": "0",
+      "lpMintedRaw": "0",
+      "lpOutRaw": "0"
+    },
+    {
+      "role": "keeper",
+      "nonce": 27,
+      "hash": "0x6a3a79e098988c74c4c4460c42ad75027e1e7fe86fe883436c21ec1bd5ce13cc",
+      "to": "0x321e67c6b41694ee2908912294477ed52b2c138a",
+      "method": "sync()",
+      "status": 1,
+      "blockNumber": "0x29ce28e",
+      "blockHash": "0x6239e1a5c3cfc90a10b2984dfaab9a20d99218f9304939c547ca7e339e7e6153",
+      "feeWei": "2050720102536",
+      "valueWei": "0",
+      "events": [
+        {
+          "contract": "0x321e67c6b41694ee2908912294477ed52b2c138a",
+          "name": "TaxRecognised",
+          "args": {
+            "amount": "100000000",
+            "protocol": "1000000",
+            "creator": "0",
+            "farm": "99000000"
+          }
+        }
+      ],
+      "fabOutRaw": "0",
+      "fabInRaw": "0",
+      "tokenOutRaw": "0",
+      "tokenInRaw": "0",
+      "tokenBurnedRaw": "0",
+      "tokenSentToDeadRaw": "0",
+      "lpMintedRaw": "0",
+      "lpOutRaw": "0"
+    },
+    {
+      "role": "keeper",
+      "nonce": 28,
+      "hash": "0x2642f7cb62af5b75eab3dffc47b0e692de0d381f21eb9bf22005a897e0088622",
+      "to": "0x321e67c6b41694ee2908912294477ed52b2c138a",
+      "method": "sync()",
+      "status": 1,
+      "blockNumber": "0x29ce345",
+      "blockHash": "0x1ee3bd107bfd15501ba89b6a61f65a758a00add60ca0f5dab1a6c09eb49f0d12",
+      "feeWei": "968720048436",
+      "valueWei": "0",
+      "events": [
+        {
+          "contract": "0x321e67c6b41694ee2908912294477ed52b2c138a",
+          "name": "TaxRecognised",
+          "args": {
+            "amount": "1",
+            "protocol": "0",
+            "creator": "0",
+            "farm": "1"
+          }
+        }
+      ],
+      "fabOutRaw": "0",
+      "fabInRaw": "0",
+      "tokenOutRaw": "0",
+      "tokenInRaw": "0",
+      "tokenBurnedRaw": "0",
+      "tokenSentToDeadRaw": "0",
+      "lpMintedRaw": "0",
+      "lpOutRaw": "0"
+    },
+    {
+      "role": "keeper",
+      "nonce": 29,
+      "hash": "0xfd37a77cbca36c7fbd0092746e84bc055487cd16ab2aa9a1a3ade5b766d6a822",
+      "to": "0x321e67c6b41694ee2908912294477ed52b2c138a",
+      "method": "sync()",
+      "status": 1,
+      "blockNumber": "0x29ce3f5",
+      "blockHash": "0x06428e8227bfe52f6a906a563fc3fb6c902f180b44e3cad32b034494c5ef0a66",
+      "feeWei": "1024720051236",
+      "valueWei": "0",
+      "events": [
+        {
+          "contract": "0x321e67c6b41694ee2908912294477ed52b2c138a",
+          "name": "TaxRecognised",
+          "args": {
+            "amount": "5002040818",
+            "protocol": "50020408",
+            "creator": "0",
+            "farm": "4952020410"
+          }
+        }
+      ],
+      "fabOutRaw": "0",
+      "fabInRaw": "0",
+      "tokenOutRaw": "0",
+      "tokenInRaw": "0",
+      "tokenBurnedRaw": "0",
+      "tokenSentToDeadRaw": "0",
+      "lpMintedRaw": "0",
+      "lpOutRaw": "0"
+    },
+    {
+      "role": "keeper",
+      "nonce": 30,
+      "hash": "0xb0c0fca5c516b1800115d8cee6af10c4a0661a8df109d5b86d84acd25cac17ed",
+      "to": "0x321e67c6b41694ee2908912294477ed52b2c138a",
+      "method": "fundFarm()",
+      "status": 1,
+      "blockNumber": "0x29ce453",
+      "blockHash": "0x9bc98d2e9a5f36b6473655b4ae8770d133e8e924edebe8eed847440c5e389034",
+      "feeWei": "40839822041991",
+      "valueWei": "0",
+      "events": [
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "17531250"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "17531250"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "17531250"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "17531250"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x321e67c6b41694ee2908912294477ed52b2C138a",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "5051020411"
+          }
+        },
+        {
+          "contract": "0x0e51055559be68416210eae41d7e31df890b5708",
+          "name": "Contributed",
+          "args": {
+            "vault": "0x321e67c6b41694ee2908912294477ed52b2C138a",
+            "amount": "5051020411",
+            "contribution": "5051020411"
+          }
+        },
+        {
+          "contract": "0x321e67c6b41694ee2908912294477ed52b2c138a",
+          "name": "FarmFunded",
+          "args": {
+            "amount": "5051020411"
+          }
+        }
+      ],
+      "fabOutRaw": "0",
+      "fabInRaw": "0",
+      "tokenOutRaw": "0",
+      "tokenInRaw": "0",
+      "tokenBurnedRaw": "0",
+      "tokenSentToDeadRaw": "0",
+      "lpMintedRaw": "0",
+      "lpOutRaw": "0"
+    },
+    {
+      "role": "keeper",
+      "nonce": 31,
+      "hash": "0x3bb0ee86cd148518fb4a6ec3f7dd67eb26e928edf06ab9114700c376f2c25429",
+      "to": "0x321e67c6b41694ee2908912294477ed52b2c138a",
+      "method": "0x0166fe30",
+      "status": 1,
+      "blockNumber": "0x29ce4b3",
+      "blockHash": "0x07cfd4add1b9ee35317253d1917a526588d8634f9f9a81f8d26fee0abb690e46",
+      "feeWei": "4012480200624",
+      "valueWei": "0",
+      "events": [
+        {
+          "contract": "0x5c5018ee76abe07a2d1a9197865606864d315cef",
+          "name": "Transfer",
+          "args": {
+            "from": "0x321e67c6b41694ee2908912294477ed52b2C138a",
+            "to": "0x77c20d8909C8bBE6F15c9710983e96D1c26bE939",
+            "value": "399720495134067707889"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x77c20d8909C8bBE6F15c9710983e96D1c26bE939",
+            "to": "0x321e67c6b41694ee2908912294477ed52b2C138a",
+            "value": "996698"
+          }
+        },
+        {
+          "contract": "0x77c20d8909c8bbe6f15c9710983e96d1c26be939",
+          "name": "Swap",
+          "args": {
+            "sender": "0xd7E58272181d6b56aF5B10a12f519bA4a85914e7",
+            "to": "0x321e67c6b41694ee2908912294477ed52b2C138a",
+            "amount0In": "399720495134067707889",
+            "amount1In": "0",
+            "amount0Out": "0",
+            "amount1Out": "996698"
+          }
+        },
+        {
+          "contract": "0x321e67c6b41694ee2908912294477ed52b2c138a",
+          "name": "TaxConverted",
+          "args": {
+            "input": "399720495134067707889",
+            "fabReceived": "996698"
+          }
+        }
+      ],
+      "fabOutRaw": "0",
+      "fabInRaw": "0",
+      "tokenOutRaw": "0",
+      "tokenInRaw": "0",
+      "tokenBurnedRaw": "0",
+      "tokenSentToDeadRaw": "0",
+      "lpMintedRaw": "0",
+      "lpOutRaw": "0"
+    },
+    {
+      "role": "keeper",
+      "nonce": 32,
+      "hash": "0x3ca6f9986156c6909a95ebf8fb4ea10cd9a5a9cd34995fe3ab2725e783d6aad3",
+      "to": "0x321e67c6b41694ee2908912294477ed52b2c138a",
+      "method": "sync()",
+      "status": 1,
+      "blockNumber": "0x29ce511",
+      "blockHash": "0x87b5c3a276f019cd009879c169bd886bab566b18691088d8d724dc520275b19a",
+      "feeWei": "1366720068336",
+      "valueWei": "0",
+      "events": [
+        {
+          "contract": "0x321e67c6b41694ee2908912294477ed52b2c138a",
+          "name": "TaxRecognised",
+          "args": {
+            "amount": "996698",
+            "protocol": "9967",
+            "creator": "0",
+            "farm": "986731"
+          }
+        }
+      ],
+      "fabOutRaw": "0",
+      "fabInRaw": "0",
+      "tokenOutRaw": "0",
+      "tokenInRaw": "0",
+      "tokenBurnedRaw": "0",
+      "tokenSentToDeadRaw": "0",
+      "lpMintedRaw": "0",
+      "lpOutRaw": "0"
+    },
+    {
+      "role": "keeper",
+      "nonce": 33,
+      "hash": "0xaa7cd9cb843ac42c58fb0f660a580ad1e5cf23318047e6487cfd231322ddd52e",
+      "to": "0x321e67c6b41694ee2908912294477ed52b2c138a",
+      "method": "fundFarm()",
+      "status": 1,
+      "blockNumber": "0x29ce5bf",
+      "blockHash": "0xc494af23159bd560ac64a3d3a4cca065d42d7724281129a6ff23302a8187d504",
+      "feeWei": "42831882141594",
+      "valueWei": "0",
+      "events": [
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "90749997"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "90749997"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "90749997"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "90749997"
+          }
+        },
+        {
+          "contract": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x321e67c6b41694ee2908912294477ed52b2C138a",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "986731"
+          }
+        },
+        {
+          "contract": "0x0e51055559be68416210eae41d7e31df890b5708",
+          "name": "Contributed",
+          "args": {
+            "vault": "0x321e67c6b41694ee2908912294477ed52b2C138a",
+            "amount": "986731",
+            "contribution": "5052007142"
+          }
+        },
+        {
+          "contract": "0x321e67c6b41694ee2908912294477ed52b2c138a",
+          "name": "FarmFunded",
+          "args": {
+            "amount": "986731"
+          }
+        }
+      ],
+      "fabOutRaw": "0",
+      "fabInRaw": "0",
+      "tokenOutRaw": "0",
+      "tokenInRaw": "0",
+      "tokenBurnedRaw": "0",
+      "tokenSentToDeadRaw": "0",
+      "lpMintedRaw": "0",
+      "lpOutRaw": "0"
+    }
+  ],
+  "checks": {
+    "canonical": true,
+    "created": true,
+    "curveBuy": true,
+    "curveSell": true,
+    "graduated": true,
+    "postBuy": true,
+    "postSell": true,
+    "addedLiquidity": true,
+    "removedAllLiquidity": true,
+    "swapWhileHoldingLp": true,
+    "constantProductIncreasedFromSwap": true,
+    "burnOneToken": true,
+    "creditExactlySevenDays": true,
+    "holderWeightIncludesCredit": true,
+    "positiveHolderDividend": true,
+    "taxConverted": true,
+    "taxSynced": true,
+    "fundedExistingFarm": true,
+    "existingFarmRemainsFour": true,
+    "nativeTestOkbToFab": true
+  },
+  "allFundraisingChecksPassed": true,
+  "balances": {
+    "projectTokenRaw": "800039372328923831406474723",
+    "projectLpRaw": "0",
+    "unlocked": true,
+    "farmContributionFabRaw": "5052007142",
+    "farmPendingFabRaw": "0",
+    "holderClaimableFabRaw": "0",
+    "holderWithdrawnFabRaw": "277017069",
+    "activeCreditRaw": "1000000000000000000",
+    "holderWeightRaw": "800039373328923831406474723",
+    "farmCount": "4",
+    "walletFabRaw": "96537677731"
+  },
+  "lpFeeEvidence": {
+    "swapHash": "0x3889eb0a6c4f14787a6aa5475d6921b259e0eeb23f1363197b14099f7c5d0bec",
+    "reservesBefore": [
+      "199960227950486593229211069",
+      "500100250098",
+      1792295319
+    ],
+    "reservesAfter": [
+      "199960326950486593229211069",
+      "500100003243",
+      1792295416
+    ],
+    "kBefore": "100000160007691435234724449046129934762",
+    "kAfter": "100000160156409685574356477449231496767"
+  },
+  "gas": {
+    "actualGasWei": {
+      "wallet": "812989981298990",
+      "preparation": "1105260055263",
+      "keeper": "93095064654753"
+    },
+    "totalActualGasWei": "907190306009006",
+    "remainingWei": {
+      "wallet": "687010018701010",
+      "preparation": "3894739944737",
+      "keeper": "156904935345247"
+    },
+    "nativePrincipalWei": "1000000000000",
+    "walletGrossFabOutRaw": "510506348276",
+    "ownerFabTopupRaw": "430174051289",
+    "keeperFundingWei": "200000000000000"
+  },
+  "limits": [
+    "Burn-for-boost sends tokens to the fixed DEAD address; it does not reduce ERC20 totalSupply. The initial verifier incorrectly expected Transfer to zero and was corrected against MiningHolderRewards.sol lines177-204 and the actual receipt.",
+    "Seven-day expiry is a real future timestamp; this public-chain round proves creation and weighting, not elapsed expiry.",
+    "New project uses the four existing farm miners; farm-full is expected and no new procurement is claimed."
+  ]
+}

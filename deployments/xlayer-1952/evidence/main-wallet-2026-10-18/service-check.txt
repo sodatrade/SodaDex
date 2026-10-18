@@ -1,0 +1,27 @@
+
+> @sodadex/mining-service@0.1.0 check
+> npm run typecheck && npm run lint && npm test
+
+
+> @sodadex/mining-service@0.1.0 typecheck
+> tsc --noEmit
+
+
+> @sodadex/mining-service@0.1.0 lint
+> oxlint --config .oxlintrc.json --deny-warnings src test cloudflare local
+
+
+> @sodadex/mining-service@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.5 /Users/LevyHoo/Documents/SodaDex/standalone/mining-service
+
+
+ Test Files  9 passed (9)
+      Tests  92 passed (92)
+   Start at  11:23:41
+   Duration  2.79s (tests 57%, import 40%, transform 2%, worker 1%)
+
+    Isolate  9 workers spawned · ~55ms startup each (spawn + environment, per file)
+             at least ~443ms faster with isolate: false — reuses workers across files instead of one per file

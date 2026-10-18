@@ -192,7 +192,8 @@
         "automation"
       ],
       "legacyBrowserHistoryMigrated": false,
-      "production": false
+      "production": false,
+      "mainSiteWalletAcceptance": "xlayer-1952/2026-10-18-main-wallet-acceptance.json"
     }
   },
   "activeContracts": "xlayer-test/active.json",

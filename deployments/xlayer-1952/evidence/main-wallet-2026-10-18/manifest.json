@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-10-18T04:04:00.231404+00:00",
+  "files": [
+    {
+      "file": "fragments.json",
+      "source": "/tmp/sodadex-main-fragment-stage-proof.json",
+      "sha256": "1b61a2373cc491bd26ca5c37d6de79d9e2aa4cf77708b2c6c9555ff03b7398af",
+      "bytes": 14826
+    },
+    {
+      "file": "fundraising.json",
+      "source": "/tmp/sodadex-main-fundraising-stage-proof.json",
+      "sha256": "5e4ff66596a94429831e54fb1dfd00efbe5079e5fcbba109094105dc93a576f2",
+      "bytes": 55653
+    },
+    {
+      "file": "fundraising-verifier-initial.json",
+      "source": "/tmp/sodadex-main-fundraising-stage-proof-first-pass.json",
+      "sha256": "7e6f0a51a76b3c00b7aa81eb74f405b8ed2fe5876b194cabef2c4af433b9347b",
+      "bytes": 54500
+    },
+    {
+      "file": "project-identity.json",
+      "source": "/tmp/sodadex-main-project-proof.json",
+      "sha256": "c800c011fd74d709e011382f61f99973cc1484a383b486e44e90a4d63d9cabec",
+      "bytes": 2552
+    },
+    {
+      "file": "pending-fresh.json",
+      "source": "/tmp/sodadex-main-pending-fresh-proof.json",
+      "sha256": "7b2d06148853861dbe02f94c80bdddbc90fe7c8e1832dfa2afce574c049982a8",
+      "bytes": 890
+    },
+    {
+      "file": "browser-history-chain-match.json",
+      "source": "/tmp/sodadex-main-history-chain-proof.json",
+      "sha256": "acd7b717f73dc31842fa81d8ef5c12fbf89cfd36d9c59f9a0aa90361d312200d",
+      "bytes": 4881
+    },
+    {
+      "file": "browser-history.json",
+      "source": "/tmp/sodadex-main-wallet-ui-proof/history-proof.json",
+      "sha256": "1d4df1020b79e120595d9a1649a0eeb3f074f724e0c60d90bb7af765a1a38e2b",
+      "bytes": 8189
+    },
+    {
+      "file": "preparation.json",
+      "source": "/tmp/sodadex-main-retest-two-transfer-public-journal.json",
+      "sha256": "ce289f83b669af2a994d673ca2ff247f4feb14cf88f10b1832dfcd15e239cd29",
+      "bytes": 5801
+    },
+    {
+      "file": "fragment-checkpoint.json",
+      "source": "/tmp/sodadex-main-wallet-receipts-fragment-checkpoint.json",
+      "sha256": "fb54ffb813721eb702a03866b62de04ca86fc1b4efe51b4f6f10b48ac317d15c",
+      "bytes": 146338
+    },
+    {
+      "file": "history-success-rows.png",
+      "source": "/tmp/sodadex-main-wallet-ui-proof/history-success-rows.png",
+      "sha256": "7a194313493c4ebb5663ebdff929b8b40f21b02f22e9d3d9eda48b815e44feb5",
+      "bytes": 306432
+    },
+    {
+      "file": "history-after-reconnect.png",
+      "source": "/tmp/sodadex-main-wallet-ui-proof/history-after-reconnect.png",
+      "sha256": "d108a57dd68ed7957f8721270f04fd70f60bc8e3ace488ffc161df50cf6c498b",
+      "bytes": 342719
+    },
+    {
+      "file": "service-check.txt",
+      "source": "/tmp/sodadex-main-wallet-service-check.log",
+      "sha256": "74bcfa72d1812c6f1e44e7d5a6175b3e5ec1c3c212fb67e8cacad128a3beb703",
+      "bytes": 730,
+      "sourceSha256": "a791d14cf3defb4619cef233ae5e29c768ce77953a7f851ffae39a65f7ebaee2",
+      "normalization": "Removed extra trailing blank lines from the captured command log."
+    }
+  ],
+  "receiptSha256": "0475ff003a1dcceb4bba685048b34a1d33a26ac3e9a7a558d59069a93334907a",
+  "sourcePathsAreHistoricalProvenance": true
+}
