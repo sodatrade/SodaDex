@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "status": "live-unified-mining",
   "publishedOn": "2026-10-18",
-  "sourceCommit": "1e7cc65a768bc5dd2d04978a3f14b5705fbc5a4d",
+  "sourceCommit": "f1c3047a4f7bcde5e1962aa5e87a23f25ae80f3d",
   "scope": "Same-origin SodaDEX frontend integration of FAB mining products. The original frontend release validation and subsequent approved 1952 main-site wallet acceptance are recorded separately; production contracts are unchanged.",
   "frontend": {
     "worker": "sodadex-preview",
-    "versionId": "18221784-7c42-449a-ad45-f462bdf98085",
+    "versionId": "eecdf0fe-17e6-4593-b6ad-1e5eb90693e4",
     "origin": "https://sodadex-preview.jsmsdx2025.workers.dev",
     "fundraisingUrl": "https://sodadex-preview.jsmsdx2025.workers.dev/mining/#fundraising",
     "fragmentsUrl": "https://sodadex-preview.jsmsdx2025.workers.dev/mining/#fragments"
@@ -245,5 +245,47 @@
       "sourceCommit": "8346da414a3b44cc3e148f4718034ba3ba631151",
       "versionId": "37ac083d-9ec5-467a-873c-50da5aa3aa26"
     }
+  },
+  "persistentIndexRelease": {
+    "publishedOn": "2026-10-18",
+    "sourceCommit": "f1c3047a4f7bcde5e1962aa5e87a23f25ae80f3d",
+    "versionId": "eecdf0fe-17e6-4593-b6ad-1e5eb90693e4",
+    "migration": "v1-chain-index-sqlite",
+    "scope": [
+      "Read-only SQLite chain indexes, isolated by chain and deployment",
+      "SodaDEX 196 pool discovery and historical logs reuse persistent records",
+      "1952 mining onchain history, with local submissions preserved separately",
+      "Visible business/search lists at most ten rows per page",
+      "Sync status, first-page refresh, frozen cursor pages and reorg recovery",
+      "Chinese, English and Cantonese event labels"
+    ],
+    "validation": {
+      "webPassed": 476,
+      "existingFixtureSkipped": 22,
+      "workerPassed": 194,
+      "typecheckPassed": true,
+      "lintPassed": true,
+      "unifiedBuildAndCspPassed": true,
+      "actualWorkerdSqliteRuntimePassed": true,
+      "runtimeRestartRetainedRows": true,
+      "reorgCursorInvalidationPassed": true,
+      "sameBlockPoolAndSwapPassed": true,
+      "publicVerification": "evidence/index-2026-10-18/public-verification.json",
+      "publicCaughtUp": {
+        "196": 73536214,
+        "1952": 43846387
+      }
+    },
+    "newChainTransactions": 0,
+    "newWalletSignatures": 0,
+    "productionContractsModified": false,
+    "secretsChanged": false,
+    "keeperBudgetChanged": false,
+    "limitations": [
+      "Only configured test contracts and service-verified mining projects are indexed, not all chain activity.",
+      "Each onchain history item is an event; one transaction may have several items.",
+      "More than 1000 logs in one block pauses indexing with an error instead of skipping records.",
+      "Local submission journal remains capped at100; background-task feed remains the recent50."
+    ]
   }
 }
