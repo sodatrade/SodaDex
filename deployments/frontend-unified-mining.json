@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "status": "live-unified-mining",
   "publishedOn": "2026-10-18",
-  "sourceCommit": "e282c3d94be9934bea2529c162cdea70dad706e9",
+  "sourceCommit": "1e7cc65a768bc5dd2d04978a3f14b5705fbc5a4d",
   "scope": "Same-origin SodaDEX frontend integration of FAB mining products. The original frontend release validation and subsequent approved 1952 main-site wallet acceptance are recorded separately; production contracts are unchanged.",
   "frontend": {
     "worker": "sodadex-preview",
-    "versionId": "d862e43b-d2dc-4dc0-86e4-11d1801545ea",
+    "versionId": "18221784-7c42-449a-ad45-f462bdf98085",
     "origin": "https://sodadex-preview.jsmsdx2025.workers.dev",
     "fundraisingUrl": "https://sodadex-preview.jsmsdx2025.workers.dev/mining/#fundraising",
     "fragmentsUrl": "https://sodadex-preview.jsmsdx2025.workers.dev/mining/#fragments"
@@ -64,7 +64,12 @@
     ],
     "defaultTheme": "light",
     "walletRestore": "Read-only eth_accounts after prior user consent; chain switching requires explicit user action.",
-    "oldOriginHistory": "Existing old-domain browser history remains there; it was not automatically imported. On-chain assets and service project catalog are shared."
+    "oldOriginHistory": "Existing old-domain browser history remains there; it was not automatically imported. On-chain assets and service project catalog are shared.",
+    "primaryMiningNavigation": {
+      "zh-CN": "矿机交易",
+      "en": "Miner trading",
+      "yue-HK": "礦機交易"
+    }
   },
   "validation": {
     "web": {
@@ -151,5 +156,94 @@
       "versionId": "c12a7b73-bb66-45d3-980f-d1773aeb4568"
     },
     "consistencyRevisionPublished": true
+  },
+  "uiControlsRelease": {
+    "publishedOn": "2026-10-18",
+    "sourceCommit": "1e7cc65a768bc5dd2d04978a3f14b5705fbc5a4d",
+    "versionId": "18221784-7c42-449a-ad45-f462bdf98085",
+    "scope": [
+      "Single miner-trading main navigation; six inner tabs and old deep links preserved",
+      "Single thin amount-field focus border; subdued task selection",
+      "Editable launch fields separated visually from read-only rules and disabled inputs",
+      "Consistent outlined pool actions; redundant back-to-swap button removed",
+      "Ten loaded records per page for pools, positions, local mining history and recent background tasks",
+      "Explicit loading/error/empty pool selector; no market retry without a pool"
+    ],
+    "validation": {
+      "webPassed": 460,
+      "existingFixtureSkipped": 22,
+      "workerPassed": 184,
+      "typecheckPassed": true,
+      "lintPassed": true,
+      "unifiedBuildAndCspPassed": true,
+      "localBrowser": [
+        "light desktop launch inputs",
+        "dark mobile launch inputs",
+        "desktop/mobile pool action and last-page controls with 23 isolated fixture records",
+        "empty market selector disabled with readable status"
+      ],
+      "publicBrowser": [
+        "unified miner-trading entry active on launch",
+        "verified mining deployment",
+        "light launch inputs and focus"
+      ],
+      "sampledPublicAssets": [
+        {
+          "path": "assets/LiquidityPage-DNTauTQT.css",
+          "matched": true,
+          "sha256": "2258dc586af88944c18a64be1cb4a8c2ebc8291db29df3bde9e5531445c6cda1"
+        },
+        {
+          "path": "assets/index-CE-kXYvO.css",
+          "matched": true,
+          "sha256": "b9cbd60ca8b87357481ed74dbef29845b87f960ecb3141c75ac490cc0c27720f"
+        },
+        {
+          "path": "assets/index-o0McDtNo.js",
+          "matched": true,
+          "sha256": "de636e8fa1046bfa9829dda34d3399261453b0b4824aa29b862f0a89f712602a"
+        },
+        {
+          "path": "index.html",
+          "matched": true,
+          "sha256": "573597a13859b0cf2921f94e348d723d6eb553b70261dd34c14822b7b3989092"
+        },
+        {
+          "path": "mining/assets/MiningNetworkApp-DVGI8H6p.css",
+          "matched": true,
+          "sha256": "2fe486f7dd38bb98c366df2c69e3825346e5050afeb7f8faa5b8eca808f28e29"
+        },
+        {
+          "path": "mining/assets/index-BIq7R4K7.css",
+          "matched": true,
+          "sha256": "e292db35c7fe8b6ed4115078ef84a7fbbcd6882e691cd494473be5038cb1aedb"
+        },
+        {
+          "path": "mining/assets/index-ClRjMwcM.js",
+          "matched": true,
+          "sha256": "43ff62b2f8df1b34a713f74d55ef5914fcb8a1738a5fed755971c65330d4abfd"
+        },
+        {
+          "path": "mining/index.html",
+          "matched": true,
+          "sha256": "4c9c42435c29616b634d0d9b57e6ed5da46c8b1407d1816b0a3cef9eb661d483"
+        }
+      ],
+      "publicDexChainId": 196,
+      "publicMiningChainId": 1952
+    },
+    "newWalletSignatures": 0,
+    "newChainTransactions": 0,
+    "productionContractsModified": false,
+    "storageMigration": false,
+    "limits": [
+      "Pagination covers already loaded records; local mining journal retains at most 100 records and background status returns at most 50 recent jobs",
+      "No persistent chain-event index deployed; initial DEX discovery still scans historical logs and may load slowly",
+      "Browser screenshots use isolated fixtures where stated; they are not chain-transaction acceptance"
+    ],
+    "intermediateNavigationRelease": {
+      "sourceCommit": "8346da414a3b44cc3e148f4718034ba3ba631151",
+      "versionId": "37ac083d-9ec5-467a-873c-50da5aa3aa26"
+    }
   }
 }
