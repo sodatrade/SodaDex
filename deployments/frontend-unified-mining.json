@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "status": "live-unified-mining",
   "publishedOn": "2026-10-18",
-  "sourceCommit": "7490243f681616c4efb0fb3f36181236c4dccc4d",
+  "sourceCommit": "e282c3d94be9934bea2529c162cdea70dad706e9",
   "scope": "Same-origin SodaDEX frontend integration of FAB mining products. The original frontend release validation and subsequent approved 1952 main-site wallet acceptance are recorded separately; production contracts are unchanged.",
   "frontend": {
     "worker": "sodadex-preview",
-    "versionId": "c12a7b73-bb66-45d3-980f-d1773aeb4568",
+    "versionId": "d862e43b-d2dc-4dc0-86e4-11d1801545ea",
     "origin": "https://sodadex-preview.jsmsdx2025.workers.dev",
     "fundraisingUrl": "https://sodadex-preview.jsmsdx2025.workers.dev/mining/#fundraising",
     "fragmentsUrl": "https://sodadex-preview.jsmsdx2025.workers.dev/mining/#fragments"
@@ -131,8 +131,8 @@
   },
   "uiPolishRelease": {
     "record": "ui-polish-2026-10-18.json",
-    "sourceCommit": "7490243f681616c4efb0fb3f36181236c4dccc4d",
-    "versionId": "c12a7b73-bb66-45d3-980f-d1773aeb4568",
+    "sourceCommit": "e282c3d94be9934bea2529c162cdea70dad706e9",
+    "versionId": "d862e43b-d2dc-4dc0-86e4-11d1801545ea",
     "sampledPublicAssetsMatched": 9,
     "publicDexChainId": 196,
     "publicMiningChainId": 1952,
@@ -145,6 +145,11 @@
     },
     "newChainTransactions": 0,
     "newWalletSignatures": 0,
-    "knownLimitation": "Fresh DEX pool discovery scans historical creation events before resolving; observed initial market loading remains slow. No data-loading code changed in this UI release."
+    "knownLimitation": "Fresh DEX pool discovery scans historical creation events before resolving; observed initial market loading remains slow. No data-loading code changed in this UI release.",
+    "previousUIRelease": {
+      "sourceCommit": "7490243f681616c4efb0fb3f36181236c4dccc4d",
+      "versionId": "c12a7b73-bb66-45d3-980f-d1773aeb4568"
+    },
+    "consistencyRevisionPublished": true
   }
 }

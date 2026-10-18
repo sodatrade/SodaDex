@@ -120,8 +120,8 @@
   },
   "release": {
     "record": "ui-polish-2026-10-18.json",
-    "sourceCommit": "7490243f681616c4efb0fb3f36181236c4dccc4d",
-    "versionId": "c12a7b73-bb66-45d3-980f-d1773aeb4568",
+    "sourceCommit": "e282c3d94be9934bea2529c162cdea70dad706e9",
+    "versionId": "d862e43b-d2dc-4dc0-86e4-11d1801545ea",
     "sampledPublicAssetsMatched": 9,
     "publicDexChainId": 196,
     "publicMiningChainId": 1952,
@@ -135,8 +135,64 @@
     "newChainTransactions": 0,
     "newWalletSignatures": 0,
     "knownLimitation": "Fresh DEX pool discovery scans historical creation events before resolving; observed initial market loading remains slow. No data-loading code changed in this UI release.",
+    "previousUIRelease": {
+      "sourceCommit": "7490243f681616c4efb0fb3f36181236c4dccc4d",
+      "versionId": "c12a7b73-bb66-45d3-980f-d1773aeb4568"
+    },
+    "consistencyRevisionPublished": true,
     "worker": "sodadex-preview",
-    "origin": "https://sodadex-preview.jsmsdx2025.workers.dev"
+    "origin": "https://sodadex-preview.jsmsdx2025.workers.dev",
+    "publicAssetVerification": {
+      "sourceCommit": "e282c3d94be9934bea2529c162cdea70dad706e9",
+      "versionId": "d862e43b-d2dc-4dc0-86e4-11d1801545ea",
+      "assets": [
+        {
+          "path": "index.html",
+          "sha256": "0933f375b96af0c6b855befb0d215e5c8abc89831e6819929ecbc455ed755e88",
+          "matchesLocal": true
+        },
+        {
+          "path": "mining/index.html",
+          "sha256": "7812ef9c010f0313fa845c7c29c64fcc6668100aba347be5b9424f791c9a02d3",
+          "matchesLocal": true
+        },
+        {
+          "path": "assets/index-mTuMe1F0.js",
+          "sha256": "47130414ddaf1d4ff9b748c9783b396f080f1bfa305ff44670fb3b784d514142",
+          "matchesLocal": true
+        },
+        {
+          "path": "assets/index-CyO2mQmr.css",
+          "sha256": "0bc9e7fc9a4ad7af2823ffb9ef80059c53edbd3bd3cb30f7c05c9f4091335f0c",
+          "matchesLocal": true
+        },
+        {
+          "path": "mining/assets/index-DysOB1VL.js",
+          "sha256": "7218060dd91cc5c75c98613618eefb42d362464a784499418ec1344d78e5b5ed",
+          "matchesLocal": true
+        },
+        {
+          "path": "mining/assets/index-jQDk2ay0.css",
+          "sha256": "c32559c0417e146b2ca405e883632196cd9143cbe83b23c6efcab11860110285",
+          "matchesLocal": true
+        },
+        {
+          "path": "assets/TradeWorkspace-DDYB20AM.css",
+          "sha256": "cfb89ade3a1696d703dd7053bcede040c3f468749c83d3cc92c4794852be9513",
+          "matchesLocal": true
+        },
+        {
+          "path": "mining/assets/TradeWorkspace-DDYB20AM.css",
+          "sha256": "cfb89ade3a1696d703dd7053bcede040c3f468749c83d3cc92c4794852be9513",
+          "matchesLocal": true
+        },
+        {
+          "path": "mining/assets/MiningNetworkApp-CTjHOLi6.css",
+          "sha256": "26f6f7f9e8ea267e362a4eff0348b12006a65c1429e83681a0c768c219facf4f",
+          "matchesLocal": true
+        }
+      ]
+    }
   },
   "consistencyPass": {
     "classification": "change request",
@@ -178,6 +234,15 @@
     "typecheck": "passed",
     "lint": "passed",
     "unifiedBuildAndCsp": "passed",
-    "behavior": "No pricing, contracts, signing or budget changes"
+    "behavior": "No pricing, contracts, signing or budget changes",
+    "publicValidation": {
+      "panelsSameTopAndBottom": true,
+      "heightPx": 487,
+      "borderPx": 1,
+      "radiusPx": 20,
+      "paddingPx": 24,
+      "matchedAssets": 9,
+      "screenshot": ".analysis/ui-polish-2026-10-18/consistent-public-mining.jpg"
+    }
   }
 }
