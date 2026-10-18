@@ -45,10 +45,22 @@ at one canonical block. Unit fixtures remain separate from real-chain evidence.
 
 ## Explicit configuration
 
-The checked-in configuration has admission/execution disabled, a zero gas cap,
-no keeper, and `policy_pending`. It must remain that way until the test operator
-has approved the next phase's bounds. The earlier deployment gas budget is not a
-new keeper budget. No default economic or spending parameters are inferred.
+The 2026-10-18 online phase was explicitly approved for 1952 only. The checked-in
+configuration reserves a dedicated keeper ceiling of 0.0005 TEST OKB, with
+admission/execution kept disabled while its exact two-miner inventory and
+9,000 TEST-FAB liquidity are prepared and verified. The whole new phase has a
+0.001 TEST OKB gas ceiling, split equally between owner and keeper. The owner
+key remains in its local encrypted keystore; only the dedicated 1952 authorizer
+and keeper Secrets are stored in Cloudflare.
+
+The approved policy allows three total projects, at most two per wallet, market
+listing IDs 3 and 4 from the approved owner, lifetime procurement input at most
+2 TEST-FAB, and 0.5% slippage. Listing 2 remains reserved for individual testing.
+These settings are test-specific, never production defaults. `GET /status`
+reports the effective operating flags and cumulative budget; `serviceBuild`
+identifies the responding service code separately from the fixed deployment
+identity. A saved configuration or successful upload is not proof that a running
+Durable Object has picked up its new settings.
 
 | Variable | Meaning |
 | --- | --- |
