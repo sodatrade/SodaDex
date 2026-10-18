@@ -47,8 +47,8 @@ at one canonical block. Unit fixtures remain separate from real-chain evidence.
 
 The 2026-10-18 online phase was explicitly approved for 1952 only. The checked-in
 configuration reserves a dedicated keeper ceiling of 0.0005 TEST OKB, with
-admission/execution kept disabled while its exact two-miner inventory and
-9,000 TEST-FAB liquidity are prepared and verified. The whole new phase has a
+admission/execution enabled after its exact two-miner inventory and
+9,000 TEST-FAB liquidity were prepared and verified in 14 public testnet transactions. The whole new phase has a
 0.001 TEST OKB gas ceiling, split equally between owner and keeper. The owner
 key remains in its local encrypted keystore; only the dedicated 1952 authorizer
 and keeper Secrets are stored in Cloudflare.

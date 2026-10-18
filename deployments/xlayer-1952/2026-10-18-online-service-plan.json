@@ -4,8 +4,8 @@
   "chainId": 1952,
   "stage": "test",
   "approved": true,
-  "approvalReference": "User approval 2026-10-18: \u540c\u610f\u6309\u4e0a\u8ff0\u4e0a\u9650\u542f\u7528\u5e76\u9a8c\u6536 1952; question call_49f5cbab25774ef2a6b107d8fc35b84c",
-  "status": "approved_preparing_public_assets",
+  "approvalReference": "User approval 2026-10-18: 同意按上述上限启用并验收 1952; question call_49f5cbab25774ef2a6b107d8fc35b84c",
+  "status": "assets_ready_enabling_online",
   "productionTouched": false,
   "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
   "authorizer": "0x5DeAca6ecc97b07cA95D700f2BB26e4466774Ab6",
@@ -14,8 +14,8 @@
   "publicOrigin": "https://sodadex-mining-test-1952.jsmsdx2025.workers.dev",
   "keyPlacement": {
     "owner": "local encrypted keystore only",
-    "authorizer": "proposed dedicated1952 Cloudflare Secret",
-    "keeper": "proposed dedicated1952 Cloudflare Secret; gas-only"
+    "authorizer": "dedicated1952 Cloudflare Secret uploaded; public address verified",
+    "keeper": "dedicated1952 Cloudflare Secret uploaded; gas-only"
   },
   "proposedBudget": {
     "totalGasCapWei": "1000000000000000",
@@ -49,7 +49,7 @@
   "assets": {
     "planFile": "evidence/online-local-2026-10-18/assets-plan.json",
     "planSha256": "ead4317833dd9aab4347814eab7e16c24e084d060e3c19900bf29365652b3e24",
-    "publicWrites": false,
+    "publicWrites": true,
     "localForkTransactions": 14,
     "allLocalReceiptsSuccessful": true,
     "sourceBlock": {
@@ -71,7 +71,10 @@
       "4"
     ],
     "reservedRetailListing": "2",
-    "reservedRetailMiner": "5"
+    "reservedRetailMiner": "5",
+    "publicTransactions": 14,
+    "actualGasWei": "73191143659557",
+    "publicReceipts": "2026-10-18-online-assets-receipts.json"
   },
   "validation": {
     "webPassed": 435,
@@ -84,7 +87,9 @@
     "realLocalKeeperTransactions": 14,
     "realLocalCanonicalSuccessfulReceipts": 45,
     "localOnlyBusinessInfrastructureMock": "OP zero-surcharge predeploys only; business bytecode is real",
-    "publicEnabledEndToEnd": "pending new phase approval; not completed"
+    "publicEnabledEndToEnd": "pending public online smoke; assets completed",
+    "publicAcceptanceHelperTestsPassed": 26,
+    "publicAcceptanceHelperTestsSkipped": 0
   },
   "evidence": "evidence/online-local-2026-10-18",
   "evidenceSha256": {
