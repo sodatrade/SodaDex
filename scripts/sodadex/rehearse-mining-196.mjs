@@ -15,9 +15,10 @@ import { prepare196Stack } from './mining-196-stack.mjs'
 import { prepareMiningNfts } from './mining-plan-nfts.mjs'
 import { exerciseMiningProducts } from './mining-plan-business.mjs'
 import { fileSha } from './mining-plan-artifacts.mjs'
+import { persistentMining196Signer } from './mining-196-signer.mjs'
 
 const { values } = parseArgs({ options: { 'source-root': { type: 'string' }, 'product-manifest': { type: 'string' },
-  'reuse-manifest': { type: 'string' }, output: { type: 'string' }, anvil: { type: 'string', default: 'anvil' } } })
+  'persistent-signer': { type: 'boolean', default: false }, 'reuse-manifest': { type: 'string' }, output: { type: 'string' }, anvil: { type: 'string', default: 'anvil' } } })
 for (const key of ['source-root', 'product-manifest', 'reuse-manifest', 'output']) if (!values[key]) throw new Error(`Required --${key}`)
 const toolRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const root = path.resolve(values['source-root']), output = path.resolve(values.output)
@@ -41,20 +42,20 @@ const realNonce = await publicRead('eth_getTransactionCount', [active.owner, blo
 const log = fs.openSync(`${output}.anvil.log`, 'wx')
 const child = spawn(values.anvil, ['--host', '127.0.0.1', '--port', '8956', '--chain-id', '196', '--fork-url', active.rpcUrl,
   '--fork-block-number', String(BigInt(block.number)), '--gas-price', String(feeCap), '--silent'], { stdio: ['ignore', log, log] })
-const signer = privateKeyToAccount(generatePrivateKey()) // private material remains memory-only
+const signer = values['persistent-signer'] ? persistentMining196Signer() : privateKeyToAccount(generatePrivateKey()) // private material remains memory-only
 const plan = new Mining196Plan(active.owner, output, feeCap, child)
 try {
   let ready = false
-  for (let attempt = 0; attempt < 100; attempt++) {
+  for (let attempt = 0; attempt < 600; attempt++) {
     if (child.exitCode !== null) throw new Error('Owned Anvil failed to start')
     try { if (await plan.rpc('eth_chainId') === '0xc4') { ready = true; break } } catch {}
     await new Promise((r) => setTimeout(r, 100))
   }
   if (!ready) throw new Error('Owned Anvil did not become ready')
   plan.fork = { block: String(BigInt(block.number)), hash: block.hash, publicRpcReadOnly: active.rpcUrl, observedGasPriceWei: String(feeCap), realOwnerBalanceWei: String(realBalance), realOwnerNonce: String(BigInt(realNonce)), observedAt: new Date().toISOString() }
-  plan.temporarySigner = { address: signer.address, memoryOnly: true, replacementAndFullRehearsalRequiredBeforePublicBroadcast: true }
+  plan.temporarySigner = { address: signer.address, memoryOnly: !values['persistent-signer'], replacementAndFullRehearsalRequiredBeforePublicBroadcast: !values['persistent-signer'], profileId: '196-mining-test' }
   plan.executionSourceSha256 = Object.fromEntries([
-    'rehearse-mining-196.mjs', 'mining-196-plan.mjs', 'mining-196-stack.mjs', 'mining-196-artifacts.mjs', 'mining-196-budget.mjs', 'mining-196-deployment.mjs',
+    'rehearse-mining-196.mjs', 'mining-196-signer.mjs', 'mining-196-plan.mjs', 'mining-196-stack.mjs', 'mining-196-artifacts.mjs', 'mining-196-budget.mjs', 'mining-196-deployment.mjs',
     'mining-plan-rpc.mjs', 'mining-plan-artifacts.mjs', 'mining-plan-nfts.mjs', 'mining-plan-business.mjs', 'fee_policy.py',
   ].map((name) => [name, fileSha(fs.readFileSync(path.join(toolRoot, 'scripts/sodadex', name)))]))
   await plan.start()
