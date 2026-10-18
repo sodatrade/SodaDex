@@ -1,3 +1,4 @@
+import { apiPath } from './apiPath'
 import { NETWORK } from '../network'
 
 export type ReadMethod =
@@ -14,7 +15,7 @@ export function hexQuantity(value: unknown): bigint {
 }
 
 export async function rpc(method: ReadMethod, params: unknown[] = []): Promise<unknown> {
-  const response = await fetch('/api/rpc', {
+  const response = await fetch(apiPath('/api/rpc'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'X-SodaDEX-Network-Profile': NETWORK.id },
     body: JSON.stringify({ jsonrpc: '2.0', id: method, method, params }),

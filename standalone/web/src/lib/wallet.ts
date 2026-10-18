@@ -10,6 +10,7 @@ export interface Eip1193Provider {
 export interface WalletOption {
   id: string
   name: string
+  rdns?: string
   provider: Eip1193Provider
 }
 
@@ -48,8 +49,8 @@ export function providerChainId(value: unknown): number {
   return Number(quantity)
 }
 
-export async function connectWallet(option: WalletOption): Promise<WalletSession> {
-  const address = firstAccount(await option.provider.request({ method: 'eth_requestAccounts' }))
+export async function connectWallet(option: WalletOption, restore = false): Promise<WalletSession> {
+  const address = firstAccount(await option.provider.request({ method: restore ? 'eth_accounts' : 'eth_requestAccounts' }))
   if (!address) {
     throw new Error('钱包未提供可连接的账户')
   }

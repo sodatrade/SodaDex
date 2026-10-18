@@ -9,7 +9,7 @@
 ```sh
 npm --prefix standalone/web ci --workspaces=false
 npm --prefix standalone/worker ci --workspaces=false
-npm --prefix standalone/web run build
+npm --prefix standalone/web run build:unified
 npm --prefix standalone/worker run dev
 ```
 
@@ -19,7 +19,7 @@ npm --prefix standalone/worker run dev
 npm --prefix standalone/web run typecheck
 npm --prefix standalone/web run lint
 npm --prefix standalone/web test
-npm --prefix standalone/web run build
+npm --prefix standalone/web run build:unified
 npm --prefix standalone/worker run check
 ```
 
@@ -116,3 +116,21 @@ npm --prefix standalone/web test
 交易页选择「限价单」，确认 ERC20 输入、最低接收量、到期时间及自有 V3/V4 池，再在钱包中确认有限 Permit2 授权和完整订单签名。后台通过固定 `ORDERS_API` Service Binding 接收订单，SQLite Durable Object 保留签名、状态、原始执行交易和累计 gas 预算；keeper 只支付 gas，成交资产直接给签名 receiver。前端不读取本机 owner 或 keeper 密钥。挂单最低接收量不会被后台降低；撤单由 maker 调用测试 settlement 的 `cancel(nonce)`。
 
 部署地址和开关见 [orders-test.json](../deployments/orders-test.json)，实际部署、微量成交及撤单回执见 [orders-receipts.json](../deployments/xlayer-test/orders-receipts.json)，运行和暂停步骤见 [orders/CLOUDFLARE.md](orders/CLOUDFLARE.md)。Node CLI 默认只读；公开测试站使用独立云端服务，生产合约保持未部署。
+
+
+## 同站矿机业务（1952）
+
+主站导航中的「募资分红」与「矿机碎片」进入同域名 `/mining/#fundraising`、`/mining/#fragments`。
+矿机工作台复用主站 Header、主题、语言和展示货币；六个业务页签支持刷新、浏览器前进后退及直接链接。
+本标签页中用户选择过的钱包通过 `eth_accounts` 恢复连接；新访客不主动请求地址，钱包断开后不自动重连。
+页面不会自动切链；矿机业务要求用户点击切换到 1952，返回兑换后要求196。
+
+`npm --prefix standalone/web run build:unified` 构建主站196入口及 `dist/mining` 下的1952入口，
+检查两份网络标识、挂载路径和首帧偏好脚本 CSP hash。`deploy:test` 先运行同一检查，避免遗漏矿机文件。
+矿机页面的读取与业务请求固定发到 `/mining/api/*`，Worker根据明确启用的挂载路径选择1952，
+不从请求头、URL参数或localStorage选择RPC。原 `/api/*` 仍服务196；矿机路径拒绝196订单与行情接口。
+后端复用现有1952 Service Binding、项目目录、签名服务与费用账本；没有重新部署合约。
+
+旧矿机测试域名保留原记录。浏览器本机交易历史按origin隔离，不会自动导入主站；链上资产、持仓和后台记录共用。
+本轮浏览器脚本 `acceptance/unified-mining-readonly.js` 覆盖1440/1024/390宽度、三语、主题、导航和连接恢复；
+钱包使用只读隔离fixture，不签名、不广播，不将此证据等同此前36笔真实钱包交易。

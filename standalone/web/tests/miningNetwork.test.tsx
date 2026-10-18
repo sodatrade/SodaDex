@@ -47,7 +47,7 @@ describe('1952 mining readiness entry', () => {
   it('shows the undeployed state, keeps light mode, and reads no mainnet contracts or orders', async () => {
     const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } })
     render(<QueryClientProvider client={client}><MiningNetworkApp /></QueryClientProvider>)
-    expect(await screen.findByText(/X Layer 已连接/)).toBeVisible()
+    expect((await screen.findAllByText(/X Layer 已连接/))[0]).toBeVisible()
     expect(screen.getByRole('heading', { name: '矿机业务尚未部署就绪' })).toBeVisible()
     expect(document.documentElement.dataset.theme).toBe('light')
     expect(await screen.findByText('1.25 TEST-FAB')).toBeVisible()
@@ -96,7 +96,7 @@ describe('1952 mining readiness entry', () => {
     const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } })
     render(<QueryClientProvider client={client}><MiningNetworkApp /></QueryClientProvider>)
     const user = userEvent.setup()
-    await user.click(screen.getByRole('button', { name: '连接钱包' }))
+    await user.click(within(screen.getByRole('banner')).getByRole('button', { name: '连接钱包' }))
     const dialog = screen.getByRole('dialog')
     await user.click(within(dialog).getByRole('button', { name: /浏览器钱包/ }))
     await user.click(await within(dialog).findByRole('button', { name: '切换到 X Layer' }))

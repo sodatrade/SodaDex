@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "vite build",
+    "build:unified": "vite build && VITE_SODADEX_NETWORK_PROFILE=1952-mining-test SODADEX_WEB_MOUNT=/mining/ vite build --outDir dist/mining && node ../../scripts/sodadex/check-unified-web-build.mjs",
     "preview": "vite preview --host 127.0.0.1",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",

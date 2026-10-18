@@ -12,7 +12,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "cd .. && worker/node_modules/.bin/oxlint --config worker/.oxlintrc.json --deny-warnings worker/src worker/test trading-policy.ts network-profile.ts mining-contracts.ts mining-products.ts mining-abi.ts mining-calls.ts mining-signed-calls.ts mining-discovery.ts mining-math.ts",
     "test": "vitest run",
-    "deploy:test": "wrangler deploy",
+    "deploy:test": "node ../../scripts/sodadex/check-unified-web-build.mjs && wrangler deploy",
     "deploy:mining-test": "node ../../scripts/sodadex/check-mining-web-build.mjs && wrangler deploy --config wrangler.1952-test.jsonc"
   },
   "devDependencies": {

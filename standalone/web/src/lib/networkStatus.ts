@@ -1,9 +1,10 @@
+import { apiPath } from './apiPath'
 import { NETWORK } from '../network'
 import { hexQuantity, rpc } from './readRpc'
 
 /** A 1952 build served by a 196 Worker is unavailable, even if both nodes respond. */
 export async function getProfileNetworkStatus(): Promise<{ block: bigint }> {
-  const response = await fetch('/api/network', { signal: AbortSignal.timeout(12_000) })
+  const response = await fetch(apiPath('/api/network'), { signal: AbortSignal.timeout(12_000) })
   if (!response.ok) throw new Error('Network profile unavailable')
   const value: unknown = await response.json()
   if (typeof value !== 'object' || value === null || !('id' in value) || value.id !== NETWORK.id ||

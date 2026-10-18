@@ -1,3 +1,4 @@
+import { apiPath } from '../lib/apiPath'
 import { decodeFunctionData, encodeFunctionData, type Hex } from 'viem'
 import { miningAbi, sameMiningAddress, validMiningProductCall, type MiningTransaction } from '../../../mining-calls'
 import { normalizeMiningLaunchForm, type MiningLaunchForm } from '../../../mining-signed-calls'
@@ -51,7 +52,7 @@ async function request(d: MiningProductDeployment, path: string, body?: unknown)
   const chainRead = path === 'challenge' || path === 'launch' || path === 'register' || path.startsWith('projects?')
   const controller = new AbortController(), timeout = setTimeout(() => controller.abort(), chainRead ? 60_000 : 20_000)
   try {
-    const response = await fetch(`/api/mining/${path}`, { method: body === undefined ? 'GET' : 'POST', cache: 'no-store',
+    const response = await fetch(apiPath(`/api/mining/${path}`), { method: body === undefined ? 'GET' : 'POST', cache: 'no-store',
       credentials: 'same-origin', signal: controller.signal,
       headers: { 'X-SodaDEX-Network-Profile': '1952-mining-test', ...(body === undefined ? {} : { 'Content-Type': 'application/json' }) },
       ...(body === undefined ? {} : { body: JSON.stringify(body) }) })

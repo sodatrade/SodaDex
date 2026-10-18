@@ -5,8 +5,8 @@
 .app-shell .brand .soda-mark { width: 30px; height: 30px; fill: var(--soda-accent); }
 .app-shell .test-tag { align-self: center; margin: 0 0 0 3px; padding: 4px 5px; background: var(--soda-accent-dim); border: 1px solid color-mix(in srgb, var(--soda-accent) 25%, transparent); border-radius: 4px; color: var(--soda-highlight); font-size: 8px; letter-spacing: .6px; font-weight: 650; }
 .app-shell .main-nav { gap: 26px; align-items: center; justify-content: flex-start; align-self: stretch; }
-.app-shell .main-nav button, .app-shell .main-nav .nav-launch { height: 100%; min-height: 44px; padding: 0; font-size: 13px; font-weight: 550; white-space: nowrap; }
-.app-shell .main-nav button.active { color: var(--soda-text); }
+.app-shell .main-nav button, .app-shell .main-nav .nav-product, .app-shell .main-nav .nav-launch { height: 100%; min-height: 44px; padding: 0; font-size: 13px; font-weight: 550; white-space: nowrap; }
+.app-shell .main-nav .nav-product.active, .app-shell .main-nav button.active { color: var(--soda-text); }
 .app-shell .main-nav button.active::after { bottom: 0; left: 0; width: 100%; transform: none; height: 2px; border-radius: 0; }
 .app-shell .header-actions { gap: 10px; min-width: 0; }
 .app-shell .header-search { width: 205px; justify-content: flex-start; gap: 8px; min-height: 38px; padding: 8px 10px; background: var(--soda-field); border: 1px solid var(--soda-line-soft); color: var(--soda-muted); border-radius: 8px; }
@@ -61,7 +61,7 @@
 .global-search-dialog .asset-option-label > span { overflow-wrap: anywhere; line-height: 1.5; }
 .global-search-dialog .search-section-heading { font-size: 12px; margin: 8px 0; }
 @media (min-width: 1600px) { .app-shell .site-header { padding-inline: 48px; }.app-shell .header-search { width: 260px; } }
-@media (max-width: 1240px) {
+@media (max-width: 1500px) {
   .app-shell .site-header { gap: 22px; padding-inline: 24px; }
   .app-shell .main-nav { gap: 22px; }
   .app-shell .header-search { width: 40px; min-height: 40px; justify-content: center; }
@@ -72,12 +72,12 @@
   .app-shell .header-actions { gap: 4px; }
   .app-shell .main-nav { gap: 20px; }
 }
-@media (max-width: 800px) {
+@media (max-width: 1120px) {
   .app-shell .site-header { flex-wrap: wrap; min-height: 112px; gap: 0 8px; padding: 12px 20px 0; }
   .app-shell .brand { font-size: 22px; }
   .app-shell .header-actions { margin-left: auto; }
   .app-shell .main-nav { order: 3; flex-wrap: nowrap; width: 100%; align-self: auto; min-height: 46px; gap: 28px; overflow-x: auto; margin-top: 8px; padding: 0; }
-  .app-shell .main-nav button, .app-shell .main-nav .nav-launch { min-height: 46px; font-size: 13px; }
+  .app-shell .main-nav button, .app-shell .main-nav .nav-product, .app-shell .main-nav .nav-launch { min-height: 46px; font-size: 13px; }
   .app-shell .test-notice { justify-content: flex-start; padding-inline: 20px; font-size: 10px; }
   .app-shell .content-page { padding: 28px 20px 48px; }
   .app-shell .trade-layout { padding: 20px 20px 40px; }
@@ -116,3 +116,9 @@
   .app-shell .brand .test-tag { display: none; }
   .app-shell .header-connect { padding-inline: 10px; }
 }
+
+.app-shell .main-nav .nav-product { display: inline-flex; align-items: center; position: relative; color: var(--soda-muted); text-decoration: none; flex-shrink: 0; }
+.app-shell .main-nav .nav-product:hover { color: var(--soda-text); }
+.app-shell .main-nav .nav-product.active { color: var(--soda-text); }
+.app-shell .main-nav .nav-product.active::after { content: ''; position: absolute; inset: auto 0 0; height: 2px; background: var(--soda-accent); }
+.app-shell .main-nav [aria-disabled="true"] { opacity: .45; cursor: not-allowed; }

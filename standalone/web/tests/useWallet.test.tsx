@@ -158,3 +158,58 @@ describe('wallet event ordering', () => {
     expect(result.current.session?.chainId).toBe(196)
   })
 })
+
+describe('same-site wallet continuity', () => {
+  it('restores only an explicitly selected wallet using read-only accounts and the actual current chain', async () => {
+    const { rememberWallet } = await import('../src/lib/walletConsent')
+    const request = vi.fn(async ({ method }: { method: string }) => method === 'eth_accounts' ? [accountA] : '0x7a0')
+    const option = { id: 'injected', name: 'Browser', provider: { request } }
+    rememberWallet(option)
+    Object.assign(window, { ethereum: option.provider })
+    const { result, unmount } = renderHook(() => useWallet())
+    await waitFor(() => expect(result.current.session?.address).toBe(accountA))
+    expect(result.current.session?.chainId).toBe(1952)
+    expect(request.mock.calls.map(([x]) => x.method)).toEqual(['eth_accounts', 'eth_chainId'])
+    act(() => result.current.disconnect())
+    unmount()
+    const reloaded = renderHook(() => useWallet())
+    expect(reloaded.result.current.session).toBeUndefined()
+    expect(request).toHaveBeenCalledTimes(2)
+    delete (window as Window & { ethereum?: Eip1193Provider }).ethereum
+  })
+
+  it('does not ask a locked wallet for access while restoring a prior connection', async () => {
+    const { rememberWallet, rememberedWallet } = await import('../src/lib/walletConsent')
+    const request = vi.fn(async () => [])
+    const option = { id: 'injected', name: 'Browser', provider: { request } }
+    rememberWallet(option)
+    Object.assign(window, { ethereum: option.provider })
+    const { result } = renderHook(() => useWallet())
+    await waitFor(() => expect(request).toHaveBeenCalledOnce())
+    await waitFor(() => expect(result.current.status).toBe('idle'))
+    expect(result.current.session).toBeUndefined()
+    expect(result.current.error).toBeUndefined()
+    expect(rememberedWallet()).toBeUndefined()
+    expect(request).toHaveBeenCalledWith({ method: 'eth_accounts' })
+    delete (window as Window & { ethereum?: Eip1193Provider }).ethereum
+  })
+})
+
+
+it('restores an injected provider even if it announces EIP-6963 before fallback registration', async () => {
+  const { rememberWallet } = await import('../src/lib/walletConsent')
+  const request = vi.fn(async ({ method }: { method: string }) => method === 'eth_accounts' ? [accountA] : '0x7a0')
+  const provider = { request }
+  rememberWallet({ id: 'injected', name: 'Browser', provider })
+  Object.assign(window, { ethereum: provider })
+  const announce = (): void => { window.dispatchEvent(new CustomEvent('eip6963:announceProvider', {
+    detail: { provider, info: { uuid: 'new-page-uuid', name: 'Fixture', rdns: 'com.fixture.wallet' } },
+  })) }
+  window.addEventListener('eip6963:requestProvider', announce)
+  const { result } = renderHook(() => useWallet())
+  await waitFor(() => expect(result.current.session?.address).toBe(accountA))
+  expect(result.current.session?.id).toBe('new-page-uuid')
+  expect(request.mock.calls.map(([x]) => x.method)).toEqual(['eth_accounts', 'eth_chainId'])
+  window.removeEventListener('eip6963:requestProvider', announce)
+  delete (window as Window & { ethereum?: Eip1193Provider }).ethereum
+})

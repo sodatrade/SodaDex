@@ -11,14 +11,31 @@ interface Env {
   ORDERS_API?: { fetch: typeof fetch }
   MINING_API?: MiningApiBinding
   SODADEX_NETWORK_PROFILE?: string
+  SODADEX_MINING_MOUNT?: string
 }
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
-    const path = new URL(request.url).pathname
+    const url = new URL(request.url)
+    let path = url.pathname
     let profile: NetworkProfile
     try { profile = networkProfile(env.SODADEX_NETWORK_PROFILE) }
     catch { return Response.json({ error: 'Network profile unavailable' }, { status: 503 }) }
+    // Fixed mount, enabled only by deployment config; headers never select a chain.
+    if (path === '/mining' || path.startsWith('/mining/')) {
+      if (env.SODADEX_MINING_MOUNT !== 'enabled' || profile.id !== '196-test')
+        return Response.json({ error: 'Mining mount unavailable' }, { status: 404 })
+      if (path === '/mining') { url.pathname = '/mining/'; return Response.redirect(url.toString(), 308) }
+      profile = networkProfile('1952-mining-test')
+      if (path.startsWith('/mining/api/')) {
+        url.pathname = path.slice('/mining'.length)
+        request = new Request(url, request)
+        path = url.pathname
+      } else if (path !== '/mining/' && path !== '/mining/index.html' &&
+        !path.startsWith('/mining/assets/') && !['/mining/network-build.json', '/mining/preferences-script.json', '/mining/favicon.svg', '/mining/brand.svg'].includes(path)) {
+        return Response.json({ error: 'Not found' }, { status: 404 })
+      }
+    }
     if (path === '/api/network') return request.method === 'GET'
       ? Response.json(publicNetworkProfile(profile), { headers: { 'Cache-Control': 'no-store' } })
       : Response.json({ error: 'GET required' }, { status: 405 })

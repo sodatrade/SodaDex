@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { useRef, useState, type ReactElement } from 'react'
+import { useEffect, useRef, useState, type ReactElement } from 'react'
 import { formatUnits } from 'viem'
 import type { MiningAddress, MiningProductDeployment } from '../../../mining-products'
 import { Dialog } from '../components/Dialog'
@@ -8,6 +8,7 @@ import { formatBalance } from '../domain/amount'
 import { hexQuantity, rpc } from '../lib/readRpc'
 import type { WalletController } from '../lib/useWallet'
 import { usePreferences } from '../preferences/context'
+import { miningTab, MINING_TABS, type MiningTab } from './navigation'
 import { MiningActionCard } from './ActionCard'
 import { AutomationPanel } from './AutomationPanel'
 import { executeMiningCall, type MiningStage } from './execution'
@@ -21,15 +22,18 @@ import { miningUint, productRead, verifyMiningDeployment } from './protocol'
 import { MiningRewardsPanel } from './RewardsPanel'
 import { useOnlineCatalog } from './useOnlineCatalog'
 
-export function MiningProductsWorkspace({ deployment: base, wallet }: { deployment: MiningProductDeployment; wallet: WalletController }): ReactElement {
+export function MiningProductsWorkspace({ deployment: base, wallet, activeTab, onTabChange, onBusyChange }: { deployment: MiningProductDeployment; wallet: WalletController; activeTab?: MiningTab; onTabChange?: (tab: MiningTab) => void; onBusyChange?: (busy: boolean) => void }): ReactElement {
   const { locale } = usePreferences(), m = miningMessages(locale), online = onlineMessages(locale), client = useQueryClient()
-  const [tab, setTab] = useState<'fundraising' | 'fragments' | 'positions' | 'history' | 'launch' | 'automation'>('fundraising')
+  const [localTab, setLocalTab] = useState<MiningTab>(() => miningTab(window.location.hash))
+  const tab = activeTab ?? localTab
+  const setTab = (next: MiningTab): void => { setLocalTab(next); onTabChange?.(next) }
   const [projectToken, setProjectToken] = useState<MiningAddress | undefined>(base.projects[0]?.token.address), [plan, setPlan] = useState<MiningPlan>()
   const catalog = useOnlineCatalog(base, projectToken), d = catalog.deployment
   const [stage, setStage] = useState<MiningStage>(), [error, setError] = useState<MiningMessageKey>()
   const [busy, setBusy] = useState(false), [storageFailed, setStorageFailed] = useState(false)
   const [entries, setEntries] = useState(() => loadMiningJournal(d)), activePlan = useRef<MiningPlan | undefined>(undefined)
   const inFlight = useRef(false)
+  useEffect(() => { onBusyChange?.(busy) }, [busy, onBusyChange])
   const project = d.projects.find((p) => p.token.address.toLowerCase() === projectToken?.toLowerCase()) ?? d.projects[0]
   const account = wallet.session?.chainId === 1952 ? wallet.session.address : undefined
   const ready = useQuery({ queryKey: ['mining-ready', d.version, catalog.revision], queryFn: async () => { await verifyMiningDeployment(rpc, d); return true }, retry: false, refetchInterval: 30_000 })
@@ -81,7 +85,7 @@ export function MiningProductsWorkspace({ deployment: base, wallet }: { deployme
     <div className="mining-workspace-bar"><span className={`mining-readiness${ready.isSuccess ? ' verified' : ''}`} role="status">
       {ready.isPending ? m.verifying : ready.isSuccess ? m.verified : m.versionError}</span>
       <Button disabled={ready.isFetching || busy} onClick={() => void client.invalidateQueries({ predicate: (q) => String(q.queryKey[0]).startsWith('mining-') })}>{m.refresh}</Button></div>
-    <nav className="mining-tabs" aria-label={m.ready}>{(['fundraising', 'fragments', 'positions', 'history', 'launch', 'automation'] as const).map((name) =>
+    <nav className="mining-tabs" aria-label={m.ready}>{MINING_TABS.map((name) =>
       <Button disabled={busy} appearance={tab === name ? 'primary' : 'ghost'} aria-current={tab === name ? 'page' : undefined} key={name} onClick={() => setTab(name)}>{name === 'launch' || name === 'automation' ? online[name] : m[name]}</Button>)}</nav>
     {catalog.unavailable && <p className="dialog-note" role="status">{online.serviceUnavailable}</p>}
     {account && balances.data && <dl className="mining-balances">
