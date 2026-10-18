@@ -48,17 +48,22 @@ function envelope(value: unknown, d: MiningProductDeployment): Record<string, un
 }
 async function request(d: MiningProductDeployment, path: string, body?: unknown): Promise<Record<string, unknown>> {
   // Issuance and selected-project refresh prove bindings through the public RPC.
-  const chainRead = path === 'launch' || path === 'register' || path.startsWith('projects?')
+  const chainRead = path === 'challenge' || path === 'launch' || path === 'register' || path.startsWith('projects?')
   const controller = new AbortController(), timeout = setTimeout(() => controller.abort(), chainRead ? 60_000 : 20_000)
   try {
     const response = await fetch(`/api/mining/${path}`, { method: body === undefined ? 'GET' : 'POST', cache: 'no-store',
       credentials: 'same-origin', signal: controller.signal,
       headers: { 'X-SodaDEX-Network-Profile': '1952-mining-test', ...(body === undefined ? {} : { 'Content-Type': 'application/json' }) },
       ...(body === undefined ? {} : { body: JSON.stringify(body) }) })
-    if (!response.ok) throw new Error('onlineServiceUnavailable')
+    if (!response.ok) {
+      const error: unknown = await response.json().catch(() => null)
+      if (response.status === 503 && ['challenge', 'launch'].includes(path) && record(error) && error.schemaVersion === 1 &&
+          error.chainId === 1952 && error.error === 'expiry_reconciliation_pending') throw new Error('onlineHistoryChecking')
+      throw new Error('onlineServiceUnavailable')
+    }
     return envelope(await response.json(), d)
   } catch (cause) {
-    if (cause instanceof Error && ['onlineInvalidResponse', 'onlineServiceUnavailable'].includes(cause.message)) throw cause
+    if (cause instanceof Error && ['onlineInvalidResponse', 'onlineServiceUnavailable', 'onlineHistoryChecking'].includes(cause.message)) throw cause
     throw new Error('onlineServiceUnavailable')
   } finally { clearTimeout(timeout) }
 }

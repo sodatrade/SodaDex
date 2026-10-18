@@ -113,4 +113,12 @@ describe('mining online API boundaries', () => {
       for (const reason of ['farm_full','no_approved_inventory','procurement_budget_exhausted','not_graduated','no_tax','settled','pending_confirmation','broadcast_unknown']) expect(onlineReason(reason,m)).not.toBe(m.reasonOther)
     }
   })
+  it('lets the user retry bounded history checks without authenticating or retrying the POST automatically', async () => {
+    const fetch = vi.fn(async () => Response.json({ schemaVersion: 1, chainId: 1952, error: 'expiry_reconciliation_pending' }, { status: 503 }))
+    vi.stubGlobal('fetch', fetch)
+    await expect(createLaunchChallenge(miningTestDeployment(), MINING_TEST_ACCOUNT, 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', form)).rejects.toThrow('onlineHistoryChecking')
+    expect(fetch).toHaveBeenCalledTimes(1)
+    fetch.mockImplementation(async () => Response.json({ schemaVersion: 1, chainId: 196, error: 'expiry_reconciliation_pending' }, { status: 503 }))
+    await expect(createLaunchChallenge(miningTestDeployment(), MINING_TEST_ACCOUNT, 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', form)).rejects.toThrow('onlineServiceUnavailable')
+  })
 })
