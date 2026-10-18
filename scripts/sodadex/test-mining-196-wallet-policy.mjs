@@ -33,3 +33,10 @@ test('FAB input principal includes fragment swap and liquidity supply',()=>{
   assert.equal(policy.fabPrincipal(call('fragmentPool','function swapExactIn(bool,uint256,uint256,uint256)',[false,1000n,1n,9999999999n]),'wallet'),1000n)
   assert.equal(policy.fabPrincipal(call('fragmentPool','function addLiquidity(uint256,uint256,uint256,uint256,uint256)',[10n,20n,1n,1n,9999999999n]),'wallet'),20n)
 })
+test('market listing uses the compiled uint96 price selector and rejects uint256 alias',async()=>{
+  const {sourceArtifact}=await import('./mining-plan-artifacts.mjs')
+  const abi=sourceArtifact(process.cwd(),'CircuitMarket').value.abi
+  const data=encodeFunctionData({abi,functionName:'list',args:[contracts.circuits.address,3n,1000000n]})
+  assert.equal(await policy.validate({from:owner,to:contracts.circuitMarket.address,data,value:'0x0'},'setup'),true)
+  assert.equal(await policy.validate(call('circuitMarket','function list(address,uint256,uint256)',[contracts.circuits.address,3n,1000000n]),'setup'),false)
+})

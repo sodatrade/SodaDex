@@ -6,7 +6,7 @@ import type { MiningProductDeployment } from '../../standalone/mining-products'
 const setupAbi=parseAbi([
   'function approve(address,uint256) returns(bool)',
   'function addLiquidityETH(address,uint256,uint256,uint256,address,uint256) payable returns(uint256,uint256,uint256)',
-  'function list(address,uint256,uint256) returns(uint256)',
+  'function list(address,uint256,uint96) returns(uint256)',
 ])
 type Tx={from:Address;to:Address;data:Hex;value:Hex}
 /** CLI policy for the exact single-project 196 acceptance. Never accepts browser roots. */

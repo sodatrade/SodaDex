@@ -61,6 +61,6 @@ else if(v.mode==='execute') {
   if(v.mode==='seed-approval')tx=call('fab','function approve(address,uint256)',[c.router.address,100000000000n])
   if(v.mode==='seed')tx=call('router','function addLiquidityETH(address,uint256,uint256,uint256,address,uint256)',[c.fab.address,100000000000n,100000000000n,10000000000n,owner,BigInt(Math.floor(Date.now()/1000)+600)],10000000000n)
   if(v.mode.endsWith('-approval')&&v.mode!=='seed-approval')tx=call('circuits','function approve(address,uint256)',[c.circuitMarket.address,v.mode==='farm-approval'?3n:5n])
-  if(v.mode.endsWith('-list'))tx=call('circuitMarket','function list(address,uint256,uint256)',[c.circuits.address,v.mode==='farm-list'?3n:5n,1000000n])
+  if(v.mode.endsWith('-list'))tx=call('circuitMarket','function list(address,uint256,uint96)',[c.circuits.address,v.mode==='farm-list'?3n:5n,1000000n])
   console.log(JSON.stringify({operation:v.mode,hash:await execution.execute(tx,purpose),gasWei:execution.state.gasWei,nativeWei:execution.state.nativeWei,keeperFundingWei:execution.state.keeperFundingWei}))
 }
