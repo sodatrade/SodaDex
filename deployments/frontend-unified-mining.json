@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "status": "live-unified-mining",
+  "publishedOn": "2026-10-18",
+  "sourceCommit": "d05ee016201a46aaac6a6d4cfcfd5513a77e7a48",
+  "scope": "Same-origin SodaDEX main frontend integration of FAB mining products; no contract changes or new chain writes.",
+  "frontend": {
+    "worker": "sodadex-preview",
+    "versionId": "0f582b7b-277d-4c35-ae4e-5e398a422973",
+    "origin": "https://sodadex-preview.jsmsdx2025.workers.dev",
+    "fundraisingUrl": "https://sodadex-preview.jsmsdx2025.workers.dev/mining/#fundraising",
+    "fragmentsUrl": "https://sodadex-preview.jsmsdx2025.workers.dev/mining/#fragments"
+  },
+  "service": {
+    "worker": "sodadex-mining-api-test-1952",
+    "versionId": "41ea4f73-f7b5-4766-94e1-a9c6fe0a2512",
+    "serviceBuild": "online-1952-20261018-v7-unified-origin",
+    "storageMigration": false,
+    "budgetUnchanged": true,
+    "secretsChanged": false
+  },
+  "routing": {
+    "dex": {
+      "buildBase": "/",
+      "apiPath": "/api/",
+      "chainId": 196
+    },
+    "mining": {
+      "buildBase": "/mining/",
+      "apiPath": "/mining/api/",
+      "chainId": 1952
+    },
+    "selection": "Build and server configuration; request headers cannot select another network."
+  },
+  "experience": {
+    "shared": [
+      "navigation",
+      "brand",
+      "theme",
+      "locale",
+      "wallet entry"
+    ],
+    "miningTabs": [
+      "fundraising",
+      "fragments",
+      "positions",
+      "history",
+      "launch",
+      "automation"
+    ],
+    "locales": [
+      "zh-CN",
+      "en",
+      "yue-HK"
+    ],
+    "defaultTheme": "light",
+    "walletRestore": "Read-only eth_accounts after prior user consent; chain switching requires explicit user action.",
+    "oldOriginHistory": "Existing old-domain browser history remains there; it was not automatically imported. On-chain assets and service project catalog are shared."
+  },
+  "validation": {
+    "web": {
+      "passed": 443,
+      "existingFixtureSkipped": 22,
+      "typecheckPassed": true,
+      "lintPassed": true
+    },
+    "worker": {
+      "passed": 184,
+      "skipped": 0,
+      "typecheckPassed": true,
+      "lintPassed": true
+    },
+    "miningService": {
+      "passed": 92,
+      "skipped": 0,
+      "typecheckPassed": true,
+      "lintPassed": true,
+      "cloudflareDryRunPassed": true
+    },
+    "unifiedBuildAndCspPassed": true,
+    "localAndPublicReadonlyBrowserPassed": true,
+    "browserWidths": [
+      1440,
+      1024,
+      390
+    ],
+    "horizontalOverflow": false,
+    "runtimeErrors": 0,
+    "sampledPublicAssetHashesMatched": 8,
+    "publicProjects": [
+      "TEST-A",
+      "TEST-ONLINE",
+      "TEST-WALLET"
+    ],
+    "newWalletSignatures": 0,
+    "newChainTransactions": 0,
+    "productionContractsModified": false,
+    "scopeLimit": "This release used an isolated read-only wallet fixture. Prior 36 real Chrome/OKX transactions remain separate historical evidence."
+  },
+  "evidence": {
+    "local-browser": "xlayer-1952/evidence/unified-frontend-2026-10-18/local-browser.json",
+    "public-browser": "xlayer-1952/evidence/unified-frontend-2026-10-18/public-browser.json",
+    "public-catalog": "xlayer-1952/evidence/unified-frontend-2026-10-18/public-catalog.json",
+    "public-http": "xlayer-1952/evidence/unified-frontend-2026-10-18/public-http.json",
+    "service-continuity": "xlayer-1952/evidence/unified-frontend-2026-10-18/service-continuity.json"
+  },
+  "historicalRealWalletAcceptance": "xlayer-1952/2026-10-18-public-wallet-acceptance.json"
+}

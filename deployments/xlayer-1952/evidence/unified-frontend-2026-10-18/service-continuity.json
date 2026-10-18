@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-18T03:07:58.493Z",
+  "before": {
+    "serviceBuild": "online-1952-20261018-v6-recovery",
+    "budget": {
+      "capWei": "456372669318633",
+      "spentWei": "440714882004243",
+      "reservedWei": "0"
+    },
+    "signer": "0x5DeAca6ecc97b07cA95D700f2BB26e4466774Ab6",
+    "keeper": "0x553D8C2e637fe67C5c7AdE3810E8Bc02799D41D4",
+    "farm": {
+      "capacity": 4,
+      "minerCount": 4,
+      "procurementBudgetFab": "15667812076"
+    }
+  },
+  "after": {
+    "serviceBuild": "online-1952-20261018-v7-unified-origin",
+    "budget": {
+      "capWei": "456372669318633",
+      "spentWei": "440714882004243",
+      "reservedWei": "0"
+    },
+    "signer": "0x5DeAca6ecc97b07cA95D700f2BB26e4466774Ab6",
+    "keeper": "0x553D8C2e637fe67C5c7AdE3810E8Bc02799D41D4",
+    "farm": {
+      "capacity": 4,
+      "minerCount": 4,
+      "procurementBudgetFab": "15667812076"
+    }
+  },
+  "budgetUnchanged": true,
+  "walletsUnchanged": true,
+  "newChainTransactions": 0
+}

@@ -60,7 +60,7 @@ npm --prefix standalone/web test
 
 未提供状态快照时，这 5 项会跳过，不能据此声称完整 LP 集成验收通过。`tests/liquidityForkFixture.ts` 也可单独启动受控 Anvil，配合上文编译后的 Worker 和 `fork-server.mjs`，然后运行 `acceptance/liquidity.js`。浏览器脚本覆盖两个已初始化池的建仓、加仓、部分减仓后立即全部退出；新池初始化由前述 Anvil 用例验证。所有新交易只发生在自有本地进程，不读取部署钱包。
 
-当前已发布源码、构建文件 hash、真实 RPC 读取和分层验收结果见 [`../deployments/frontend-test.json`](../deployments/frontend-test.json) 及其链接的证据文件。
+当前已发布源码、构建文件 hash、真实 RPC 读取和分层验收结果见 [`../deployments/frontend-test.json`](../deployments/frontend-test.json) 及[同站矿机整合记录](../deployments/frontend-unified-mining.json)与各自链接的证据文件。
 
 ## 测试发布
 
@@ -72,19 +72,19 @@ npm --prefix standalone/worker run deploy:test
 
 Cloudflare 凭证使用本机 Wrangler 登录状态，不进入源码或前端构建。静态资源只从 `web/dist` 上传。
 
-当前测试地址为 [sodadex-preview.jsmsdx2025.workers.dev](https://sodadex-preview.jsmsdx2025.workers.dev)，版本记录保存在 [`../deployments/frontend-test.json`](../deployments/frontend-test.json)。正式域名暂未绑定。
+当前测试地址为 [sodadex-preview.jsmsdx2025.workers.dev](https://sodadex-preview.jsmsdx2025.workers.dev)，版本记录保存在 [`../deployments/frontend-test.json`](../deployments/frontend-test.json)，矿机同站整合另见[发布记录](../deployments/frontend-unified-mining.json)。正式域名暂未绑定。
 
 浏览器读取 `/api/rpc`；Worker 用固定地址 `https://rpc.ignix.bot/rpc/196` 查询 X Layer。代理接受受限读取、自有 V3/V4 池报价，以及当前 PositionManager 的建池、仓位和有限授权模拟。行情及事件分页接口见 [`worker/API.md`](worker/API.md)。真实交易由用户的浏览器钱包签名与广播；代理不签名、不广播，也不接受任意上游地址。节点失败时前端显示连接失败，不回退到其他节点。
 
 ## 当前范围
 
-这是 **X Layer 主网 196 上的测试界面**，OKB 是真实资产。SodaDEX 仓位 NFT 名称和原创 SVG 已部署，V3 WOKB/USD₮0（0.01%）与 V4 原生 OKB/USD₮0（0%）均已创建、注入少量流动性并完成真实双向兑换。当前 `pools.json` 保持 `ready`，只表示链上测试池已经核验。`standalone/trading-policy.json` 的 `publicSwapsEnabled=true` 已开放自有 V3/V4 测试池的公开兑换：用户可以读取实际报价、预览最低接收量，并在钱包中逐笔确认有限授权及兑换。Worker 接受符合自有池注册、收款地址与参数约束的 Router／Permit2 模拟；真实广播仍由用户钱包完成。已提交交易的链接、等待回执与再次检查回执功能保留。LP 使用的有限 ERC-20／Permit2 授权独立开放。流动性页面支持自助创建池／仓位、追加、部分／全部减少和领取资产，所有写入均须用户钱包确认。V3 支持标准费率，V4 支持无 Hook 池。待领取资产可能包含已减仓本金，不冒称全部是手续费。报价、价格和池数据不使用虚构数值。前端不读取本机部署钱包。
+DEX 模块是 **X Layer 主网 196 上的测试界面**，OKB 是真实资产。SodaDEX 仓位 NFT 名称和原创 SVG 已部署，V3 WOKB/USD₮0（0.01%）与 V4 原生 OKB/USD₮0（0%）均已创建、注入少量流动性并完成真实双向兑换。当前 `pools.json` 保持 `ready`，只表示链上测试池已经核验。`standalone/trading-policy.json` 的 `publicSwapsEnabled=true` 已开放自有 V3/V4 测试池的公开兑换：用户可以读取实际报价、预览最低接收量，并在钱包中逐笔确认有限授权及兑换。Worker 接受符合自有池注册、收款地址与参数约束的 Router／Permit2 模拟；真实广播仍由用户钱包完成。已提交交易的链接、等待回执与再次检查回执功能保留。LP 使用的有限 ERC-20／Permit2 授权独立开放。流动性页面支持自助创建池／仓位、追加、部分／全部减少和领取资产，所有写入均须用户钱包确认。V3 支持标准费率，V4 支持无 Hook 池。待领取资产可能包含已减仓本金，不冒称全部是手续费。报价、价格和池数据不使用虚构数值。前端不读取本机部署钱包。
 
 界面支持简体中文、English 与粵語，新访客默认白天主题。语言、外观和 CNY/USD/HKD 展示货币保存在浏览器的 `sodadex.preferences.v1`；存储不可用时使用默认设置。展示货币只影响价格标签，池内相对价格、指定区块区间的交换轨迹和交易量来自实际链上状态／事件；当前没有独立法币估值，不会把 OKB 余额换算成法币，亦不虚构美元 TVL 或 APR。
 
 `web build` 会生成首帧偏好初始化脚本及 `dist/preferences-script.json`。Worker 构建和检查会读取该脚本的精确 CSP hash，因此必须先构建前端，再检查或发布 Worker；两者应一起发布。
 
-当前前端及 Worker 的合约地址统一读取 [`../deployments/xlayer-test/active.json`](../deployments/xlayer-test/active.json)，池就绪状态读取 `pools.json`。原始 `plan.json` / `receipts.json` 和已经完成的三笔交易记录 `pools-interrupted.json` 保留用于历史核验。当前地址已按品牌更新的真实回执切换；完整地址、NFT 图片及兑换回执见 [`ADDRESSES.md`](../deployments/xlayer-test/ADDRESSES.md)。本应用与保留的上游 `apps/web` 分开构建，独立检查通过不代表整个上游单体仓库检查通过。
+DEX 模块的前端及 Worker 合约地址读取 [`../deployments/xlayer-test/active.json`](../deployments/xlayer-test/active.json)，池就绪状态读取 `pools.json`。原始 `plan.json` / `receipts.json` 和已经完成的三笔交易记录 `pools-interrupted.json` 保留用于历史核验。当前地址已按品牌更新的真实回执切换；完整地址、NFT 图片及兑换回执见 [`ADDRESSES.md`](../deployments/xlayer-test/ADDRESSES.md)。本应用与保留的上游 `apps/web` 分开构建，独立检查通过不代表整个上游单体仓库检查通过。
 
 切换公开兑换状态需要修改独立交易策略、运行开放与暂停分支的回归和浏览器验收，再手动发布前端与 Worker。仅修改 `pools.json` 不会改变交易权限。网站暂停不能撤回已经进入钱包确认窗口或已广播的交易。
 

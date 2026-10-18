@@ -1,0 +1,44 @@
+{
+  "origin": "https://sodadex-preview.jsmsdx2025.workers.dev",
+  "layouts": [
+    {
+      "width": 1440,
+      "scroll": 1440,
+      "title": "Miner shares"
+    },
+    {
+      "width": 1024,
+      "scroll": 1024,
+      "title": "Miner shares"
+    },
+    {
+      "width": 390,
+      "scroll": 390,
+      "title": "Miner shares"
+    }
+  ],
+  "state": {
+    "theme": "light",
+    "locale": "zh-CN",
+    "calls": [
+      "eth_requestAccounts",
+      "eth_chainId",
+      "eth_accounts",
+      "eth_chainId",
+      "wallet_switchEthereumChain",
+      "eth_chainId",
+      "eth_accounts",
+      "eth_chainId",
+      "eth_accounts",
+      "eth_chainId"
+    ]
+  },
+  "routes": [
+    "/api/rpc",
+    "/mining/api/mining/projects",
+    "/mining/api/rpc",
+    "/mining/api/network"
+  ],
+  "errors": [],
+  "financialWrites": 0
+}
