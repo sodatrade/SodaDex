@@ -5,9 +5,15 @@ import os from 'node:os'
 import path from 'node:path'
 import { execFileSync } from 'node:child_process'
 import { keccak256, toHex } from 'viem'
-import { loadSmokeModules, validateSmokeApproval, SmokeSender } from './mining-online-smoke.mjs'
+import { loadSmokeModules, validateSmokeApproval, SmokeSender, automationComplete } from './mining-online-smoke.mjs'
 import { ONLINE_OWNER } from './mining-online-assets.mjs'
 const root=process.cwd(), keeper='0x553D8C2e637fe67C5c7AdE3810E8Bc02799D41D4'
+test('tax conversion requires a subsequent fund receipt before holder claim',()=>{
+ const receipts=new Map([['purchase',{blockNumber:'0x10'}],['conversion',{blockNumber:'0x20'}],['fund',{blockNumber:'0x19'}]])
+ assert.equal(automationComplete(receipts),false)
+ receipts.set('fund',{blockNumber:'0x21'});assert.equal(automationComplete(receipts),true)
+ receipts.delete('purchase');assert.equal(automationComplete(receipts),false)
+})
 function fixture() {
  const p=JSON.parse(fs.readFileSync(path.join(root,'deployments/xlayer-1952/2026-10-18-online-service-plan.json')))
  p.approved=true;p.approvalReference='fixture approval only'

@@ -18,6 +18,10 @@ const S = '0x5DeAca6ecc97b07cA95D700f2BB26e4466774Ab6'
 const ORIGIN = 'https://sodadex-mining-test-1952.jsmsdx2025.workers.dev'
 const GAS_CAP = 500_000_000_000_000n, FAB_CAP = 1_500_000_000_000n, PRICE_CAP = 30_000_000n
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms))
+export function automationComplete(receipts) {
+  return ['conversion', 'fund', 'purchase'].every(kind => receipts.has(kind)) &&
+    BigInt(receipts.get('fund').blockNumber) >= BigInt(receipts.get('conversion').blockNumber)
+}
 export function assertSmokeRegistration(receipt, d, project) {
   const abi = parseAbi(['event TokenCreated(address indexed token,address indexed creator,address indexed quote,uint256 graduation,string metadataURI,address vault,address tracker,uint16 templateId)'])
   const matches = receipt.logs.filter(log => same(log.address, d.contracts.manager.address)).flatMap(log => {
@@ -173,20 +177,21 @@ export async function runSmoke(s, api, signMessage) {
   await s.executePlan(await plan('projectSell', '1000'))
   await api.requestOnlineCheck(s.d, s.project.token.address)
   const baseline = new Set(status.jobs.filter(j => j.status === 'confirmed' && j.kind !== 'purchase').map(j => j.hash))
-  const confirmed = new Map()
+  const confirmed = new Map(), seen = new Set()
   for (let i = 0; i < 40; i++) {
     const current = await api.loadOnlineStatus(s.d)
     const jobs = current.jobs.filter(j => j.status === 'confirmed' && j.hash && !baseline.has(j.hash) && (j.kind === 'purchase' || same(j.token, s.project.token.address)))
     s.state.serviceStatus = current; s.save()
-    for (const job of jobs.filter(j => ['conversion', 'fund', 'purchase'].includes(j.kind) && !confirmed.has(j.kind))) {
+    for (const job of jobs.filter(j => ['conversion', 'fund', 'purchase'].includes(j.kind) && !seen.has(j.hash))) {
       const r = await s.rpc.request('eth_getTransactionReceipt', [job.hash])
       if (!r || r.status !== '0x1' || !same(r.from, KEEPER) || !same(r.to, job.kind === 'purchase' ? s.d.contracts.farm.address : s.project.vault.address)) throw new Error('Automation receipt identity changed')
       const b = await s.rpc.request('eth_getBlockByNumber', [r.blockNumber, false])
       if (b.hash !== r.blockHash || BigInt(await s.rpc.request('eth_blockNumber')) <= BigInt(r.blockNumber)) continue
-      confirmed.set(job.kind, r)
+      seen.add(job.hash)
+      if (!confirmed.has(job.kind) || BigInt(confirmed.get(job.kind).blockNumber) < BigInt(r.blockNumber)) confirmed.set(job.kind, r)
     }
     s.state.automationReceipts = Object.fromEntries(confirmed); s.save()
-    if (['conversion', 'fund', 'purchase'].every(kind => confirmed.has(kind))) break
+    if (automationComplete(confirmed)) break
     if (i === 39) throw new Error('Automation pending; inspect saved status, do not rerun smoke')
     await s.pause(15000)
   }
