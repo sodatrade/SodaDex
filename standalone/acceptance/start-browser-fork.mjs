@@ -7,6 +7,7 @@ import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { startLiquidityFork } from '../web/tests/liquidityForkFixture.ts'
+import { installFixtureMetadata } from './fixture-metadata.mjs'
 
 const root = fileURLToPath(new URL('../../', import.meta.url))
 const require = createRequire(new URL('../worker/package.json', import.meta.url))
@@ -36,6 +37,7 @@ async function stop() {
 }
 try {
   fork = await startLiquidityFork({ fixturePath, stateViewCodePath })
+  await installFixtureMetadata(fork.request)
   for (const address of [config.contracts.v3Quoter, config.contracts.v4Quoter]) {
     const code = runtimes.contracts.find(contract => contract.address.toLowerCase() === address.toLowerCase())?.code
     if (typeof code !== 'string' || !/^0x[0-9a-f]+$/i.test(code)) throw Error('Active quoter runtime missing')

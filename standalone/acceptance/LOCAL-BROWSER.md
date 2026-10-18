@@ -38,6 +38,14 @@ and stops only its own child processes. A new start gives a fresh chain state.
 An isolated worker worktree may set `SODADEX_FIXTURE_ASSETS` to the primary
 checkout's already-built `standalone/web/dist` for a read-only asset mount.
 
+The old offline dump omitted USD₮0 metadata storage. Both launchers restore only
+that token's missing metadata from block **73367562**, whose hash and proxy /
+implementation runtime hashes match the original rehearsal evidence. Setup
+verifies `decimals() = 6` and `name()/symbol() = USD₮0`; conflicting nonzero slots,
+different bytecode, chain or implementation stop startup. It leaves balances,
+pool prices and every other token unchanged, including valid zero-decimal tokens.
+`fixtures/usdt0-metadata.json` records the complete slot values and source block.
+
 For limit orders, `.analysis/orders/settlement.json` must contain the compiled
 test settlement artifact. The server starts a separate Anvil, Vite and SQLite
 service, with an ephemeral funded maker and keeper:
@@ -55,6 +63,7 @@ Acceptance adapter checks:
 
 ```sh
 node --test standalone/acceptance/fixture-provider.test.mjs
+node --experimental-strip-types --test standalone/acceptance/fixture-metadata.test.mjs
 node standalone/acceptance/check-fixture-guards.mjs http://127.0.0.1:4173
 node standalone/acceptance/check-fixture-guards.mjs http://127.0.0.1:4196
 ```

@@ -16,6 +16,7 @@ import { OrdersKeeper } from '../orders/src/keeper.ts'
 import { ViemOrderChain } from '../orders/src/chain.ts'
 import { createOrdersServer } from '../orders/src/server.ts'
 import { fixtureProviderResponse, injectFixtureProvider } from './fixture-provider.mjs'
+import { installFixtureMetadata } from './fixture-metadata.mjs'
 const root = fileURLToPath(new URL('../../', import.meta.url))
 const webRequire = createRequire(new URL('../web/package.json', import.meta.url))
 const workerRequire = createRequire(new URL('../worker/package.json', import.meta.url))
@@ -50,6 +51,7 @@ async function stop() {
 }
 try {
   await assertLocalChain()
+  await installFixtureMetadata(fixture.request)
   await fixture.request('anvil_setIntervalMining', [1]); await fixture.request('evm_mine')
   const config = validateConfig({ settlement: fixture.settlement, rpcUrl, publicOrigin: origin, databasePath: resolve(folder, 'orders.sqlite'),
     localTest: true, executionEnabled: true, gasBudgetWei: 10n ** 16n })
