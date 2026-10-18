@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "stage": "test",
+  "chainId": 196,
+  "profileId": "196-mining-test",
+  "status": "preparation-only-not-broadcast-ready",
+  "productionWritesAllowed": false,
+  "publicBroadcastPerformed": false,
+  "rpc": "https://rpc.ignix.bot/rpc/196",
+  "source": {
+    "sodadex": "8eecd727727e41bc01e30a1482eed4c3389b16bc",
+    "ignix": "32405d390ba04a2decfdd364ef2322b813d3dd7d"
+  },
+  "localAcceptance": {
+    "dex": "../evidence/browser-e2e-2026-10-18/dex-business.json",
+    "mining": "../evidence/browser-e2e-2026-10-18/mining-summary.json",
+    "publicChainProof": false
+  },
+  "reuseOnlyAfterRuntimeAndBindingCheck": [
+    "WOKB",
+    "Permit2",
+    "SodaDEX V4 PoolManager",
+    "SodaDEX V4 PositionManager",
+    "SodaDEX V4 Descriptor",
+    "SodaDEX V4 Quoter",
+    "SodaDEX V4 StateView"
+  ],
+  "newIsolatedDependencies": [
+    "TEST-FAB",
+    "PodMining history V2 implementation and proxy",
+    "three mining reward libraries",
+    "PodNetlist",
+    "test NFT factory, implementation and beacon",
+    "test CircuitMarket",
+    "V2 factory and router",
+    "IGNIX manager, registry, factory, libraries, lockers, helper and guard",
+    "MiningProjectFactory and FabMiningFarm",
+    "FabFragmentVault and FabFragmentPool",
+    "FabMinerTestBuyer"
+  ],
+  "costReduction": [
+    "Reuse verified existing test V4 dependencies",
+    "Deploy history V2 directly instead of old implementation plus upgrade",
+    "Use independently issued TEST assets; real OKB only for gas and minimum test liquidity",
+    "Preserve reference/optimal/ordinary NFT qualifications when reducing inventory",
+    "Return recoverable test liquidity after acceptance"
+  ],
+  "requiredBeforeBudget": [
+    {
+      "owner": "IGNIX contracts",
+      "work": "Explicit test deployment chain binding for six constructors; retain wrong-chain rejection, TEST branding and immutable dependencies"
+    },
+    {
+      "owner": "SodaDEX network and fee policy",
+      "work": "Add 196-mining-test identity independent of production and 196-test DEX; keep 1952 regression profile"
+    },
+    {
+      "owner": "SodaDEX service and index",
+      "work": "Separate signer/keeper, service binding, DO identity and persistent budget ledger; validate profile when restoring index"
+    },
+    {
+      "owner": "deployment runner",
+      "work": "Fresh immutable constructor inputs, artifacts, deployment order and salts; forbid production upgrades and addresses"
+    },
+    {
+      "owner": "local rehearsal",
+      "work": "Run exact unsigned transaction journal on current 196 fork; collect estimateGas, actual gas, L1/operator fees, balances and runtime bindings"
+    },
+    {
+      "owner": "budget",
+      "work": "Separate gas, keeper funding and recoverable principal; no previous stage budget reuse; present precise cap before public broadcast"
+    }
+  ],
+  "gasBudgetOKB": null,
+  "principalBudgetOKB": null,
+  "budgetApproved": false,
+  "feePolicy": "Existing approved low test fee rules are the baseline; production-pending settings must not activate this profile.",
+  "validationLimit": "Current browser acceptance covers existing isolated 1952 mining and 196 DEX deployments. New 196 mining artifacts and services have not been implemented, rehearsed or deployed."
+}

@@ -5,7 +5,7 @@ import { tradeMessages } from '../../i18n/trade'
 import { LP_CONTRACTS } from '../../liquidity/config'
 import { usePreferences } from '../../preferences/context'
 import { poolTradeCurrencies } from '../../trading/poolTrade'
-import { isExactOutput, priceImpact, quotedInput, type SwapPoolQuote } from './routes'
+import { isExactOutput, priceImpact, type SwapPoolQuote } from './routes'
 export function TradeDetails({ quote, scope = 'all' }: { quote: SwapPoolQuote; scope?: 'all' | 'summary' | 'route' }): ReactElement {
   const { locale } = usePreferences(), m = tradeMessages(locale)
   const [from, to] = poolTradeCurrencies(quote)
@@ -18,7 +18,7 @@ export function TradeDetails({ quote, scope = 'all' }: { quote: SwapPoolQuote; s
     <div><dt title={m.impactNote}>{m.impact}</dt><dd>{priceImpact(quote) ?? m.unknown}</dd></div>
     <div><dt>{m.fee}</dt><dd>{quote.pool.protocol.toUpperCase()} · {quote.pool.fee / 10000}%</dd></div>
     </>}
-    {scope !== 'summary' && <><div><dt>{m.feeAmount}</dt><dd>{formatUnits(quotedInput(quote) * BigInt(quote.pool.fee) / 1000000n, from.decimals)} {from.symbol}</dd></div>
+    {scope !== 'summary' && <><div><dt>{m.feeAmount}</dt><dd>{quote.pool.fee === 0 ? `0 ${from.symbol}` : m.feeIncluded}</dd></div>
       <div><dt>{m.pool}</dt><dd><a href={`${EXPLORER_URL}/address/${link}`} target="_blank" rel="noreferrer">{shortenAddress(quote.pool.id)}</a></dd></div></>}
   </dl>
 }

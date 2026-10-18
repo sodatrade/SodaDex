@@ -1,0 +1,250 @@
+{
+  "localOnly": true,
+  "generatedAt": "2026-10-18T07:57:52.885Z",
+  "poolId": "0xa016f9b205a58e08df6af30cf5e945af94b7d3ef9a462a2b1e735930bb603488",
+  "liquidity": "8890196",
+  "feePips": 100,
+  "tickSpacing": 1,
+  "protocolFee": 0,
+  "transactions": [
+    {
+      "hash": "0x8be70b32ff6788caa1772ffdedc70fa63e461a17a03dcc4c2ca103e2761438bf",
+      "block": "0x45f8c48",
+      "slotBefore": [
+        "7261381037877582582535565125844710",
+        228526,
+        0,
+        100
+      ],
+      "slotAfter": [
+        "6947205604227587749689167048744778",
+        227641,
+        0,
+        100
+      ],
+      "inputRaw": "10",
+      "nominalFeePreviewRaw": "0",
+      "steps": [
+        {
+          "tickBefore": 228526,
+          "emptyBitmapWord": 892,
+          "targetTick": 228352,
+          "remainingBefore": "10",
+          "availableLessFee": "9",
+          "amountToTarget": "1",
+          "amountIn": "1",
+          "fee": "1",
+          "output": "7073854814",
+          "sqrtBefore": "7261381037877582582535565125844710",
+          "sqrtAfter": "7198339849717511127558112151988940",
+          "reachedBitmapBoundary": true
+        },
+        {
+          "tickBefore": 228351,
+          "emptyBitmapWord": 891,
+          "targetTick": 228096,
+          "remainingBefore": "8",
+          "availableLessFee": "7",
+          "amountToTarget": "2",
+          "amountIn": "2",
+          "fee": "1",
+          "output": "10272495827",
+          "sqrtBefore": "7198339849717511127558112151988940",
+          "sqrtAfter": "7106792827712874097094310698732367",
+          "reachedBitmapBoundary": true
+        },
+        {
+          "tickBefore": 228095,
+          "emptyBitmapWord": 890,
+          "targetTick": 227840,
+          "remainingBefore": "5",
+          "availableLessFee": "4",
+          "amountToTarget": "2",
+          "amountIn": "2",
+          "fee": "1",
+          "output": "10141852314",
+          "sqrtBefore": "7106792827712874097094310698732367",
+          "sqrtAfter": "7016410082112642506280386472905328",
+          "reachedBitmapBoundary": true
+        },
+        {
+          "tickBefore": 227839,
+          "emptyBitmapWord": 889,
+          "targetTick": 227584,
+          "remainingBefore": "2",
+          "availableLessFee": "1",
+          "amountToTarget": "2",
+          "amountIn": "1",
+          "fee": "1",
+          "output": "7765437856",
+          "sqrtBefore": "7016410082112642506280386472905328",
+          "sqrtAfter": "6947205604227587749689167048744778",
+          "reachedBitmapBoundary": false
+        }
+      ],
+      "actualFeeRaw": "4",
+      "outputRaw": "35253640811",
+      "feeGrowthBefore": [
+        "0",
+        "0"
+      ],
+      "feeGrowthAfter": [
+        "153104551090184496928245274876624",
+        "0"
+      ],
+      "reconstructedFeeGrowthDelta": "153104551090184496928245274876624",
+      "matches": {
+        "sqrt": true,
+        "tick": true,
+        "output": true,
+        "feeGrowth": true
+      },
+      "swapEvent": {
+        "eventName": "Swap",
+        "args": {
+          "id": "0xa016f9b205a58e08df6af30cf5e945af94b7d3ef9a462a2b1e735930bb603488",
+          "sender": "0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA",
+          "amount0": "-10",
+          "amount1": "35253640811",
+          "sqrtPriceX96": "6947205604227587749689167048744778",
+          "liquidity": "8890196",
+          "tick": 227641,
+          "fee": 100
+        }
+      }
+    },
+    {
+      "hash": "0xf0084c3538e8ad3d239c3497dd81df91edfa3567629f37501329db3958510712",
+      "block": "0x45f8c5d",
+      "slotBefore": [
+        "6947205604227587749689167048744778",
+        227641,
+        0,
+        100
+      ],
+      "slotAfter": [
+        "6687987765148343876296284911723511",
+        226881,
+        0,
+        100
+      ],
+      "inputRaw": "10",
+      "nominalFeePreviewRaw": "0",
+      "steps": [
+        {
+          "tickBefore": 227641,
+          "emptyBitmapWord": 889,
+          "targetTick": 227584,
+          "remainingBefore": "10",
+          "availableLessFee": "9",
+          "amountToTarget": "1",
+          "amountIn": "1",
+          "fee": "1",
+          "output": "2247432443",
+          "sqrtBefore": "6947205604227587749689167048744778",
+          "sqrtAfter": "6927176805886328934147037906968248",
+          "reachedBitmapBoundary": true
+        },
+        {
+          "tickBefore": 227583,
+          "emptyBitmapWord": 888,
+          "targetTick": 227328,
+          "remainingBefore": "8",
+          "availableLessFee": "7",
+          "amountToTarget": "2",
+          "amountIn": "2",
+          "fee": "1",
+          "output": "9885528652",
+          "sqrtBefore": "6927176805886328934147037906968248",
+          "sqrtAfter": "6839078380316247821734176908472988",
+          "reachedBitmapBoundary": true
+        },
+        {
+          "tickBefore": 227327,
+          "emptyBitmapWord": 887,
+          "targetTick": 227072,
+          "remainingBefore": "5",
+          "availableLessFee": "4",
+          "amountToTarget": "2",
+          "amountIn": "2",
+          "fee": "1",
+          "output": "9759806509",
+          "sqrtBefore": "6839078380316247821734176908472988",
+          "sqrtAfter": "6752100372602591562449075817519490",
+          "reachedBitmapBoundary": true
+        },
+        {
+          "tickBefore": 227071,
+          "emptyBitmapWord": 886,
+          "targetTick": 226816,
+          "remainingBefore": "2",
+          "availableLessFee": "1",
+          "amountToTarget": "2",
+          "amountIn": "1",
+          "fee": "1",
+          "output": "7194078825",
+          "sqrtBefore": "6752100372602591562449075817519490",
+          "sqrtAfter": "6687987765148343876296284911723511",
+          "reachedBitmapBoundary": false
+        }
+      ],
+      "actualFeeRaw": "4",
+      "outputRaw": "29086846429",
+      "feeGrowthBefore": [
+        "153104551090184496928245274876624",
+        "0"
+      ],
+      "feeGrowthAfter": [
+        "306209102180368993856490549753248",
+        "0"
+      ],
+      "reconstructedFeeGrowthDelta": "153104551090184496928245274876624",
+      "matches": {
+        "sqrt": true,
+        "tick": true,
+        "output": true,
+        "feeGrowth": true
+      },
+      "swapEvent": {
+        "eventName": "Swap",
+        "args": {
+          "id": "0xa016f9b205a58e08df6af30cf5e945af94b7d3ef9a462a2b1e735930bb603488",
+          "sender": "0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA",
+          "amount0": "-10",
+          "amount1": "29086846429",
+          "sqrtPriceX96": "6687987765148343876296284911723511",
+          "liquidity": "8890196",
+          "tick": 226881,
+          "fee": 100
+        }
+      }
+    }
+  ],
+  "totalActualFeeRaw": "8",
+  "positionClaimableRaw": "7",
+  "feeRoundingDustRaw": "1",
+  "claim": {
+    "hash": "0xc0c39d801d43a6d8014526a319ac399d93b0b926b9cab79b4261d361060e5cb3",
+    "status": "0x1",
+    "transfers": [
+      {
+        "address": "0x779ded0c9e1022225f8e0630b35a9b54be713736",
+        "eventName": "Transfer",
+        "args": {
+          "from": "0x6B5C32aD97EB42230138e02a21B0E6d811FD713D",
+          "to": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+          "value": "7"
+        }
+      }
+    ]
+  },
+  "runtimeCodeKeccak": "0x8ecda25d1d6a78ff07f58d913c24f9550115e5d1a755f7d9b3c1c536fffa3267",
+  "conclusion": "Two tiny swaps cross multiple empty bitmap word boundaries. Each step rounds its fee upward. UI instead floors total input times nominal fee. Fee growth and position payout then floor, leaving one raw unit unclaimable. No quoting runtime is used to produce this replay.",
+  "sources": [
+    "standalone/web/src/features/swap/TradeDetails.tsx:21",
+    ".analysis/branding/v4/lib/v4-core/src/libraries/SwapMath.sol",
+    ".analysis/branding/v4/lib/v4-core/src/libraries/Pool.sol",
+    ".analysis/branding/v4/lib/v4-core/src/libraries/TickBitmap.sol"
+  ],
+  "passed": true
+}
