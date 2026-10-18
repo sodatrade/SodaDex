@@ -1,0 +1,166 @@
+- generic [ref=f1e3]:
+  - link "跳转至主要内容" [ref=f1e4] [cursor=pointer]:
+    - /url: "#main"
+  - banner [ref=f1e5]:
+    - button "SodaDEX 首页" [ref=f1e6] [cursor=pointer]:
+      - generic [ref=f1e11]: SodaDEX
+      - generic [ref=f1e12]: TEST
+    - navigation "主导航" [ref=f1e13]:
+      - button "交易" [ref=f1e14] [cursor=pointer]
+      - button "探索" [ref=f1e15] [cursor=pointer]
+      - button "流动性" [ref=f1e16] [cursor=pointer]
+      - button "投资组合" [ref=f1e17] [cursor=pointer]
+      - link "矿机交易" [ref=f1e18] [cursor=pointer]:
+        - /url: /mining/#history
+      - link "发行 · IGNIX · 在新标签打开 IGNIX 测试发行页面" [ref=f1e544] [cursor=pointer]:
+        - /url: https://dev.3.meme/create
+        - text: 发行
+    - generic [ref=f1e23]:
+      - generic [ref=f1e24]: X Layer · 196
+      - button "0x6ecf…0545" [ref=f1e163] [cursor=pointer]
+      - button "偏好设置" [ref=f1e29] [cursor=pointer]:
+        - generic [ref=f1e34]: CNY
+  - generic [ref=f1e35]:
+    - generic [ref=f1e36]: TEST CONTRACTS
+    - paragraph [ref=f1e37]: X Layer 196 · 测试合约 · Gas 使用真实 OKB
+  - main [ref=f1e38]:
+    - generic [ref=f1e39]:
+      - generic [ref=f1e40]:
+        - paragraph [ref=f1e41]: FAB · X Layer · Mining TEST · 196
+        - heading "交易记录" [level=1] [ref=f1e548]
+        - paragraph [ref=f1e43]: 查看链上记录或本机提交进度；刷新、翻页和切换钱包不会重新发送交易。
+      - generic [ref=f1e44]: 196 · TEST
+    - generic [ref=f1e48]:
+      - generic [ref=f1e49]:
+        - navigation "196 测试业务" [ref=f1e50]:
+          - button "募资分红" [ref=f1e51] [cursor=pointer]
+          - button "矿机碎片" [ref=f1e52] [cursor=pointer]
+          - button "我的收益" [ref=f1e53] [cursor=pointer]
+          - button "交易记录" [active] [ref=f1e54] [cursor=pointer]
+          - button "发行测试项目" [ref=f1e55] [cursor=pointer]
+          - button "自动处理" [ref=f1e56] [cursor=pointer]
+        - generic [ref=f1e57]:
+          - status [ref=f1e58]: 合约与实现版本已核验
+          - button "刷新" [ref=f1e59] [cursor=pointer]
+      - group [ref=f1e164]:
+        - generic "钱包余额 1043776.513181 TEST-FAB 全部资产" [ref=f1e549] [cursor=pointer]:
+          - generic [ref=f1e166]: 钱包余额
+          - generic [ref=f1e170]:
+            - strong [ref=f1e171]: 1043776.513181 TEST-FAB
+            - generic [ref=f1e172]: 全部资产
+      - generic [ref=f1e550]:
+        - group "交易记录" [ref=f1e551]:
+          - button "链上记录" [ref=f1e552] [cursor=pointer]
+          - button "本机提交" [pressed] [ref=f1e553] [cursor=pointer]
+        - generic [ref=f1e554]:
+          - generic [ref=f1e555]:
+            - heading "交易记录 36" [level=2] [ref=f1e556]:
+              - text: 交易记录
+              - generic [ref=f1e557]: "36"
+            - group "交易记录" [ref=f1e558]:
+              - button "本机全部" [pressed] [ref=f1e559] [cursor=pointer]
+              - button "当前钱包" [ref=f1e560] [cursor=pointer]
+          - paragraph [ref=f1e561]: 查看链上记录或本机提交进度；刷新、翻页和切换钱包不会重新发送交易。
+          - list [ref=f1e562]:
+            - listitem [ref=f1e563]:
+              - generic [ref=f1e564]:
+                - strong [ref=f1e565]: 领取已入账分红
+                - link "0xb3ad…2906" [ref=f1e566] [cursor=pointer]:
+                  - /url: https://www.oklink.com/xlayer/tx/0xb3ad79577214a8b0e49ecf2593a859fabf3e060284faf540f92c550afbc52906
+                - generic [ref=f1e567]:
+                  - time [ref=f1e568]: 2026/10/18 18:43:25
+                  - text: · 0x6ecf…0545
+              - generic [ref=f1e569]: 成功
+            - listitem [ref=f1e570]:
+              - generic [ref=f1e571]:
+                - strong [ref=f1e572]: 注入矿场采购预算
+                - link "0x3308…56e2" [ref=f1e573] [cursor=pointer]:
+                  - /url: https://www.oklink.com/xlayer/tx/0x33081835e9fa3789fd7aaf088419c1dc666c5383cf791dd448a3384dcd3656e2
+                - generic [ref=f1e574]:
+                  - time [ref=f1e575]: 2026/10/18 18:41:44
+                  - text: · 0x6ecf…0545
+              - generic [ref=f1e576]: 成功
+            - listitem [ref=f1e577]:
+              - generic [ref=f1e578]:
+                - strong [ref=f1e579]: 烧币增加分红权重
+                - link "0x23ed…e043" [ref=f1e580] [cursor=pointer]:
+                  - /url: https://www.oklink.com/xlayer/tx/0x23ed3038a192c88a4fbcbdeec6d64f4377502b5cd5e831cfe52d7340816ae043
+                - generic [ref=f1e581]:
+                  - time [ref=f1e582]: 2026/10/18 18:39:30
+                  - text: · 0x6ecf…0545
+              - generic [ref=f1e583]: 成功
+            - listitem [ref=f1e584]:
+              - generic [ref=f1e585]:
+                - strong [ref=f1e586]: 代币授权 · 烧币增加分红权重
+                - link "0x60f2…4a81" [ref=f1e587] [cursor=pointer]:
+                  - /url: https://www.oklink.com/xlayer/tx/0x60f25d89e97c62f912319636674b8a7621993ac4ff749efc56c25f9d9d454a81
+                - generic [ref=f1e588]:
+                  - time [ref=f1e589]: 2026/10/18 18:38:16
+                  - text: · 0x6ecf…0545
+              - generic [ref=f1e590]: 成功
+            - listitem [ref=f1e591]:
+              - generic [ref=f1e592]:
+                - strong [ref=f1e593]: 卖出项目代币
+                - link "0x4b99…5a1d" [ref=f1e594] [cursor=pointer]:
+                  - /url: https://www.oklink.com/xlayer/tx/0x4b997a2ab2d4465f337634ea5a9aa7effce8c99cc7e46b3a11a263cdec075a1d
+                - generic [ref=f1e595]:
+                  - time [ref=f1e596]: 2026/10/18 18:36:36
+                  - text: · 0x6ecf…0545
+              - generic [ref=f1e597]: 成功
+            - listitem [ref=f1e598]:
+              - generic [ref=f1e599]:
+                - strong [ref=f1e600]: 代币授权 · 卖出项目代币
+                - link "0x8fbc…1a48" [ref=f1e601] [cursor=pointer]:
+                  - /url: https://www.oklink.com/xlayer/tx/0x8fbcebe82cfac9dee53478f8ee3f27afffebd87915a9d81c1472c67a1de31a48
+                - generic [ref=f1e602]:
+                  - time [ref=f1e603]: 2026/10/18 18:35:13
+                  - text: · 0x6ecf…0545
+              - generic [ref=f1e604]: 成功
+            - listitem [ref=f1e605]:
+              - generic [ref=f1e606]:
+                - strong [ref=f1e607]: 买入项目代币
+                - link "0x98ee…a48b" [ref=f1e608] [cursor=pointer]:
+                  - /url: https://www.oklink.com/xlayer/tx/0x98eeb6b12e39e83e70edb842c43d8758b93e7086666c937b986d0a4e8ac0a48b
+                - generic [ref=f1e609]:
+                  - time [ref=f1e610]: 2026/10/18 18:32:39
+                  - text: · 0x6ecf…0545
+              - generic [ref=f1e611]: 成功
+            - listitem [ref=f1e612]:
+              - generic [ref=f1e613]:
+                - strong [ref=f1e614]: 代币授权 · 买入项目代币
+                - link "0xdcd7…e827" [ref=f1e615] [cursor=pointer]:
+                  - /url: https://www.oklink.com/xlayer/tx/0xdcd77dc3b4cde6af9d0e362aa23b9aa09d077f1e6834ecbec6d0932f9cd8e827
+                - generic [ref=f1e616]:
+                  - time [ref=f1e617]: 2026/10/18 18:31:28
+                  - text: · 0x6ecf…0545
+              - generic [ref=f1e618]: 成功
+            - listitem [ref=f1e619]:
+              - generic [ref=f1e620]:
+                - strong [ref=f1e621]: 移除项目流动性
+                - link "0xe9bd…8a5f" [ref=f1e622] [cursor=pointer]:
+                  - /url: https://www.oklink.com/xlayer/tx/0xe9bd0f499e96ada6b76d28d3bd43b14ccd7ee3748ab6f670be2bcfcb9e8f8a5f
+                - generic [ref=f1e623]:
+                  - time [ref=f1e624]: 2026/10/18 18:29:38
+                  - text: · 0x6ecf…0545
+              - generic [ref=f1e625]: 成功
+            - listitem [ref=f1e626]:
+              - generic [ref=f1e627]:
+                - strong [ref=f1e628]: 代币授权 · 移除项目流动性
+                - link "0x765a…8112" [ref=f1e629] [cursor=pointer]:
+                  - /url: https://www.oklink.com/xlayer/tx/0x765ab6489154df6db259c26420a227eae8869bcc3cf5d73abf0bc4ad22d38112
+                - generic [ref=f1e630]:
+                  - time [ref=f1e631]: 2026/10/18 18:28:40
+                  - text: · 0x6ecf…0545
+              - generic [ref=f1e632]: 成功
+          - navigation "分页" [ref=f1e633]:
+            - generic [ref=f1e634]: 第 1–10 条，共 36 条
+            - generic [ref=f1e635]:
+              - button "上一页" [disabled] [ref=f1e636]
+              - generic [ref=f1e637]: 1 / 4
+              - button "下一页" [ref=f1e638] [cursor=pointer]
+    - paragraph [ref=f1e135]: X Layer 196 · 测试合约 · Gas 使用真实 OKB
+  - contentinfo [ref=f1e136]:
+    - status [ref=f1e137]:
+      - generic [ref=f1e139]: X Layer 196 · X Layer 已连接
+    - link "GitHub" [ref=f1e140] [cursor=pointer]:
+      - /url: https://github.com/sodatrade/SodaDex
