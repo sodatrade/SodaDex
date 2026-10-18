@@ -3,13 +3,26 @@ import { address, ServiceError, type RuntimeConfig } from './types.ts'
 export const TEST_SIGNER = '0x5DeAca6ecc97b07cA95D700f2BB26e4466774Ab6' as Address
 export const APPROVED_EXPIRED_RECOVERY_HASH = '0x0fb7c2a1a0a532e8531744e408a31422b2e0c43a93ed8847e7eec3a46707c3a5'
 export const TEST_RPC = 'https://testrpc.xlayer.tech/terigon'
+export function frontendOriginAllowed(c: RuntimeConfig, origin: string | null): origin is string {
+  return origin !== null && (origin === c.publicOrigin || (c.additionalPublicOrigins ?? []).includes(origin))
+}
+function validFrontendOrigin(value: unknown, local: boolean): value is string {
+  if (typeof value !== 'string') return false
+  try {
+    const origin = new URL(value)
+    return origin.origin === value && !origin.username && !origin.password &&
+      (origin.protocol === 'https:' || local && origin.protocol === 'http:' && ['127.0.0.1', 'localhost'].includes(origin.hostname))
+  } catch { return false }
+}
 export function validateConfig(c: RuntimeConfig, local = false): RuntimeConfig {
+  const additional = c.additionalPublicOrigins ?? []
+  if (!validFrontendOrigin(c.publicOrigin, local) || !Array.isArray(additional) ||
+      additional.some(origin => !validFrontendOrigin(origin, local) || origin === c.publicOrigin) ||
+      new Set(additional).size !== additional.length) throw new ServiceError('invalid_1952_config', 503)
   const origin = new URL(c.publicOrigin), rpc = new URL(c.rpcUrl)
   const ownedLoopback = local && rpc.protocol === 'http:' && rpc.hostname === '127.0.0.1' && rpc.pathname === '/' &&
     origin.protocol === 'http:' && origin.hostname === '127.0.0.1'
   if (c.chainId !== 1952 || !address(c.expectedSigner) || !ownedLoopback && c.expectedSigner.toLowerCase() !== TEST_SIGNER.toLowerCase() ||
-      origin.origin !== c.publicOrigin || origin.username || origin.password ||
-      !(origin.protocol === 'https:' || local && origin.protocol === 'http:' && ['127.0.0.1', 'localhost'].includes(origin.hostname)) ||
       !(c.rpcUrl === TEST_RPC || local && rpc.protocol === 'http:' && rpc.hostname === '127.0.0.1' && rpc.pathname === '/')) throw new ServiceError('invalid_1952_config', 503)
   if (c.expiredRecoveryHash !== undefined && c.expiredRecoveryHash !== APPROVED_EXPIRED_RECOVERY_HASH) throw new ServiceError('invalid_recovery_policy', 503)
   if (c.keeperAddress !== null && (!address(c.keeperAddress) || c.keeperAddress.toLowerCase() === c.expectedSigner.toLowerCase())) throw new ServiceError('invalid_keeper', 503)

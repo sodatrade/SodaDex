@@ -24,6 +24,7 @@
   ],
   "vars": {
     "MINING_PUBLIC_ORIGIN": "https://sodadex-mining-test-1952.jsmsdx2025.workers.dev",
+    "MINING_ADDITIONAL_PUBLIC_ORIGINS": "[\"https://sodadex-preview.jsmsdx2025.workers.dev\"]",
     "MINING_ADMISSION_ENABLED": "true",
     "MINING_EXECUTION_ENABLED": "true",
     "MINING_GAS_CAP_WEI": "456372669318633",

@@ -25,7 +25,7 @@ export interface OperatingPolicy {
   maxProcurementFabRaw: bigint; maxMinerPriceWei: bigint; maxConversionInputRaw: bigint; slippageBps: number
 }
 export interface RuntimeConfig {
-  chainId: 1952; publicOrigin: string; rpcUrl: string; admissionEnabled: boolean; executionEnabled: boolean
+  chainId: 1952; publicOrigin: string; additionalPublicOrigins?: readonly string[]; rpcUrl: string; admissionEnabled: boolean; executionEnabled: boolean
   expectedSigner: Address; keeperAddress: Address | null; gasCapWei: bigint; maxGasPerTransaction: bigint
   maxGasPriceWei: bigint; expiredRecoveryHash?: Hex; policy: OperatingPolicy | null; pollMs: number | null
 }

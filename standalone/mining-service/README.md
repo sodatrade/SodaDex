@@ -1,9 +1,19 @@
 # SodaDEX 1952 online mining service
 
 This package is isolated from the 196 order service and production. The Worker has
-no public `workers.dev` route. Only the 1952 frontend Worker's Service Binding
-should call `/v1/*`, preserving the exact configured `Origin` and
+no public `workers.dev` route. The approved SodaDEX main frontend and legacy 1952
+frontend use Service Bindings to call `/v1/*`, preserving the actual browser
+`Origin` (which must exactly match a configured frontend origin) and
 `X-SodaDEX-Network-Profile: 1952-mining-test` headers.
+
+The unified main-site origin is explicitly added alongside the original 1952
+origin; it is not substituted into old requests or signed messages. A launch
+challenge includes the requesting origin. Challenge retries and launch requests,
+including cached authorizations, must reconstruct the exact saved message for
+that same origin. Existing schema-1 challenges continue to work at their original
+site without migration. A signature issued at either site cannot be reused at
+the other. Both sites use the same projects, quotas, budgets, recovery records
+and Durable Object; adding an entry point does not reset any of them.
 
 `cloudflare/discovery-adapter.ts` connects the shared chain verifier. Root runtime,
 proxy/beacon implementation, factory ownership and project bindings are checked
@@ -85,7 +95,8 @@ Durable Object has picked up its new settings.
 
 | Variable | Meaning |
 | --- | --- |
-| `MINING_PUBLIC_ORIGIN` | Exact 1952 frontend origin |
+| `MINING_PUBLIC_ORIGIN` | Original exact 1952 frontend origin; retained for existing challenges |
+| `MINING_ADDITIONAL_PUBLIC_ORIGINS` | Optional JSON array of additional exact HTTPS frontend origins; no paths, wildcards or duplicates. Omission permits only the original origin. |
 | `MINING_ADMISSION_ENABLED` | Explicit `true` or `false` |
 | `MINING_EXECUTION_ENABLED` | Explicit `true` or `false` |
 | `MINING_SIGNER_PRIVATE_KEY` | Cloudflare Secret for the existing fixed 1952 authorizer S only |
@@ -129,7 +140,7 @@ an authorization deadline, canonical Factory logs prove whether creation happene
 Already-created projects are registered; uncreated requests become expired
 tombstones and release their reservations. A reorg invalidates that expiry proof
 and restores its reservation. Old request IDs are never authorized again.
-Reusing a request ID with another wallet or form is rejected. Reusing the exact
+Reusing a request ID with another wallet, form or origin is rejected. Reusing the exact
 verified request returns the same stored authorization while valid.
 
 Expiry history does not add one RPC per old request to every new launch. Existing

@@ -57,4 +57,20 @@ describe('strict 1952 HTTP boundary and explicit config', () => {
     expect(() => validateConfig({ ...loopback, publicOrigin: 'https://test.example' }, true)).toThrow('invalid_1952_config')
     expect(() => validateConfig({ ...loopback, rpcUrl: 'https://rpc.ignix.bot/rpc/196' }, true)).toThrow('invalid_1952_config')
   })
+  it('requires additional frontend origins to be explicit, exact, unique HTTPS origins', () => {
+    const origin = 'https://sodadex-preview.jsmsdx2025.workers.dev'
+    const env = { MINING_PUBLIC_ORIGIN: fixture().c.publicOrigin, MINING_1952: {} } as Parameters<typeof cloudConfig>[0]
+    expect(cloudConfig(env).config.additionalPublicOrigins).toEqual([])
+    const configured = cloudConfig({ ...env, MINING_ADDITIONAL_PUBLIC_ORIGINS: JSON.stringify([origin]) }).config
+    expect(configured.publicOrigin).toBe(env.MINING_PUBLIC_ORIGIN)
+    expect(configured.additionalPublicOrigins).toEqual([origin])
+    for (const value of ['', '{}', 'null', JSON.stringify(origin), '[42]',
+      ...[origin + '/', origin + '/mining', origin + '?x=1', origin + '#mining', 'http://example.com',
+        'https://user:password@example.com', '*', 'https://EXAMPLE.com', 'https://example.com:443'].map(v => JSON.stringify([v])),
+      JSON.stringify([origin, origin]), JSON.stringify([env.MINING_PUBLIC_ORIGIN])]) {
+      expect(() => cloudConfig({ ...env, MINING_ADDITIONAL_PUBLIC_ORIGINS: value }), value).toThrow('invalid_1952_config')
+    }
+    const invalid = { ...fixture().c, additionalPublicOrigins: 'https://example.com' } as unknown as ReturnType<typeof fixture>['c']
+    expect(() => validateConfig(invalid)).toThrow('invalid_1952_config')
+  })
 })

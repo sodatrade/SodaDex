@@ -5,11 +5,12 @@ import type { MiningProductDeployment } from '../../mining-products.ts'
 import { validMiningProductCall } from '../../mining-calls.ts'
 import { Repository } from './repository.ts'
 import { launchPayload } from './signatures.ts'
+import { frontendOriginAllowed } from './config.ts'
 import { read, assertCanonical, block } from './rpc.ts'
 import { ServiceError, same, hash, record, quantity, type AdmissionSigner, type Block, type Challenge, type Discovery, type ExpiryAnchor, type Rpc, type RuntimeConfig } from './types.ts'
 const EXPIRY_PROOF_BATCH = 8
-export function challengeMessage(c: RuntimeConfig, d: MiningProductDeployment, address: Address, requestId: string, form: MiningLaunchForm, expiresAt: number): string {
-  return `SodaDEX 1952 test project launch\nOrigin: ${c.publicOrigin}\nChain ID: 1952\nDeployment: ${d.version}\nAddress: ${address.toLowerCase()}\nRequest ID: ${requestId}\nExpires at: ${expiresAt}\nName: ${form.name}\nSymbol: ${form.symbol}\nMetadata URI: ${form.metadataURI}`
+export function challengeMessage(c: RuntimeConfig, d: MiningProductDeployment, address: Address, requestId: string, form: MiningLaunchForm, expiresAt: number, origin = c.publicOrigin): string {
+  return `SodaDEX 1952 test project launch\nOrigin: ${origin}\nChain ID: 1952\nDeployment: ${d.version}\nAddress: ${address.toLowerCase()}\nRequest ID: ${requestId}\nExpires at: ${expiresAt}\nName: ${form.name}\nSymbol: ${form.symbol}\nMetadata URI: ${form.metadataURI}`
 }
 export class Admission {
   constructor(readonly config: RuntimeConfig, readonly d: MiningProductDeployment, readonly repo: Repository,
@@ -17,14 +18,22 @@ export class Admission {
   private enabled(): void {
     if (!this.config.admissionEnabled || !this.config.policy || !this.signer || !same(this.signer.address, this.config.expectedSigner)) throw new ServiceError('admission_disabled', 503)
   }
-  challenge(address: Address, requestId: string, form: MiningLaunchForm): Challenge {
+  private assertOrigin(origin: string, challenge?: Challenge): void {
+    // Old schema-1 rows already bind their origin in the signed text. Rebuild the
+    // entire message instead of adding/migrating a field or trusting one line.
+    if (!frontendOriginAllowed(this.config, origin) || challenge && challenge.message !==
+        challengeMessage(this.config, this.d, challenge.address, challenge.requestId, challenge.form, challenge.expiresAt, origin)) throw new ServiceError('origin_denied', 403)
+  }
+  challenge(address: Address, requestId: string, form: MiningLaunchForm, origin = this.config.publicOrigin): Challenge {
     this.enabled()
+    this.assertOrigin(origin)
     return this.repo.change(s => {
       if (s.admissionExpiry?.pending) throw new ServiceError('expiry_reconciliation_pending', 503)
       const previous = s.challenges[requestId]
       if (previous) {
         if (!same(previous.address, address) || JSON.stringify(previous.form) !== JSON.stringify(form)) throw new ServiceError('request_id_conflict')
         if (previous.status === 'expired' || previous.expiresAt < this.now()) throw new ServiceError('challenge_expired')
+        this.assertOrigin(origin, previous)
         return previous
       }
       for (const [id, c] of Object.entries(s.challenges)) if (c.status === 'issued' && c.expiresAt < this.now()) delete s.challenges[id]
@@ -41,7 +50,7 @@ export class Admission {
       }
       const expiresAt = this.now() + 300
       const value: Challenge = { address, requestId, form, expiresAt, status: 'issued', createdAt: this.now(),
-        message: challengeMessage(this.config, this.d, address, requestId, form, expiresAt) }
+        message: challengeMessage(this.config, this.d, address, requestId, form, expiresAt, origin) }
       s.challenges[requestId] = value; return value
     })
   }
@@ -174,11 +183,13 @@ export class Admission {
     await this.repo.flush()
     if (eligible.length > 1) throw new ServiceError('expiry_reconciliation_pending', 503)
   }
-  async launch(address: Address, requestId: string, signature: Hex): Promise<NonNullable<Challenge['authorization']>> {
+  async launch(address: Address, requestId: string, signature: Hex, origin = this.config.publicOrigin): Promise<NonNullable<Challenge['authorization']>> {
     this.enabled()
+    this.assertOrigin(origin)
     let c = this.repo.read().challenges[requestId]
     if (!c || !same(c.address, address)) throw new ServiceError('challenge_missing', 404)
     if (c.status === 'expired' || c.expiresAt < this.now()) throw new ServiceError('challenge_expired')
+    this.assertOrigin(origin, c)
     let recovered: Address
     try { recovered = await recoverMessageAddress({ message: c.message, signature }) } catch { throw new ServiceError('wallet_signature_invalid', 401) }
     if (!same(recovered, address)) throw new ServiceError('wallet_signature_invalid', 401)
@@ -193,6 +204,7 @@ export class Admission {
     this.repo.change(s => {
       const current = s.challenges[requestId]
       if (!current || current.expiresAt < this.now() || ['registered', 'expired'].includes(current.status)) throw new ServiceError('challenge_expired')
+      this.assertOrigin(origin, current)
       if (current.status === 'issued') {
         const p = this.config.policy!, reserved = Object.values(s.challenges).filter(x => x.status !== 'issued' && x.status !== 'registered' && x.status !== 'expired')
         if (Object.keys(s.projects).length + reserved.length >= p.maxProjects ||

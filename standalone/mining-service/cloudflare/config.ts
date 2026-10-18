@@ -19,11 +19,19 @@ function policy(value: string | undefined): OperatingPolicy | null {
   return { maxProjects: p.maxProjects, maxProjectsPerWallet: p.maxProjectsPerWallet, allowedListingIds: p.allowedListingIds as string[], inventorySeller: p.inventorySeller,
     maxProcurementFabRaw: uint(p.maxProcurementFabRaw), maxMinerPriceWei: uint(p.maxMinerPriceWei), maxConversionInputRaw: uint(p.maxConversionInputRaw), slippageBps: p.slippageBps }
 }
+function additionalOrigins(value: string | undefined): string[] {
+  if (value === undefined) return []
+  let origins: unknown
+  try { origins = JSON.parse(value) } catch { throw new ServiceError('invalid_1952_config', 503) }
+  if (!Array.isArray(origins) || origins.some(origin => typeof origin !== 'string')) throw new ServiceError('invalid_1952_config', 503)
+  return origins as string[]
+}
 export function cloudConfig(env: MiningEnv): { config: RuntimeConfig; authorizer?: AdmissionSigner; keeper?: KeeperSigner } {
   if ([env.MINING_ADMISSION_ENABLED, env.MINING_EXECUTION_ENABLED].some(v => v !== undefined && v !== 'true' && v !== 'false')) throw new ServiceError('invalid_config', 503)
   const keeperAddress = !env.MINING_KEEPER_ADDRESS ? null : env.MINING_KEEPER_ADDRESS
   if (keeperAddress !== null && !address(keeperAddress)) throw new ServiceError('invalid_keeper', 503)
   const config = validateConfig({ chainId: 1952, rpcUrl: TEST_RPC, publicOrigin: env.MINING_PUBLIC_ORIGIN,
+    additionalPublicOrigins: additionalOrigins(env.MINING_ADDITIONAL_PUBLIC_ORIGINS),
     admissionEnabled: env.MINING_ADMISSION_ENABLED === 'true', executionEnabled: env.MINING_EXECUTION_ENABLED === 'true',
     expectedSigner: TEST_SIGNER, keeperAddress, ...(env.MINING_EXPIRED_RECOVERY_HASH === undefined ? {} : { expiredRecoveryHash: env.MINING_EXPIRED_RECOVERY_HASH as Hex }), gasCapWei: uint(env.MINING_GAS_CAP_WEI), maxGasPerTransaction: uint(env.MINING_MAX_GAS_PER_TRANSACTION),
     maxGasPriceWei: uint(env.MINING_MAX_GAS_PRICE_WEI), policy: policy(env.MINING_OPERATING_POLICY), pollMs: env.MINING_POLL_MS ? Number(env.MINING_POLL_MS) : null })

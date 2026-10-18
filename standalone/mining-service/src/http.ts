@@ -5,6 +5,7 @@ import { normalizeMiningLaunchForm } from '../../mining-signed-calls.ts'
 import { Admission } from './admission.ts'
 import { Directory } from './directory.ts'
 import { Repository } from './repository.ts'
+import { frontendOriginAllowed } from './config.ts'
 import { address, hash, record, ServiceError, type RuntimeConfig } from './types.ts'
 export interface Application { config: RuntimeConfig; d: MiningProductDeployment; repo: Repository; admission: Admission; directory: Directory }
 const uuid = (v: unknown): v is string => typeof v === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v)
@@ -40,11 +41,12 @@ async function body(request: Request): Promise<Record<string, unknown>> {
 export async function handleRequest(request: Request, app: Application): Promise<Response> {
   try {
     const { config: c, repo, d } = app, url = new URL(request.url)
-    if (request.headers.get('Origin') !== c.publicOrigin || request.headers.get('X-SodaDEX-Network-Profile') !== '1952-mining-test') throw new ServiceError('origin_denied', 403)
+    const origin = request.headers.get('Origin')
+    if (!frontendOriginAllowed(c, origin) || request.headers.get('X-SodaDEX-Network-Profile') !== '1952-mining-test') throw new ServiceError('origin_denied', 403)
     const envelope = { schemaVersion: 1, chainId: 1952, deploymentVersion: d.version }
     if (request.method === 'GET' && url.pathname === '/v1/status' && !url.search) {
       const s = repo.read()
-      return response({ ...envelope, serviceBuild: 'online-1952-20261018-v6-recovery', admissionEnabled: c.admissionEnabled, executionEnabled: c.executionEnabled,
+      return response({ ...envelope, serviceBuild: 'online-1952-20261018-v7-unified-origin', admissionEnabled: c.admissionEnabled, executionEnabled: c.executionEnabled,
         signer: c.expectedSigner, keeper: c.keeperAddress, budget: { capWei: String(c.gasCapWei), spentWei: s.spentWei, reservedWei: s.reservedWei },
         farm: s.farm ?? null, jobs: Object.values(s.jobs).toSorted((a, b) => b.updatedAt - a.updatedAt).slice(0, 50),
         ...(!c.policy ? { reason: 'policy_pending' } : {}) })
@@ -64,13 +66,13 @@ export async function handleRequest(request: Request, app: Application): Promise
       let form: MiningLaunchForm
       try { form = normalizeMiningLaunchForm(b.form as unknown as MiningLaunchForm) } catch { throw new ServiceError('invalid_launch_form', 400) }
       await app.admission.reconcileExpired()
-      const challenge = app.admission.challenge(b.address, b.requestId, form)
+      const challenge = app.admission.challenge(b.address, b.requestId, form, origin)
       await repo.flush()
       return response({ ...envelope, requestId: challenge.requestId, message: challenge.message, expiresAt: challenge.expiresAt, form: challenge.form })
     }
     if (url.pathname === '/v1/launch') {
       if (!exact(b, ['requestId', 'address', 'signature']) || !uuid(b.requestId) || !address(b.address) || typeof b.signature !== 'string' || !/^0x[0-9a-f]{130}$/i.test(b.signature)) throw new ServiceError('invalid_request', 400)
-      return response({ ...envelope, ...await app.admission.launch(b.address, b.requestId, b.signature as Hex) })
+      return response({ ...envelope, ...await app.admission.launch(b.address, b.requestId, b.signature as Hex, origin) })
     }
     if (url.pathname === '/v1/register') {
       if (!exact(b, ['transactionHash']) || !hash(b.transactionHash)) throw new ServiceError('invalid_request', 400)
