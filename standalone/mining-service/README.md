@@ -98,6 +98,24 @@ and restores its reservation. Old request IDs are never authorized again.
 Reusing a request ID with another wallet or form is rejected. Reusing the exact
 verified request returns the same stored authorization while valid.
 
+Expiry history does not add one RPC per old request to every new launch. Existing
+schema-1 databases first validate their saved expiry proofs under one canonical
+snapshot, at most eight distinct `(block number, hash)` groups per mutating request.
+Requests sharing a proof use one header read. The scan cursor and snapshot are
+durable across restarts; `expiry_reconciliation_pending` (HTTP 503) blocks new
+admission until subsequent challenge/launch requests finish that work. Snapshot
+GETs never advance this scan. Only a completed scan establishes a common ancestor
+anchor; a later canonical proof alone cannot certify earlier legacy proofs.
+
+Once established, one anchor check covers that fully verified history. An anchor
+or in-progress snapshot reorg restores **all** released reservations atomically
+and flushes them before further RPCs. Reconciliation then handles at most one
+expired authorization per event, including recovery of a created-but-unregistered
+project. An RPC failure retains the cursor/reservations; retry continues the work
+without deleting tombstones or making old request IDs reusable. The eight-proof
+read batch leaves the rest of the event budget for root validation, canonical
+checks and the single project recovery/launch path.
+
 A keeper operation first verifies the current bindings and simulates. A failed
 simulation, insufficient budget/balance, unknown nonce, fee-model change or price
 limit prevents the keeper signature/broadcast. The signed raw transaction, hash,

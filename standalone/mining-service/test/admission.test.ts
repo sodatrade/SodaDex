@@ -135,9 +135,10 @@ describe('chain-proven admission expiry', () => {
     const source = { ...f.discovery, verifyBase: async () => ({ number: '0x64' as const, hash: `0x${'ab'.repeat(32)}` as const, timestamp: 1400n }) }
     const late = new Admission(f.c, d, f.repo, f.rpc, source, signer, () => 1400)
     await late.reconcileExpired(); expect(f.repo.read().challenges[id].status).toBe('expired')
-    const old = f.repo.read().challenges[id].expiryProof!
-    f.repo.change(s => { s.challenges[id].expiryProof = { ...old, hash: `0x${'99'.repeat(32)}` } })
-    const earlierChain = { ...source, verifyBase: async () => ({ ...await source.verifyBase(), timestamp: 1200n }) }
+    // Replace the canonical anchor block, rather than mutating saved proof bytes.
+    const replacement = { ...await source.verifyBase(), hash: `0x${'99'.repeat(32)}` as const, timestamp: 1200n }
+    vi.spyOn(f.rpc, 'request').mockResolvedValue({ ...replacement, timestamp: '0x4b0' })
+    const earlierChain = { ...source, verifyBase: async () => replacement }
     const rewound = new Admission(f.c, d, f.repo, f.rpc, earlierChain, signer, () => 1400)
     await rewound.reconcileExpired(); expect(f.repo.read().challenges[id].status).toBe('verified')
     expect(f.repo.read().challenges[id].expiryProof).toBeUndefined()

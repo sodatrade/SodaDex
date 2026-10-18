@@ -41,6 +41,13 @@ export interface Challenge {
   expiryProof?: { number: Hex; hash: Hex; previousStatus: 'verified' | 'authorized' }
   authorization?: { requestId: string; form: MiningLaunchForm; expiresAt: number; tx: MiningTransaction }
 }
+export interface ExpiryAnchor { number: Hex; hash: Hex }
+export interface ExpiryReconciliation {
+  // Only a completed proof scan (or a newly proved expiry) establishes coverage.
+  anchor?: ExpiryAnchor
+  scan?: { snapshot: ExpiryAnchor; requestIds: string[]; cursor: number }
+  pending: boolean
+}
 export interface Execution {
   hash: Hex; raw: Hex; signer: Address; nonce: number; to: Address; data: Hex; gas: string; gasPrice: string
   maxCostWei: string; jobId: string; status: 'prepared' | 'broadcast' | 'confirmed' | 'reverted' | 'nonce_conflict'
@@ -52,6 +59,8 @@ export interface PersistentState {
   farm?: { capacity: number; minerCount: number; procurementBudgetFab: string };
   spentWei: string; reservedWei: string; cursor: number; requested: boolean
   authorizations: Record<string, { nonce: string; expiresAt: number }>
+  // Optional for schema-1 databases written before bounded expiry reconciliation.
+  admissionExpiry?: ExpiryReconciliation
 }
 export interface PreparedCall { to: Address; data: Hex; kind: JobKind; jobId: string; token?: Address; deadline?: number; verifiedBlock?: Block }
 export class ServiceError extends Error {

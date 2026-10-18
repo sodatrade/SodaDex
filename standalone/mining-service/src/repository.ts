@@ -27,6 +27,18 @@ export class Repository {
       this.storage.save(JSON.stringify(s)); return value
     })
   }
+  /** Reorg recovery restores every released slot before another network operation. */
+  restoreExpiryReservations(): void {
+    this.change(s => {
+      for (const c of Object.values(s.challenges)) {
+        if (c.status !== 'expired') continue
+        if (!c.expiryProof) throw new ServiceError('expiry_proof_missing', 503)
+        c.status = c.expiryProof.previousStatus
+        delete c.expiryProof
+      }
+      s.admissionExpiry = { pending: true }
+    })
+  }
   async flush(): Promise<void> { await this.storage.sync() }
 }
 export class MemoryStorage implements StateStorage {

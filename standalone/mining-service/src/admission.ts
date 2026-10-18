@@ -6,7 +6,8 @@ import { validMiningProductCall } from '../../mining-calls.ts'
 import { Repository } from './repository.ts'
 import { launchPayload } from './signatures.ts'
 import { read, assertCanonical, block } from './rpc.ts'
-import { ServiceError, same, hash, record, quantity, type AdmissionSigner, type Block, type Challenge, type Discovery, type Rpc, type RuntimeConfig } from './types.ts'
+import { ServiceError, same, hash, record, quantity, type AdmissionSigner, type Block, type Challenge, type Discovery, type ExpiryAnchor, type Rpc, type RuntimeConfig } from './types.ts'
+const EXPIRY_PROOF_BATCH = 8
 export function challengeMessage(c: RuntimeConfig, d: MiningProductDeployment, address: Address, requestId: string, form: MiningLaunchForm, expiresAt: number): string {
   return `SodaDEX 1952 test project launch\nOrigin: ${c.publicOrigin}\nChain ID: 1952\nDeployment: ${d.version}\nAddress: ${address.toLowerCase()}\nRequest ID: ${requestId}\nExpires at: ${expiresAt}\nName: ${form.name}\nSymbol: ${form.symbol}\nMetadata URI: ${form.metadataURI}`
 }
@@ -19,6 +20,7 @@ export class Admission {
   challenge(address: Address, requestId: string, form: MiningLaunchForm): Challenge {
     this.enabled()
     return this.repo.change(s => {
+      if (s.admissionExpiry?.pending) throw new ServiceError('expiry_reconciliation_pending', 503)
       const previous = s.challenges[requestId]
       if (previous) {
         if (!same(previous.address, address) || JSON.stringify(previous.form) !== JSON.stringify(form)) throw new ServiceError('request_id_conflict')
@@ -43,24 +45,84 @@ export class Admission {
       s.challenges[requestId] = value; return value
     })
   }
-  /** Release only chain-proven expired, uncreated slots. Tombstones keep IDs one-use. */
+  private async ancestor(proof: ExpiryAnchor, b: Block): Promise<boolean> {
+    if (BigInt(proof.number) > BigInt(b.number)) return false
+    return same(BigInt(proof.number) === BigInt(b.number) ? b.hash : (await block(this.rpc, proof.number)).hash, proof.hash)
+  }
+  private async rejectExpiryReorg(): Promise<never> {
+    this.repo.restoreExpiryReservations(); await this.repo.flush()
+    throw new ServiceError('chain_reorg', 503)
+  }
+  private async assertExpirySnapshot(b: Block): Promise<void> {
+    try { await assertCanonical(this.rpc, b) }
+    catch (error) {
+      if (error instanceof ServiceError && error.code === 'chain_reorg') return this.rejectExpiryReorg()
+      throw error
+    }
+  }
+  /** Migrate old proofs under one snapshot; never infer coverage from the highest old proof. */
+  private async reconcileHistory(b: Block): Promise<void> {
+    let history = this.repo.read().admissionExpiry
+    const previous = history?.scan?.snapshot ?? history?.anchor
+    if (previous && !await this.ancestor(previous, b)) {
+      this.repo.restoreExpiryReservations(); await this.repo.flush(); return
+    }
+    if (history?.anchor && !history.scan) return
+    if (!history?.scan) {
+      const expired = Object.values(this.repo.read().challenges).filter(c => c.status === 'expired')
+      if (!expired.length) return
+      for (const c of expired) if (!c.expiryProof) throw new ServiceError('expiry_proof_missing', 503)
+      expired.sort((a, c) => `${a.expiryProof!.number}:${a.expiryProof!.hash}`.localeCompare(`${c.expiryProof!.number}:${c.expiryProof!.hash}`))
+      this.repo.change(s => { s.admissionExpiry = { pending: true,
+        scan: { snapshot: { number: b.number, hash: b.hash }, requestIds: expired.map(c => c.requestId), cursor: 0 } } })
+      await this.repo.flush(); history = this.repo.read().admissionExpiry
+    }
+    const scan = history!.scan!, challenges = this.repo.read().challenges
+    const proofs = new Map<string, ExpiryAnchor>()
+    let cursor = scan.cursor
+    while (cursor < scan.requestIds.length) {
+      const c = challenges[scan.requestIds[cursor]]
+      if (c?.status === 'expired') {
+        if (!c.expiryProof) throw new ServiceError('expiry_proof_missing', 503)
+        const key = `${c.expiryProof.number}:${c.expiryProof.hash}`
+        if (!proofs.has(key) && proofs.size === EXPIRY_PROOF_BATCH) break
+        proofs.set(key, c.expiryProof)
+      }
+      cursor++
+    }
+    const canonical = await Promise.all([...proofs.values()].map(proof => this.ancestor(proof, b)))
+    if (canonical.some(value => !value)) {
+      this.repo.restoreExpiryReservations(); await this.repo.flush(); return
+    }
+    await this.assertExpirySnapshot(b)
+    this.repo.change(s => {
+      if (cursor === scan.requestIds.length) s.admissionExpiry = { pending: true, anchor: { number: b.number, hash: b.hash } }
+      else s.admissionExpiry!.scan!.cursor = cursor
+    })
+    await this.repo.flush()
+    if (cursor < scan.requestIds.length) throw new ServiceError('expiry_reconciliation_pending', 503)
+  }
+  /** Release one chain-proven slot per event. Tombstones keep IDs one-use. */
   async reconcileExpired(verified?: Block): Promise<void> {
     const candidates = Object.values(this.repo.read().challenges).filter(c =>
       c.status === 'expired' || ['verified', 'authorized'].includes(c.status) && c.expiresAt < this.now())
-    if (candidates.length === 0) return
+    if (candidates.length === 0) {
+      if (this.repo.read().admissionExpiry?.pending) {
+        this.repo.change(s => { s.admissionExpiry = { pending: false } }); await this.repo.flush()
+      }
+      return
+    }
     const b = verified ?? await this.discovery.verifyBase(this.rpc, this.d, this.config.expectedSigner)
+    await this.reconcileHistory(b)
+    const eligible = Object.values(this.repo.read().challenges).filter(c => ['verified', 'authorized'].includes(c.status) &&
+      c.expiresAt < this.now() && b.timestamp > BigInt(c.authorization?.expiresAt ?? c.expiresAt))
+    if (eligible.length) {
+      this.repo.change(s => { s.admissionExpiry = { ...s.admissionExpiry, pending: true } }); await this.repo.flush()
+    }
     const changes: { c: Challenge; project?: Awaited<ReturnType<Discovery['resolveProject']>> }[] = []
     const factoryEvents = parseAbi(['event TokenDeployed(address indexed token,address indexed manager,bytes32 salt)'])
-    for (const saved of candidates) {
+    for (const saved of eligible.slice(0, 1)) {
       const c = structuredClone(saved)
-      if (c.status === 'expired') {
-        if (!c.expiryProof) throw new ServiceError('expiry_proof_missing', 503)
-        const canonical = BigInt(c.expiryProof.number) <= BigInt(b.number) && same((await block(this.rpc, c.expiryProof.number)).hash, c.expiryProof.hash)
-        if (canonical) continue
-        c.status = c.expiryProof.previousStatus; delete c.expiryProof
-      }
-      const expiresAt = c.authorization?.expiresAt ?? c.expiresAt
-      if (b.timestamp <= BigInt(expiresAt)) { changes.push({ c }); continue }
       if (!c.verifiedAtBlock) throw new ServiceError('expiry_proof_missing', 503)
       let created: Address | undefined
       if (c.authorization) {
@@ -77,13 +139,16 @@ export class Admission {
           if (!same(event.args.manager, this.d.contracts.manager.address)) throw new ServiceError('expiry_proof_unavailable', 503)
           if (event.args.salt === salt) {
             if (created) throw new ServiceError('expiry_proof_unavailable', 503)
-            if (!same((await block(this.rpc, String(log.blockNumber))).hash, log.blockHash)) throw new ServiceError('chain_reorg', 503)
+            if (!same((await block(this.rpc, String(log.blockNumber))).hash, log.blockHash)) return this.rejectExpiryReorg()
             created = event.args.token
           }
         }
       }
       if (created) {
-        const project = await this.discovery.resolveProject(this.rpc, this.d, created, this.config.expectedSigner, b)
+        const project = await this.discovery.resolveProject(this.rpc, this.d, created, this.config.expectedSigner, b).catch(error => {
+          if (error instanceof Error && error.message === 'mining_discovery_reorg') return this.rejectExpiryReorg()
+          throw error
+        })
         if (project.symbol !== c.form.symbol) throw new ServiceError('expiry_project_mismatch', 503)
         c.status = 'registered'; changes.push({ c, project })
       } else {
@@ -91,7 +156,7 @@ export class Admission {
         c.status = 'expired'; changes.push({ c })
       }
     }
-    await assertCanonical(this.rpc, b)
+    await this.assertExpirySnapshot(b)
     this.repo.change(s => {
       for (const { c, project } of changes) {
         s.challenges[c.requestId] = c
@@ -99,8 +164,10 @@ export class Admission {
           s.projects[project.token.address.toLowerCase()] = project; s.revision++
         }
       }
+      s.admissionExpiry = { pending: eligible.length > 1, anchor: { number: b.number, hash: b.hash } }
     })
     await this.repo.flush()
+    if (eligible.length > 1) throw new ServiceError('expiry_reconciliation_pending', 503)
   }
   async launch(address: Address, requestId: string, signature: Hex): Promise<NonNullable<Challenge['authorization']>> {
     this.enabled()
