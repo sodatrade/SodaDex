@@ -1,4 +1,3 @@
-import { miningTargets, sameMiningAddress } from '../../../mining-calls'
 import type { MiningAddress, MiningHash, MiningProductDeployment } from '../../../mining-products'
 
 export interface MiningSubmission {
@@ -15,7 +14,9 @@ export function loadMiningJournal(d: MiningProductDeployment, storage: MiningSto
     return raw.filter((r): r is MiningSubmission => !!r && typeof r === 'object' &&
       typeof r.hash === 'string' && /^0x[0-9a-fA-F]{64}$/.test(r.hash) &&
       typeof r.from === 'string' && /^0x[0-9a-fA-F]{40}$/.test(r.from) && typeof r.to === 'string' &&
-      miningTargets(d).some((t) => sameMiningAddress(t.identity.address, r.to)) &&
+      // A historical receipt stays queryable before its dynamic project directory reloads.
+      // Execution validates the current target separately; this journal never sends calls.
+      /^0x[0-9a-fA-F]{40}$/.test(r.to) &&
       typeof r.action === 'string' && /^[a-zA-Z][a-zA-Z0-9]{0,60}$/.test(r.action) &&
       Number.isSafeInteger(r.at) && r.at > 0 && (r.approval === undefined || typeof r.approval === 'boolean') &&
       ['pending', 'success', 'reverted'].includes(r.status)).slice(-100)

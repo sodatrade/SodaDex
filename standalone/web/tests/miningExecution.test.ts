@@ -2,7 +2,8 @@ import { describe, expect, it, vi } from 'vitest'
 import { executeMiningCall, type MiningExecution } from '../src/mining/execution'
 import { miningData } from '../src/mining/protocol'
 import { loadMiningJournal, saveMiningSubmission, type MiningSubmission } from '../src/mining/journal'
-import { miningTestDeployment, miningTestRpc, MINING_TEST_ACCOUNT, MINING_TEST_HASH } from './fixtures/miningProducts'
+import { validMiningProductCall } from '../../mining-calls'
+import { miningTestAddress, miningTestDeployment, miningTestRpc, MINING_TEST_ACCOUNT, MINING_TEST_HASH } from './fixtures/miningProducts'
 
 function fixture(): { c: MiningExecution; request: ReturnType<typeof vi.fn>; submitted: MiningSubmission[] } {
   const d = miningTestDeployment(), submitted: MiningSubmission[] = []
@@ -57,6 +58,17 @@ describe('1952 wallet execution and recoverable hashes', () => {
     saveMiningSubmission(c.deployment, submitted[0], storage)
     expect(loadMiningJournal(c.deployment, storage)).toHaveLength(1)
     expect(loadMiningJournal({ ...c.deployment, version: 'other-version' }, storage)).toHaveLength(0)
+  })
+  it('keeps new-project history before its directory reloads without authorizing calls to unverified targets', () => {
+    const base = miningTestDeployment(), token = { ...base.projects[0].token, address: miningTestAddress(701) }
+    const live = { ...base, projects: [...base.projects, { ...base.projects[0], token }] }
+    const store = new Map<string, string>(), storage = { getItem: (key: string) => store.get(key) ?? null, setItem: (key: string, value: string) => { store.set(key, value) } }
+    const entry: MiningSubmission = { hash: MINING_TEST_HASH, from: MINING_TEST_ACCOUNT, to: token.address, action: 'projectSell', at: Date.now(), status: 'pending' }
+    saveMiningSubmission(live, entry, storage)
+    expect(loadMiningJournal(base, storage)).toEqual([entry])
+    saveMiningSubmission(base, { ...entry, hash: `0x${'22'.repeat(32)}`, to: base.contracts.fragmentVault.address, action: 'claim' }, storage)
+    expect(loadMiningJournal(live, storage)).toHaveLength(2)
+    expect(validMiningProductCall({ from: entry.from, to: token.address, value: '0x0', data: miningData('token', 'approve', [base.contracts.router.address, 1n]) }, base, true)).toBe(false)
   })
   it('treats a wallet transport rejection after submission as unknown, distinct from 4001', async () => {
     const { c, request, submitted } = fixture()
