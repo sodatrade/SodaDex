@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "phase": "mining-public-wallet-1952-v1",
+  "chainId": 1952,
+  "classification": "user-approved test execution budget reallocation",
+  "approvalReference": "call_480db8df063249af8a2d0d984a05fb04: 同意调配，总预算不增加",
+  "totalNewPhaseGasCapWei": "1300000000000000",
+  "walletGasCapWei": "1000000000000000",
+  "ownerPreparation": {
+    "beforeCapWei": "100000000000000",
+    "afterCapWei": "80000000000000",
+    "actualSpentWei": "36535281826764"
+  },
+  "keeper": {
+    "beforeAdditionalCapWei": "200000000000000",
+    "afterAdditionalCapWei": "220000000000000",
+    "originalSpentBaselineWei": "186372669318633",
+    "beforeCumulativeCapWei": "386372669318633",
+    "afterCumulativeCapWei": "406372669318633",
+    "budgetLedgerReset": false
+  },
+  "maxGasPerTransaction": "3000000",
+  "maxGasPriceWei": "30000000",
+  "principalLimitsChanged": false,
+  "otherOperatingPolicyChanged": false,
+  "migrations": [],
+  "productionTouched": false,
+  "chain196Touched": false,
+  "purpose": "Allow the already converted 0.00984263 TEST-FAB tax to be funded into the test mining farm; live execution must still pass simulation and cumulative budget checks."
+}
