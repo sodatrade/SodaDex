@@ -131,3 +131,63 @@ test('registration must match the exact new Manager receipt and TEST-ONLINE symb
  assert.throws(()=>assertSmokeRegistration({logs:[log]},d,{...project,token:{address:keeper}}))
  assert.throws(()=>assertSmokeRegistration({logs:[]},d,project))
 })
+function automationFixture() {
+ const token='0x1111111111111111111111111111111111111111',vault='0x2222222222222222222222222222222222222222',farm='0x3333333333333333333333333333333333333333'
+ const receipts=new Map(),headers=new Map(),hashes={},state={},saves=[]
+ for(const [i,kind]of ['conversion','fund','purchase'].entries()){
+  const hash=keccak256(toHex(BigInt(i+1))),blockNumber=toHex(BigInt(10+i)),blockHash=keccak256(toHex(BigInt(i+10)))
+  hashes[kind]=hash;receipts.set(hash,{transactionHash:hash,from:keeper,to:kind==='purchase'?farm:vault,status:'0x1',blockNumber,blockHash})
+  headers.set(blockNumber,{number:blockNumber,hash:blockHash})
+ }
+ let claims=0,head='0x20'
+ const s={d:{contracts:{farm:{address:farm}}},project:{token:{address:token},vault:{address:vault},holder:{address:token}},state,
+  save:()=>saves.push(structuredClone(state)),pause:async()=>{},m:{simpleMiningPlan:()=>({calls:[]})},
+  executePlan:async()=>{claims++},rpc:{request:async(method,args=[])=>{
+   if(method==='eth_getTransactionReceipt')return receipts.get(args[0])??null
+   if(method==='eth_getBlockByNumber')return headers.get(args[0])
+   if(method==='eth_blockNumber')return head
+   throw new Error(`Unexpected automation RPC ${method}`)
+  }}}
+ const jobs=kinds=>kinds.map(kind=>({kind,hash:hashes[kind],token,status:'confirmed'}))
+ return {s,receipts,headers,hashes,jobs,claims:()=>claims,saves,setHead:value=>{head=value}}
+}
+test('two polling rounds cannot combine a reorged cached conversion with later fund and purchase',async()=>{
+ const {awaitAutomationAndClaim}=await import('./mining-online-smoke.mjs'),f=automationFixture()
+ let polls=0,pauses=0
+ const api={loadOnlineStatus:async()=>{
+  polls++
+  if(polls===1)return {jobs:f.jobs(['conversion'])}
+  f.receipts.delete(f.hashes.conversion)
+  return {jobs:f.jobs(['conversion','fund','purchase'])}
+ }}
+ f.s.pause=async()=>{if(++pauses===2)throw new Error('fixture exhausted after two rounds')}
+ await assert.rejects(()=>awaitAutomationAndClaim(f.s,api,new Set()),/fixture exhausted after two rounds/)
+ assert.equal(polls,2);assert.equal(f.claims(),0);assert.notEqual(f.s.state.completed,true)
+ assert.equal(f.s.state.automationReceipts.conversion,undefined)
+ assert.ok(f.s.state.automationReceipts.fund);assert.ok(f.s.state.automationReceipts.purchase)
+})
+test('a reorg after claim prevents completed=true and removes the invalid cached receipt',async()=>{
+ const {awaitAutomationAndClaim}=await import('./mining-online-smoke.mjs'),f=automationFixture()
+ let claims=0
+ f.s.executePlan=async()=>{claims++;f.receipts.delete(f.hashes.fund)}
+ await assert.rejects(()=>awaitAutomationAndClaim(f.s,{loadOnlineStatus:async()=>({jobs:f.jobs(['conversion','fund','purchase'])})},new Set()),/changed after claim/)
+ assert.equal(claims,1);assert.equal(f.s.state.completed,false);assert.equal(f.s.state.automationReceipts.fund,undefined)
+ assert.ok(f.saves.every(snapshot=>snapshot.completed!==true))
+})
+test('every cached receipt field, original canonical block, and confirmation height is rechecked; invalid seen hashes are released',async()=>{
+ const {recheckAutomationReceipts}=await import('./mining-online-smoke.mjs')
+ for(const mutation of ['hash','from','to','status','blockNumber','blockHash','canonical','height']){
+  const f=automationFixture(),original=structuredClone(f.receipts.get(f.hashes.conversion)),confirmed=new Map([['conversion',original]]),seen=new Set([original.transactionHash])
+  const r=f.receipts.get(f.hashes.conversion)
+  if(mutation==='hash')r.transactionHash=f.hashes.fund
+  if(mutation==='from')r.from=ONLINE_OWNER
+  if(mutation==='to')r.to=f.s.d.contracts.farm.address
+  if(mutation==='status')r.status='0x0'
+  if(mutation==='blockNumber')r.blockNumber='0x2'
+  if(mutation==='blockHash')r.blockHash=f.hashes.fund
+  if(mutation==='canonical')f.headers.set(r.blockNumber,{number:r.blockNumber,hash:f.hashes.fund})
+  if(mutation==='height')f.setHead(r.blockNumber)
+  assert.equal(await recheckAutomationReceipts(f.s,confirmed,seen),false,mutation)
+  assert.equal(confirmed.size,0,mutation);assert.equal(seen.size,0,mutation)
+ }
+})
