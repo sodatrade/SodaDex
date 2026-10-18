@@ -46,7 +46,7 @@ export async function loadCursor<T extends ScanCursor>(url: URL, kind: T['kind']
   if (!record(value) || value.kind !== kind || value.query !== queryKey(url) || !record(value.anchor) || !record(value.asOf) || !record(value.range)) throw new RestartScan('CURSOR_EXPIRED', restartFromBlock)
   return value as unknown as T
 }
-class MissingAnchorBlock extends Error {}
+export class MissingAnchorBlock extends Error {}
 export async function blockAt(number: number, upstreamFetch: typeof fetch): Promise<Block> {
   const value = await rpc('eth_getBlockByNumber', [hex(number), false], upstreamFetch)
   if (value === null) throw new MissingAnchorBlock('Anchor no longer exists')

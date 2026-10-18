@@ -1,3 +1,7 @@
+import { indexedDexFetch } from './chain-index/log-cache'
+import { chainIndexApi } from './chain-index/durable'
+import type { IndexEnv } from './chain-index/types'
+export { SodaChainIndex } from './chain-index/durable'
 import { proxyRpc } from './rpc'
 import { dexApi } from './dex-api'
 import { referenceApi } from './reference-api'
@@ -6,7 +10,7 @@ import preferencesScript from '../../web/dist/preferences-script.json'
 import { networkProfile, publicNetworkProfile, type NetworkProfile } from '../../network-profile'
 import { miningApi, miningCatalog, type MiningApiBinding } from './mining-api'
 
-interface Env {
+interface Env extends IndexEnv {
   ASSETS: { fetch(request: Request): Promise<Response> }
   ORDERS_API?: { fetch: typeof fetch }
   MINING_API?: MiningApiBinding
@@ -39,6 +43,8 @@ export default {
     if (path === '/api/network') return request.method === 'GET'
       ? Response.json(publicNetworkProfile(profile), { headers: { 'Cache-Control': 'no-store' } })
       : Response.json({ error: 'GET required' }, { status: 405 })
+    if (path.startsWith('/api/index/')) return chainIndexApi(request, env, profile.id)
+    if (env.CHAIN_INDEX && profile.dexEnabled && ['/api/dex/pools', '/api/dex/events'].includes(path)) return chainIndexApi(request, env, profile.id, true)
     if (path === '/api/mining' || path.startsWith('/api/mining/')) return miningApi(request, env.MINING_API, profile)
     if (path === '/api/rpc') return proxyRpc(request, fetch, profile,
       profile.chainId === 1952 ? await miningCatalog(env.MINING_API, new URL(request.url).origin) : undefined)
@@ -48,7 +54,7 @@ export default {
       return Response.json({ error: 'Contracts are not deployed for this network profile', chainId: profile.chainId }, { status: 503 })
     if (path === '/api/orders' || path.startsWith('/api/orders/')) return ordersApi(request, env.ORDERS_API?.fetch.bind(env.ORDERS_API))
     if (path.startsWith('/api/reference/')) return referenceApi(request)
-    if (path.startsWith('/api/dex/')) return dexApi(request)
+    if (path.startsWith('/api/dex/')) return dexApi(request, indexedDexFetch(env))
     if (path.startsWith('/api/')) return Response.json({ error: 'Not found' }, { status: 404 })
     const response = await env.ASSETS.fetch(request)
     const headers = new Headers(response.headers)
