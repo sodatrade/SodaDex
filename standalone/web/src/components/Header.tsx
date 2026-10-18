@@ -29,6 +29,7 @@ export function Header({ page, onPageChange, wallet, onWallet, onSearch, onPrefe
   const m = workspaceMessages(locale)
   const group = miningPage ? undefined : primaryPage(page)
   const mining = miningMessages(locale)
+  const miningTarget = miningPage ?? 'fundraising'
   const pages: { id: Page; name: string }[] = [
     { id: 'swap', name: m.trade },
     { id: 'explore', name: m.explore },
@@ -56,16 +57,14 @@ export function Header({ page, onPageChange, wallet, onWallet, onSearch, onPrefe
             {item.name}
           </button>
         ))}
-        {(['fundraising', 'fragments'] as const).map((id) => (
-          <a key={id} href={`${NETWORK.dexEnabled ? '/mining/' : import.meta.env.BASE_URL}#${id}`}
-            className={`nav-product${miningPage === id ? ' active' : ''}`} aria-current={miningPage === id ? 'page' : undefined}
-            aria-disabled={navigationDisabled || undefined} onClick={(event) => {
-              if (navigationDisabled) { event.preventDefault(); return }
-              if (onMiningPageChange && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
-                event.preventDefault(); onMiningPageChange(id)
-              }
-            }}>{mining[id]}</a>
-        ))}
+        <a href={`${NETWORK.dexEnabled ? '/mining/' : import.meta.env.BASE_URL}#${miningTarget}`}
+          className={`nav-product${miningPage ? ' active' : ''}`} aria-current={miningPage ? 'page' : undefined}
+          aria-disabled={navigationDisabled || undefined} onClick={(event) => {
+            if (navigationDisabled) { event.preventDefault(); return }
+            if (onMiningPageChange && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+              event.preventDefault(); onMiningPageChange(miningTarget)
+            }
+          }}>{mining.minerTrading}</a>
         {!navigationDisabled && <IgnixLaunchLink />}
       </nav>
       <div className="header-actions">

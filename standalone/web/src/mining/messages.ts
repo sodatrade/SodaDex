@@ -1,7 +1,7 @@
 import type { Locale } from '../preferences/model'
 const zh = {
   chooseAction: '选择操作', custodyHint: 'NFT 与碎片份额互换', liquidityHint: '添加或取回池中资产', buyMinerHint: '从测试市场购买 NFT', burnHint: '毕业后增加分红权重', transactionSettings: '交易设置', viewHistory: '查看交易记录', settlementTools: '收益结算工具', currentWallet: '当前钱包', allWallets: '本机全部', allAssets: '全部资产',
-  fundraising: '募资分红', fragments: '矿机碎片', history: '交易记录', positions: '我的收益',
+  minerTrading: '矿机交易', fundraising: '募资分红', fragments: '矿机碎片', history: '交易记录', positions: '我的收益',
   ready: '1952 测试业务', verified: '合约与实现版本已核验', verifying: '正在核验合约版本…',
   versionError: '合约版本核验未通过，暂不能提交交易。', connect: '连接钱包后操作', selectProject: '选择测试项目',
   noProjects: '还没有已核验的募资项目。', balance: '钱包余额', shares: '碎片份额', lp: 'LP 份额',
@@ -48,7 +48,7 @@ const zh = {
 type Messages = { [K in keyof typeof zh]: string }
 const en: Messages = {
   chooseAction: 'Choose an action', custodyHint: 'Exchange NFTs and miner shares', liquidityHint: 'Supply or withdraw pool assets', buyMinerHint: 'Get an NFT from the test market', burnHint: 'Increase reward weight after graduation', transactionSettings: 'Transaction settings', viewHistory: 'View activity', settlementTools: 'Settlement tools', currentWallet: 'Current wallet', allWallets: 'All on this device', allAssets: 'All assets',
-  fundraising: 'Fundraising', fragments: 'Miner shares', history: 'Activity', positions: 'My rewards', ready: '1952 test products',
+  minerTrading: 'Miner trading', fundraising: 'Fundraising', fragments: 'Miner shares', history: 'Activity', positions: 'My rewards', ready: '1952 test products',
   verified: 'Contracts and implementations verified', verifying: 'Verifying contract versions…', versionError: 'Contract verification failed. Submissions are unavailable.',
   connect: 'Connect a wallet to continue', selectProject: 'Select test project', noProjects: 'No verified fundraising projects yet.', balance: 'Wallet balance',
   shares: 'Miner shares', lp: 'LP shares', input: 'Pay', output: 'Estimated receive', minimum: 'Minimum receive', maximum: 'Maximum used',
@@ -90,7 +90,7 @@ const en: Messages = {
 }
 const yue: Messages = {
   ...zh, chooseAction: '揀操作', custodyHint: 'NFT 同碎片份額互換', liquidityHint: '添加或者取回池內資產', buyMinerHint: '喺測試市場買 NFT', burnHint: '畢業後增加分紅權重', transactionSettings: '交易設定', viewHistory: '睇交易紀錄', settlementTools: '收益結算工具', currentWallet: '目前銀包', allWallets: '本機全部', allAssets: '全部資產',
-  fundraising: '募資分紅', fragments: '礦機碎片', history: '交易紀錄', positions: '我嘅收益', ready: '1952 測試業務',
+  minerTrading: '礦機交易', fundraising: '募資分紅', fragments: '礦機碎片', history: '交易紀錄', positions: '我嘅收益', ready: '1952 測試業務',
   verified: '合約同實現版本已核實', verifying: '核實緊合約版本…', versionError: '合約版本未核實通過，暫時唔可以提交交易。',
   connect: '連接銀包後操作', selectProject: '揀測試項目', noProjects: '未有已核實嘅募資項目。', balance: '銀包餘額', shares: '碎片份額', lp: 'LP 份額',
   input: '支付', output: '預計收到', minimum: '最少收到', maximum: '最多使用', assetA: '資產數量', assetB: 'FAB 數量', amount: '數量',

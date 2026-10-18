@@ -4,18 +4,19 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { Header } from '../src/components/Header'
 import { PreferencesProvider } from '../src/preferences/PreferencesProvider'
 import { apiPath } from '../src/lib/apiPath'
-import { miningTab } from '../src/mining/navigation'
+import { MINING_TABS, miningTab } from '../src/mining/navigation'
 import type { WalletController } from '../src/lib/useWallet'
 const wallet: WalletController = { options: [], session: undefined, status: 'idle', error: undefined,
   connect: async () => {}, switchChain: async () => {}, disconnect: () => {}, getIdentity: () => undefined }
 afterEach(() => vi.unstubAllEnvs())
 describe('unified main navigation and fixed mining mount', () => {
-  it('links both mining businesses on the same origin and preserves existing DEX navigation', async () => {
+  it('groups both mining businesses under one same-origin entry and preserves DEX navigation', async () => {
     const change = vi.fn()
     render(<PreferencesProvider><Header page="swap" onPageChange={change} wallet={wallet} onWallet={() => {}} onPreferences={() => {}} /></PreferencesProvider>)
-    expect(screen.getByRole('link', { name: '募资分红' })).toHaveAttribute('href', '/mining/#fundraising')
-    expect(screen.getByRole('link', { name: '矿机碎片' })).toHaveAttribute('href', '/mining/#fragments')
-    expect(screen.getByRole('link', { name: '矿机碎片' })).not.toHaveAttribute('target')
+    expect(screen.getByRole('link', { name: '矿机交易' })).toHaveAttribute('href', '/mining/#fundraising')
+    expect(screen.getByRole('link', { name: '矿机交易' })).not.toHaveAttribute('target')
+    expect(screen.queryByRole('link', { name: '募资分红' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: '矿机碎片' })).not.toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', { name: '交易' }))
     expect(change).toHaveBeenCalledWith('swap')
   })
@@ -23,10 +24,21 @@ describe('unified main navigation and fixed mining mount', () => {
     const change = vi.fn()
     render(<PreferencesProvider><Header page="swap" miningPage="fragments" navigationDisabled onMiningPageChange={change}
       onPageChange={change} wallet={wallet} onWallet={() => {}} onPreferences={() => {}} /></PreferencesProvider>)
-    expect(screen.getByRole('link', { name: '矿机碎片' })).toHaveAttribute('aria-current', 'page')
-    await userEvent.click(screen.getByRole('link', { name: '募资分红' }))
+    expect(screen.getByRole('link', { name: '矿机交易' })).toHaveAttribute('aria-current', 'page')
+    await userEvent.click(screen.getByRole('link', { name: '矿机交易' }))
     expect(change).not.toHaveBeenCalled()
     expect(screen.getByRole('button', { name: '交易' })).toBeDisabled()
+  })
+  it.each(MINING_TABS)('keeps the parent selected and the current %s route when revisiting it', async (tab) => {
+    const change = vi.fn()
+    render(<PreferencesProvider><Header page="swap" miningPage={tab} onMiningPageChange={change}
+      onPageChange={vi.fn()} wallet={wallet} onWallet={() => {}} onPreferences={() => {}} /></PreferencesProvider>)
+    const entry = screen.getByRole('link', { name: '矿机交易' })
+    expect(entry).toHaveAttribute('aria-current', 'page')
+    expect(entry).toHaveAttribute('href', `/mining/#${tab}`)
+    expect(screen.getByRole('button', { name: '交易' })).not.toHaveAttribute('aria-current')
+    await userEvent.click(entry)
+    expect(change).toHaveBeenCalledWith(tab)
   })
   it('mounts mining reads and signed-service requests without selecting an arbitrary network', () => {
     vi.stubEnv('BASE_URL', '/mining/')

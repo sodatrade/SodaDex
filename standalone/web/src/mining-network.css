@@ -31,7 +31,8 @@
 .mining-section-label { margin: 0 0 20px; font-size: 18px; font-weight: 600; letter-spacing: -.3px; color: var(--soda-text); }
 .mining-task-list { display: grid; gap: 12px; }
 .mining-task-list .mining-task { width: 100%; display: flex; justify-content: flex-start; gap: 12px; text-align: left; padding: 16px 12px; min-height: 74px; border: 1px solid var(--soda-line); background: var(--soda-field); }
-.mining-task-list .mining-task[aria-pressed="true"] { background: var(--soda-accent-dim); border-color: color-mix(in srgb, var(--soda-accent) 18%, transparent); color: var(--soda-highlight); }
+.mining-task-list .mining-task[aria-pressed="true"] { background: color-mix(in srgb, var(--soda-accent) 4%, var(--soda-surface)); border-color: color-mix(in srgb, var(--soda-accent) 24%, var(--soda-line)); color: var(--soda-text); }
+.mining-task[aria-pressed="true"] .mining-task-icon, .mining-task[aria-pressed="true"] > svg { color: var(--soda-highlight); }
 .mining-task > span:nth-child(2) { flex: 1; min-width: 0; }
 .mining-task strong { display: block; font-size: 14px; font-weight: 600; }
 .mining-task small { display: block; margin-top: 6px; font-size: 11px; font-weight: 400; line-height: 1.5; color: var(--soda-muted); }
@@ -51,6 +52,8 @@
 .mining-amount-field { display: flex; align-items: center; gap: 8px; background: var(--soda-field); border: 1px solid var(--soda-line); border-radius: var(--soda-radius-control); padding: 12px 16px; }
 .mining-amount-field:focus-within { border-color: var(--soda-accent); }
 .mining-amount-field input { border: 0; background: transparent; padding: 8px 0; font-size: 32px; font-weight: 500; letter-spacing: -.8px; font-variant-numeric: tabular-nums; }
+/* The enclosing amount field owns the visible focus border; avoid a second inner ring. */
+.mining-amount-field input:focus-visible { outline: none; }
 .mining-amount-field span { font-size: 12px; color: var(--soda-text); white-space: nowrap; }
 .mining-settings { font-size: 12px; margin: 2px 0 8px; padding: 4px 12px; border: 1px solid var(--soda-line); border-radius: var(--soda-radius-control); background: var(--soda-field); }
 .mining-settings summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 36px; cursor: pointer; color: var(--soda-muted); list-style: none; }

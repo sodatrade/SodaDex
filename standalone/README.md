@@ -120,7 +120,8 @@ npm --prefix standalone/web test
 
 ## 同站矿机业务（1952）
 
-主站导航中的「募资分红」与「矿机碎片」进入同域名 `/mining/#fundraising`、`/mining/#fragments`。
+主站导航以「矿机交易」统一进入同域名 `/mining/#fundraising`；进入后用内部页签选择「募资分红」或「矿机碎片」。
+已在矿机业务内时，顶栏入口保留当前子页；原 `/mining/#fundraising`、`/mining/#fragments` 深链接继续有效。
 矿机工作台复用主站 Header、主题、语言和展示货币；六个业务页签支持刷新、浏览器前进后退及直接链接。
 本标签页中用户选择过的钱包通过 `eth_accounts` 恢复连接；新访客不主动请求地址，钱包断开后不自动重连。
 页面不会自动切链；矿机业务要求用户点击切换到 1952，返回兑换后要求196。
