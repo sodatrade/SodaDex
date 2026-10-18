@@ -41,9 +41,11 @@ export function MiningRewardsPanel({ deployment: d, account, project, disabled, 
         <Button appearance="primary" disabled={disabled || !account || !rewards.data || rewards.data[index] === 0n}
           onClick={() => plan(s.to, s.role, 'claim')}>{m.claim}</Button>
         <Button disabled={disabled || !account} onClick={() => plan(s.to, s.role, 'harvest')}>{m.harvest}</Button>
-        {s.role !== 'fragmentVault' && <Button disabled={disabled || !account} onClick={() => plan(s.to, s.role, 'syncPaid')}>{m.sync}</Button>}
-        {s.role === 'holder' && <Button disabled={disabled || !account} onClick={() => plan(s.to, s.role, 'syncHistory', [16n])}>{m.catchup}</Button>}
       </div>
+      {s.role !== 'fragmentVault' && <details className="mining-settlement"><summary>{m.settlementTools}</summary><div className="mining-button-row">
+        <Button disabled={disabled || !account} onClick={() => plan(s.to, s.role, 'syncPaid')}>{m.sync}</Button>
+        {s.role === 'holder' && <Button disabled={disabled || !account} onClick={() => plan(s.to, s.role, 'syncHistory', [16n])}>{m.catchup}</Button>}
+      </div></details>}
     </Surface>)}
     {project && <Surface className="mining-action-card"><h2>{m.fundraising}</h2><div className="mining-button-row">
       <Button disabled={disabled || !account} onClick={() => plan(project.vault.address, 'projectVault', 'sync')}>{m.taxSync}</Button>

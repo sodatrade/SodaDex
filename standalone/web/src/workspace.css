@@ -26,11 +26,11 @@
 .app-shell .test-notice-label { color: var(--soda-highlight); border: 0; background: var(--soda-accent-dim); border-radius: 4px; padding: 3px 6px; font-size: 9px; letter-spacing: 0; font-weight: 600; }
 .app-shell main { min-width: 0; }
 .app-shell .trade-layout { display: block; max-width: var(--soda-page-width); padding: 26px 32px 64px; margin: auto; }
-.trade-intro { position: relative; height: 0; }
-.trade-intro > div { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-.trade-intro h1 { margin: 0; font-size: 20px; font-weight: 650; letter-spacing: -.5px; line-height: 1.5; }
-.trade-intro .eyebrow { color: var(--soda-muted); font-size: 10px; letter-spacing: .6px; margin: 0; }
-.bridge-link { position: absolute; right: 0; top: 6px; display: inline-flex; align-items: center; gap: 6px; color: var(--soda-muted); font-size: 11px; min-height: 36px; }
+.trade-intro { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
+.trade-intro > div { display: flex; flex-direction: row-reverse; align-items: center; gap: 14px; }
+.trade-intro h1 { margin: 0; font-size: 24px; font-weight: 650; letter-spacing: -.5px; line-height: 1.5; }
+.trade-intro .eyebrow { color: var(--soda-muted); font-size: 10px; letter-spacing: .6px; margin: 0; padding-left: 14px; border-left: 1px solid var(--soda-line); }
+.bridge-link { display: inline-flex; align-items: center; gap: 6px; color: var(--soda-muted); font-size: 11px; min-height: 36px; }
 .bridge-link:hover { color: var(--soda-highlight); }
 .app-shell .content-page { width: min(1264px, 100%); padding: 40px 32px 64px; }
 .app-shell .content-page .content-page { width: 100%; padding: 0; }
@@ -102,7 +102,7 @@
   .trade-intro { height: auto; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   .trade-intro > div { position: static; width: auto; height: auto; margin: 0; overflow: visible; clip-path: none; display: flex; align-items: center; flex-direction: row-reverse; gap: 8px; }
   .trade-intro h1 { font-size: 18px; }
-  .trade-intro .eyebrow { font-size: 8px; }
+  .trade-intro .eyebrow { font-size: 9px; padding-left: 8px; }
   .bridge-link { position: static; font-size: 10px; }
   .app-shell .page-heading h1 { font-size: 25px; }
   .app-shell .site-footer { padding: 14px 16px; gap: 12px; flex-wrap: wrap; }

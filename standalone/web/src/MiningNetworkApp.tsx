@@ -62,13 +62,13 @@ function MiningNetworkContent(): ReactElement {
     <div className="test-notice"><span className="test-notice-label">TESTNET</span><p>{m.note}</p></div>
     <main id="main" tabIndex={-1} className="content-page mining-network-page">
       <div className="page-heading mining-heading"><div><p className="eyebrow">FAB · {NETWORK.chainName} · {NETWORK.chainId}</p>
-        <h1>{MINING_PRODUCTS.state === 'ready' ? title : m.title}</h1><p>{tab === 'fragments' ? m.fragmentsIntro : m.fundraisingIntro}</p></div>
+        <h1>{MINING_PRODUCTS.state === 'ready' ? title : m.title}</h1><p>{tab === 'fragments' ? m.fragmentsIntro : tab === 'fundraising' ? m.fundraisingIntro : tab === 'positions' ? messages.dividendNote : tab === 'history' ? messages.historyNote : messages.testOnly}</p></div>
         <span className="mining-chain-chip"><Icon name="layers" size={15} />1952 · TESTNET</span></div>
-      {!wallet.session ? <div className="mining-wallet-prompt"><span>{messages.connect}</span><Button onClick={() => setWalletOpen(true)}>{t('connectWallet')}</Button></div>
-        : wallet.session.chainId !== 1952 ? <div className="mining-wallet-prompt" role="status"><span>{messages.miningWrongNetwork}</span>
+      {!wallet.session && tab !== 'fundraising' && tab !== 'fragments' ? <div className="mining-wallet-prompt"><span>{messages.connect}</span><Button onClick={() => setWalletOpen(true)}>{t('connectWallet')}</Button></div>
+        : wallet.session && wallet.session.chainId !== 1952 ? <div className="mining-wallet-prompt" role="status"><span>{messages.miningWrongNetwork}</span>
           <Button appearance="primary" disabled={wallet.status !== 'idle'} onClick={() => void wallet.switchChain()}>{m.switchTestnet}</Button></div> : null}
       {wallet.error && <p role="alert">{t(wallet.error)}</p>}
-      {MINING_PRODUCTS.state === 'ready' ? <MiningProductsWorkspace deployment={MINING_PRODUCTS} wallet={wallet} activeTab={tab} onTabChange={navigate} onBusyChange={setBusy} /> : <Surface className="mining-network-status" aria-labelledby="mining-network-title">
+      {MINING_PRODUCTS.state === 'ready' ? <MiningProductsWorkspace deployment={MINING_PRODUCTS} wallet={wallet} activeTab={tab} onTabChange={navigate} onBusyChange={setBusy} onConnect={!wallet.session ? () => setWalletOpen(true) : undefined} /> : <Surface className="mining-network-status" aria-labelledby="mining-network-title">
         <h2 id="mining-network-title">{m.pending}</h2><p>{m.detail}</p>
         <dl className="review-details">
           <div><dt>{m.network}</dt><dd>{NETWORK.chainName} · {NETWORK.chainId}</dd></div>

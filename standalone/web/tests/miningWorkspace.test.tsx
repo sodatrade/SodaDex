@@ -3,6 +3,7 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { type Hex } from 'viem'
+import * as plans from '../src/mining/plans'
 import { MiningProductsWorkspace } from '../src/mining/ProductsWorkspace'
 import type { WalletController } from '../src/lib/useWallet'
 import { PreferencesProvider } from '../src/preferences/PreferencesProvider'
@@ -12,7 +13,7 @@ vi.mock('../src/network', async () => {
   const { networkProfile } = await import('../../network-profile')
   return { NETWORK: networkProfile('1952-mining-test') }
 })
-afterEach(() => { vi.unstubAllGlobals(); localStorage.clear() })
+afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks(); localStorage.clear() })
 
 describe('1952 mining wallet workspace', () => {
   it('previews a quote, confirms exact approval and swap, and keeps the submitted history', async () => {
@@ -49,6 +50,32 @@ describe('1952 mining wallet workspace', () => {
     expect(request.mock.calls.filter(([a]) => a.method === 'eth_sendTransaction')).toHaveLength(2)
     await user.click(screen.getByRole('button', { name: '交易记录' }))
     expect(screen.getAllByText('成功')).toHaveLength(2)
+  })
+  it('locks task and page changes while a quote is being prepared', async () => {
+    const d = miningTestDeployment(), read = miningTestRpc(d, (name) => name === 'quoteExactIn' ? 10n ** 18n : undefined)
+    const identity = { address: MINING_TEST_ACCOUNT, chainId: 1952, provider: { request: vi.fn() }, revision: 1 }
+    const wallet: WalletController = { options: [], session: { ...identity, id: 'fixture', name: 'Fixture' }, status: 'idle', error: undefined,
+      connect: async () => {}, switchChain: async () => {}, disconnect: () => {}, getIdentity: () => identity }
+    vi.stubGlobal('fetch', vi.fn(async (_url, options) => {
+      const body = JSON.parse(String(options?.body)) as { method: Parameters<typeof read>[0]; params: unknown[]; id: string }
+      return Response.json({ jsonrpc: '2.0', id: body.id, result: await read(body.method, body.params) })
+    }))
+    let release: () => void = () => {}
+    const gate = new Promise<void>((resolve) => { release = resolve }), original = plans.buildMiningPlan
+    vi.spyOn(plans, 'buildMiningPlan').mockImplementation(async (input) => { await gate; return original(input) })
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } })
+    render(<QueryClientProvider client={client}><PreferencesProvider><MiningProductsWorkspace deployment={d} wallet={wallet} /></PreferencesProvider></QueryClientProvider>)
+    await screen.findByText('合约与实现版本已核验')
+    const user = userEvent.setup()
+    await user.click(screen.getByRole('button', { name: '矿机碎片' }))
+    await user.type(screen.getByRole('textbox', { name: '数量' }), '1')
+    await user.click(screen.getByRole('button', { name: '预览交易' }))
+    expect(screen.getByRole('button', { name: /矿机存取 NFT/ })).toBeDisabled()
+    expect(screen.getByRole('button', { name: '募资分红' })).toBeDisabled()
+    release()
+    const dialog = await screen.findByRole('dialog', { name: '确认交易内容' })
+    expect(within(dialog).getByText('FAB 换碎片')).toBeVisible()
+    expect(identity.provider.request).not.toHaveBeenCalled()
   })
   it('keeps booked claims available while the mining source is paused', async () => {
     const d = miningTestDeployment(), read = miningTestRpc(d, (name) => name === 'paused' ? true : undefined)

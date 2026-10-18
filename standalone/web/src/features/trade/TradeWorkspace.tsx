@@ -15,9 +15,9 @@ export interface TradeWorkspaceProps {
 export function TradeWorkspace({ active = true, activeMode = 'swap', orderMarketContext, orderModeControl, renderOrderPanel, ...swapProps }: TradeWorkspaceProps): ReactElement {
   const { t } = usePreferences(), [context, setContext] = useState<TradeMarketContext>()
   return <div className="dex-workspace">
-    {orderModeControl && <div className="trade-mode-bar">{orderModeControl}</div>}
     <div className="trade-terminal">
-      <div className="trade-order-column">
+      <div className={`trade-order-column${orderModeControl ? ' has-order-modes' : ''}`}>
+        {orderModeControl && <div className="trade-mode-bar">{orderModeControl}</div>}
         <div hidden={activeMode !== 'swap'}><GeneralSwapCard {...swapProps} onContextChange={setContext} /></div>
         {activeMode === 'limit' && context && renderOrderPanel?.(context)}
         <div className="trade-meta"><span><Icon name="layers" size={15} />{t(POOLS.ready ? 'poolsReady' : 'deploymentPending')}</span><span>{t('platformZero')}</span></div>

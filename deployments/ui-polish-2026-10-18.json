@@ -1,0 +1,52 @@
+{
+  "scope": "SodaDEX trade and integrated 1952 mining frontend presentation",
+  "requirement": "mining-products-1952",
+  "lifecycle": "active",
+  "repository": "sodatrade/SodaDex",
+  "owner": "/root",
+  "ownerWorktree": "/Users/LevyHoo/Documents/SodaDex",
+  "base": {
+    "branch": "codex/feat/sodadex-bootstrap",
+    "sha": "7506ce36138dfb6262ef11d1e3ca4828fec5ede3"
+  },
+  "branch": "codex/feat/mining-products-1952",
+  "parentHead": "75a87270f23a1bfe4a1c41a87819d0e8b16d7bee",
+  "pullRequest": "https://github.com/sodatrade/SodaDex/pull/2",
+  "design": {
+    "direction": "清晰、紧凑、轻盈；沿用紫红品牌色、默认浅色和深色主题",
+    "trade": "桌面左行情右订单，手机优先展示订单；兑换和限价标签置于同一表单顶部",
+    "mining": "四种任务收敛为一个当前表单，桌面侧栏、手机两列任务选择；余额、滑点和结算工具按需展开",
+    "unchanged": ["contract addresses", "fees", "slippage defaults", "transaction builders", "wallet execution", "network boundaries"]
+  },
+  "validation": {
+    "webFullSuite": { "passed": 449, "existingEnvironmentGatedSkipped": 22 },
+    "finalTargetedSuite": { "passed": 69, "files": 5 },
+    "webTypecheck": "passed",
+    "webLint": "passed",
+    "unifiedBuildAndCsp": "passed",
+    "workerSuite": { "passed": 184, "files": 25, "skipped": 0, "typecheck": "passed", "lint": "passed" },
+    "browser": {
+      "local": ["desktop trade and limit modes", "narrow mobile trade and limit modes", "1440 mining light Chinese", "390 mining dark English", "1024 mining light Cantonese", "disconnected editing and connect CTA", "simulated approve and swap success then history", "read failure blocks preview", "paused source keeps booked claims", "keyboard access to expanded settlement tools"],
+      "isolation": "Mining action evidence uses tests/browser/mining-visual.html with mocked RPC and a dedicated simulated provider. No extension discovery, remote service writes or chain broadcast.",
+      "limits": "Local 5174 market/API reads remained pending; existing public frontend was independently observed showing actual pool price and two swap records. This UI pass does not repeat prior real-wallet chain acceptance.",
+      "screenshotsLocalDirectory": ".analysis/ui-polish-2026-10-18/"
+    },
+    "correctedDuringReview": ["segmented buttons must not submit the form", "freeze navigation while preparing a quote", "retain missing-pair LP gate", "tolerate invalid stored history dates", "scope absolute header positioning to order tabs", "remove nested limit card and pad order history"],
+    "finalIndependentStaticReview": "No blocking regression found",
+    "newWalletSignatures": 0,
+    "newChainTransactions": 0,
+    "productionContractsModified": false,
+    "migrations": false
+  },
+  "visualReview": {
+    "scale": "1 broken, 3 competent, 4 strong, 5 exceptional; subjective self-review, not a competitor benchmark",
+    "taskClarity": { "score": 4, "evidence": "One active mining form and one primary action replace four equal-weight forms." },
+    "composition": { "score": 4, "evidence": "Market and order columns align; mining task rail shares the form baseline." },
+    "typography": { "score": 4, "evidence": "Amount and price numbers lead, metadata and secondary controls are subordinate." },
+    "density": { "score": 4, "evidence": "Settings, balances and settlement tools expand only when needed." },
+    "surfaces": { "score": 4, "evidence": "Shared light/dark tokens and magenta selection; nested limit surface removed." },
+    "states": { "score": 4, "evidence": "Disabled/read failure, paused claims, simulated success and keyboard disclosure states inspected." },
+    "responsive": { "score": 4, "evidence": "Mobile uses order-first stacking and a two-column mining task selector without page overflow." },
+    "distinctiveness": { "score": 3, "evidence": "Consistent SodaDEX accent and task layout, with intentionally familiar DEX controls." }
+  }
+}

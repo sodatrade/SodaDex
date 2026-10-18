@@ -16,7 +16,7 @@ describe('unified main navigation and fixed mining mount', () => {
     expect(screen.getByRole('link', { name: '募资分红' })).toHaveAttribute('href', '/mining/#fundraising')
     expect(screen.getByRole('link', { name: '矿机碎片' })).toHaveAttribute('href', '/mining/#fragments')
     expect(screen.getByRole('link', { name: '矿机碎片' })).not.toHaveAttribute('target')
-    await userEvent.click(screen.getByRole('button', { name: '交易', exact: true }))
+    await userEvent.click(screen.getByRole('button', { name: '交易' }))
     expect(change).toHaveBeenCalledWith('swap')
   })
   it('blocks navigation while a mining transaction is awaiting completion', async () => {
@@ -26,7 +26,7 @@ describe('unified main navigation and fixed mining mount', () => {
     expect(screen.getByRole('link', { name: '矿机碎片' })).toHaveAttribute('aria-current', 'page')
     await userEvent.click(screen.getByRole('link', { name: '募资分红' }))
     expect(change).not.toHaveBeenCalled()
-    expect(screen.getByRole('button', { name: '交易', exact: true })).toBeDisabled()
+    expect(screen.getByRole('button', { name: '交易' })).toBeDisabled()
   })
   it('mounts mining reads and signed-service requests without selecting an arbitrary network', () => {
     vi.stubEnv('BASE_URL', '/mining/')
