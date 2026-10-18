@@ -34,6 +34,19 @@ beforeEach(() => {
 })
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals() })
 describe('public submission chain recovery', () => {
+  it.each(['cancelled', 'filled', 'expired'] as const)('does not describe a chain-confirmed %s order as active while the service response is stale', async status => {
+    const saved = seed(); f.records.push(saved); mount()
+    await userEvent.click(screen.getByRole('button', { name: 'Query this order' }))
+    const activeNote = 'This order remains active in My limit orders. Creating another order does not cancel it.'
+    await screen.findByText(activeNote)
+    if (status === 'expired') f.chainTime(BigInt(saved.order.expiry))
+    else f.nonceStatus(status === 'cancelled' ? 1 : 2)
+    await userEvent.click(screen.getByRole('button', { name: 'Check on-chain authorization' }))
+    await waitFor(() => expect(readOrderSubmissions(orderDeployment)[0].recovery?.status).toBe(status))
+    expect(screen.queryByText(activeNote)).not.toBeInTheDocument()
+    expect(f.records[0].status).toBe('open')
+    expect(f.methods).toHaveLength(0)
+  })
   it('recovers an unsaved POST by cancelling the same nonce, explicitly starts anew, and stays released after reload', async () => {
     f.dropPost(); const view = mount()
     await waitFor(() => expect(screen.getByText('Balance: 1 WOKB')).toBeInTheDocument())

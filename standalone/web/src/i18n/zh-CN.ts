@@ -176,7 +176,7 @@ export const zhCN = {
   tradePermitApproval: '请在钱包中授权本次数量给兑换合约',
   tradeRefreshing: '授权已核对，正在刷新报价',
   tradeSimulating: '正在模拟本次兑换',
-  tradeSending: '模拟通过，请在钱包中确认兑换',
+  tradeSending: '请在钱包中确认交易',
   tradeConfirming: '交易已提交，等待链上回执',
   tradeSucceeded: '兑换已确认，余额已刷新',
   poolAddress: '测试池地址',

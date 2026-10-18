@@ -182,7 +182,7 @@ export const en = {
   tradePermitApproval: 'Approve this amount to the swap router in your wallet',
   tradeRefreshing: 'Approvals checked. Refreshing quote',
   tradeSimulating: 'Simulating your swap',
-  tradeSending: 'Simulation passed. Confirm the swap in your wallet',
+  tradeSending: 'Confirm the transaction in your wallet',
   tradeConfirming: 'Transaction submitted. Waiting for receipt',
   tradeSucceeded: 'Swap confirmed. Balances refreshed',
   poolAddress: 'Test pool address',

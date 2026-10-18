@@ -177,7 +177,7 @@ export const yueHK = {
   tradePermitApproval: '請喺錢包授權今次數量畀兌換合約',
   tradeRefreshing: '授權已核對，正在更新報價',
   tradeSimulating: '正在模擬今次兌換',
-  tradeSending: '模擬通過，請喺錢包確認兌換',
+  tradeSending: '請喺錢包確認交易',
   tradeConfirming: '交易已提交，等緊鏈上回執',
   tradeSucceeded: '兌換已確認，餘額已更新',
   poolAddress: '測試池地址',
