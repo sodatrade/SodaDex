@@ -43,6 +43,27 @@ at one canonical block. Unit fixtures remain separate from real-chain evidence.
   keeper signs only the fixed farm/vault operations and pays gas. The owner key
   is never needed by this package.
 
+## Verified public test operation
+
+The 2026-10-18 online phase is enabled on the independent 1952 frontend. Public
+acceptance created TEST-ONLINE through this service, graduated its curve, ran
+post-graduation buys/sells, procured the two approved miners, converted tax and
+funded the farm. The owner received 5.98386921 TEST-FAB with matching payment
+and ERC-20 events, withdrawn accounting and balance delta. The owner completed
+25 transactions including asset preparation, within its 0.0005 TEST OKB ceiling.
+The keeper remains enabled under its separate cumulative 0.0005 ceiling.
+
+[Public acceptance and current addresses](../../deployments/xlayer-1952/2026-10-18-online-acceptance.json)
+separates public CLI receipts, local browser evidence and timestamped ongoing
+keeper costs. The approved execution plan is retained as its immutable snapshot;
+its pre-execution readiness fields are historical. Do not reset/replay a CLI
+journal to repeat an acceptance run. Users can test through the normal frontend
+within the approved project and inventory limits. Production and chain 196 remain
+outside this service.
+Both allowlisted listings have been consumed. Further automatic purchases need
+additional approved inventory; the reserved retail listing remains available
+for manual frontend testing.
+
 ## Explicit configuration
 
 The 2026-10-18 online phase was explicitly approved for 1952 only. The checked-in
