@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "status": "approved-preparing",
+  "requirement": "mining-products-1952",
+  "preparedAt": "2026-10-18T03:19:15.375398+00:00",
+  "chainId": 1952,
+  "frontend": "https://sodadex-preview.jsmsdx2025.workers.dev/mining/",
+  "publicWallet": "0xe57f88c05810a9ad2b27f216665260c2d9f2b2da",
+  "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+  "keeper": "0x553D8C2e637fe67C5c7AdE3810E8Bc02799D41D4",
+  "walletExecution": "Actual Chrome+OKX from unified main frontend; agent verifies and confirms only approved1952test transactions under current user authorization; no programmatic substitute for business operations",
+  "gas": {
+    "newStageCapWei": "1755000000000000",
+    "walletCapWei": "1500000000000000",
+    "preparationCapWei": "5000000000000",
+    "keeperAdditionalCapWei": "250000000000000",
+    "keeperSpentBaselineWei": "440714882004243",
+    "keeperReservedBaselineWei": "0",
+    "proposedKeeperCumulativeCapWei": "690714882004243",
+    "maxGasPriceWei": "30000000",
+    "keeperMaxGasPerTransaction": "3000000",
+    "keeperTopUpMaxWei": "200000000000000",
+    "accounting": "Keeper top-up is gas allocation, not gas spent; count canonical receipt costs once. Preserve old ledger. Stop when any fresh upper bound exceeds remaining cap.",
+    "keeperBalanceBeforeWei": "59285117995757"
+  },
+  "principal": {
+    "testFabMaxRaw": "600000000000",
+    "nativeTestOkbMaxWei": "2000000000000",
+    "ownerFabTopUpMaxRaw": "450000000000",
+    "suggestedFabTransferRaw": "430174051289",
+    "targetWalletFabRaw": "600000000000",
+    "existingNftId": "5",
+    "noNftPurchase": true
+  },
+  "serviceChanges": {
+    "maxProjects": {
+      "before": 3,
+      "after": 4
+    },
+    "maxProjectsPerWallet": 2,
+    "newServiceBuild": "online-1952-20261018-v8-unified-retest",
+    "keeperBudget": "spent baseline plus approved new keeper allocation; no reset",
+    "preserved": [
+      "storage schema and actor",
+      "private keys",
+      "mining deployments",
+      "inventory whitelist",
+      "procurement cap",
+      "farm capacity",
+      "fee policy",
+      "existing exact-hash expired recovery"
+    ]
+  },
+  "frontendCoverage": [
+    "Launch TEST-MAIN with actual wallet authorization and chain receipt",
+    "Curve buy and sell, graduate using fixed5000FAB target",
+    "Post-graduation buy/sell, project LP add/remove",
+    "Burn small amount for7day credit and claim project dividends",
+    "Reuse NFT5: approve, deposit, confirm6000shares, redeem sameNFT",
+    "Fragment swap both ways, LP add/remove, holder/LP dividends",
+    "Native TEST-OKB to TEST-FAB micro swap",
+    "New main-origin transaction history reload/reconnect",
+    "New project taxes converted and funded, preserve old keeper ledger"
+  ],
+  "limitations": [
+    "Existing farm has4/4miners; no new procurement or farm redeployment in this round",
+    "Public7day expiry wait is not part of immediate wallet flow",
+    "35 historical successful wallet receipts only inform estimate, they are not new acceptance results",
+    "New owner preparation transfers are supporting transactions, not browser business coverage"
+  ],
+  "estimateEvidence": {
+    "historicalWalletGasUnitsWithoutNftPurchase": "38734945",
+    "walletWorstCaseWith20PercentAtMaxGasPriceWei": "1394458020000000",
+    "fabTransferEstimateGas": "34622",
+    "newKeeperTaxBatchHistoricalGasUnits": "2410494",
+    "readinessProof": "/tmp/sodadex-unified-mining-readiness-readonly.json",
+    "limitProof": "/tmp/sodadex-unified-retest-readonly-limits.json",
+    "keeperFundingProof": "/tmp/sodadex-unified-mining-keeper-funding-readonly.json"
+  },
+  "productionContractsModified": false,
+  "chain196Writes": false,
+  "gitTarget": {
+    "repository": "sodatrade/SodaDex",
+    "branch": "codex/feat/mining-products-1952",
+    "expectedHead": "7f157dfc2e4fe003cb5cb01be1710e2a0c159090",
+    "pr": 2,
+    "baseBranch": "codex/feat/sodadex-bootstrap",
+    "baseSha": "7506ce36138dfb6262ef11d1e3ca4828fec5ede3",
+    "ownerWorktree": "/Users/LevyHoo/Documents/SodaDex",
+    "lifecycle": "active"
+  },
+  "approved": true,
+  "approvalReference": "call_5d2a47a4142740d5b852a9acf948d995: 同意，按上述测试上限继续",
+  "walletConfirmationAuthorization": "User requests autonomous test-wallet confirmations because1952assets have no real value; only this approved test workflow, exact1952network/contracts and caps. No196 or production signing."
+}
