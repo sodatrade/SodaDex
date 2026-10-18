@@ -17,7 +17,7 @@ describe('1952 wallet execution and recoverable hashes', () => {
     const { c, request, submitted } = fixture()
     const tx = { from: MINING_TEST_ACCOUNT, to: c.deployment.contracts.fragmentVault.address, value: '0x0' as const, data: miningData('fragmentVault', 'claim') }
     await executeMiningCall(c, tx, 'claim')
-    expect(request.mock.calls.at(-1)?.[0]).toMatchObject({ method: 'eth_sendTransaction', params: [{ ...tx, chainId: '0x7a0', gas: '0x13334' }] })
+    expect(request.mock.calls.at(-1)?.[0]).toMatchObject({ method: 'eth_sendTransaction', params: [{ ...tx, chainId: '0x7a0', gas: '0x13334', gasPrice: '0x1' }] })
     expect(submitted.map((r) => r.status)).toEqual(['pending', 'success'])
   })
   it('stops a stale wallet before submission, including when events were omitted', async () => {

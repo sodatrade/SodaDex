@@ -45,7 +45,7 @@ export async function executeMiningCall(c: MiningExecution, tx: MiningTransactio
   if (!validMiningProductCall(tx, c.deployment, true)) throw new Error('miningInvalidAction')
   c.onStage('miningWallet')
   let hash: unknown
-  try { hash = await c.identity.provider.request({ method: 'eth_sendTransaction', params: [{ ...tx, chainId: '0x7a0', gas: toHex(gas) }] }) }
+  try { hash = await c.identity.provider.request({ method: 'eth_sendTransaction', params: [{ ...tx, chainId: '0x7a0', gas: toHex(gas), gasPrice: toHex(price) }] }) }
   catch (cause) {
     if (cause && typeof cause === 'object' && 'code' in cause && cause.code === 4001) throw new Error('miningRejected')
     // A transport rejection may occur AFTER broadcast. Never turn it into a retryable plan.
