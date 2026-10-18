@@ -1,16 +1,39 @@
 {
-  "$schema":"../../worker/node_modules/wrangler/config-schema.json",
-  "name":"sodadex-mining-api-test-1952",
-  "main":"index.ts","tsconfig":"../tsconfig.json",
-  "compatibility_date":"2026-10-17",
-  "workers_dev":false,"preview_urls":false,
-  "durable_objects":{"bindings":[{"name":"MINING_1952","class_name":"SodaMining1952"}]},
-  "migrations":[{"tag":"sodadex-mining-1952-v1","new_sqlite_classes":["SodaMining1952"]}],
-  "vars":{
-    "MINING_PUBLIC_ORIGIN":"https://sodadex-mining-test-1952.jsmsdx2025.workers.dev",
-    "MINING_ADMISSION_ENABLED":"false","MINING_EXECUTION_ENABLED":"false",
-    "MINING_GAS_CAP_WEI":"0","MINING_MAX_GAS_PER_TRANSACTION":"0","MINING_MAX_GAS_PRICE_WEI":"0",
-    "MINING_OPERATING_POLICY":"policy_pending"
+  "$schema": "../../worker/node_modules/wrangler/config-schema.json",
+  "name": "sodadex-mining-api-test-1952",
+  "main": "index.ts",
+  "tsconfig": "../tsconfig.json",
+  "compatibility_date": "2026-10-17",
+  "workers_dev": false,
+  "preview_urls": false,
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "MINING_1952",
+        "class_name": "SodaMining1952"
+      }
+    ]
   },
-  "observability":{"enabled":false}
+  "migrations": [
+    {
+      "tag": "sodadex-mining-1952-v1",
+      "new_sqlite_classes": [
+        "SodaMining1952"
+      ]
+    }
+  ],
+  "vars": {
+    "MINING_PUBLIC_ORIGIN": "https://sodadex-mining-test-1952.jsmsdx2025.workers.dev",
+    "MINING_ADMISSION_ENABLED": "false",
+    "MINING_EXECUTION_ENABLED": "false",
+    "MINING_GAS_CAP_WEI": "500000000000000",
+    "MINING_MAX_GAS_PER_TRANSACTION": "2500000",
+    "MINING_MAX_GAS_PRICE_WEI": "30000000",
+    "MINING_OPERATING_POLICY": "{\"maxProjects\":3,\"maxProjectsPerWallet\":2,\"allowedListingIds\":[\"3\",\"4\"],\"inventorySeller\":\"0x6ecf746b078d46391f8C425B150153212F7C0545\",\"maxProcurementFabRaw\":\"200000000\",\"maxMinerPriceWei\":\"10000000000\",\"maxConversionInputRaw\":\"1000000000000000000000000\",\"slippageBps\":50}",
+    "MINING_KEEPER_ADDRESS": "0x553D8C2e637fe67C5c7AdE3810E8Bc02799D41D4",
+    "MINING_POLL_MS": "15000"
+  },
+  "observability": {
+    "enabled": false
+  }
 }
