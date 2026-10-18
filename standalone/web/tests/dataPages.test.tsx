@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { act, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type { ReactElement } from 'react'
 import { describe, expect, it, vi } from 'vitest'
@@ -21,6 +21,24 @@ function mount(ui: ReactElement): void {
   render(<QueryClientProvider client={client}><PreferencesProvider>{ui}</PreferencesProvider></QueryClientProvider>)
 }
 describe('market and history user paths', () => {
+  it('refreshes a cold index without user action and leaves a manual refresh available', async () => {
+    vi.useFakeTimers({ toFake: ['setInterval', 'clearInterval'] })
+    try {
+      const index = { schemaVersion: 1 as const, chainId: 196, deploymentVersion: 'test', head: base.asOf,
+        indexedThrough: 1, fromBlock: 1, syncing: true, lastError: null, generation: 0 }
+      const getEvents = vi.spyOn(api, 'getEvents').mockResolvedValueOnce({ ...base, index, events: [], nextCursor: null })
+        .mockResolvedValue({ ...base, index: { ...index, indexedThrough: 10, syncing: false }, nextCursor: null,
+          events: [{ id: 'indexed', event: 'Indexed swap', protocol: 'v3', address: pool.id, blockNumber: 10,
+            blockHash: hash, transactionHash: hash, logIndex: 0, args: {}, transactionFrom: null }] })
+      const wallet: WalletController = { options: [], session: undefined, error: undefined, status: 'idle', connect: vi.fn(), disconnect: vi.fn(), switchChain: vi.fn(), getIdentity: vi.fn() }
+      mount(<HistoryPage wallet={wallet} onConnect={vi.fn()} />)
+      await screen.findByText(/正在同步链上记录/)
+      await act(async () => { await vi.advanceTimersByTimeAsync(5_000) })
+      expect(await screen.findByText('Indexed swap')).toBeVisible()
+      expect(getEvents).toHaveBeenCalledTimes(2)
+      expect(screen.getByRole('button', { name: /^刷新$/ })).toBeEnabled()
+    } finally { vi.useRealTimers() }
+  })
   it('pages every loaded event and keeps asynchronously loaded cursor pages bounded', async () => {
     const events = Array.from({ length: 23 }, (_, i): api.DexEvent => ({ id: `event-${i}`, event: `Swap-${i}`, protocol: 'v3', address: pool.id,
       blockNumber: i + 1, blockHash: hash, transactionHash: hash, logIndex: i, args: {}, transactionFrom: null }))

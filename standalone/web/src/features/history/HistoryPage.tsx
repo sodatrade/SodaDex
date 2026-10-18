@@ -3,8 +3,10 @@ import { useEffect, useState, type ReactElement } from 'react'
 import type { Hex } from 'viem'
 import { Button, Icon } from '../../components/primitives'
 import { Pagination, usePagination } from '../../components/Pagination'
+import { IndexProgress } from '../../components/IndexProgress'
 import { CHAIN_ID, EXPLORER_URL, shortenAddress } from '../../domain/assets'
 import { dataMessages } from '../../i18n/data'
+import { indexMessages } from '../../i18n/indexing'
 import type { WalletController } from '../../lib/useWallet'
 import { usePreferences } from '../../preferences/context'
 import { DataError, getEvents, mergeEvents, type EventQuery } from '../market/api'
@@ -41,6 +43,11 @@ export function HistoryPage({ wallet, onConnect, initialScope = 'all', scopes = 
       : data.coverage.nextFromBlock === null ? undefined
         : { ...request, cursor: undefined, fromBlock: data.coverage.nextFromBlock, toBlock: request.toBlock ?? data.asOf.number },
     enabled: scope === 'all' || (scope === 'mine' && !!account), retry: false,
+    refetchInterval: (query) => {
+      const pages = query.state.data?.pages, index = pages?.[0]?.data.index
+      return pages?.length === 1 && index ? index.syncing || index.lastError ? 5_000 : 30_000 : false
+    },
+    refetchOnWindowFocus: (query) => (query.state.data?.pages.length ?? 0) <= 1,
   })
   const restart = events.error instanceof DataError && events.error.code !== 'UNAVAILABLE'
   const rows = restart ? [] : mergeEvents(events.data?.pages.map((p) => p.data) ?? [])
@@ -68,12 +75,17 @@ export function HistoryPage({ wallet, onConnect, initialScope = 'all', scopes = 
       </li>)}</ul>
       <Pagination {...localPagination} />
     </> : <>
+      <Button disabled={events.isFetching || (scope === 'mine' && !account)} onClick={() => {
+        chainPagination.setPage(0)
+        void queryClient.resetQueries({ queryKey: ['dex-events', scope, scope === 'mine' ? account : undefined], exact: true })
+      }}><Icon name="refresh" size={14} />{indexMessages(locale).retry}</Button>
       {events.isFetching && <p role="status">{m.loading}</p>}
       {events.isError && <p className="error-text" role="alert">{restart ? m.scanRestart : m.unavailable} <Button onClick={() => {
         if (restart) void queryClient.resetQueries({ queryKey: ['dex-events', scope, scope === 'mine' ? account : undefined], exact: true })
         else void events.refetch()
       }}>{m.retry}</Button></p>}
-      {last && <p className="data-muted">{m.scanned}: #{events.data?.pages[0]?.data.coverage.fromBlock} – #{last.coverage.toBlock}
+      <IndexProgress status={last?.index} />
+      {last && !last.index && <p className="data-muted">{m.scanned}: #{events.data?.pages[0]?.data.coverage.fromBlock} – #{last.coverage.toBlock}
         {' · '}{events.hasNextPage ? m.partial : m.complete} · {m.snapshot} #{last.asOf.number}</p>}
       {last && rows.length === 0 && <p>{m.noData}</p>}
       <ol className="history-list" start={chainPagination.start || 1}>{chainPagination.items.map((r) => <li key={r.id}>

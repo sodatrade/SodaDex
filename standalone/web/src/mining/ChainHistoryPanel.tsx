@@ -20,7 +20,9 @@ function ChainHistory({ deployment, account }: { deployment: MiningProductDeploy
   const cursor = cursors[page]
   const events = useQuery({ queryKey: ['mining-chain-history', deployment.version, mine ? account : undefined, cursor],
     queryFn: ({ signal }) => loadMiningHistory(deployment, { ...(mine && account ? { owner: account } : {}), ...(cursor ? { cursor } : {}) }, signal),
-    enabled: !mine || !!account, retry: false, staleTime: 15_000 })
+    enabled: !mine || !!account, retry: false, staleTime: 15_000,
+    refetchInterval: (query) => page === 0 ? query.state.data?.index.syncing || query.state.data?.index.lastError ? 5_000 : 30_000 : false,
+    refetchOnWindowFocus: page === 0 })
   const result = events.data
   const restart = events.error instanceof MiningIndexError && events.error.restart
   const reset = (): void => { setPage(0); setCursors([undefined]) }
