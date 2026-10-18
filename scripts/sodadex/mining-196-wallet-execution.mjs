@@ -19,7 +19,7 @@ export class Mining196WalletExecution {
         deploymentJournal.failure || deploymentJournal.transactions.length !== 55 ||
         deploymentJournal.transactions.some(r => r.status !== '0x1') ||
         approval.approved !== true || approval.totalOwnerOutlayCapWei !== String(TOTAL_CAP) ||
-        deploymentJournal.planHash !== approval.planHash || typeof validateIntent !== 'function' ||
+        deploymentJournal.planHash !== approval.planHash || !same(deploymentJournal.owner,rehearsal.owner) || typeof validateIntent !== 'function' ||
         !/^0x[0-9a-fA-F]{40}$/.test(keeper) || same(keeper, rehearsal.owner) || same(keeper, rehearsal.stack.signer))
       throw new Error('Complete approved public deployment and restricted validator required')
     this.file = file; this.owner = rehearsal.owner; this.keeper = keeper; this.validateIntent = validateIntent
@@ -68,6 +68,9 @@ export class Mining196WalletExecution {
       throw new Error('Intent is outside the isolated test acceptance')
     }
     const rpc=(m,p)=>this.rpcClient.rpc(m,p), nonce=BigInt(this.state.startNonce)+BigInt(this.state.transactions.length)
+    // A canonical final block fixes its entire ancestry, including earlier cost receipts.
+    await this.checkAnchor(this.base.transactions.at(-1).receipt)
+    if(this.state.transactions.length)await this.checkAnchor(this.state.transactions.at(-1).receipt)
     if(await rpc('eth_chainId')!=='0xc4' || BigInt(await rpc('eth_getTransactionCount',[this.owner,'latest']))!==nonce ||
         BigInt(await rpc('eth_getTransactionCount',[this.owner,'pending']))!==nonce) throw new Error('Chain/nonce drift')
     const call={from:this.owner,to:tx.to,data,value:toHex(value)}
@@ -78,11 +81,7 @@ export class Mining196WalletExecution {
     this.assertBudget(gas*price,native,funding)
     await this.rpcClient.checkFeeModel(BigInt(data.length/2+256),gas)
     if(BigInt(await rpc('eth_getBalance',[this.owner,'pending']))<value+gas*price)throw new Error('Insufficient balance')
-    const folder=path.join(os.homedir(),'.local/share/sodadex/wallets/xlayer-test-owner')
-    const raw=execFileSync('cast',['mktx','--rpc-url','https://rpc.ignix.bot/rpc/196','--chain','196','--legacy',
-      '--nonce',String(nonce),'--gas-limit',String(gas),'--gas-price',String(price),'--value',String(value),
-      '--keystore',path.join(folder,'owner'),'--password-file',path.join(folder,'password'),tx.to,data],
-      {encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim()
+    const raw=await this.signIntent({nonce,gas,price,value,to:tx.to,data})
     const hash=await validateSignedMiningTransaction(raw,{from:this.owner,to:tx.to,data,value,nonce,gas,gasPrice:price,chainId:196})
     await this.rpcClient.checkFeeModel(BigInt((raw.length-2)/2),gas)
     this.state.pending={hash,purpose,nonce:String(nonce),to:tx.to,dataKeccak256:keccak256(data),value:String(value),gas:String(gas),submission:'unknown'}
@@ -113,5 +112,20 @@ export class Mining196WalletExecution {
     this.save();this.assertBudget(0n,0n,0n)
     if(this.state.failure)throw new Error(this.state.failure)
     return hash
+  }
+  async checkAnchor(saved) {
+    if(!saved)throw new Error('Missing settled receipt anchor')
+    const live=await this.rpcClient.rpc('eth_getTransactionReceipt',[saved.transactionHash])
+    const header=await this.rpcClient.rpc('eth_getBlockByNumber',[saved.blockNumber,false])
+    const fields=['transactionHash','blockHash','blockNumber','status','gasUsed','effectiveGasPrice','l1Fee','operatorFee','operatorFeeScalar','operatorFeeConstant']
+    if(!live||!header||header.hash!==saved.blockHash||fields.some(k=>(live[k]??'0x0')!==(saved[k]??'0x0')))
+      throw new Error('Settled cost anchor changed; reconcile before another transaction')
+  }
+  async signIntent({nonce,gas,price,value,to,data}) {
+    const folder=path.join(os.homedir(),'.local/share/sodadex/wallets/xlayer-test-owner')
+    return execFileSync('cast',['mktx','--rpc-url','https://rpc.ignix.bot/rpc/196','--chain','196','--legacy',
+      '--nonce',String(nonce),'--gas-limit',String(gas),'--gas-price',String(price),'--value',String(value),
+      '--keystore',path.join(folder,'owner'),'--password-file',path.join(folder,'password'),to,data],
+      {encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim()
   }
 }
