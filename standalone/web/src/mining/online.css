@@ -8,12 +8,12 @@
 .mining-online-form label { font-size: 13px; font-weight: 550; color: var(--soda-text); }
 .mining-online-form input, .mining-online-recovery input { min-width: 0; width: 100%; border: 1px solid var(--soda-control-line); border-radius: 8px; padding: 13px 14px; color: var(--soda-text); background: var(--soda-surface); font: inherit; transition: border-color .18s; }
 .mining-online-form input { margin-bottom: 8px; }
-.mining-online-form input:hover:not(:disabled), .mining-online-recovery input:hover:not(:disabled) { border-color: var(--soda-accent); }
-.mining-online-form input:focus-visible, .mining-online-recovery input:focus-visible { border-color: var(--soda-accent); outline: 1px solid var(--soda-accent); outline-offset: 0; }
+.mining-online-form input:hover:not(:disabled), .mining-online-recovery input:hover:not(:disabled) { border-color: var(--soda-control-hover); }
+.mining-online-form input:focus-visible, .mining-online-recovery input:focus-visible { border-color: var(--soda-focus); outline: none; }
 .mining-online-form input:disabled, .mining-online-recovery input:disabled { background: var(--soda-raised); color: var(--soda-muted); border-color: var(--soda-line); cursor: not-allowed; }
 .mining-online-form .button { margin-top: 10px; }.mining-online-form small { color: var(--soda-muted); line-height: 1.6; }
-.mining-online-form, .mining-online-policy { min-width: 0; padding: 20px; border: 1px solid var(--soda-line); background: var(--soda-field); border-radius: var(--soda-radius-control); }
-.mining-online-form { background: var(--soda-surface); }
+.mining-online-form, .mining-online-policy { min-width: 0; padding: 20px; border: 1px solid transparent; background: var(--soda-field); border-radius: var(--soda-radius-control); }
+.mining-online-form { background: var(--soda-surface); border-color: var(--soda-line); }
 .mining-online-policy h3, .mining-online-jobs h3 { margin: 0 0 16px; font-size: 15px; }
 .mining-online-policy dl { margin: 0; }.mining-online-policy dl > div { display: flex; flex-wrap: wrap; gap: 8px 16px; justify-content: space-between; margin-bottom: 16px; line-height: 1.5; font-size: 13px; }
 .mining-online-policy dt { color: var(--soda-muted); }.mining-online-policy dd { margin: 0; max-width: 100%; overflow-wrap: anywhere; }.mining-online-policy p { margin: 16px 0 0; line-height: 1.7; font-size: 12px; color: var(--soda-muted); }

@@ -19,7 +19,7 @@
 .explore-token-row a { display: inline-flex; align-items: center; gap: 5px; color: var(--soda-muted); font-variant-numeric: tabular-nums; }
 .explore-token-row a:hover { color: var(--soda-highlight); }
 .explore-source { color: var(--soda-muted); }
-.explore-token-name:focus-visible, .explore-own-pool:focus-visible { outline: 2px solid var(--soda-highlight); outline-offset: 4px; border-radius: 4px; }
+.explore-token-name:focus-visible, .explore-own-pool:focus-visible { outline: 2px solid var(--soda-focus); outline-offset: 3px; border-radius: 4px; }
 .explore-token-detail { padding: 28px; margin-top: 16px; }
 .explore-token-detail header { display: flex; align-items: center; gap: 14px; }
 .explore-token-detail h2 { margin: 0; font-size: 28px; letter-spacing: -.7px; font-weight: 620; }
@@ -41,7 +41,7 @@
 .explore-reference-form label { flex: 1; min-width: 0; }
 .explore-reference label { display: grid; gap: 8px; font-size: 12px; color: var(--soda-muted); }
 .explore-reference input { border: 1px solid var(--soda-line); background: var(--soda-surface); color: var(--soda-text); border-radius: 10px; padding: 12px; min-width: 0; width: 100%; min-height: 44px; font: inherit; }
-.explore-reference input:focus-visible { outline: 2px solid var(--soda-highlight); outline-offset: 3px; }
+.explore-reference input:focus-visible { border-color: var(--soda-focus); outline: none; }
 .explore-reference-pools { border: 1px solid var(--soda-line); background: var(--soda-surface); border-radius: 14px; overflow: hidden; }
 .explore-reference-pools:empty { display: none; }
 .explore-reference-pools article { border-bottom: 1px solid var(--soda-line-soft); padding: 24px; }
@@ -56,7 +56,7 @@
 .explore-quote-output output { font-size: 20px; font-weight: 550; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
 .explore .lp-quote { margin-top: 24px; padding: 24px; border: 1px solid var(--soda-line); border-radius: 14px; background: var(--soda-surface); }
 .explore .lp-field { display: grid; gap: 8px; font-size: 12px; color: var(--soda-muted); }
-.explore .lp-field input { width: 100%; padding: 12px; border: 1px solid var(--soda-line); background: var(--soda-field); color: var(--soda-text); border-radius: 10px; min-width: 0; }
+.explore .lp-field input { width: 100%; padding: 12px; border: 1px solid var(--soda-control-line); background: var(--soda-surface); color: var(--soda-text); border-radius: 10px; min-width: 0; }
 .explore .lp-actions { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
 .explore .lp-actions output { overflow-wrap: anywhere; }
 .explore > .data-page, .explore .data-page { padding: 0; width: 100%; }

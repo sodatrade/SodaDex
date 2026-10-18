@@ -12,7 +12,7 @@ import type { MiningSubmission } from './journal'
 import { miningMessages } from './messages'
 import './chain-history.css'
 
-function ChainHistory({ deployment, account }: { deployment: MiningProductDeployment; account?: string }): ReactElement {
+function ChainHistory({ deployment, account, sourceSwitch }: { deployment: MiningProductDeployment; account?: string; sourceSwitch: ReactElement }): ReactElement {
   const { locale } = usePreferences(), m = indexMessages(locale), common = miningMessages(locale)
   const [mine, setMine] = useState(false)
   const [cursors, setCursors] = useState<(string | undefined)[]>([undefined])
@@ -27,16 +27,19 @@ function ChainHistory({ deployment, account }: { deployment: MiningProductDeploy
   const restart = events.error instanceof MiningIndexError && events.error.restart
   const reset = (): void => { setPage(0); setCursors([undefined]) }
   return <Surface className="mining-action-card mining-history mining-chain-history">
-    <header className="mining-history-heading"><h2>{m.chain}</h2><div className="mining-action-switch" role="group" aria-label={common.history}>
-      <Button aria-pressed={!mine} onClick={() => { setMine(false); reset() }}>{m.all}</Button>
-      <Button aria-pressed={mine} disabled={!account} onClick={() => { setMine(true); reset() }}>{common.currentWallet}</Button>
+    <header className="mining-history-heading"><h2 className="sr-only">{m.chain}</h2>{sourceSwitch}<div className="mining-history-controls">
+      <div className="mining-action-switch" role="group" aria-label={common.history}>
+        <Button aria-pressed={!mine} onClick={() => { setMine(false); reset() }}>{m.all}</Button>
+        <Button aria-pressed={mine} disabled={!account} onClick={() => { setMine(true); reset() }}>{common.currentWallet}</Button>
+      </div>
+      <Button disabled={events.isFetching} onClick={() => { reset(); if (page === 0) void events.refetch() }}><Icon name="refresh" size={14} />{m.retry}</Button>
     </div></header>
     <p className="mining-history-note">{m.note}</p>
     <div className="mining-index-status"><span role="status">{result && <>
       {result.index.lastError ? m.lag : result.index.syncing ? m.syncing : m.synced}
       {' · '}{m.through} #{result.index.indexedThrough}
       {result.index.head && <> / #{result.index.head.number}</>}
-    </>}</span><Button disabled={events.isFetching} onClick={() => { reset(); if (page === 0) void events.refetch() }}><Icon name="refresh" size={14} />{m.retry}</Button></div>
+    </>}</span></div>
     {events.isFetching && <p role="status">{m.loading}</p>}
     {events.isError && <p role="alert">{restart ? m.restart : m.unavailable}</p>}
     {result && !result.events.length && <p className="mining-empty">{m.empty}</p>}
@@ -64,9 +67,10 @@ function ChainHistory({ deployment, account }: { deployment: MiningProductDeploy
 export function MiningHistoryWorkspace(props: { deployment: MiningProductDeployment; account?: string; entries: MiningSubmission[]; initialView?: 'chain' | 'local'; onUpdate: (entry: MiningSubmission) => void }): ReactElement {
   const { locale } = usePreferences(), m = indexMessages(locale)
   const [view, setView] = useState<'chain' | 'local'>(props.initialView ?? 'chain')
-  return <div><div className="mining-history-source mining-action-switch" role="group" aria-label={miningMessages(locale).history}>
+  const sourceSwitch = <div className="mining-history-source mining-action-switch" role="group" aria-label={miningMessages(locale).history}>
     <Button aria-pressed={view === 'chain'} onClick={() => setView('chain')}>{m.chain}</Button>
     <Button aria-pressed={view === 'local'} onClick={() => setView('local')}>{m.local}</Button>
-  </div>{view === 'chain' ? <ChainHistory key={`${props.deployment.version}:${props.account?.toLowerCase() ?? ''}`} deployment={props.deployment} account={props.account} />
-    : <MiningHistoryPanel entries={props.entries} account={props.account} onUpdate={props.onUpdate} />}</div>
+  </div>
+  return <div>{view === 'chain' ? <ChainHistory key={`${props.deployment.version}:${props.account?.toLowerCase() ?? ''}`} deployment={props.deployment} account={props.account} sourceSwitch={sourceSwitch} />
+    : <>{sourceSwitch}<MiningHistoryPanel entries={props.entries} account={props.account} onUpdate={props.onUpdate} /></>}</div>
 }

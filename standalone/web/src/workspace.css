@@ -20,7 +20,7 @@
 .header-preferences > span { font-size: 10px; font-weight: 550; }
 .app-shell .button { border-radius: var(--soda-radius-control); font-weight: 550; }
 .app-shell .button-secondary { background: var(--soda-surface); border-color: var(--soda-control-line); }
-.app-shell .button-secondary:hover:not(:disabled) { background: var(--soda-hover); border-color: var(--soda-muted); color: var(--soda-text); }
+.app-shell .button-secondary:hover:not(:disabled) { background: var(--soda-hover); border-color: var(--soda-control-hover); color: var(--soda-text); }
 .app-shell .button:disabled { background: var(--soda-raised); color: var(--soda-faint); border-color: var(--soda-line-soft); }
 .app-shell .test-notice { justify-content: center; padding: 8px 24px; border-top: 0; border-bottom: 1px solid var(--soda-line-soft); background: var(--soda-bg); color: var(--soda-muted); font-size: 11px; gap: 9px; }
 .app-shell .test-notice-label { color: var(--soda-highlight); border: 0; background: var(--soda-accent-dim); border-radius: 4px; padding: 3px 6px; font-size: 9px; letter-spacing: 0; font-weight: 600; }
@@ -50,7 +50,7 @@
 .app-shell .dialog .button-primary { min-height: 46px; }
 .app-shell .theme-option { min-height: 48px; border-radius: 8px; font-size: 13px; }
 .app-shell .preference-group legend, .app-shell .preference-select > label { color: var(--soda-text); font-size: 13px; font-weight: 550; }
-.app-shell .preference-select select { min-height: 48px; border-radius: 8px; background: var(--soda-field); }
+.app-shell .preference-select select { min-height: 48px; border-radius: 8px; background: var(--soda-surface); }
 .app-shell .search-categories button[aria-pressed="true"] { color: var(--soda-highlight); background: var(--soda-accent-dim); }
 .global-search-dialog .soda-dialog-body { display: flex; flex-direction: column; max-height: min(680px, calc(100svh - 32px)); overflow: hidden; }
 .global-search-dialog .dialog-header, .global-search-dialog .dialog-description, .global-search-dialog .search-field, .global-search-dialog .search-categories { flex-shrink: 0; }

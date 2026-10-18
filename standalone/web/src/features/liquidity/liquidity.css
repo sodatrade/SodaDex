@@ -18,8 +18,8 @@
 .lp-pool { border-top: 1px solid var(--soda-line-soft); min-height: 98px; }
 .lp-pool > .lp-actions { justify-content: flex-end; flex-wrap: nowrap; gap: 4px; }
 .lp-pool .button { font-size: 12px; padding-left: 12px; padding-right: 12px; }
-.lp-pool .button-secondary { background: var(--soda-surface); border-color: color-mix(in srgb, var(--soda-muted) 50%, var(--soda-surface)); color: var(--soda-text); }
-.lp-pool .button-secondary:hover:not(:disabled) { background: var(--soda-accent-dim); border-color: var(--soda-accent); }
+.lp-pool .button-secondary { background: var(--soda-surface); border-color: var(--soda-control-line); color: var(--soda-text); }
+.lp-pool .button-secondary:hover:not(:disabled) { background: var(--soda-field); border-color: var(--soda-control-hover); }
 .lp-pool .button:disabled { background: var(--soda-raised); color: var(--soda-muted); border-color: var(--soda-line); }
 .lp-pool-protocol { font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .lp-pool-status { font-size: 12px; color: var(--soda-muted); }
@@ -38,8 +38,8 @@
 .lp-form { display: grid; gap: 20px; }
 .lp-form-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
 .lp-field { display: flex; flex-direction: column; gap: 8px; min-width: 0; color: var(--soda-muted); font-size: 12px; line-height: 1.5; }
-.lp-field input, .lp-field select { width: 100%; min-height: 44px; padding: 11px 12px; border: 1px solid var(--soda-line); border-radius: 10px; background: var(--soda-field); color: var(--soda-text); font-size: 14px; }
-.lp-field input:focus-visible, .lp-field select:focus-visible { outline: 2px solid var(--soda-highlight); outline-offset: 2px; }
+.lp-field input, .lp-field select { width: 100%; min-height: 44px; padding: 11px 12px; border: 1px solid var(--soda-control-line); border-radius: 10px; background: var(--soda-surface); color: var(--soda-text); font-size: 14px; }
+.lp-field input:focus-visible, .lp-field select:focus-visible { border-color: var(--soda-focus); outline: none; }
 .lp-protocols { display: flex; flex-wrap: wrap; gap: 16px; margin: 0; border: 0; padding: 0; }
 .lp-protocols legend { margin-bottom: 10px; color: var(--soda-muted); font-size: 12px; }
 .lp-protocols label { display: flex; align-items: center; gap: 7px; min-height: 36px; font-size: 13px; }
