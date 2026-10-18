@@ -1,5 +1,5 @@
 import { useState, type ReactElement } from 'react'
-import { Button, Icon } from '../components/primitives'
+import { Button, Icon, Surface } from '../components/primitives'
 import { usePreferences } from '../preferences/context'
 import { MiningActionCard } from './ActionCard'
 import { miningMessages } from './messages'
@@ -28,14 +28,14 @@ export function MiningActionWorkspace({ kind, symbol, hasPair = true, listingId,
   ]
   const task = tasks[selected], missingPair = kind === 'fundraising' && selected === 1 && !hasPair
   return <div className="mining-action-layout">
-    <div className="mining-task-rail" role="group" aria-label={m.chooseAction}>
-      <p className="mining-section-label">{m.chooseAction}</p>
+    <Surface className="mining-task-rail" role="group" aria-label={m.chooseAction}>
+      <h2 className="mining-section-label">{m.chooseAction}</h2>
       <div className="mining-task-list">{tasks.map((item, index) => <Button key={item.title} appearance="ghost" className="mining-task"
         aria-pressed={selected === index} disabled={busy} onClick={() => setSelected(index)}>
         <span className="mining-task-icon"><Icon name={item.icon} size={18} /></span>
         <span><strong>{item.title}</strong><small>{item.subtitle}</small></span><Icon name="chevron" size={15} />
       </Button>)}</div>
-    </div>
+    </Surface>
     <MiningActionCard key={`${kind}:${selected}:${symbol ?? ''}`} title={task.title} actions={task.actions} assetSymbol={symbol}
       initialAmount={task.initialAmount} note={missingPair ? `${m.miningNoLiquidity} ${task.note}` : task.note} disabled={disabled || missingPair} locked={busy} onConnect={onConnect} onPreview={onPreview} />
   </div>

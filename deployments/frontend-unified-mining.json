@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "status": "live-unified-mining",
   "publishedOn": "2026-10-18",
-  "sourceCommit": "d05ee016201a46aaac6a6d4cfcfd5513a77e7a48",
+  "sourceCommit": "7490243f681616c4efb0fb3f36181236c4dccc4d",
   "scope": "Same-origin SodaDEX frontend integration of FAB mining products. The original frontend release validation and subsequent approved 1952 main-site wallet acceptance are recorded separately; production contracts are unchanged.",
   "frontend": {
     "worker": "sodadex-preview",
-    "versionId": "0f582b7b-277d-4c35-ae4e-5e398a422973",
+    "versionId": "c12a7b73-bb66-45d3-980f-d1773aeb4568",
     "origin": "https://sodadex-preview.jsmsdx2025.workers.dev",
     "fundraisingUrl": "https://sodadex-preview.jsmsdx2025.workers.dev/mining/#fundraising",
     "fragmentsUrl": "https://sodadex-preview.jsmsdx2025.workers.dev/mining/#fragments"
@@ -123,5 +123,28 @@
     "historyAfterReloadAndReconnect": 34,
     "productionContractsModified": false,
     "chain196Writes": false
+  },
+  "previousFrontendRelease": {
+    "sourceCommit": "d05ee016201a46aaac6a6d4cfcfd5513a77e7a48",
+    "versionId": "0f582b7b-277d-4c35-ae4e-5e398a422973",
+    "validation": "validation and mainSiteWalletAcceptance retain their historical scope"
+  },
+  "uiPolishRelease": {
+    "record": "ui-polish-2026-10-18.json",
+    "sourceCommit": "7490243f681616c4efb0fb3f36181236c4dccc4d",
+    "versionId": "c12a7b73-bb66-45d3-980f-d1773aeb4568",
+    "sampledPublicAssetsMatched": 9,
+    "publicDexChainId": 196,
+    "publicMiningChainId": 1952,
+    "publicMiningVersionVerified": true,
+    "publicReadOnlyInteractionsPassed": true,
+    "publicMarketObserved": {
+      "poolPrice": "1 OKB = 119.18538 USD₮0",
+      "observedTrades": 2,
+      "historyScanComplete": false
+    },
+    "newChainTransactions": 0,
+    "newWalletSignatures": 0,
+    "knownLimitation": "Fresh DEX pool discovery scans historical creation events before resolving; observed initial market loading remains slow. No data-loading code changed in this UI release."
   }
 }

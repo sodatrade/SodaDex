@@ -33,7 +33,7 @@ export function MiningActionCard({ title, actions, note, disabled, locked = fals
         placeholder="0" value={amount} required autoComplete="off" disabled={locked || preparing} onChange={(e) => setAmount(e.target.value)} />
         <span>{action === 'buyMiner' ? '#' : miner ? 'NFT' : action.endsWith('Remove') ? 'LP' : action === 'getTestFab' ? 'TEST-OKB' : action === 'fragmentBuy' || action === 'projectBuy' ? 'TEST-FAB' : assetSymbol}</span></div>
       {action.endsWith('Add') && <><label htmlFor={`${id}-second`}>{m.secondAmount}</label>
-        <input id={`${id}-second`} inputMode="decimal" placeholder="0" value={second} required autoComplete="off" disabled={locked || preparing} onChange={(e) => setSecond(e.target.value)} /></>}
+        <div className="mining-amount-field"><input id={`${id}-second`} inputMode="decimal" placeholder="0" value={second} required autoComplete="off" disabled={locked || preparing} onChange={(e) => setSecond(e.target.value)} /><span>TEST-FAB</span></div></>}
       {action !== 'burnBoost' && action !== 'buyMiner' && <details className="mining-settings"><summary><span><Icon name="settings" size={15} />{m.transactionSettings}</span><span>{lp ? lpSlip : swapSlip}%<Icon name="chevron" size={14} /></span></summary><div className="mining-slippage"><label htmlFor={`${id}-slip`}>{m.slippage}</label>
         <input id={`${id}-slip`} inputMode="decimal" value={lp ? lpSlip : swapSlip} required disabled={locked || preparing}
           onChange={(e) => lp ? setLpSlip(e.target.value) : setSwapSlip(e.target.value)} /></div></details>}

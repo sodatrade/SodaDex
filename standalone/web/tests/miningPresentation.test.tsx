@@ -30,7 +30,8 @@ describe('mining task presentation', () => {
   it('shows one task at a time and retains LP slippage and exact submitted asset quantities', async () => {
     const preview = vi.fn().mockResolvedValue(undefined), user = userEvent.setup()
     render(<PreferencesProvider><MiningActionWorkspace kind="fragments" disabled={false} busy={false} onPreview={preview} /></PreferencesProvider>)
-    expect(screen.getAllByRole('heading', { level: 2 })).toHaveLength(1)
+    expect(screen.getAllByRole('button', { name: '预览交易' })).toHaveLength(1)
+    expect(screen.queryByRole('textbox', { name: 'TEST-FAB 数量' })).not.toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: /流动性 添加/ }))
     await user.type(screen.getByRole('textbox', { name: '数量' }), '0.000000000000000001')
     await user.type(screen.getByRole('textbox', { name: 'TEST-FAB 数量' }), '0.00000001')

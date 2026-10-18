@@ -16,22 +16,67 @@
     "direction": "清晰、紧凑、轻盈；沿用紫红品牌色、默认浅色和深色主题",
     "trade": "桌面左行情右订单，手机优先展示订单；兑换和限价标签置于同一表单顶部",
     "mining": "四种任务收敛为一个当前表单，桌面侧栏、手机两列任务选择；余额、滑点和结算工具按需展开",
-    "unchanged": ["contract addresses", "fees", "slippage defaults", "transaction builders", "wallet execution", "network boundaries"]
+    "unchanged": [
+      "contract addresses",
+      "fees",
+      "slippage defaults",
+      "transaction builders",
+      "wallet execution",
+      "network boundaries"
+    ],
+    "consistency": "同级同框：主容器使用相同边框、背景、圆角和内边距；任务选项尺寸固定，选中仅改颜色；桌面矿机双栏等高、发行双栏等宽等高。"
   },
   "validation": {
-    "webFullSuite": { "passed": 449, "existingEnvironmentGatedSkipped": 22 },
-    "finalTargetedSuite": { "passed": 69, "files": 5 },
+    "webFullSuite": {
+      "passed": 449,
+      "existingEnvironmentGatedSkipped": 22
+    },
+    "finalTargetedSuite": {
+      "passed": 69,
+      "files": 5
+    },
     "webTypecheck": "passed",
     "webLint": "passed",
     "unifiedBuildAndCsp": "passed",
-    "workerSuite": { "passed": 184, "files": 25, "skipped": 0, "typecheck": "passed", "lint": "passed" },
-    "browser": {
-      "local": ["desktop trade and limit modes", "narrow mobile trade and limit modes", "1440 mining light Chinese", "390 mining dark English", "1024 mining light Cantonese", "disconnected editing and connect CTA", "simulated approve and swap success then history", "read failure blocks preview", "paused source keeps booked claims", "keyboard access to expanded settlement tools"],
-      "isolation": "Mining action evidence uses tests/browser/mining-visual.html with mocked RPC and a dedicated simulated provider. No extension discovery, remote service writes or chain broadcast.",
-      "limits": "Local 5174 market/API reads remained pending; existing public frontend was independently observed showing actual pool price and two swap records. This UI pass does not repeat prior real-wallet chain acceptance.",
-      "screenshotsLocalDirectory": ".analysis/ui-polish-2026-10-18/"
+    "workerSuite": {
+      "passed": 184,
+      "files": 25,
+      "skipped": 0,
+      "typecheck": "passed",
+      "lint": "passed"
     },
-    "correctedDuringReview": ["segmented buttons must not submit the form", "freeze navigation while preparing a quote", "retain missing-pair LP gate", "tolerate invalid stored history dates", "scope absolute header positioning to order tabs", "remove nested limit card and pad order history"],
+    "browser": {
+      "local": [
+        "desktop trade and limit modes",
+        "narrow mobile trade and limit modes",
+        "1440 mining light Chinese",
+        "390 mining dark English",
+        "1024 mining light Cantonese",
+        "disconnected editing and connect CTA",
+        "simulated approve and swap success then history",
+        "read failure blocks preview",
+        "paused source keeps booked claims",
+        "keyboard access to expanded settlement tools"
+      ],
+      "isolation": "Mining action evidence uses tests/browser/mining-visual.html with mocked RPC and a dedicated simulated provider. No extension discovery, remote service writes or chain broadcast.",
+      "limits": "Local 5174 market/API reads remained pending. After test deployment, actual public pool price and two swap records loaded successfully; initial discovery was slow. This UI pass uses simulated wallet actions and does not repeat prior real-wallet chain acceptance.",
+      "screenshotsLocalDirectory": ".analysis/ui-polish-2026-10-18/",
+      "public": [
+        "1440 main/mining layout",
+        "390 main mobile layout with actual price and trades",
+        "1952 mining contract version verified",
+        "disconnected task switching and connect CTA",
+        "196 / 1952 API boundary and nine static asset hashes matched"
+      ]
+    },
+    "correctedDuringReview": [
+      "segmented buttons must not submit the form",
+      "freeze navigation while preparing a quote",
+      "retain missing-pair LP gate",
+      "tolerate invalid stored history dates",
+      "scope absolute header positioning to order tabs",
+      "remove nested limit card and pad order history"
+    ],
     "finalIndependentStaticReview": "No blocking regression found",
     "newWalletSignatures": 0,
     "newChainTransactions": 0,
@@ -40,13 +85,99 @@
   },
   "visualReview": {
     "scale": "1 broken, 3 competent, 4 strong, 5 exceptional; subjective self-review, not a competitor benchmark",
-    "taskClarity": { "score": 4, "evidence": "One active mining form and one primary action replace four equal-weight forms." },
-    "composition": { "score": 4, "evidence": "Market and order columns align; mining task rail shares the form baseline." },
-    "typography": { "score": 4, "evidence": "Amount and price numbers lead, metadata and secondary controls are subordinate." },
-    "density": { "score": 4, "evidence": "Settings, balances and settlement tools expand only when needed." },
-    "surfaces": { "score": 4, "evidence": "Shared light/dark tokens and magenta selection; nested limit surface removed." },
-    "states": { "score": 4, "evidence": "Disabled/read failure, paused claims, simulated success and keyboard disclosure states inspected." },
-    "responsive": { "score": 4, "evidence": "Mobile uses order-first stacking and a two-column mining task selector without page overflow." },
-    "distinctiveness": { "score": 3, "evidence": "Consistent SodaDEX accent and task layout, with intentionally familiar DEX controls." }
+    "taskClarity": {
+      "score": 4,
+      "evidence": "One active mining form and one primary action replace four equal-weight forms."
+    },
+    "composition": {
+      "score": 4,
+      "evidence": "Market and order columns align; mining task rail shares the form baseline."
+    },
+    "typography": {
+      "score": 4,
+      "evidence": "Amount and price numbers lead, metadata and secondary controls are subordinate."
+    },
+    "density": {
+      "score": 4,
+      "evidence": "Settings, balances and settlement tools expand only when needed."
+    },
+    "surfaces": {
+      "score": 4,
+      "evidence": "Shared light/dark tokens and magenta selection; nested limit surface removed."
+    },
+    "states": {
+      "score": 4,
+      "evidence": "Disabled/read failure, paused claims, simulated success and keyboard disclosure states inspected."
+    },
+    "responsive": {
+      "score": 4,
+      "evidence": "Mobile uses order-first stacking and a two-column mining task selector without page overflow."
+    },
+    "distinctiveness": {
+      "score": 3,
+      "evidence": "Consistent SodaDEX accent and task layout, with intentionally familiar DEX controls."
+    }
+  },
+  "release": {
+    "record": "ui-polish-2026-10-18.json",
+    "sourceCommit": "7490243f681616c4efb0fb3f36181236c4dccc4d",
+    "versionId": "c12a7b73-bb66-45d3-980f-d1773aeb4568",
+    "sampledPublicAssetsMatched": 9,
+    "publicDexChainId": 196,
+    "publicMiningChainId": 1952,
+    "publicMiningVersionVerified": true,
+    "publicReadOnlyInteractionsPassed": true,
+    "publicMarketObserved": {
+      "poolPrice": "1 OKB = 119.18538 USD₮0",
+      "observedTrades": 2,
+      "historyScanComplete": false
+    },
+    "newChainTransactions": 0,
+    "newWalletSignatures": 0,
+    "knownLimitation": "Fresh DEX pool discovery scans historical creation events before resolving; observed initial market loading remains slow. No data-loading code changed in this UI release.",
+    "worker": "sodadex-preview",
+    "origin": "https://sodadex-preview.jsmsdx2025.workers.dev"
+  },
+  "consistencyPass": {
+    "classification": "change request",
+    "trigger": "User requests symmetry, order and consistent frames",
+    "renderedMeasurements": {
+      "desktopMiningPanels": {
+        "heightPx": 487,
+        "borderPx": 1,
+        "radiusPx": 20,
+        "paddingPx": 24,
+        "gapPx": 24,
+        "sameTopAndBottom": true
+      },
+      "lpAmountFields": {
+        "heightPx": 90,
+        "borderPx": 1,
+        "radiusPx": 8,
+        "sameWidth": true
+      },
+      "launchColumns": {
+        "widthPx": 491,
+        "heightPx": 424.96875,
+        "borderPx": 1,
+        "radiusPx": 8,
+        "paddingPx": 20
+      },
+      "mobileTaskButtons": {
+        "viewportWidthPx": 390,
+        "documentWidthPx": 375,
+        "count": 4,
+        "widthPx": 146.5,
+        "heightPx": 48
+      }
+    },
+    "webFullSuiteAfterChanges": {
+      "passed": 449,
+      "skipped": 22
+    },
+    "typecheck": "passed",
+    "lint": "passed",
+    "unifiedBuildAndCsp": "passed",
+    "behavior": "No pricing, contracts, signing or budget changes"
   }
 }
