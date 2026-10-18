@@ -110,7 +110,7 @@ describe('mining online API boundaries', () => {
       const m = onlineMessages(locale)
       expect(onlineReason('secret diagnostic', m)).toBe(m.reasonOther)
       expect(onlineReason('gas_budget', m)).toBe(m.reasonBudget)
-      for (const reason of ['farm_full','no_approved_inventory','procurement_budget_exhausted','not_graduated','no_tax','settled','pending_confirmation','broadcast_unknown']) expect(onlineReason(reason,m)).not.toBe(m.reasonOther)
+      for (const reason of ['farm_full','no_approved_inventory','procurement_budget_exhausted','not_graduated','no_tax','settled','pending_confirmation','broadcast_unknown','nonce_cancellation_pending','nonce_cancellation_broadcast_unknown','authorization_cancelled']) expect(onlineReason(reason,m)).not.toBe(m.reasonOther)
     }
   })
   it('lets the user retry bounded history checks without authenticating or retrying the POST automatically', async () => {

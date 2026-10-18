@@ -45,6 +45,19 @@ describe('background automation UI', () => {
     await waitFor(() => expect(screen.getByRole('button', { name: '刷新状态' })).toBeEnabled())
     expect(api.requestOnlineCheck).not.toHaveBeenCalled()
   })
+  it('keeps cancellation separate from successful tax conversion', async () => {
+    vi.mocked(api.loadOnlineStatus).mockResolvedValue({ ...status(), jobs: [
+      { id: 'conversion-old', kind: 'conversion', status: 'failed', reason: 'authorization_cancelled', hash: MINING_TEST_HASH, updatedAt: Date.now() },
+      { id: 'conversion-pending', kind: 'conversion', status: 'blocked', reason: 'nonce_cancellation_pending', updatedAt: Date.now() },
+    ] })
+    setup()
+    expect(await screen.findByText('旧授权已取消，后台将按最新状态重新处理')).toBeVisible()
+    expect(screen.getByText('原授权已过期，正在确认取消交易；后续业务等待恢复')).toBeVisible()
+    expect(screen.getByText('未完成')).toBeVisible()
+    expect(screen.getByText('等待条件满足')).toBeVisible()
+    expect(screen.queryByText('成功')).not.toBeInTheDocument()
+    expect(screen.getByRole('link', { name: '链上交易 ↗' })).toHaveAttribute('href', `https://www.oklink.com/xlayer-test/tx/${MINING_TEST_HASH}`)
+  })
   it('does not present an empty task list as fact when the service is unavailable', async () => {
     vi.mocked(api.loadOnlineStatus).mockRejectedValue(new Error('offline'))
     setup()

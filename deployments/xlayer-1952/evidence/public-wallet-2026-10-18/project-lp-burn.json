@@ -1,0 +1,590 @@
+{
+  "startedAt": "2026-10-18T02:13:57.190Z",
+  "readOnly": true,
+  "chainId": 1952,
+  "publicActions": 0,
+  "projectLp": {
+    "pair": "0xCd42b58C47db43ab80C6c44E158Da8536975C00B",
+    "helper": "0x0b4fae1834210d47702bbc45d01e66f89aeb314d",
+    "add": {
+      "receipt": {
+        "hash": "0x5912ab10be370eecb13f7bf9ea52d1af0d2be1716f904497b856ba6f14d69b8e",
+        "status": "0x1",
+        "canonical": true,
+        "blockNumber": "0x29ccc7d",
+        "blockHash": "0x03db81bdf745d7f5af092d3bc61c5c3d5f39ed65acb4ef69cfecde110abbd8d8",
+        "blockTimestamp": "1792289234",
+        "from": "0xe57f88c05810a9ad2b27f216665260c2d9f2b2da",
+        "to": "0x0b4fae1834210d47702bbc45d01e66f89aeb314d",
+        "nonce": "148",
+        "chainId": "1952",
+        "selector": "0x2563e426",
+        "gasUsed": "2426462",
+        "effectiveGasPriceWei": "20000002",
+        "feeWei": "48529244852924"
+      },
+      "event": {
+        "token": "0x2AE439a89b7d0332764507E4e021bfEc348beCDE",
+        "provider": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+        "tokenAmount": "100000000000000000000",
+        "quoteAmount": "250096",
+        "liquidity": "5000954443156"
+      },
+      "formatted": {
+        "liquidity": "0.000005000954443156",
+        "projectToken": "100",
+        "fab": "0.00250096"
+      },
+      "snapshots": {
+        "before": {
+          "block": "0x29ccc7c",
+          "lpWallet": "0",
+          "lpSupply": "9999999999989999999",
+          "walletToken": "800038473329018272703081042",
+          "walletFab": "168365016825"
+        },
+        "after": {
+          "block": "0x29ccc7d",
+          "lpWallet": "5000954443156",
+          "lpSupply": "10000005000944443155",
+          "walletToken": "800038373329018272703081042",
+          "walletFab": "168364766729"
+        }
+      },
+      "events": [
+        {
+          "address": "0x2ae439a89b7d0332764507e4e021bfec348becde",
+          "event": "Transfer",
+          "args": {
+            "from": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "to": "0x0B4fAe1834210d47702Bbc45d01e66f89aEb314d",
+            "value": "100000000000000000000"
+          },
+          "logIndex": "0x0"
+        },
+        {
+          "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "event": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "144374994"
+          },
+          "logIndex": "0x1"
+        },
+        {
+          "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "event": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "144374994"
+          },
+          "logIndex": "0x4"
+        },
+        {
+          "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "event": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "144374994"
+          },
+          "logIndex": "0x7"
+        },
+        {
+          "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "event": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "144374994"
+          },
+          "logIndex": "0xa"
+        },
+        {
+          "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "event": "Transfer",
+          "args": {
+            "from": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "to": "0x470713bf252C8008F7223C5f890Dd06Ee3450655",
+            "value": "185736647"
+          },
+          "logIndex": "0xf"
+        },
+        {
+          "address": "0x470713bf252c8008f7223c5f890dd06ee3450655",
+          "event": "HolderWeightUpdated",
+          "args": {
+            "account": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "weight": "800038373329018272703081042"
+          },
+          "logIndex": "0x12"
+        },
+        {
+          "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "event": "Transfer",
+          "args": {
+            "from": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "to": "0x0B4fAe1834210d47702Bbc45d01e66f89aEb314d",
+            "value": "250096"
+          },
+          "logIndex": "0x13"
+        },
+        {
+          "address": "0x2ae439a89b7d0332764507e4e021bfec348becde",
+          "event": "Transfer",
+          "args": {
+            "from": "0x0B4fAe1834210d47702Bbc45d01e66f89aEb314d",
+            "to": "0xCd42b58C47db43ab80C6c44E158Da8536975C00B",
+            "value": "100000000000000000000"
+          },
+          "logIndex": "0x16"
+        },
+        {
+          "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "event": "Transfer",
+          "args": {
+            "from": "0x0B4fAe1834210d47702Bbc45d01e66f89aEb314d",
+            "to": "0xCd42b58C47db43ab80C6c44E158Da8536975C00B",
+            "value": "250096"
+          },
+          "logIndex": "0x17"
+        },
+        {
+          "address": "0xcd42b58c47db43ab80c6c44e158da8536975c00b",
+          "event": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "value": "5000954443156"
+          },
+          "logIndex": "0x18"
+        },
+        {
+          "address": "0xcd42b58c47db43ab80c6c44e158da8536975c00b",
+          "event": "Mint",
+          "args": {
+            "sender": "0xd7E58272181d6b56aF5B10a12f519bA4a85914e7",
+            "amount0": "100000000000000000000",
+            "amount1": "250096"
+          },
+          "logIndex": "0x1a"
+        },
+        {
+          "address": "0x0b4fae1834210d47702bbc45d01e66f89aeb314d",
+          "event": "LiquidityAdded",
+          "args": {
+            "token": "0x2AE439a89b7d0332764507E4e021bfEc348beCDE",
+            "provider": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "tokenAmount": "100000000000000000000",
+            "quoteAmount": "250096",
+            "liquidity": "5000954443156"
+          },
+          "logIndex": "0x1d"
+        }
+      ],
+      "checks": {
+        "success": true,
+        "canonical": true,
+        "chain1952": true,
+        "walletAndHelper": true,
+        "eventBindings": true,
+        "lpWalletDeltaMatches": true,
+        "lpSupplyDeltaMatches": true,
+        "positiveLiquidity": true,
+        "tokenWalletDeltaMatches": true,
+        "fabWalletDeltaMatches": true
+      },
+      "allChecksPassed": true
+    },
+    "remove": {
+      "receipt": {
+        "hash": "0x103b8350d6ddfdb3629e08c74ace396bc4f6674fb3948110201244f05adb7665",
+        "status": "0x1",
+        "canonical": true,
+        "blockNumber": "0x29ccd00",
+        "blockHash": "0x0f84d4d17b064d7172177d7b81f68b28b5c700a047f353f7505a28ea228f414b",
+        "blockTimestamp": "1792289365",
+        "from": "0xe57f88c05810a9ad2b27f216665260c2d9f2b2da",
+        "to": "0x0b4fae1834210d47702bbc45d01e66f89aeb314d",
+        "nonce": "150",
+        "chainId": "1952",
+        "selector": "0x13928082",
+        "gasUsed": "2409998",
+        "effectiveGasPriceWei": "20000002",
+        "feeWei": "48199964819996"
+      },
+      "event": {
+        "token": "0x2AE439a89b7d0332764507E4e021bfEc348beCDE",
+        "provider": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+        "liquidity": "5000954443156",
+        "tokenAmount": "99999843525774115390",
+        "quoteAmount": "250095"
+      },
+      "formatted": {
+        "liquidity": "0.000005000954443156",
+        "projectToken": "99.99984352577411539",
+        "fab": "0.00250095"
+      },
+      "snapshots": {
+        "before": {
+          "block": "0x29cccff",
+          "lpWallet": "5000954443156",
+          "lpSupply": "10000005000944443155",
+          "walletToken": "800038373329018272703081042",
+          "walletFab": "168364766729"
+        },
+        "after": {
+          "block": "0x29ccd00",
+          "lpWallet": "0",
+          "lpSupply": "9999999999989999999",
+          "walletToken": "800038473328861798477196432",
+          "walletFab": "168365016824"
+        }
+      },
+      "events": [
+        {
+          "address": "0xcd42b58c47db43ab80c6c44e158da8536975c00b",
+          "event": "Transfer",
+          "args": {
+            "from": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "to": "0x0B4fAe1834210d47702Bbc45d01e66f89aEb314d",
+            "value": "5000954443156"
+          },
+          "logIndex": "0x0"
+        },
+        {
+          "address": "0xcd42b58c47db43ab80c6c44e158da8536975c00b",
+          "event": "Transfer",
+          "args": {
+            "from": "0x0B4fAe1834210d47702Bbc45d01e66f89aEb314d",
+            "to": "0xCd42b58C47db43ab80C6c44E158Da8536975C00B",
+            "value": "5000954443156"
+          },
+          "logIndex": "0x2"
+        },
+        {
+          "address": "0xcd42b58c47db43ab80c6c44e158da8536975c00b",
+          "event": "Transfer",
+          "args": {
+            "from": "0xCd42b58C47db43ab80C6c44E158Da8536975C00B",
+            "to": "0x0000000000000000000000000000000000000000",
+            "value": "5000954443156"
+          },
+          "logIndex": "0x3"
+        },
+        {
+          "address": "0x2ae439a89b7d0332764507e4e021bfec348becde",
+          "event": "Transfer",
+          "args": {
+            "from": "0xCd42b58C47db43ab80C6c44E158Da8536975C00B",
+            "to": "0x0B4fAe1834210d47702Bbc45d01e66f89aEb314d",
+            "value": "99999843525774115390"
+          },
+          "logIndex": "0x4"
+        },
+        {
+          "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "event": "Transfer",
+          "args": {
+            "from": "0xCd42b58C47db43ab80C6c44E158Da8536975C00B",
+            "to": "0x0B4fAe1834210d47702Bbc45d01e66f89aEb314d",
+            "value": "250095"
+          },
+          "logIndex": "0x5"
+        },
+        {
+          "address": "0xcd42b58c47db43ab80c6c44e158da8536975c00b",
+          "event": "Burn",
+          "args": {
+            "sender": "0xd7E58272181d6b56aF5B10a12f519bA4a85914e7",
+            "to": "0x0B4fAe1834210d47702Bbc45d01e66f89aEb314d",
+            "amount0": "99999843525774115390",
+            "amount1": "250095"
+          },
+          "logIndex": "0x7"
+        },
+        {
+          "address": "0x2ae439a89b7d0332764507e4e021bfec348becde",
+          "event": "Transfer",
+          "args": {
+            "from": "0x0B4fAe1834210d47702Bbc45d01e66f89aEb314d",
+            "to": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "value": "99999843525774115390"
+          },
+          "logIndex": "0x9"
+        },
+        {
+          "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "event": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "135093745"
+          },
+          "logIndex": "0xa"
+        },
+        {
+          "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "event": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "135093745"
+          },
+          "logIndex": "0xd"
+        },
+        {
+          "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "event": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "135093745"
+          },
+          "logIndex": "0x10"
+        },
+        {
+          "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "event": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "135093745"
+          },
+          "logIndex": "0x13"
+        },
+        {
+          "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "event": "Transfer",
+          "args": {
+            "from": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "to": "0x470713bf252C8008F7223C5f890Dd06Ee3450655",
+            "value": "173796435"
+          },
+          "logIndex": "0x18"
+        },
+        {
+          "address": "0x470713bf252c8008f7223c5f890dd06ee3450655",
+          "event": "HolderWeightUpdated",
+          "args": {
+            "account": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "weight": "800038473328861798477196432"
+          },
+          "logIndex": "0x1b"
+        },
+        {
+          "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "event": "Transfer",
+          "args": {
+            "from": "0x0B4fAe1834210d47702Bbc45d01e66f89aEb314d",
+            "to": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "value": "250095"
+          },
+          "logIndex": "0x1c"
+        },
+        {
+          "address": "0x0b4fae1834210d47702bbc45d01e66f89aeb314d",
+          "event": "LiquidityRemoved",
+          "args": {
+            "token": "0x2AE439a89b7d0332764507E4e021bfEc348beCDE",
+            "provider": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "liquidity": "5000954443156",
+            "tokenAmount": "99999843525774115390",
+            "quoteAmount": "250095"
+          },
+          "logIndex": "0x1d"
+        }
+      ],
+      "checks": {
+        "success": true,
+        "canonical": true,
+        "chain1952": true,
+        "walletAndHelper": true,
+        "eventBindings": true,
+        "lpWalletDeltaMatches": true,
+        "lpSupplyDeltaMatches": true,
+        "positiveLiquidity": true,
+        "tokenWalletDeltaMatches": true,
+        "fabWalletDeltaMatches": true
+      },
+      "allChecksPassed": true
+    },
+    "sameLiquidityMintedAndBurned": true,
+    "walletLpInitiallyAndFinallyZero": true,
+    "allChecksPassed": true
+  },
+  "burn": {
+    "receipt": {
+      "hash": "0x1e88888aef19ee8c5548b767a0b1d4000ed06975c014efe43d52d4a589596a7c",
+      "status": "0x1",
+      "canonical": true,
+      "blockNumber": "0x29ccd7a",
+      "blockHash": "0xc34975edcd8d86784573b286e0d5b9a0c60c12a3317577b2918d59e1657e8e02",
+      "blockTimestamp": "1792289487",
+      "from": "0xe57f88c05810a9ad2b27f216665260c2d9f2b2da",
+      "to": "0x470713bf252c8008f7223c5f890dd06ee3450655",
+      "nonce": "152",
+      "chainId": "1952",
+      "selector": "0xf477c7e7",
+      "gasUsed": "2394810",
+      "effectiveGasPriceWei": "20000002",
+      "feeWei": "47896204789620"
+    },
+    "amountRaw": "1000000000000000000",
+    "amount": "1",
+    "irretrievableRecipient": "0x000000000000000000000000000000000000dEaD",
+    "mechanism": "Transfer to 0xdead; ERC20 totalSupply does not decrease in this implementation.",
+    "snapshots": {
+      "before": {
+        "block": "0x29ccd79",
+        "walletToken": "800038473328861798477196432",
+        "deadToken": "0",
+        "tokenSupply": "1000000000000000000000000000",
+        "activeCredit": "0",
+        "walletWeight": "800038473328861798477196432",
+        "totalWeight": "800038473328861798477196432",
+        "creditCount": "0",
+        "holderAllowance": "1000000000000000000"
+      },
+      "after": {
+        "block": "0x29ccd7a",
+        "walletToken": "800038472328861798477196432",
+        "deadToken": "1000000000000000000",
+        "tokenSupply": "1000000000000000000000000000",
+        "activeCredit": "1000000000000000000",
+        "walletWeight": "800038473328861798477196432",
+        "totalWeight": "800038473328861798477196432",
+        "creditCount": "1",
+        "holderAllowance": "0"
+      }
+    },
+    "creditEvent": {
+      "id": "0",
+      "account": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+      "amount": "1000000000000000000",
+      "expiresAt": "1792894287"
+    },
+    "storedCredit": {
+      "account": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+      "expiresAt": "1792894287",
+      "amount": "1000000000000000000"
+    },
+    "expiryUtc": "2026-10-25T02:11:27.000Z",
+    "absoluteWalletWeightChanged": false,
+    "absoluteWeightDelta": "0",
+    "events": [
+      {
+        "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+        "event": "Transfer",
+        "args": {
+          "from": "0x0000000000000000000000000000000000000000",
+          "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+          "value": "125812495"
+        },
+        "logIndex": "0x0"
+      },
+      {
+        "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+        "event": "Transfer",
+        "args": {
+          "from": "0x0000000000000000000000000000000000000000",
+          "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+          "value": "125812495"
+        },
+        "logIndex": "0x3"
+      },
+      {
+        "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+        "event": "Transfer",
+        "args": {
+          "from": "0x0000000000000000000000000000000000000000",
+          "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+          "value": "125812495"
+        },
+        "logIndex": "0x6"
+      },
+      {
+        "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+        "event": "Transfer",
+        "args": {
+          "from": "0x0000000000000000000000000000000000000000",
+          "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+          "value": "125812495"
+        },
+        "logIndex": "0x9"
+      },
+      {
+        "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+        "event": "Transfer",
+        "args": {
+          "from": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+          "to": "0x470713bf252C8008F7223C5f890Dd06Ee3450655",
+          "value": "161856222"
+        },
+        "logIndex": "0xe"
+      },
+      {
+        "address": "0x2ae439a89b7d0332764507e4e021bfec348becde",
+        "event": "Transfer",
+        "args": {
+          "from": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+          "to": "0x000000000000000000000000000000000000dEaD",
+          "value": "1000000000000000000"
+        },
+        "logIndex": "0x11"
+      },
+      {
+        "address": "0x470713bf252c8008f7223c5f890dd06ee3450655",
+        "event": "HolderWeightUpdated",
+        "args": {
+          "account": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+          "weight": "800038472328861798477196432"
+        },
+        "logIndex": "0x12"
+      },
+      {
+        "address": "0x470713bf252c8008f7223c5f890dd06ee3450655",
+        "event": "HolderWeightUpdated",
+        "args": {
+          "account": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+          "weight": "800038473328861798477196432"
+        },
+        "logIndex": "0x13"
+      },
+      {
+        "address": "0x470713bf252c8008f7223c5f890dd06ee3450655",
+        "event": "BurnCreditCreated",
+        "args": {
+          "id": "0",
+          "account": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+          "amount": "1000000000000000000",
+          "expiresAt": "1792894287"
+        },
+        "logIndex": "0x14"
+      }
+    ],
+    "checks": {
+      "success": true,
+      "canonical": true,
+      "chain1952": true,
+      "nonce152": true,
+      "walletAndHolder": true,
+      "oneTokenTransferredToDead": true,
+      "walletLostExactlyOne": true,
+      "deadGainedExactlyOne": true,
+      "tokenTotalSupplyUnchanged": true,
+      "activeCreditIncreasedOne": true,
+      "eventAndRecordMatch": true,
+      "expiresExactlySevenDays": true,
+      "countIncreasedOne": true,
+      "admissionBalanceConstraint": true,
+      "postCreditNotAboveRemainingBalance": true,
+      "weightEqualsRemainingBalancePlusCredit": true
+    },
+    "allChecksPassed": true
+  },
+  "allChecksPassed": true,
+  "completedAt": "2026-10-18T02:14:06.617Z"
+}

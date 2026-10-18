@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "phase": "mining-public-wallet-1952-v1",
-  "capturedAt": "2026-10-18T02:02:51.349347+00:00",
+  "capturedAt": "2026-10-18T02:25:42.049719+00:00",
   "chainId": 1952,
   "frontend": "https://sodadex-mining-test-1952.jsmsdx2025.workers.dev/",
   "publicWallet": "0xe57f88c05810a9ad2b27f216665260c2d9f2b2da",
   "actualBrowser": "Google Chrome + actual OKX extension",
   "financialConfirmation": "Human user performs every final wallet confirmation",
-  "status": "in_progress",
+  "status": "frontend_wallet_complete_backend_recovery_pending",
   "productionTouched": false,
   "chain196Mutated": false,
   "project": {
@@ -28,19 +28,21 @@
       "NFT5 approval and deposit; wallet received 6000 TEST-fFAB",
       "Fragment pool buy and sell",
       "Fragment LP add and full remove; wallet LP balance zero",
-      "Positive fragment holder, fragment LP and project holder dividend claims"
-    ],
-    "remaining": [
+      "Positive fragment holder, fragment LP and project holder dividend claims",
       "Native TEST-OKB to TEST-FAB conversion",
       "Post-graduation project pool sell",
-      "Project LP add/remove",
-      "Burn credit boost",
-      "NFT5 redemption",
-      "Final reload/reconnect/history verification"
+      "Project LP add and full remove; wallet LP balance zero",
+      "Burn one project token into 7-day dividend credit",
+      "NFT5 redemption to the original depositing wallet",
+      "Explicit real NFT4 mining-income harvest and subsequent positive dividend claim",
+      "Reload, reconnect and restore all36 successful transaction history entries"
+    ],
+    "remaining": [
+      "User-approved one-hash expired backend authorization recovery, fresh tax conversion and farm funding"
     ]
   },
-  "walletGasLimitWei": "1000000000000000",
-  "walletFeesScope": "Listed nonce120..142 canonical successful receipts; nonce143 NFT5 redemption still awaiting human wallet confirmation at capture.",
+  "walletGasLimitWei": "990000000000000",
+  "walletFeesScope": "All36 canonical successful real frontend wallet receipts, nonce120..155; latest=pending156. Financial confirmations were performed by the human user.",
   "firstLaunchFeeDeviation": {
     "hash": "0xc221e4a1d5f47bb7653984eb793302baf3a3d7b7e198fa7fd9ab245034b8e871",
     "actualEffectiveGasPriceWei": "40000001",
@@ -53,7 +55,7 @@
     "contractAsEOAWarning": "Observed and canceled before broadcast on earlier requests; not reproduced after selecting the official1952RPC. Internal wallet cause unresolved.",
     "securityProtectionDisabled": false
   },
-  "budgetApproval": "2026-10-18-keeper-budget-reallocation.json",
+  "budgetApproval": "2026-10-18-expired-recovery-approved-plan.json",
   "keeperDeploymentVersion": "d75eaa86-3b19-4fa9-a50d-f935b6339da0",
   "keeperRuntimeValidation": {
     "serviceBuild": "online-1952-20261018-v5-budget",
@@ -66,16 +68,37 @@
     "taxFundedFabRaw": "984263",
     "taxFarmPendingRaw": "0",
     "hash": "0x49052452488fb9f742e09b7760c2cc0786aa48aab751e3422bd86a33c152a188",
-    "proof": "evidence/public-wallet-2026-10-18/keeper-fund.json"
+    "proof": "evidence/public-wallet-2026-10-18/keeper-fund.json",
+    "snapshotScope": "Historical successful prior funding under v5; later new10-token tax is blocked by the original expired authorization. Recovery not yet deployed at this checkpoint."
   },
-  "verifiedUiReceiptCount": 23,
-  "walletGasSpentWei": "725792166019786",
-  "walletGasRemainingWei": "274207833980214",
-  "confirmedDividendFabRaw": "943007234",
-  "dividendProof": "evidence/public-wallet-2026-10-18/dividend-claims.json",
+  "verifiedUiReceiptCount": 36,
+  "walletGasSpentWei": "957639569204524",
+  "walletGasRemainingWei": "32360430795476",
+  "confirmedDividendFabRaw": "1407672952",
   "ownerPreparationGasSpentWei": "36535281826764",
-  "ownerPreparationGasCapWei": "80000000000000",
+  "ownerPreparationGasCapWei": "40000000000000",
   "phaseGasCapWei": "1300000000000000",
-  "phaseKnownGasSpentWei": "967829778121666",
-  "phaseCostScope": "Wallet receipt list and owner preparation are complete through capture; keeper is an independently timestamped cumulative snapshot, not a permanent final total."
+  "phaseKnownGasSpentWei": "1199677181306404",
+  "phaseCostScope": "Wallet receipt list and owner preparation are complete through capture; keeper is an independently timestamped cumulative snapshot, not a permanent final total.",
+  "dividendProofs": [
+    "evidence/public-wallet-2026-10-18/dividend-claims.json",
+    "evidence/public-wallet-2026-10-18/final-wallet.json"
+  ],
+  "oldNftIncomeExcludedFromDividendsFabRaw": "77813623676",
+  "walletNativePrincipalWei": "1010000000000",
+  "keeperCurrentRecovery": {
+    "originalHash": "0x0fb7c2a1a0a532e8531744e408a31422b2e0c43a93ed8847e7eec3a46707c3a5",
+    "status": "approved_not_yet_deployed",
+    "keeperAdditionalCapWei": "270000000000000",
+    "keeperCumulativeCapWei": "456372669318633",
+    "taxPendingTokenRaw": "10000000000000000000",
+    "unchangedLedger": true
+  },
+  "frontendProofs": [
+    "evidence/public-wallet-2026-10-18/final-wallet.json",
+    "evidence/public-wallet-2026-10-18/fragment-closeout.json",
+    "evidence/public-wallet-2026-10-18/project-lp-burn.json",
+    "evidence/public-wallet-2026-10-18/native-getfab.json"
+  ],
+  "burnMechanism": "One project token transferred to0xdead, totalSupply unchanged; active credit increased by one token for exactly7days. Balance reduction offsets credit, so absolute weight did not increase. Public7day wait is not claimed."
 }

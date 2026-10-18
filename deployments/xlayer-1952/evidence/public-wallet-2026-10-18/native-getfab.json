@@ -1,0 +1,74 @@
+{
+  "capturedAt": "2026-10-18T02:14:45.492Z",
+  "readOnly": true,
+  "chainId": 1952,
+  "publicActions": 0,
+  "receipt": {
+    "hash": "0xb4333fd0b8adfde9a02e0282b549fa6abc92de9e45dabcc6cdd47c307bd0af6b",
+    "status": "0x1",
+    "blockNumber": "0x29ccdd2",
+    "blockHash": "0xb05d623bcd0c8c66701253f051b0840247c7718ef359d637341310158311381f",
+    "from": "0xe57f88c05810a9ad2b27f216665260c2d9f2b2da",
+    "to": "0xd7e58272181d6b56af5b10a12f519ba4a85914e7",
+    "nonce": "153",
+    "selector": "0x7ff36ab5",
+    "nativeValueWei": "1000000000000",
+    "gasUsed": "101035",
+    "effectiveGasPriceWei": "20000002",
+    "feeWei": "2020700202070"
+  },
+  "route": {
+    "factory": "0x378E840010BcB4aF361cC838ad54F1eA57D76e3B",
+    "pair": "0x930f2A0556DD5DE7cEb3fB0db731138B022D892E",
+    "path": [
+      "0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA",
+      "0x7a188D4C46C9FE045A5875FecaeF9Bf00e4521fF"
+    ],
+    "minimumFabRaw": "991284838",
+    "recipient": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA"
+  },
+  "before": {
+    "block": "0x29ccdd1",
+    "walletFabRaw": "168365016824",
+    "walletNativeWei": "38628879190812885"
+  },
+  "after": {
+    "block": "0x29ccdd2",
+    "walletFabRaw": "169361282993",
+    "walletNativeWei": "38625858490610815"
+  },
+  "receivedFabRaw": "996266169",
+  "receivedFab": "9.96266169",
+  "fabTransfers": [
+    {
+      "from": "0x930f2A0556DD5DE7cEb3fB0db731138B022D892E",
+      "to": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+      "value": "996266169",
+      "logIndex": "0x2"
+    }
+  ],
+  "wrappedDeposits": [
+    {
+      "dst": "0xd7E58272181d6b56aF5B10a12f519bA4a85914e7",
+      "wad": "1000000000000",
+      "logIndex": "0x0"
+    }
+  ],
+  "checks": {
+    "canonical": true,
+    "success": true,
+    "chain1952": true,
+    "nonce153": true,
+    "fromWalletToRouter": true,
+    "nativeValueOneMicroOkb": true,
+    "selectorAndPath": true,
+    "recipientWallet": true,
+    "positiveFabReceived": true,
+    "receivedFromFactoryPair": true,
+    "balanceIncrementMatches": true,
+    "receivedAtLeastMinimum": true,
+    "nativeDeltaMatchesValueAndFee": true,
+    "wrappedDepositMatchesValue": true
+  },
+  "allChecksPassed": true
+}
