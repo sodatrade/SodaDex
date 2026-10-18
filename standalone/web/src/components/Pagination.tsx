@@ -3,7 +3,7 @@ import { usePreferences } from '../preferences/context'
 import { Button } from './primitives'
 import './pagination.css'
 
-const PAGE_SIZE = 10
+export const PAGE_SIZE = 10
 
 /** Pages already loaded records; it does not imply that the source history is complete. */
 export function usePagination<T>(records: readonly T[], resetKey = ''): {

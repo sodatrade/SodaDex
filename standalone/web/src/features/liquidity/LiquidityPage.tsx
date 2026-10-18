@@ -30,12 +30,12 @@ export function LiquidityPage({ wallet, onConnect }: Props): ReactElement {
   const [tab, setTab] = useState<'pools' | 'positions'>('pools')
   const [detail, setDetail] = useState<LiquidityPool>()
   const [editor, setEditor] = useState<Editor>()
-  const [found, setFound] = useState<LiquidityPosition>()
+  const [lookup, setLookup] = useState<{ position: LiquidityPosition; account: string }>()
   const { locale } = usePreferences(),
     l = liquidityText(locale)
   const operation = useLiquidityOperation(wallet)
   useEffect(() => {
-    if (operation.progress?.stage === 'success' || operation.receiptMessage === 'receiptConfirmed') setFound(undefined)
+    if (operation.progress?.stage === 'success' || operation.receiptMessage === 'receiptConfirmed') setLookup(undefined)
   }, [operation.progress?.stage, operation.receiptMessage])
   const correctChain = wallet.session?.chainId === CHAIN_ID
   const pools = useQuery({
@@ -74,12 +74,10 @@ export function LiquidityPage({ wallet, onConnect }: Props): ReactElement {
   const owned = (position: LiquidityPosition): boolean =>
     !!wallet.session && correctChain && sameAddress(position.owner, wallet.session.address)
   const visiblePositions = positions.data ?? []
-  const positionPagination = usePagination(visiblePositions, wallet.session?.address.toLowerCase())
-  const extraFound =
-    found &&
-    !positionPagination.items.some((position) => position.protocol === found.protocol && position.tokenId === found.tokenId)
-      ? [found]
-      : []
+  const accountKey = `${wallet.session?.chainId}:${wallet.session?.address.toLowerCase() ?? ''}`
+  const found = lookup?.account === accountKey ? lookup.position : undefined
+  const displayedPositions = found ? [found, ...visiblePositions.filter((position) => position.protocol !== found.protocol || position.tokenId !== found.tokenId)] : visiblePositions
+  const positionPagination = usePagination(displayedPositions, accountKey)
   return (
     <section className="content-page lp-page" aria-labelledby="lp-title">
       <div className="lp-page-heading">
@@ -155,7 +153,7 @@ export function LiquidityPage({ wallet, onConnect }: Props): ReactElement {
                 <p className="lp-empty">{l('emptyPositions')}</p>
               ) : null}
               <div className="lp-position-list">
-                {[...positionPagination.items, ...extraFound].map((position) => (
+                {positionPagination.items.map((position) => (
                   <div key={`${position.protocol}:${position.tokenId}`}>
                     <PositionCard
                       position={position}
@@ -168,7 +166,7 @@ export function LiquidityPage({ wallet, onConnect }: Props): ReactElement {
                 ))}
               </div>
               <Pagination {...positionPagination} />
-              <PositionLookup l={l} onPosition={setFound} />
+              <PositionLookup key={accountKey} l={l} onPosition={(position) => { setLookup({ position, account: accountKey }); positionPagination.setPage(0) }} />
             </>
           ) : null}
         </div>

@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react'
 import { formatUnits } from 'viem'
 import { Button, Icon } from '../../components/primitives'
+import { Pagination, usePagination } from '../../components/Pagination'
 import { formatBalance } from '../../domain/amount'
 import { EXPLORER_URL } from '../../domain/assets'
 import { workspaceMessages } from '../../i18n/workspace'
@@ -9,7 +10,8 @@ import { usePreferences } from '../../preferences/context'
 import { CurrencyLabel } from '../liquidity/CurrencyLabel'
 export function PortfolioPositions({ positions, onManage }: { positions: LiquidityPosition[]; onManage: () => void }): ReactElement {
   const { locale } = usePreferences(), m = workspaceMessages(locale)
-  return <div className="portfolio-position-list">{positions.map((position) => {
+  const pagination = usePagination(positions)
+  return <><div className="portfolio-position-list">{pagination.items.map((position) => {
     const pool = position.pool, manager = pool.protocol === 'v3' ? LP_CONTRACTS.v3Manager : LP_CONTRACTS.v4Manager
     return <article className="portfolio-position" key={`${pool.protocol}:${position.tokenId}`}>
       <div className="portfolio-position-main"><span className="portfolio-nft-number">{pool.protocol.toUpperCase()} #{position.tokenId.toString()}</span>
@@ -22,5 +24,5 @@ export function PortfolioPositions({ positions, onManage }: { positions: Liquidi
       <div className="portfolio-position-actions"><Button onClick={onManage}>{m.manage}</Button>
         <a href={`${EXPLORER_URL}/nft/${manager}/${position.tokenId}`} target="_blank" rel="noreferrer">{m.viewNft}<Icon name="external" size={14} /></a></div>
     </article>
-  })}</div>
+  })}</div><Pagination {...pagination} /></>
 }

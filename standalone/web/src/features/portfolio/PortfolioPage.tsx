@@ -61,9 +61,9 @@ export function PortfolioPage({ wallet, onConnect, onSwap, onPools, initialTab =
           <Button onClick={() => setReceive(true)}>{m.receive}</Button><Button onClick={onSwap}>{m.swap}</Button><Button onClick={onPools}>{m.createPosition}</Button></div>
         <p className="portfolio-muted">{m.noFiat}</p>
         <div className="portfolio-section-heading"><h2>{m.tokens}</h2><Button appearance="ghost" onClick={() => changeTab('tokens')}>{m.tokens}<Icon name="chevron" size={16} /></Button></div>
-        <BalanceTable tokens={assetTokens} onSend={setSend} />
+        <BalanceTable key={account.toLowerCase()} tokens={assetTokens} onSend={setSend} />
       </>}
-      {tab === 'tokens' && <><p className="portfolio-muted">{m.noFiat}</p><BalanceTable tokens={assetTokens} onSend={setSend} selected={selectedAsset} /></>}
+      {tab === 'tokens' && <><p className="portfolio-muted">{m.noFiat}</p><BalanceTable key={account.toLowerCase()} tokens={assetTokens} onSend={setSend} selected={selectedAsset} /></>}
       {(tab === 'overview' || tab === 'tokens') && <>
         {tokens.isFetching && <p role="status" className="portfolio-muted">{m.loading}</p>}
         {tokens.isError && <p role="alert" className="error-text">{m.unavailable} <Button onClick={() => void tokens.refetch()}>{m.retry}</Button></p>}
@@ -74,7 +74,7 @@ export function PortfolioPage({ wallet, onConnect, onSwap, onPools, initialTab =
         {positions.isFetching && <p role="status">{m.loading}</p>}
         {positions.isError && <p role="alert" className="error-text">{m.unavailable} <Button onClick={() => void positions.refetch()}>{m.retry}</Button></p>}
         {positions.data?.length === 0 && <div className="portfolio-empty"><p>{m.noPositions}</p><Button onClick={onPools}>{m.createPosition}</Button></div>}
-        {positions.data && <PortfolioPositions positions={positions.data} onManage={onPools} />}
+        {positions.data && <PortfolioPositions key={account.toLowerCase()} positions={positions.data} onManage={onPools} />}
       </>}
       {tab === 'overview' && positions.isError && <p role="status" className="portfolio-muted">{m.positions}: {m.unavailable}</p>}
       {tab === 'activity' && <><p className="portfolio-muted">{m.activityScopeNote}</p><HistoryPage wallet={wallet} onConnect={onConnect} initialScope={activityScope} scopes={['mine', 'local']} embedded /></>}

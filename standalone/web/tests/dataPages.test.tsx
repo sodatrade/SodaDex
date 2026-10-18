@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type { ReactElement } from 'react'
 import { describe, expect, it, vi } from 'vitest'
@@ -8,6 +8,7 @@ import { MarketPage } from '../src/features/market/MarketPage'
 import * as api from '../src/features/market/api'
 import type { WalletController } from '../src/lib/useWallet'
 import { PreferencesProvider } from '../src/preferences/PreferencesProvider'
+import { recordTransaction } from '../src/features/history/journal'
 const hash = `0x${'a'.repeat(64)}`
 const pool: api.DexPool = { protocol: 'v3', id: `0x${'1'.repeat(40)}`, address: `0x${'1'.repeat(40)}`,
   token0: '0x779Ded0c9e1022225f8E0630b35a9b54bE713736', token1: '0xe538905cf8410324e03A5A23C1c177a474D59b2b',
@@ -20,6 +21,45 @@ function mount(ui: ReactElement): void {
   render(<QueryClientProvider client={client}><PreferencesProvider>{ui}</PreferencesProvider></QueryClientProvider>)
 }
 describe('market and history user paths', () => {
+  it('pages every loaded event and keeps asynchronously loaded cursor pages bounded', async () => {
+    const events = Array.from({ length: 23 }, (_, i): api.DexEvent => ({ id: `event-${i}`, event: `Swap-${i}`, protocol: 'v3', address: pool.id,
+      blockNumber: i + 1, blockHash: hash, transactionHash: hash, logIndex: i, args: {}, transactionFrom: null }))
+    const getEvents = vi.spyOn(api, 'getEvents').mockResolvedValueOnce({ ...base, events: events.slice(0, 13), nextCursor: 'next' })
+      .mockResolvedValue({ ...base, events: events.slice(13), nextCursor: null })
+    const wallet: WalletController = { options: [], session: undefined, status: 'idle', error: undefined, connect: vi.fn(), disconnect: vi.fn(), switchChain: vi.fn(), getIdentity: vi.fn() }
+    mount(<HistoryPage wallet={wallet} onConnect={vi.fn()} />)
+    const user = userEvent.setup()
+    await screen.findByText('Swap-12')
+    const rows = (): HTMLElement[] => within(screen.getByRole('list')).getAllByRole('listitem')
+    expect(rows()).toHaveLength(10)
+    expect(screen.queryByRole('button', { name: '继续扫描' })).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: '下一页' }))
+    expect(rows()).toHaveLength(3)
+    await user.click(screen.getByRole('button', { name: '继续扫描' }))
+    await waitFor(() => expect(getEvents).toHaveBeenCalledWith({ cursor: 'next' }))
+    await waitFor(() => expect(rows()).toHaveLength(10))
+    await user.click(screen.getByRole('button', { name: '下一页' }))
+    expect(rows()).toHaveLength(3)
+    await user.click(screen.getByRole('button', { name: '上一页' }))
+    expect(rows()).toHaveLength(10)
+  })
+  it('resets local history paging when the connected account changes', async () => {
+    const owner = '0x1111111111111111111111111111111111111111', other = '0x2222222222222222222222222222222222222222'
+    for (let i = 0; i < 23; i++) recordTransaction({ account: owner, chainId: 196, hash: `0x${i.toString(16).padStart(64, '0')}`, to: owner, kind: `Local-${i}`, submittedAt: i + 1, status: 'success' })
+    recordTransaction({ account: other, chainId: 196, hash: `0x${'b'.repeat(64)}`, to: other, kind: 'Other account', submittedAt: 100, status: 'success' })
+    const wallet: WalletController = { options: [], session: { address: owner, chainId: 196, id: 'test', name: 'Test', provider: { request: vi.fn() } }, status: 'idle', error: undefined,
+      connect: vi.fn(), disconnect: vi.fn(), switchChain: vi.fn(), getIdentity: vi.fn() }
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } })
+    const tree = (): ReactElement => <QueryClientProvider client={client}><PreferencesProvider><HistoryPage wallet={wallet} onConnect={vi.fn()} initialScope="local" /></PreferencesProvider></QueryClientProvider>
+    const view = render(tree()), user = userEvent.setup()
+    await user.click(screen.getByRole('button', { name: '下一页' }))
+    expect(screen.getAllByRole('listitem')).toHaveLength(10)
+    wallet.session = { ...wallet.session!, address: other }
+    view.rerender(tree())
+    expect(screen.getByText('Other account')).toBeVisible()
+    expect(screen.getAllByRole('listitem')).toHaveLength(1)
+    expect(screen.queryByRole('navigation', { name: '分页' })).not.toBeInTheDocument()
+  })
   it('shows a noninteractive loading selector and never queries market data without a pool', () => {
     vi.spyOn(api, 'getPools').mockImplementation(() => new Promise(() => {}))
     const market = vi.spyOn(api, 'getMarket')

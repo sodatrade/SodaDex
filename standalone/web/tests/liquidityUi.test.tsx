@@ -149,7 +149,7 @@ async function prepareMint(user: ReturnType<typeof userEvent.setup>): Promise<HT
   return screen.findByRole('dialog', { name: '确认流动性操作' })
 }
 describe('self-service liquidity UI', () => {
-  it('shows an explicitly looked-up NFT even when it belongs to another page', async () => {
+  it('moves an explicitly looked-up NFT into the first page without exceeding ten or duplicating it', async () => {
     const positions = Array.from({ length: 11 }, (_, index) => ({ ...position, tokenId: BigInt(index + 1) }))
     vi.mocked(client.listPositions).mockResolvedValue(positions)
     vi.mocked(client.getPosition).mockResolvedValue(positions[10])
@@ -160,9 +160,12 @@ describe('self-service liquidity UI', () => {
     await user.click(screen.getByText('查找仓位 NFT'))
     await user.type(screen.getByLabelText('NFT Token ID'), '11')
     await user.click(screen.getByRole('button', { name: '查找' }))
-    await waitFor(() => expect(screen.getAllByRole('button', { name: '转移仓位 NFT' })).toHaveLength(11))
+    await screen.findByText('V4 · #11')
+    expect(screen.getAllByRole('button', { name: '转移仓位 NFT' })).toHaveLength(10)
+    expect(screen.getAllByText('V4 · #11')).toHaveLength(1)
     await user.click(screen.getByRole('button', { name: '下一页' }))
     expect(screen.getAllByRole('button', { name: '转移仓位 NFT' })).toHaveLength(1)
+    expect(screen.queryByText('V4 · #11')).not.toBeInTheDocument()
     expect(client.executeLiquidity).not.toHaveBeenCalled()
   })
   it('clears a manually looked-up NFT after its transfer receipt instead of keeping a stale actionable card', async () => {

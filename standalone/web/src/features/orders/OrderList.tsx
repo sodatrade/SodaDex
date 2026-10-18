@@ -1,6 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { useState, type ReactElement } from 'react'
 import { Button } from '../../components/primitives'
+import { Pagination, usePagination } from '../../components/Pagination'
 import { CHAIN_ID, EXPLORER_URL, shortenAddress } from '../../domain/assets'
 import { orderMessages } from '../../i18n/orders'
 import type { WalletController } from '../../lib/useWallet'
@@ -21,10 +22,11 @@ export function OrderList({ wallet, deployment, ready, operation, currencies, ac
     getNextPageParam: (page) => page.nextCursor ?? undefined })
   const orders = new Map<string, PublicOrder>()
   if (!query.isError) for (const page of query.data?.pages ?? []) for (const order of page.orders) orders.set(order.id, order)
+  const pagination = usePagination([...orders.values()], `${maker?.toLowerCase() ?? ''}:${deployment?.settlement ?? ''}`)
   return <section className="order-list" aria-label={m.orders}><div className="order-list-heading"><h3>{m.orders}</h3>
     <Button onClick={() => void query.refetch()} disabled={!ready || !maker || query.isFetching}>{m.refresh}</Button></div>
     {!maker ? <p className="order-note">{m.connect}</p> : !ready ? <p className="order-note">{m.notReady}</p> : query.isError ? <p role="alert">{m.unavailable}</p>
-      : query.isPending ? <p role="status">{m.loading}</p> : !orders.size ? <p className="order-note">{m.empty}</p> : [...orders.values()].map((entry) => <article key={entry.id} className="order-record">
+      : query.isPending ? <p role="status">{m.loading}</p> : !orders.size ? <p className="order-note">{m.empty}</p> : pagination.items.map((entry) => <article key={entry.id} className="order-record">
         <details><summary><span>{shortenAddress(entry.id)}</span><strong>{m[entry.status]}</strong></summary><OrderDetails order={entry.order} currencies={currencies} />
           <p className="order-id">{entry.id}</p>{entry.reason && <p>{m.reason}: {m[entry.reason]}</p>}
           {entry.observation && <p className="order-note">{m.observed}: #{entry.observation.blockNumber} · {new Date(entry.observation.timestamp * 1000).toLocaleString(locale)}<br /><span className="order-id">{entry.observation.blockHash}</span></p>}
@@ -33,7 +35,8 @@ export function OrderList({ wallet, deployment, ready, operation, currencies, ac
         {['open', 'pending'].includes(entry.status) && <Button disabled={!ready || operation.busy || operation.unresolved || entry.order.maker.toLowerCase() !== maker?.toLowerCase()}
           onClick={() => { const identity = wallet.getIdentity(); if (identity) setReview(operation.review(entry.order, identity)) }}>{m.cancel}</Button>}
       </article>)}
-    {query.hasNextPage && !query.isError && <Button onClick={() => void query.fetchNextPage()} disabled={query.isFetching}>{m.more}</Button>}
+    {maker && ready && !query.isError && <Pagination {...pagination} />}
+    {maker && ready && query.hasNextPage && !query.isError && pagination.page + 1 === pagination.pages && <Button onClick={() => void query.fetchNextPage()} disabled={query.isFetching}>{m.more}</Button>}
     {review && <OrderReview review={review} operation={operation} currencies={currencies} ready={ready} cancel onClose={() => { operation.changed(); setReview(undefined) }} />}
   </section>
 }
