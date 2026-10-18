@@ -34,7 +34,7 @@ export class Mining196BrowserQueue {
   constructor({file, deployment, journal, approval, origin, validateCall = () => false}) {
     requireValue(new URL(origin).origin === origin, 'Exact origin required')
     requireValue(deployment.chainId === 196 && deployment.profileId === '196-mining-test' && deployment.publicDeployment === true && deployment.localOnly === false, 'Public 196 test manifest required')
-    requireValue(journal.chainId === 196 && journal.profileId === '196-mining-test' && journal.phase === 'deployment-inventory-complete' &&
+    requireValue(journal.chainId === 196 && journal.profileId === '196-mining-test' && journal.phase === 'deployment-and-inventory-complete' &&
       !journal.pending && !journal.failure && journal.transactions.length === 55 && journal.transactions.every(r=>r.status === '0x1'), 'Completed 55-operation public journal required')
     requireValue(approval.approved === true && approval.chainId === 196 && approval.profileId === '196-mining-test' &&
       approval.totalOwnerOutlayCapWei === String(CAP) && approval.planHash === journal.planHash && digest(approval) === digest(journal.approval), 'Exact approval required')
@@ -53,6 +53,12 @@ export class Mining196BrowserQueue {
     this.checkBudget(0n,0n)
   }
   save() { persist(this.file,this.state) }
+  reload() {
+    const saved=JSON.parse(fs.readFileSync(this.file,'utf8'))
+    requireValue(saved.binding===this.binding,'Queue binding changed')
+    for(const key of ['walletGasWei','nativeWei','keeperFundingWei'])requireValue(uint(saved[key])>=uint(this.state[key]),'Queue cumulative ledger decreased')
+    this.state=saved;this.checkBudget(0n,0n)
+  }
   checkBudget(gas, value) {
     requireValue(gas >= 0n && value >= 0n, 'Negative reservation')
     requireValue(uint(this.state.nativeWei)+value <= NATIVE_CAP, 'Native principal cap exceeded')
@@ -60,6 +66,7 @@ export class Mining196BrowserQueue {
     requireValue(uint(this.state.baseGasWei)+uint(this.state.walletGasWei)+uint(this.state.nativeWei)+uint(this.state.keeperFundingWei)+gas+value <= CAP, 'Total owner outlay cap exceeded')
   }
   enqueue(method, params) {
+    this.reload()
     requireValue(!this.state.requests.some(r=>['queued','claimed'].includes(r.status)), 'Previous request must be resolved first')
     let intent
     if (method === 'eth_sendTransaction') {
@@ -73,8 +80,9 @@ export class Mining196BrowserQueue {
       if(tx.data.slice(0,10).toLowerCase() === '0x095ea7b3') {
         requireValue(tx.data.length === 138, 'Malformed approval')
         const spender='0x'+tx.data.slice(34,74), amount=BigInt('0x'+tx.data.slice(74))
-        requireValue(this.targets.has(spender.toLowerCase()) && amount <= 670000000000n, 'Approval exceeds bounded TEST-FAB allowance')
-        requireValue(same(tx.to,this.deployment.contracts.fab.address), 'Only TEST-FAB approval supported')
+        requireValue(this.targets.has(spender.toLowerCase()) && amount < (1n<<256n)-1n, 'Unbounded approval denied')
+        if(same(tx.to,this.deployment.contracts.fab.address))requireValue(amount<=670000000000n,'Approval exceeds bounded TEST-FAB allowance')
+        // The CLI additionally checks current balances/NFT custody before signing.
       }
       const value=uint(tx.value??'0x0')
       this.checkBudget(0n,value)
@@ -91,6 +99,7 @@ export class Mining196BrowserQueue {
   }
   // Local CLI may claim only an exact independently reviewed intent; no HTTP route exposes this.
   claimForCli(id, expectedDigest, {gasLimit,gasPrice}) {
+    this.reload()
     const item=this.state.requests.find(r=>r.id===id)
     requireValue(item?.status === 'queued' && item.digest === expectedDigest, 'Exact queued intent required')
     if(item.method === 'personal_sign') validateChallenge(item.intent.message,{origin:this.origin,deployment:this.deployment,owner:this.owner})
@@ -111,10 +120,11 @@ export class Mining196BrowserQueue {
     this.targets=new Set([...Object.values(next.contracts).map(c=>c.address.toLowerCase()),
       ...next.projects.flatMap(p=>[p.token,p.vault,p.holder,...(p.pair?[p.pair]:[])].map(c=>c.address.toLowerCase()))])
   }
-  listPending() { return structuredClone(this.state.requests.filter(r=>['queued','claimed'].includes(r.status))) }
+  listPending() { this.reload();return structuredClone(this.state.requests.filter(r=>['queued','claimed'].includes(r.status))) }
   // Caller MUST first verify the canonical receipt (or recover a personal signature).
   // No network route can reach this method. Unknown broadcasts remain claimed forever.
   resolveFromCli(id, expectedDigest, {result, actualGasWei, nativeWei, keeperFundingWei}) {
+    this.reload()
     const item=this.state.requests.find(r=>r.id===id)
     requireValue(item?.status === 'claimed' && item.digest === expectedDigest, 'Exact claimed intent required')
     requireValue(typeof result==='string' && (item.method==='personal_sign' ? /^0x[0-9a-fA-F]{130}$/ : /^0x[0-9a-fA-F]{64}$/).test(result), 'Invalid execution result')
@@ -151,6 +161,7 @@ export function createQueueServer(queue) {
       let body='';for await(const chunk of req){body+=chunk;requireValue(Buffer.byteLength(body)<=110000,'Request too large')}
       const request=JSON.parse(body)
       if(req.url==='/result') {
+        queue.reload()
         const item=queue.state.requests.find(r=>r.id===request.requestId)
         requireValue(item,'Unknown request');respond(200,{requestId:item.id,status:item.status,...(item.result?{result:item.result}:{})});return
       }

@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "chainId": 196,
+  "profileId": "196-mining-test",
+  "state": "ready",
+  "sourceHistoryVersion": 2,
+  "version": "test196-73544414",
+  "genesisBlock": "73544414",
+  "templateId": 0,
+  "contracts": {
+    "fab": {
+      "address": "0x842b7bf61f2cb4be8aacac6adece3244c2a6f6ab",
+      "runtimeKeccak256": "0x7915677fbc99310fa9e0ba6e495d5942abbc427030b6688d6c4807601294f9d1"
+    },
+    "mining": {
+      "address": "0x3d1b48686f97fecc8f0c964e165c04ffc5f8d52b",
+      "runtimeKeccak256": "0x9224dd2dfd5cd24b0b670c32cff4c4ceab8cede8c493f6f0c726c832cb46a1f1",
+      "implementation": {
+        "address": "0x6f1666231685cf8fc45b355a9eba8afd9ba6d2fa",
+        "runtimeKeccak256": "0x1da858182cc14894706c962ee2492b8d98f2369ac354dfae25b13104e3c6924a"
+      }
+    },
+    "circuits": {
+      "address": "0xB8C4Ea1483dbeFAaD2F35B480D950316819AED57",
+      "runtimeKeccak256": "0xc4e52ca2a7d172fac246d4d3fcfaf3da3011b1967a18df4151159dea6f99f3b4",
+      "beacon": {
+        "address": "0x5D2c2119dbe111D4815e307B138C8e78161F345f",
+        "runtimeKeccak256": "0x8935e5b5ab7f58143c80077bc2d9c56d483383416b705c8d7240242a6968e13e",
+        "implementation": {
+          "address": "0x325Dc388d7A1fA0019fB08dBcC8C31639D1a2C84",
+          "runtimeKeccak256": "0xa3cbba8f68b8bd63f0b67959a60b94821703ee2ac242a51230ee92662a2ed501"
+        }
+      }
+    },
+    "circuitMarket": {
+      "address": "0xbbf30321a7049242474ac6831c843b687a160e68",
+      "runtimeKeccak256": "0x9224dd2dfd5cd24b0b670c32cff4c4ceab8cede8c493f6f0c726c832cb46a1f1",
+      "implementation": {
+        "address": "0x08cd2ef9bc887092f33e88c6c6408e0af1f06081",
+        "runtimeKeccak256": "0x89c6fc0cef3679332ff74fe3636c0f12ecc792ae04d2b1eb4ecaced1900887c0"
+      }
+    },
+    "nftFactory": {
+      "address": "0xed377733590639e0a4ec7cd14df7509c7b2ca87d",
+      "runtimeKeccak256": "0x9224dd2dfd5cd24b0b670c32cff4c4ceab8cede8c493f6f0c726c832cb46a1f1",
+      "implementation": {
+        "address": "0xc62d45a8496858a0de3b2abd883b2bb81b9f66a2",
+        "runtimeKeccak256": "0xdca9a85b3aeef4002713652a5845c16d07955669f7d6e443995d25c4eb3a2e2e"
+      }
+    },
+    "manager": {
+      "address": "0xe9e184c1d686ebf8481383d702d0318a20cc1f6c",
+      "runtimeKeccak256": "0x9224dd2dfd5cd24b0b670c32cff4c4ceab8cede8c493f6f0c726c832cb46a1f1",
+      "implementation": {
+        "address": "0x1e74dd20fb94c39cfe982553860b0288ba0aa61f",
+        "runtimeKeccak256": "0xd0f0cf7c3519edb6d21e039442eef358a95e97bf0426416f7626f657676e2929"
+      }
+    },
+    "launchFactory": {
+      "address": "0xd40e8e98e1e5acb0655045b5ca25611363f2afc3",
+      "runtimeKeccak256": "0xf52c658c6207ffc2c9793b99e8b2d9246e9a39535cb60a13578e2c0d7aa71d81"
+    },
+    "registry": {
+      "address": "0x4f4832ebf549a5e29ff0d81e314ebc138e7573bd",
+      "runtimeKeccak256": "0xbd8c48bf345539ccf9cb61e6cd5428a8d4da4c6f793e20cb01265e2d32306c74"
+    },
+    "miningFactory": {
+      "address": "0x4225c7486ca455a6a95a4d2796484255e342e1c9",
+      "runtimeKeccak256": "0x03569262b5884c25d2d990becfad0ece70d8e8e0ca6a11b376561b6bd22e5fcc"
+    },
+    "farm": {
+      "address": "0x589420bb6fcaf944de9ce9742395b5f3434c1f00",
+      "runtimeKeccak256": "0xf5a39ad93c85a9504cac2706de823dd58de2528f086478d79cdeb168ade18b80"
+    },
+    "router": {
+      "address": "0xd3d11c7c9ce2b02210d0bf29abd68a9830e108bf",
+      "runtimeKeccak256": "0x9bbbb676efef65579d1411c348e7a13d478f4bf6b6f7ec6f5f1a7686e2fe10b9"
+    },
+    "v2Factory": {
+      "address": "0x03e033a2e064ebf028f4e2423395f7611bfda5c1",
+      "runtimeKeccak256": "0xbab145d02e7005f0d84c6c1639d39b799b0ea16df99ebbdaf5a14d9da820b4e0"
+    },
+    "wrappedNative": {
+      "address": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+      "runtimeKeccak256": "0xde187307e119db7066ef4d8d154ba1617313e4c9a410c70378abe475cd2cffd2"
+    },
+    "v2Locker": {
+      "address": "0xda021d0d5bff2fe04945bc0bdb65c61bac9be93b",
+      "runtimeKeccak256": "0x452723a10751e9401a1ce6d710b0b24e20973e373726a1efee33f693a532866f"
+    },
+    "liquidityHelper": {
+      "address": "0x336ee94a2e9650ae632dcd29499db05d60bb583c",
+      "runtimeKeccak256": "0x7b6bdf3235332feecec6478428ac4ed91b47412f58be8e4adc2d01338f83ba64"
+    },
+    "fragmentVault": {
+      "address": "0xaf660984d1096210c2580202a9db385b32a1035c",
+      "runtimeKeccak256": "0x4f4930ee5ef1ac671b9abfe5c92d96fdb44eb09b8b25566b324e57976cc70ec3"
+    },
+    "fragmentPool": {
+      "address": "0x775a205e23fa0c24be08eab580973082ca73d9d8",
+      "runtimeKeccak256": "0xdc83a2428afc4a7aaeadee6c1d6bfeaa860f8e76275d7434991a74fe32fffc8d"
+    },
+    "minerBuyer": {
+      "address": "0x36a99d122014063286cfb9c470ccaaf1d833e0d3",
+      "runtimeKeccak256": "0xd35a866b0a47cacff5e520e1599c89ceb4d1cfa26fd5e396ad5949a4537c96cb"
+    }
+  },
+  "projects": [],
+  "testListingIds": [],
+  "localOnly": false,
+  "publicDeployment": true,
+  "productionTouched": false
+}

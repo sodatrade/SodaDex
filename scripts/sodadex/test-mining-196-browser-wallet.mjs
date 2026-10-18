@@ -10,7 +10,7 @@ function fixture(t, overrides={}) {
   const approval={approved:true,chainId:196,profileId:'196-mining-test',totalOwnerOutlayCapWei:String(CAP),planHash:'bound'}
   return {file:path.join(dir,'ledger.json'),origin,approval,
     deployment:{chainId:196,profileId:'196-mining-test',publicDeployment:true,localOnly:false,version:'test196-1',contracts:{fab:{address:target}}},
-    journal:{chainId:196,profileId:'196-mining-test',phase:'deployment-inventory-complete',transactions:Array.from({length:55},()=>({status:'0x1'})),owner,approval,planHash:'bound',actualFeesWei:'1000000'},...overrides}
+    journal:{chainId:196,profileId:'196-mining-test',phase:'deployment-and-inventory-complete',transactions:Array.from({length:55},()=>({status:'0x1'})),owner,approval,planHash:'bound',actualFeesWei:'1000000'},...overrides}
 }
 const tx=()=>({from:owner,to:target,data:'0x12345678',value:'0x0',chainId:'0xc4'})
 test('requires public196, exact approval, complete journal and existing ledger binding',t=>{

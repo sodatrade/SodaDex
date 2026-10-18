@@ -13,21 +13,21 @@ export const KEEPER_CAP = 80000000000000n
 
 /** Explicit CLI execution only. The browser cannot call this module or obtain keys. */
 export class Mining196WalletExecution {
-  constructor({ root, file, deploymentJournal, rehearsal, approval, validateIntent, keeper }) {
+  constructor({ root, file, deploymentJournal, rehearsal, approval, validateIntent, fabPrincipal, keeper }) {
     if (!deploymentJournal.publicTestContracts || deploymentJournal.chainId !== 196 ||
         deploymentJournal.phase !== 'deployment-and-inventory-complete' || deploymentJournal.pending ||
         deploymentJournal.failure || deploymentJournal.transactions.length !== 55 ||
         deploymentJournal.transactions.some(r => r.status !== '0x1') ||
         approval.approved !== true || approval.totalOwnerOutlayCapWei !== String(TOTAL_CAP) ||
-        deploymentJournal.planHash !== approval.planHash || !same(deploymentJournal.owner,rehearsal.owner) || typeof validateIntent !== 'function' ||
+        deploymentJournal.planHash !== approval.planHash || !same(deploymentJournal.owner,rehearsal.owner) || typeof validateIntent !== 'function' || typeof fabPrincipal !== 'function' ||
         !/^0x[0-9a-fA-F]{40}$/.test(keeper) || same(keeper, rehearsal.owner) || same(keeper, rehearsal.stack.signer))
       throw new Error('Complete approved public deployment and restricted validator required')
-    this.file = file; this.owner = rehearsal.owner; this.keeper = keeper; this.validateIntent = validateIntent
+    this.file = file; this.owner = rehearsal.owner; this.keeper = keeper; this.validateIntent = validateIntent;this.fabPrincipal=fabPrincipal
     this.base = deploymentJournal; this.rpcClient = new PublicMining196({root, output:file, rehearsal, approval})
     this.state = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file)) : {
       schemaVersion:1, chainId:196, planHash:approval.planHash, owner:this.owner, keeper,
       baseFeesWei:deploymentJournal.actualFeesWei, startNonce:String(BigInt(deploymentJournal.startNonce)+55n),
-      gasWei:'0', nativeWei:'0', keeperFundingWei:'0', transactions:[], pending:null,
+      gasWei:'0', nativeWei:'0', keeperFundingWei:'0', fabPrincipalRaw:'0', transactions:[], pending:null,
     }
     if (this.state.chainId !== 196 || this.state.planHash !== approval.planHash || !same(this.state.owner,this.owner) ||
         !same(this.state.keeper,keeper) || this.state.baseFeesWei !== deploymentJournal.actualFeesWei ||
@@ -60,6 +60,9 @@ export class Mining196WalletExecution {
         !/^0x(?:[0-9a-fA-F]{2})*$/.test(tx.data??'0x') || !/^0x(?:0|[1-9a-fA-F][0-9a-fA-F]*)$/.test(tx.value??'0x0'))
       throw new Error('Malformed or wrong-chain wallet intent')
     const value=BigInt(tx.value??'0x0'), data=tx.data??'0x'
+    const fab=purpose==='keeper-funding'?0n:BigInt(this.fabPrincipal(tx,purpose))
+    // Reserve 1 TEST-FAB for the separately budgeted backend miner purchase.
+    if(fab<0n||BigInt(this.state.fabPrincipalRaw)+fab>669900000000n)throw new Error('TEST-FAB principal cap exceeded')
     const funding=purpose==='keeper-funding'?value:0n, native=purpose==='keeper-funding'?0n:value
     if (purpose==='keeper-funding') {
       if(!same(tx.to,this.keeper)||data!=='0x'||value!==KEEPER_CAP||BigInt(this.state.keeperFundingWei)!==0n)
@@ -84,7 +87,7 @@ export class Mining196WalletExecution {
     const raw=await this.signIntent({nonce,gas,price,value,to:tx.to,data})
     const hash=await validateSignedMiningTransaction(raw,{from:this.owner,to:tx.to,data,value,nonce,gas,gasPrice:price,chainId:196})
     await this.rpcClient.checkFeeModel(BigInt((raw.length-2)/2),gas)
-    this.state.pending={hash,purpose,nonce:String(nonce),to:tx.to,dataKeccak256:keccak256(data),value:String(value),gas:String(gas),submission:'unknown'}
+    this.state.pending={hash,purpose,nonce:String(nonce),to:tx.to,dataKeccak256:keccak256(data),value:String(value),fabPrincipalRaw:String(fab),gas:String(gas),submission:'unknown'}
     this.save()
     if(!same(await rpc('eth_sendRawTransaction',[raw]),hash))throw new Error('Unknown submission; retain pending hash')
     this.state.pending.submission='broadcast';this.save()
@@ -104,6 +107,7 @@ export class Mining196WalletExecution {
     if(receipt.status==='0x1') {
       this.state.nativeWei=String(BigInt(this.state.nativeWei)+native)
       this.state.keeperFundingWei=String(BigInt(this.state.keeperFundingWei)+funding)
+      this.state.fabPrincipalRaw=String(BigInt(this.state.fabPrincipalRaw)+fab)
     }
     this.state.transactions.push({...this.state.pending,receipt,feeWei:String(paid)})
     this.state.pending=null

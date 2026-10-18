@@ -9,7 +9,7 @@ import {keccak256} from 'viem'
 const owner='0x1111111111111111111111111111111111111111',keeper='0x2222222222222222222222222222222222222222'
 function fixture(t) {
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'mining196-wallet-'));t.after(()=>fs.rmSync(dir,{recursive:true,force:true}))
-  const config={root:process.cwd(),file:path.join(dir,'ledger.json'),keeper,validateIntent:async()=>false,
+  const config={root:process.cwd(),file:path.join(dir,'ledger.json'),keeper,validateIntent:async()=>false,fabPrincipal:()=>0n,
     rehearsal:{owner,feeCap:'21000000',stack:{signer:'0x3333333333333333333333333333333333333333'}},
     approval:{approved:true,totalOwnerOutlayCapWei:'2600000000000000',planHash:'bound'},
     deploymentJournal:{owner,chainId:196,publicTestContracts:true,phase:'deployment-and-inventory-complete',

@@ -1,0 +1,20 @@
+{
+  "chainId": 196,
+  "profileId": "196-mining-test",
+  "approved": true,
+  "authorization": "同意，按总上限 0.0026 OKB 执行，先按最终签名地址重新预演，通过后部署 196 独立测试合约，把前端接好并跑通两套业务，超预算就停止，生产合约不动。",
+  "totalOwnerOutlayCapWei": "2600000000000000",
+  "planHash": "59add00136f1d5ee61bacbbb215fa7600c45fdc0111821b4137dbc86be34d73a",
+  "signer": "0x4736834CCC952Aec7a0dCbC74F3C2C3e3BAb1498",
+  "executionSourceSha256": {
+    "execute-mining-196.mjs": "82cef96a4b5ddca32d780876836bdf39ad2bba45303aaab2757cf24c9469326c",
+    "mining-196-public.mjs": "34024b39bef5720f16d2719cca359ad31b473f6909f662d548dd9344fcded6ef",
+    "mining-public-execution.mjs": "f56ed9f538d9772b692aa5986af6f7da382383ea8e23a8701fb9d2b2923b2c07",
+    "mining-reviewed-intent.mjs": "3dea3c5cc8cdc9483cbe44e69fcf23db57eaf8106068abb993997f8aa585e6ff",
+    "mining-fee-model.mjs": "7b0db06b59d13ba2f63afaf9f02c0685e7c539bf95cc721f5562fc37d4f5a342"
+  },
+  "sourceHeads": {
+    "sodadex": "24fae2b7fc6f0d4b98f00db33a3056bdac5fd51b",
+    "contracts": "ec10161c136a437722e50d8e581a94511e0f34c3"
+  }
+}
