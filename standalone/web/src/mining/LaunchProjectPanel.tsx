@@ -7,6 +7,7 @@ import { Button, Surface } from '../components/primitives'
 import type { WalletController } from '../lib/useWallet'
 import { firstAccount, type WalletIdentity } from '../lib/wallet'
 import { rpc } from '../lib/readRpc'
+import { NETWORK } from '../network'
 import { usePreferences } from '../preferences/context'
 import { executeMiningCall, type MiningStage } from './execution'
 import type { MiningSubmission } from './journal'
@@ -124,7 +125,7 @@ export function LaunchProjectPanel({ deployment: d, wallet, disabled, onBusy, on
     {error && <p role="alert">{message(error)}</p>}
     {pending && <div className="mining-online-recovery">
       <p role="status">{pending.hash ? m.submitted : m.unknown}</p>
-      {pending.hash ? <p className="mining-online-address"><a href={`https://www.oklink.com/xlayer-test/tx/${pending.hash}`} target="_blank" rel="noreferrer">{pending.hash}</a></p> : <>
+      {pending.hash ? <p className="mining-online-address"><a href={`${NETWORK.explorerUrl}/tx/${pending.hash}`} target="_blank" rel="noreferrer">{pending.hash}</a></p> : <>
         <label htmlFor="mining-launch-recovery">{m.resumeHash}</label><input id="mining-launch-recovery" value={hashInput} onChange={(e) => setHashInput(e.target.value.trim())} disabled={busy} autoComplete="off" />
       </>}
       <div className="mining-button-row"><Button appearance="primary" disabled={busy || !account || !miningOnlineHash(pending.hash ?? hashInput)} onClick={() => void recover()}>{m.register}</Button>

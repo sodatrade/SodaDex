@@ -1,0 +1,49 @@
+// 196 mining TEST mount on the existing test site. Supply MINING_196_DEPLOYMENT at deployment.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "sodadex-preview",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-16",
+  "workers_dev": true,
+  "preview_urls": false,
+  "vars": {
+    "SODADEX_MINING_MOUNT": "enabled",
+    "SODADEX_MINING_MOUNT_PROFILE": "196-mining-test"
+  },
+  "services": [
+    {
+      "binding": "ORDERS_API",
+      "service": "sodadex-orders-test"
+    },
+    {
+      "binding": "MINING_API",
+      "service": "sodadex-mining-api-test-1952"
+    },
+    {
+      "binding": "MINING_API_196",
+      "service": "sodadex-mining-api-test-196"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "CHAIN_INDEX",
+        "class_name": "SodaChainIndex"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1-chain-index-sqlite",
+      "new_sqlite_classes": [
+        "SodaChainIndex"
+      ]
+    }
+  ],
+  "assets": {
+    "directory": "../web/dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": true
+  }
+}

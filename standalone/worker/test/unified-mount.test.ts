@@ -46,4 +46,21 @@ describe('same-origin mining mount', () => {
     expect(external.status).toBe(403); expect(binding).toHaveBeenCalledOnce()
     expect((await worker.fetch(new Request(url + '/api/mining/projects'), { ...env, MINING_API: { fetch: binding } })).status).toBe(503)
   })
+  it('selects the 196 TEST mount explicitly and uses only its isolated backend', async () => {
+    const deployment = { ...MINING_PRODUCTS, chainId: 196, profileId: '196-mining-test' }
+    const legacy = vi.fn(), isolated = vi.fn(async () => Response.json({ schemaVersion: 1, chainId: 196,
+      deploymentVersion: MINING_PRODUCTS.state === 'ready' ? MINING_PRODUCTS.version : '', projects: [], revision: '1' }))
+    const selected = { ...env, SODADEX_MINING_MOUNT_PROFILE: '196-mining-test', MINING_196_DEPLOYMENT: JSON.stringify(deployment),
+      MINING_API: { fetch: legacy }, MINING_API_196: { fetch: isolated } }
+    expect(await (await worker.fetch(new Request(url + '/mining/api/network'), selected)).json()).toMatchObject({ id: '196-mining-test', chainId: 196 })
+    expect(await (await worker.fetch(new Request(url + '/api/network'), selected)).json()).toMatchObject({ id: '196-test', dexEnabled: true })
+    expect((await worker.fetch(new Request(url + '/mining/api/mining/projects'), selected)).status).toBe(200)
+    expect(isolated).toHaveBeenCalledOnce(); expect(legacy).not.toHaveBeenCalled()
+    expect((await worker.fetch(new Request(url + '/mining/api/mining/status'), { ...selected, MINING_196_DEPLOYMENT: undefined })).status).toBe(503)
+  })
+  it('does not fall back to 1952 for an invalid mounted profile', async () => {
+    for (const profile of ['196-test', 'invalid', ''])
+      expect((await worker.fetch(new Request(url + '/mining/api/network'), { ...env, SODADEX_MINING_MOUNT_PROFILE: profile })).status).toBe(503)
+  })
+
 })

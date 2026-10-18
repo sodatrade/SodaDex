@@ -17,6 +17,7 @@ interface Env extends IndexEnv {
   MINING_API?: MiningApiBinding
   SODADEX_NETWORK_PROFILE?: string
   SODADEX_MINING_MOUNT?: string
+  SODADEX_MINING_MOUNT_PROFILE?: string
 }
 
 export default {
@@ -31,7 +32,10 @@ export default {
       if (env.SODADEX_MINING_MOUNT !== 'enabled' || profile.id !== '196-test')
         return Response.json({ error: 'Mining mount unavailable' }, { status: 404 })
       if (path === '/mining') { url.pathname = '/mining/'; return Response.redirect(url.toString(), 308) }
-      profile = networkProfile('1952-mining-test')
+      const mountedProfile = env.SODADEX_MINING_MOUNT_PROFILE ?? '1952-mining-test'
+      if (mountedProfile !== '1952-mining-test' && mountedProfile !== '196-mining-test')
+        return Response.json({ error: 'Mining mount profile unavailable' }, { status: 503 })
+      profile = networkProfile(mountedProfile)
       if (path.startsWith('/mining/api/')) {
         url.pathname = path.slice('/mining'.length)
         request = new Request(url, request)
