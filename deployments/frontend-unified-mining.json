@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "status": "live-unified-mining",
   "publishedOn": "2026-10-18",
-  "sourceCommit": "f1c3047a4f7bcde5e1962aa5e87a23f25ae80f3d",
+  "sourceCommit": "2ec695590adf0fc926d4dc8ab80b5cb9ebe9e0c2",
   "scope": "Same-origin SodaDEX frontend integration of FAB mining products. The original frontend release validation and subsequent approved 1952 main-site wallet acceptance are recorded separately; production contracts are unchanged.",
   "frontend": {
     "worker": "sodadex-preview",
-    "versionId": "eecdf0fe-17e6-4593-b6ad-1e5eb90693e4",
+    "versionId": "8d2cb7de-6fdd-4a3e-a570-c9a0a99adcf7",
     "origin": "https://sodadex-preview.jsmsdx2025.workers.dev",
     "fundraisingUrl": "https://sodadex-preview.jsmsdx2025.workers.dev/mining/#fundraising",
     "fragmentsUrl": "https://sodadex-preview.jsmsdx2025.workers.dev/mining/#fragments"
@@ -287,5 +287,10 @@
       "More than 1000 logs in one block pauses indexing with an error instead of skipping records.",
       "Local submission journal remains capped at100; background-task feed remains the recent50."
     ]
+  },
+  "emeraldUIRelease": {
+    "record": "ui-green-2026-10-18.json",
+    "sourceCommit": "2ec695590adf0fc926d4dc8ab80b5cb9ebe9e0c2",
+    "versionId": "8d2cb7de-6fdd-4a3e-a570-c9a0a99adcf7"
   }
 }

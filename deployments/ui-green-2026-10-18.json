@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "publishedOn": "2026-10-18",
+  "sourceCommit": "2ec695590adf0fc926d4dc8ab80b5cb9ebe9e0c2",
+  "versionId": "8d2cb7de-6fdd-4a3e-a570-c9a0a99adcf7",
+  "scope": [
+    "Unified emerald logo, actions and selected states; default white/day surfaces",
+    "Soft single focus border; visible outlined secondary controls",
+    "Compact mining context and chain history; mobile language alignment",
+    "Disabled wallet filter distinct from selected filter; scrollable mobile navigation without permanent scrollbar"
+  ],
+  "validation": {
+    "webPassed": 498,
+    "webSkipped": 0,
+    "typecheck": true,
+    "lint": true,
+    "unifiedBuildAndCsp": true,
+    "viewports": [
+      1440,
+      390
+    ],
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "publicEntryAssetsMatched": 6,
+    "visualReview": "evidence/ui-green-2026-10-18/visual-review.json",
+    "publicAssets": "evidence/ui-green-2026-10-18/public-assets.json"
+  },
+  "noNewChainWritesFromUIRelease": true,
+  "productionContractsModified": false,
+  "storageMigration": false,
+  "secretsChanged": false,
+  "limits": [
+    "Mining screenshot fixtures are explicitly simulated; they are not public-chain business acceptance.",
+    "Full fresh browser-wallet scenario coverage is tracked separately and remains in progress."
+  ],
+  "intermediateVersion": "b72c41ea-71ab-486b-ad7b-8d2cdd01ff61"
+}
