@@ -3,7 +3,7 @@ interface Operation { method: string; params: unknown[] }
 export interface BatchRpc extends Rpc { batch(operations: readonly Operation[]): Promise<unknown[]> }
 const delay = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms))
 /** Same upstream batch proves pending reads are not served by the known stale 1952 backend. */
-export async function freshPending(rpc: BatchRpc, method: string, params: unknown[], wait = delay): Promise<unknown> {
+export async function freshPending(rpc: BatchRpc, method: string, params: unknown[], wait = delay, chainId: 1952 | 196 = 1952): Promise<unknown> {
   const tx = record(params[0]) ? params[0] : undefined
   const probes: Operation[] = [{ method: 'eth_chainId', params: [] }, { method: 'eth_getBlockByNumber', params: ['latest', false] },
     { method: 'eth_getBlockByNumber', params: ['pending', false] }]
@@ -16,7 +16,7 @@ export async function freshPending(rpc: BatchRpc, method: string, params: unknow
     const [chain, latest, pending] = result
     let fresh = false
     try {
-      fresh = quantity(chain) === 1952n && record(latest) && record(pending) && quantity(pending.number) >= quantity(latest.number) && quantity(pending.timestamp) >= quantity(latest.timestamp)
+      fresh = quantity(chain) === BigInt(chainId) && record(latest) && record(pending) && quantity(pending.number) >= quantity(latest.number) && quantity(pending.timestamp) >= quantity(latest.timestamp)
       let i = 3
       if (typeof tx?.to === 'string') { fresh = fresh && typeof result[i] === 'string' && result[i] !== '0x' && result[i] === result[i + 1]; i += 2 }
       if (typeof tx?.from === 'string') fresh = fresh && quantity(result[i + 1]) >= quantity(result[i])

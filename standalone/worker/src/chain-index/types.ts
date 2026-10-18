@@ -9,7 +9,7 @@ export interface IndexedEvent {
   transactionHash: string; logIndex: number; args: Record<string, string | number | boolean>; transactionFrom: string; timestamp: number
 }
 export interface IndexStatus {
-  schemaVersion: 1; chainId: 196 | 1952; deploymentVersion: string; head: Block | null; indexedThrough: number
+  schemaVersion: 1; profileId?: NetworkProfile['id']; chainId: 196 | 1952; deploymentVersion: string; head: Block | null; indexedThrough: number
   fromBlock: number; syncing: boolean; lastError: string | null; generation: number
 }
 export type SqlValue = string | number | null
@@ -21,6 +21,8 @@ export interface Storage {
 export interface IndexEnv {
   CHAIN_INDEX?: { idFromName(name: string): unknown; get(id: unknown): { fetch(request: Request): Promise<Response> } }
   MINING_API?: MiningApiBinding
+  MINING_API_196?: MiningApiBinding
+  MINING_196_DEPLOYMENT?: string
 }
 export interface Batch { from: number; to: Block; head: Block; logs: ChainLog[]; events: IndexedEvent[]; pools: Pool[] }
 export interface SavedCursor { query: string; generation: number; through: number; asOf: Block | null; offset: number; expires: number }

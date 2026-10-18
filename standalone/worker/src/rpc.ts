@@ -37,7 +37,7 @@ function validParams(method: string, params: unknown[], profile: NetworkProfile,
   if (method === 'eth_getTransactionReceipt') return params.length === 1 && typeof params[0] === 'string' && /^0x[0-9a-fA-F]{64}$/.test(params[0])
   if (method === 'eth_getBlockByNumber') return params.length === 2 && typeof params[0] === 'string' && BLOCK.test(params[0]) && params[1] === false
   // 1952 base-contract reads have their own deployed-address and canonical ABI list.
-  if (profile.chainId === 1952 && ['eth_call', 'eth_estimateGas', 'eth_getStorageAt', 'eth_getLogs'].includes(method))
+  if (!profile.dexEnabled && mining.chainId === profile.chainId && ['eth_call', 'eth_estimateGas', 'eth_getStorageAt', 'eth_getLogs'].includes(method))
     return validMiningRpcParams(method, params, mining)
   if (!profile.dexEnabled && !['eth_getBalance', 'eth_getCode'].includes(method)) return false
   if (method === 'eth_getLogs') return params.length === 1 && validLogFilter(params[0])

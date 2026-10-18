@@ -33,7 +33,7 @@ const zh = {
   reasonNotGraduated: '项目毕业后才转换代币税款', reasonPaused: '矿机系统已暂停', reasonDust: '当前金额过小，暂不转换',
   reasonAuthorization: '等待核对授权状态', reasonSimulation: '模拟未通过，已停止发送', reasonReconcile: '正在核对原交易，已暂停后续发送',
   reasonCancelling: '原授权已过期，正在确认取消交易；后续业务等待恢复', reasonCancelled: '旧授权已取消，后台将按最新状态重新处理',
-  reasonSettled: '已在测试链确认', reasonSigned: '已签名，等待发送', reasonSubmitted: '已提交，等待链上确认', reasonQueued: '已排队，等待后台检查',
+  reasonSettled: '已在链上确认', reasonSigned: '已签名，等待发送', reasonSubmitted: '已提交，等待链上确认', reasonQueued: '已排队，等待后台检查',
   reasonCapacity: '矿场已达容量上限', reasonListing: '暂无合格矿机挂单', reasonFunds: '采购预算不足', reasonOther: '请刷新状态查看后续结果',
 }
 type Messages = Record<keyof typeof zh, string>
@@ -70,7 +70,7 @@ const en: Messages = {
   reasonNotGraduated: 'Token-tax conversion starts after graduation', reasonPaused: 'Mining is paused', reasonDust: 'Amount is too small to convert',
   reasonAuthorization: 'Checking authorization state', reasonSimulation: 'Simulation failed; sending stopped', reasonReconcile: 'Reconciling the original transaction; further sends are paused',
   reasonCancelling: 'The old authorization expired. Waiting for its cancellation before continuing.', reasonCancelled: 'The old authorization was cancelled. The backend will plan again from current state.',
-  reasonSettled: 'Confirmed on testnet', reasonSigned: 'Signed; awaiting broadcast', reasonSubmitted: 'Submitted; awaiting chain confirmation', reasonQueued: 'Queued for a background check',
+  reasonSettled: 'Confirmed onchain', reasonSigned: 'Signed; awaiting broadcast', reasonSubmitted: 'Submitted; awaiting chain confirmation', reasonQueued: 'Queued for a background check',
   reasonCapacity: 'Farm capacity reached', reasonListing: 'No eligible miner listing', reasonFunds: 'Purchase budget is insufficient', reasonOther: 'Refresh for the next verified result',
 }
 const yue: Messages = {
@@ -104,7 +104,7 @@ const yue: Messages = {
   reasonNotGraduated: '項目畢業後先轉換代幣稅款', reasonPaused: '礦機系統暫停咗', reasonDust: '金額太細，暫時唔轉換',
   reasonAuthorization: '核對緊授權狀態', reasonSimulation: '模擬唔通過，已停止發送', reasonReconcile: '核對緊原交易，後續發送暫停咗',
   reasonCancelling: '舊授權已過期，等緊取消交易確認；後續業務暫停', reasonCancelled: '舊授權已取消，後台會按最新狀態重新處理',
-  reasonSettled: '已喺測試鏈確認', reasonSigned: '已簽名，等緊發送', reasonSubmitted: '已提交，等緊鏈上確認', reasonQueued: '已排隊，等後台檢查',
+  reasonSettled: '已喺鏈上確認', reasonSigned: '已簽名，等緊發送', reasonSubmitted: '已提交，等緊鏈上確認', reasonQueued: '已排隊，等後台檢查',
   reasonCapacity: '礦場容量已滿', reasonListing: '暫時冇合格礦機掛單', reasonFunds: '採購預算唔夠', reasonOther: '請再讀取狀態睇後續結果',
 }
 export type MiningOnlineMessageKey = keyof Messages

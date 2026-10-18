@@ -3,3 +3,5 @@
 /coverage/
 /.playwright-cli/
 /test-results/
+
+/dist-mining-196/

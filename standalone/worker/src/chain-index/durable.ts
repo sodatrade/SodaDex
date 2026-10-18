@@ -19,7 +19,7 @@ export class SodaChainIndex {
     return this.#serial(async () => {
       const url = new URL(request.url), id = url.pathname.split('/')[1] as NetworkProfileId
       try {
-        const config = baseConfig(id), store = new IndexStore(this.state.storage, config)
+        const config = baseConfig(id, this.env), store = new IndexStore(this.state.storage, config)
         const read = indexFetch(config)
         if (!await verifyIndex(store, read)) throw new IndexRestart('Chain changed; index rebuilding')
         url.pathname = url.pathname.slice(id.length + 1)
@@ -45,7 +45,8 @@ export class SodaChainIndex {
     return this.#serial(async () => {
       const row = this.state.storage.sql.exec('SELECT value FROM index_meta WHERE id=1').toArray()[0]
       if (!row) return
-      const id: NetworkProfileId = JSON.parse(String(row.value)).chainId === 196 ? '196-test' : '1952-mining-test'
+      const saved = JSON.parse(String(row.value))
+      const id = networkProfile(saved.profileId ?? (saved.chainId === 196 ? '196-test' : '1952-mining-test')).id
       const config = await currentConfig(id, this.env), store = new IndexStore(this.state.storage, config)
       try {
         store.query('CREATE TABLE IF NOT EXISTS index_sources(id INTEGER PRIMARY KEY,value TEXT NOT NULL)')
@@ -72,7 +73,7 @@ export async function chainIndexApi(request: Request, env: IndexEnv, profileId: 
   if (!env.CHAIN_INDEX) return Response.json({ error: 'Chain index unavailable' }, { status: 503, headers })
   try {
     networkProfile(profileId)
-    const config = baseConfig(profileId), path = url.pathname.split('/').at(-1)
+    const config = baseConfig(profileId, env), path = url.pathname.split('/').at(-1)
     if (!['status', 'events', 'pools'].includes(path!)) return Response.json({ error: 'Not found' }, { status: 404, headers })
     const internal = new URL(`https://index.internal/${profileId}/${path}${url.search}`)
     const response = await env.CHAIN_INDEX.get(env.CHAIN_INDEX.idFromName(actorName(config))).fetch(new Request(internal, { headers: { 'X-Index-Legacy': String(legacy) } }))

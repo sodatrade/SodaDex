@@ -24,7 +24,7 @@ export function validKeeperCall(call: PreparedCall, d: MiningProductDeployment, 
 export async function validateRaw(raw: Hex, plan: TransactionSerializableLegacy, signer: string): Promise<Hex> {
   const tx = parseTransaction(raw)
   const from = await recoverTransactionAddress({ serializedTransaction: raw as TransactionSerialized })
-  if (!same(from, signer) || tx.chainId !== 1952 || tx.type !== 'legacy' || !same(tx.to ?? '', plan.to ?? '') ||
+  if (!same(from, signer) || tx.chainId !== plan.chainId || ![1952, 196].includes(plan.chainId ?? 0) || tx.type !== 'legacy' || !same(tx.to ?? '', plan.to ?? '') ||
       (tx.value ?? 0n) !== 0n || tx.data !== plan.data || tx.gas !== plan.gas || tx.gasPrice !== plan.gasPrice || tx.nonce !== plan.nonce) throw new ServiceError('signed_transaction_mismatch', 503)
   return keccak256(raw)
 }
@@ -43,7 +43,7 @@ export async function validateSaved(e: Execution, d: MiningProductDeployment, pr
     throw new ServiceError('stored_transaction_invalid', 503)
   })(), jobId: e.jobId }
   if (!validKeeperCall(job, d, projects) || await validateRaw(e.raw, {
-    chainId: 1952, to: e.to, data: e.data, value: 0n, nonce: e.nonce, gas: BigInt(e.gas), gasPrice: BigInt(e.gasPrice), type: 'legacy',
+    chainId: d.chainId, to: e.to, data: e.data, value: 0n, nonce: e.nonce, gas: BigInt(e.gas), gasPrice: BigInt(e.gasPrice), type: 'legacy',
   }, e.signer) !== e.hash) throw new ServiceError('stored_transaction_invalid', 503)
 }
 
@@ -70,7 +70,7 @@ export async function assertLiveExecution(e: Pick<Execution, 'signer' | 'to' | '
     if (!policy.allowedListingIds.includes(String(p.listingId)) || d.testListingIds?.includes(String(p.listingId)) ||
         p.nativePrice <= 0n || p.nativePrice > policy.maxMinerPriceWei || p.maxFab <= 0n ||
         p.deadline < b.timestamp || p.deadline > b.timestamp + 60n) throw new ServiceError('purchase_policy_changed')
-    if (!same(await recoverTypedDataAddress({ ...purchaseTyped(farm, p), signature: args[1] as Hex }), c.expectedSigner)) throw new ServiceError('purchase_state_changed')
+    if (!same(await recoverTypedDataAddress({ ...purchaseTyped(farm, p, d.chainId), signature: args[1] as Hex }), c.expectedSigner)) throw new ServiceError('purchase_state_changed')
     // Planner checked these exact historical-state reads at b in this event.
     // Its proof is never stored with Execution or reconstructed after restart.
     if (initialProof) { await assertCanonical(rpc, b); return }
@@ -104,7 +104,7 @@ export async function assertLiveExecution(e: Pick<Execution, 'signer' | 'to' | '
     const p = args[0] as MiningConversion
     if (!verified.pair || p.input <= 0n || p.input > c.policy.maxConversionInputRaw || p.minimumFab <= 0n ||
         p.deadline < b.timestamp || p.deadline > b.timestamp + 60n) throw new ServiceError('conversion_policy_changed')
-    if (!same(await recoverTypedDataAddress({ ...conversionTyped(e.to, p), signature: args[1] as Hex }), c.expectedSigner)) throw new ServiceError('conversion_state_changed')
+    if (!same(await recoverTypedDataAddress({ ...conversionTyped(e.to, p, d.chainId), signature: args[1] as Hex }), c.expectedSigner)) throw new ServiceError('conversion_state_changed')
     if (initialProof) { await assertCanonical(rpc, b); return }
     const [balance, exempt, tax, used] = await Promise.all([
       read<bigint>(rpc, project.token.address, 'function balanceOf(address) view returns(uint256)', [e.to], b.number),

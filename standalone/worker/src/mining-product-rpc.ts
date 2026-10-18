@@ -19,7 +19,7 @@ export function validMiningRpcParams(method: string, params: unknown[], d: Minin
     const simulation = record(params[0]) && typeof params[0].from === 'string'
     if (method === 'eth_call' && (params.length !== 2 || !block(params[1]))) return false
     if (method === 'eth_estimateGas' && ((params.length !== 1 && !(params.length === 2 && params[1] === 'pending')) || !simulation)) return false
-    return (method === 'eth_call' && validMiningRead(params[0])) || (d.state === 'ready' && validMiningProductCall(params[0], d, simulation))
+    return (method === 'eth_call' && d.chainId === 1952 && validMiningRead(params[0])) || (d.state === 'ready' && validMiningProductCall(params[0], d, simulation))
   }
   if (d.state !== 'ready') return false
   if (method === 'eth_getStorageAt') return params.length === 3 && typeof params[0] === 'string' &&

@@ -1,5 +1,5 @@
 import { encodeAbiParameters, parseAbiParameters, type Hex } from 'viem'
-import type { MiningAddress, MiningProductDeployment } from './mining-products'
+import { isMiningTestDeployment, type MiningAddress, type MiningProductDeployment } from './mining-products'
 
 /** The already approved 1952 product parameters; production must use a separate policy. */
 export const MINING_LAUNCH_TEST_POLICY = {
@@ -62,7 +62,7 @@ export function miningLaunchVaultData(): Hex {
 }
 
 export function miningCreateParams(form: MiningLaunchForm, salt: Hex, d: MiningProductDeployment): MiningCreateParams {
-  if (d.chainId !== 1952 || !nonzeroSalt(salt)) throw new Error('miningInvalidLaunch')
+  if (!isMiningTestDeployment(d) || !nonzeroSalt(salt)) throw new Error('miningInvalidLaunch')
   const { venue: _venue, graduationProtectionSecs: _protection, ...parameters } = MINING_LAUNCH_TEST_POLICY
   return { ...normalizeMiningLaunchForm(form), ...parameters, salt, quote: d.contracts.fab.address }
 }
@@ -80,10 +80,10 @@ function validCreate(args: readonly unknown[], d: MiningProductDeployment, now: 
 
 /** Shape/policy validation only. Signatures, nonce freshness and live bindings require chain reads. */
 export function validMiningSignedCall(role: string, name: string, args: readonly unknown[], d: MiningProductDeployment, now: number): boolean | undefined {
-  if (name === 'createToken') return d.chainId === 1952 && role === 'manager' && validCreate(args, d, now)
+  if (name === 'createToken') return isMiningTestDeployment(d) && role === 'manager' && validCreate(args, d, now)
   if (name !== 'buyMiner' && name !== 'convertTax') return undefined
   const [p, sig] = args
-  if (d.chainId !== 1952 || args.length !== 2 || !record(p) || !signature(sig) ||
+  if (!isMiningTestDeployment(d) || args.length !== 2 || !record(p) || !signature(sig) ||
       !uint256(p.nonce) || !deadline(p.deadline, now, 60)) return false
   return name === 'buyMiner' ? role === 'farm' && uint256(p.listingId) && uint256(p.minerId) &&
     positive(p.nativePrice) && positive(p.maxFab) : role === 'projectVault' && positive(p.input) && positive(p.minimumFab)

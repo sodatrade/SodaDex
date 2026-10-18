@@ -76,7 +76,7 @@ export class Planner {
     const nonce = this.nonce(`conversion:${vault.toLowerCase()}`)
     const params: MiningConversion = { input, minimumFab, nonce, deadline: b.timestamp + 60n }
     if (await read<boolean>(this.rpc, vault, 'function usedConversionNonce(uint256) view returns(bool)', [nonce], b.number)) throw new ServiceError('authorization_nonce_used')
-    const typed = conversionTyped(vault, params)
+    const typed = conversionTyped(vault, params, this.d.chainId)
     const digest = await read<Hex>(this.rpc, vault, `function conversionDigest(${MINING_CONVERSION_PARAMS_ABI} p) view returns(bytes32)`, [params], b.number)
     if (digest !== authorizationDigest(typed)) throw new ServiceError('conversion_digest_mismatch', 503)
     await this.repo.flush()
@@ -115,7 +115,7 @@ export class Planner {
       const nonce = this.nonce(`purchase:${farm.toLowerCase()}`)
       const params: MiningPurchase = { listingId: BigInt(listing), minerId, nativePrice, maxFab, nonce, deadline: b.timestamp + 60n }
       if (await read<boolean>(this.rpc, farm, 'function usedNonce(uint256) view returns(bool)', [nonce], b.number)) throw new ServiceError('authorization_nonce_used')
-      const typed = purchaseTyped(farm, params)
+      const typed = purchaseTyped(farm, params, this.d.chainId)
       const digest = await read<Hex>(this.rpc, farm, `function purchaseDigest(${MINING_PURCHASE_PARAMS_ABI} p) view returns(bytes32)`, [params], b.number)
       if (digest !== authorizationDigest(typed)) throw new ServiceError('purchase_digest_mismatch', 503)
       await this.repo.flush()

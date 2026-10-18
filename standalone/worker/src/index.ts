@@ -8,6 +8,7 @@ import { referenceApi } from './reference-api'
 import { ordersApi } from './orders-api'
 import preferencesScript from '../../web/dist/preferences-script.json'
 import { networkProfile, publicNetworkProfile, type NetworkProfile } from '../../network-profile'
+import { miningDeploymentForProfile } from '../../mining-products'
 import { miningApi, miningCatalog, type MiningApiBinding } from './mining-api'
 
 interface Env extends IndexEnv {
@@ -40,14 +41,18 @@ export default {
         return Response.json({ error: 'Not found' }, { status: 404 })
       }
     }
+    let mining
+    try { mining = !profile.dexEnabled ? miningDeploymentForProfile(profile.id, profile.id === '196-mining-test' && env.MINING_196_DEPLOYMENT ? JSON.parse(env.MINING_196_DEPLOYMENT) : undefined) : undefined }
+    catch { return Response.json({ error: 'Mining deployment unavailable' }, { status: 503 }) }
+    const miningBinding = profile.id === '196-mining-test' ? env.MINING_API_196 : env.MINING_API
     if (path === '/api/network') return request.method === 'GET'
       ? Response.json(publicNetworkProfile(profile), { headers: { 'Cache-Control': 'no-store' } })
       : Response.json({ error: 'GET required' }, { status: 405 })
     if (path.startsWith('/api/index/')) return chainIndexApi(request, env, profile.id)
     if (env.CHAIN_INDEX && profile.dexEnabled && ['/api/dex/pools', '/api/dex/events'].includes(path)) return chainIndexApi(request, env, profile.id, true)
-    if (path === '/api/mining' || path.startsWith('/api/mining/')) return miningApi(request, env.MINING_API, profile)
+    if (path === '/api/mining' || path.startsWith('/api/mining/')) return miningApi(request, miningBinding, profile, mining)
     if (path === '/api/rpc') return proxyRpc(request, fetch, profile,
-      profile.chainId === 1952 ? await miningCatalog(env.MINING_API, new URL(request.url).origin) : undefined)
+      !profile.dexEnabled ? await miningCatalog(miningBinding, new URL(request.url).origin, mining) : undefined)
     if (!profile.dexEnabled && (path === '/api/dex' || path.startsWith('/api/dex/') ||
       path === '/api/reference' || path.startsWith('/api/reference/') ||
       path === '/api/orders' || path.startsWith('/api/orders/')))

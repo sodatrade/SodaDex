@@ -1,6 +1,6 @@
 import { keccak256, parseAbi, stringToHex } from 'viem'
 import { networkProfile, type NetworkProfileId } from '../../../network-profile'
-import { MINING_PRODUCTS } from '../../../mining-products'
+import { MINING_PRODUCTS as DEFAULT_MINING_PRODUCTS, miningDeploymentForProfile } from '../../../mining-products'
 import { miningCatalog } from '../mining-api'
 import { deployment, EVENTS, FIRST_BLOCK } from '../contracts'
 import { knownPools } from '../dex-data'
@@ -37,27 +37,28 @@ const abiByRole: Record<string, ReturnType<typeof parseAbi>> = {
     'event Mint(address indexed sender,uint256 amount0,uint256 amount1)', 'event Burn(address indexed sender,uint256 amount0,uint256 amount1,address indexed to)', 'event Sync(uint112 reserve0,uint112 reserve1)']),
   minerBuyer: parseAbi(['event Purchased(address indexed buyer,uint256 indexed listingId,uint256 indexed minerId,uint256 price)']),
 }
-export function baseConfig(id: NetworkProfileId): IndexConfig {
+export function baseConfig(id: NetworkProfileId, env: IndexEnv = {}): IndexConfig {
   if (id === '196-test') return { profile: networkProfile(id), version: `dex-${deployment.sourceCommit}-${keccak256(stringToHex(JSON.stringify([FIRST_BLOCK, deployment.contracts.v3Factory, deployment.contracts.v3PositionManager, deployment.contracts.v4PoolManager, deployment.contracts.v4PositionManager]))).slice(2, 18)}`, fromBlock: FIRST_BLOCK,
     sources: [source(deployment.contracts.v3Factory, 'v3', 'factory', EVENTS), source(deployment.contracts.v3PositionManager, 'v3', 'position', EVENTS),
       source(deployment.contracts.v4PoolManager, 'v4', 'manager', EVENTS), source(deployment.contracts.v4PositionManager, 'v4', 'position', EVENTS),
       ...knownPools().filter(p => p.address).map(p => source(p.address!, 'v3', 'pool', EVENTS))] }
+  const MINING_PRODUCTS = miningDeploymentForProfile(id, id === '196-mining-test' && env.MINING_196_DEPLOYMENT ? JSON.parse(env.MINING_196_DEPLOYMENT) : undefined)
   if (MINING_PRODUCTS.state !== 'ready') throw Error('Mining deployment unavailable')
   return { profile: networkProfile(id), version: MINING_PRODUCTS.version, fromBlock: Number(MINING_PRODUCTS.genesisBlock), sources: miningSources(MINING_PRODUCTS) }
 }
 function source(address: string, protocol: IndexSource['protocol'], role: string, abi: IndexSource['abi']): IndexSource { return { address: address.toLowerCase(), protocol, role, abi } }
-function miningSources(d: Extract<typeof MINING_PRODUCTS, { state: 'ready' }>): IndexSource[] {
+function miningSources(d: Extract<typeof DEFAULT_MINING_PRODUCTS, { state: 'ready' }>): IndexSource[] {
   const result = Object.entries(d.contracts).flatMap(([role, identity]) => abiByRole[role] ? [source(identity.address, 'mining', role, abiByRole[role])] : [])
   for (const p of d.projects) for (const [role, identity] of [['projectToken', p.token], ['projectVault', p.vault], ['holder', p.holder], ['pair', p.pair]] as const)
     if (identity) result.push(source(identity.address, 'mining', role, abiByRole[role]))
   return result
 }
 export async function currentConfig(id: NetworkProfileId, env: IndexEnv): Promise<IndexConfig> {
-  const config = baseConfig(id)
-  if (id === '1952-mining-test') {
-    const catalog = await miningCatalog(env.MINING_API, 'https://sodadex-preview.jsmsdx2025.workers.dev')
+  const config = baseConfig(id, env)
+  if (id !== '196-test') {
+    const catalog = await miningCatalog(id === '196-mining-test' ? env.MINING_API_196 : env.MINING_API, 'https://sodadex-preview.jsmsdx2025.workers.dev', miningDeploymentForProfile(id, id === '196-mining-test' && env.MINING_196_DEPLOYMENT ? JSON.parse(env.MINING_196_DEPLOYMENT) : undefined))
     if (catalog.state === 'ready') config.sources = miningSources(catalog)
   }
   return config
 }
-export const actorName = (config: IndexConfig): string => `sodadex-chain-index:${config.profile.chainId}:${config.version}`
+export const actorName = (config: IndexConfig): string => `sodadex-chain-index:${config.profile.id === '196-mining-test' ? config.profile.id : config.profile.chainId}:${config.version}`

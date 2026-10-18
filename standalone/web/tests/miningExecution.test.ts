@@ -20,6 +20,23 @@ describe('1952 wallet execution and recoverable hashes', () => {
     expect(request.mock.calls.at(-1)?.[0]).toMatchObject({ method: 'eth_sendTransaction', params: [{ ...tx, chainId: '0x7a0', gas: '0x13334', gasPrice: '0x1' }] })
     expect(submitted.map((r) => r.status)).toEqual(['pending', 'success'])
   })
+  it('executes an explicit 196 test deployment and isolates its journal from 1952', async () => {
+    const { c, request, submitted } = fixture()
+    c.deployment = { ...c.deployment, chainId: 196, profileId: '196-mining-test' }
+    c.identity = { ...c.identity, chainId: 196 }; c.getIdentity = () => c.identity
+    const read = c.read
+    c.read = async (method, params) => method === 'eth_chainId' ? '0xc4' : read(method, params)
+    request.mockImplementation(async ({ method }) => method === 'eth_chainId' ? '0xc4' : method === 'eth_accounts' ? [MINING_TEST_ACCOUNT] : MINING_TEST_HASH)
+    const tx = { from: MINING_TEST_ACCOUNT, to: c.deployment.contracts.fragmentVault.address, value: '0x0' as const, data: miningData('fragmentVault', 'claim') }
+    await executeMiningCall(c, tx, 'claim')
+    expect(request.mock.calls.at(-1)?.[0]).toMatchObject({ method: 'eth_sendTransaction', params: [{ ...tx, chainId: '0xc4' }] })
+    const store = new Map<string, string>(), storage = { getItem: (key: string) => store.get(key) ?? null, setItem: (key: string, value: string) => { store.set(key, value) } }
+    saveMiningSubmission(c.deployment, submitted[0], storage)
+    expect(loadMiningJournal(c.deployment, storage)).toHaveLength(1)
+    expect(loadMiningJournal({ ...c.deployment, chainId: 1952, profileId: '1952-mining-test' }, storage)).toHaveLength(0)
+    request.mockImplementation(async ({ method }) => method === 'eth_chainId' ? '0x7a0' : [MINING_TEST_ACCOUNT])
+    await expect(executeMiningCall(c, tx, 'claim')).rejects.toThrow('miningIdentityChanged')
+  })
   it('stops a stale wallet before submission, including when events were omitted', async () => {
     const { c, request } = fixture()
     request.mockImplementation(async ({ method }) => method === 'eth_chainId' ? '0xc4' : [MINING_TEST_ACCOUNT])

@@ -1,3 +1,4 @@
+import { NETWORK } from '../network'
 import type { Locale } from '../preferences/model'
 
 const zh = {
@@ -24,7 +25,10 @@ const yue: typeof zh = {
   head: '鏈上區塊', lag: '同步暫緩，顯示已收錄紀錄', retry: '重新整理', previous: '上一頁', next: '下一頁', page: '頁',
   restart: '鏈上資料已更新，請重新整理再翻頁。', details: '事件詳情', connect: '連接 1952 銀包後可以篩選自己嘅紀錄。',
 }
-export const indexMessages = (locale: Locale): typeof zh => locale === 'en' ? en : locale === 'yue-HK' ? yue : zh
+export const indexMessages = (locale: Locale): typeof zh => {
+  const base = locale === 'en' ? en : locale === 'yue-HK' ? yue : zh
+  return NETWORK.id === '196-mining-test' ? Object.fromEntries(Object.entries(base).map(([k, v]) => [k, v.replaceAll('1952', '196')])) as typeof zh : base
+}
 
 const eventNames: Record<string, readonly [string, string, string]> = {
   Swapped: ['碎片兑换', 'Fragment swap', '碎片兌換'], Swap: ['代币兑换', 'Token swap', '代幣兌換'],

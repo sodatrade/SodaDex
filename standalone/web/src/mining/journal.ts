@@ -6,7 +6,7 @@ export interface MiningSubmission {
   approval?: boolean
 }
 export interface MiningStorage { getItem(key: string): string | null; setItem(key: string, value: string): void }
-const key = (d: MiningProductDeployment): string => `sodadex:1952:mining:${d.version}`
+const key = (d: MiningProductDeployment): string => `sodadex:${d.chainId}:mining:${d.version}`
 export function loadMiningJournal(d: MiningProductDeployment, storage: MiningStorage = localStorage): MiningSubmission[] {
   try {
     const raw: unknown = JSON.parse(storage.getItem(key(d)) ?? '[]')

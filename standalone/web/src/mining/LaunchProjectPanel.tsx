@@ -22,36 +22,36 @@ interface Props {
   onBusy: (busy: boolean) => void; onSubmission: (entry: MiningSubmission) => void
   onRegistered: (registered: MiningLaunchRegistration) => void
 }
-const pendingKey = (version: string, from: string): string => `sodadex:1952:mining-online:${version}:${from.toLowerCase()}:launch`
-function readPending(version: string, from: string | undefined): PendingLaunch | undefined {
+const pendingKey = (version: string, from: string, chainId: number): string => `sodadex:${chainId}:mining-online:${version}:${from.toLowerCase()}:launch`
+function readPending(version: string, from: string | undefined, chainId: number): PendingLaunch | undefined {
   if (!from) return
   try {
-    const value: unknown = JSON.parse(localStorage.getItem(pendingKey(version, from)) ?? 'null')
+    const value: unknown = JSON.parse(localStorage.getItem(pendingKey(version, from, chainId)) ?? 'null')
     if (value && typeof value === 'object' && 'hash' in value && miningOnlineHash(value.hash)) return { hash: value.hash }
     if (value && typeof value === 'object' && 'unknown' in value && value.unknown === true) return { unknown: true }
   } catch { /* The in-memory hash remains visible if browser storage is unavailable. */ }
 }
 export function LaunchProjectPanel({ deployment: d, wallet, disabled, onBusy, onSubmission, onRegistered }: Props): ReactElement {
   const { locale } = usePreferences(), m = onlineMessages(locale), common = miningMessages(locale)
-  const account = wallet.session?.chainId === 1952 ? wallet.session.address : undefined
+  const account = wallet.session?.chainId === d.chainId ? wallet.session.address : undefined
   const [name, setName] = useState(''), [symbol, setSymbol] = useState(''), [metadataURI, setMetadata] = useState('')
   const [preview, setPreview] = useState<MiningLaunchPreview>(), [stage, setStage] = useState<MiningStage | 'authenticating' | 'preparing' | 'registering'>()
-  const [pending, setPending] = useState(() => readPending(d.version, account)), [hashInput, setHashInput] = useState('')
+  const [pending, setPending] = useState(() => readPending(d.version, account, d.chainId)), [hashInput, setHashInput] = useState('')
   const [error, setError] = useState<string>(), [busy, setBusy] = useState(false), [storageFailed, setStorageFailed] = useState(false)
   const active = useRef<MiningLaunchPreview | undefined>(undefined), inFlight = useRef(false), mounted = useRef(true)
   const status = useQuery({ queryKey: ['mining-online-status', d.version], queryFn: () => loadOnlineStatus(d), retry: false, refetchInterval: 10_000 })
-  useEffect(() => { active.current = undefined; setPreview(undefined); setPending(readPending(d.version, account)); setHashInput(''); setError(undefined) }, [account, d.version])
+  useEffect(() => { active.current = undefined; setPreview(undefined); setPending(readPending(d.version, account, d.chainId)); setHashInput(''); setError(undefined) }, [account, d.version, d.chainId])
   useEffect(() => { mounted.current = true; return () => { mounted.current = false; active.current = undefined } }, [])
   const message = (code: string): string => code in m ? m[code as keyof typeof m] : code in common ? common[code as keyof typeof common] : m.onlineServiceUnavailable
   const fail = (cause: unknown): void => setError(cause instanceof Error ? cause.message : 'onlineServiceUnavailable')
   const persist = (from: string, value: PendingLaunch | undefined): void => {
-    try { if (value) localStorage.setItem(pendingKey(d.version, from), JSON.stringify(value)); else localStorage.removeItem(pendingKey(d.version, from)) }
+    try { if (value) localStorage.setItem(pendingKey(d.version, from, d.chainId), JSON.stringify(value)); else localStorage.removeItem(pendingKey(d.version, from, d.chainId)) }
     catch { setStorageFailed(true) }
     if (wallet.getIdentity()?.address.toLowerCase() === from.toLowerCase()) { setPending(value); setHashInput(value?.hash ?? '') }
   }
   const assertIdentity = (identity: WalletIdentity): void => {
     const current = wallet.getIdentity()
-    if (!mounted.current || !current || current.chainId !== 1952 || current.provider !== identity.provider || current.revision !== identity.revision ||
+    if (!mounted.current || !current || current.chainId !== d.chainId || current.provider !== identity.provider || current.revision !== identity.revision ||
         current.address.toLowerCase() !== identity.address.toLowerCase()) throw new Error('onlineIdentityChanged')
   }
   const authenticate = async (): Promise<void> => {
@@ -64,7 +64,7 @@ export function LaunchProjectPanel({ deployment: d, wallet, disabled, onBusy, on
       const challenge = await createLaunchChallenge(d, identity.address, requestId, form); assertIdentity(identity)
       const chain = await identity.provider.request({ method: 'eth_chainId' }); assertIdentity(identity)
       const accounts = await identity.provider.request({ method: 'eth_accounts' }); assertIdentity(identity)
-      if (chain !== '0x7a0' || firstAccount(accounts)?.toLowerCase() !== identity.address.toLowerCase()) throw new Error('onlineIdentityChanged')
+      if (chain !== `0x${d.chainId.toString(16)}` || firstAccount(accounts)?.toLowerCase() !== identity.address.toLowerCase()) throw new Error('onlineIdentityChanged')
       if (challenge.expiresAt <= Math.floor(Date.now() / 1000)) throw new Error('onlineExpired')
       setStage('authenticating')
       const signature = await identity.provider.request({ method: 'personal_sign', params: [stringToHex(challenge.message), identity.address] }); assertIdentity(identity)
@@ -144,7 +144,7 @@ export function LaunchProjectPanel({ deployment: d, wallet, disabled, onBusy, on
     {storageFailed && <p role="alert">{common.storageFailed} {pending?.hash}</p>}
     {preview && <Dialog title={m.launchReview} description={common.testOnly} onEscape={() => busy} onClose={() => { if (!busy) { active.current = undefined; setPreview(undefined) } }}>
       <dl className="review-details mining-online-review">{[[m.name, preview.form.name], [m.symbol, preview.form.symbol], [m.metadata, preview.form.metadataURI || '—'],
-        [m.wallet, preview.tx.from], [m.target, preview.tx.to], [m.value, '0 TEST-OKB'], [m.graduation, '5,000 TEST-FAB'], [m.curveFee, m.feeValue],
+        [m.wallet, preview.tx.from], [m.target, preview.tx.to], [m.value, d.chainId === 196 ? '0 OKB' : '0 TEST-OKB'], [m.graduation, '5,000 TEST-FAB'], [m.curveFee, m.feeValue],
         [m.transferTax, m.feeValue], [m.taxSplit, m.protocolShare], [m.protection, m.protectionValue], [m.expires, new Date(preview.expiresAt * 1000).toLocaleString(locale)]].map(([label, value]) =>
         <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
       <div className="mining-button-row"><Button appearance="primary" disabled={busy || disabled || !!pending} onClick={() => void submit()}>{m.confirm}</Button>

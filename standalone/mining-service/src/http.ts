@@ -1,5 +1,5 @@
 import type { Address, Hex } from 'viem'
-import type { MiningProductDeployment } from '../../mining-products.ts'
+import { miningProfileId, type MiningProductDeployment } from '../../mining-products.ts'
 import type { MiningLaunchForm } from '../../mining-signed-calls.ts'
 import { normalizeMiningLaunchForm } from '../../mining-signed-calls.ts'
 import { Admission } from './admission.ts'
@@ -13,8 +13,8 @@ const exact = (v: Record<string, unknown>, keys: readonly string[]): boolean => 
 function response(value: unknown, status = 200): Response {
   return Response.json(value, { status, headers: { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' } })
 }
-export function errorResponse(error: unknown): Response {
-  return response({ schemaVersion: 1, chainId: 1952, error: error instanceof ServiceError ? error.code : 'service_unavailable' }, error instanceof ServiceError ? error.status : 503)
+export function errorResponse(error: unknown, chainId: 1952 | 196 = 1952): Response {
+  return response({ schemaVersion: 1, chainId, error: error instanceof ServiceError ? error.code : 'service_unavailable' }, error instanceof ServiceError ? error.status : 503)
 }
 async function body(request: Request): Promise<Record<string, unknown>> {
   if (!request.headers.get('content-type')?.split(';')[0].trim().match(/^application\/json$/i)) throw new ServiceError('json_required', 415)
@@ -42,8 +42,8 @@ export async function handleRequest(request: Request, app: Application): Promise
   try {
     const { config: c, repo, d } = app, url = new URL(request.url)
     const origin = request.headers.get('Origin')
-    if (!frontendOriginAllowed(c, origin) || request.headers.get('X-SodaDEX-Network-Profile') !== '1952-mining-test') throw new ServiceError('origin_denied', 403)
-    const envelope = { schemaVersion: 1, chainId: 1952, deploymentVersion: d.version }
+    if (!frontendOriginAllowed(c, origin) || request.headers.get('X-SodaDEX-Network-Profile') !== miningProfileId(d) || c.chainId !== d.chainId) throw new ServiceError('origin_denied', 403)
+    const envelope = { schemaVersion: 1, profileId: miningProfileId(d), chainId: d.chainId, deploymentVersion: d.version }
     if (request.method === 'GET' && url.pathname === '/v1/status' && !url.search) {
       const s = repo.read()
       return response({ ...envelope, serviceBuild: 'online-1952-20261018-v8-unified-retest', admissionEnabled: c.admissionEnabled, executionEnabled: c.executionEnabled,
@@ -91,5 +91,5 @@ export async function handleRequest(request: Request, app: Application): Promise
       return response({ ...envelope, queued: true, executionEnabled: c.executionEnabled })
     }
     throw new ServiceError('not_found', 404)
-  } catch (error) { return errorResponse(error) }
+  } catch (error) { return errorResponse(error, app.d.chainId) }
 }

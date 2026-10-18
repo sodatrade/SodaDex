@@ -14,7 +14,7 @@ export interface AdmissionSigner {
   signTypedData(value: TypedAuthorization): Promise<Hex>
 }
 export interface TypedAuthorization {
-  domain: { name: string; version: '1'; chainId: 1952; verifyingContract: Address }
+  domain: { name: string; version: '1'; chainId: 1952 | 196; verifyingContract: Address }
   primaryType: 'Purchase' | 'Conversion'
   types: Record<string, readonly { name: string; type: string }[]>
   message: Record<string, bigint>
@@ -25,7 +25,7 @@ export interface OperatingPolicy {
   maxProcurementFabRaw: bigint; maxMinerPriceWei: bigint; maxConversionInputRaw: bigint; slippageBps: number
 }
 export interface RuntimeConfig {
-  chainId: 1952; publicOrigin: string; additionalPublicOrigins?: readonly string[]; rpcUrl: string; admissionEnabled: boolean; executionEnabled: boolean
+  profileId?: '1952-mining-test' | '196-mining-test'; chainId: 1952 | 196; publicOrigin: string; additionalPublicOrigins?: readonly string[]; rpcUrl: string; admissionEnabled: boolean; executionEnabled: boolean
   expectedSigner: Address; keeperAddress: Address | null; gasCapWei: bigint; maxGasPerTransaction: bigint
   maxGasPriceWei: bigint; expiredRecoveryHash?: Hex; policy: OperatingPolicy | null; pollMs: number | null
 }
@@ -55,7 +55,7 @@ export interface Execution {
   receiptBlock?: Hex; receiptBlockHash?: Hex; actualCostWei?: string; deadline?: number; broadcasts: number
 }
 export interface PersistentState {
-  schema: 1; deploymentVersion: string; revision: number; challenges: Record<string, Challenge>
+  profileId?: '1952-mining-test' | '196-mining-test'; chainId?: 1952 | 196; schema: 1; deploymentVersion: string; revision: number; challenges: Record<string, Challenge>
   projects: Record<string, MiningProject>; jobs: Record<string, Job>; executions: Record<string, Execution>
   farm?: { capacity: number; minerCount: number; procurementBudgetFab: string };
   spentWei: string; reservedWei: string; cursor: number; requested: boolean

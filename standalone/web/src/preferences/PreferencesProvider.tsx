@@ -14,7 +14,7 @@ export function PreferencesProvider({ children }: { children: ReactNode }): Reac
     document.documentElement.lang = preferences.locale
     document.documentElement.dataset.theme = preferences.theme
     document.title = t('pageTitle')
-    document.querySelector('meta[name="description"]')?.setAttribute('content', NETWORK.chainId === 1952 ? miningNetworkMessages(preferences.locale).note : t('pageDescription'))
+    document.querySelector('meta[name="description"]')?.setAttribute('content', !NETWORK.dexEnabled ? miningNetworkMessages(preferences.locale).note : t('pageDescription'))
     document
       .querySelector('meta[name="theme-color"]')
       ?.setAttribute('content', preferences.theme === 'light' ? '#faf9fb' : '#09090b')

@@ -1,3 +1,5 @@
+import { NETWORK } from '../network'
+import { MINING_NATIVE_SYMBOL } from './deployment'
 import { useId, useState, type ReactElement } from 'react'
 import { Button, Icon, Surface } from '../components/primitives'
 import { usePreferences } from '../preferences/context'
@@ -18,7 +20,7 @@ export function MiningActionCard({ title, actions, note, disabled, locked = fals
   const [preparing, setPreparing] = useState(false)
   const miner = action === 'depositMiner' || action === 'redeemMiner' || action === 'buyMiner'
   return <Surface className="mining-action-card">
-    <header className="mining-card-heading"><h2>{title}</h2><span>1952 · TESTNET</span></header>
+    <header className="mining-card-heading"><h2>{title}</h2><span>{NETWORK.chainId} · TEST</span></header>
     <form onSubmit={(event) => {
       event.preventDefault(); if (preparing || disabled) return
       setPreparing(true)
@@ -31,7 +33,7 @@ export function MiningActionCard({ title, actions, note, disabled, locked = fals
       <label htmlFor={`${id}-amount`}>{action === 'buyMiner' ? m.listingId : miner ? m.minerId : m.amount}</label>
       <div className="mining-amount-field"><input id={`${id}-amount`} inputMode={miner ? 'numeric' : 'decimal'}
         placeholder="0" value={amount} required autoComplete="off" disabled={locked || preparing} onChange={(e) => setAmount(e.target.value)} />
-        <span>{action === 'buyMiner' ? '#' : miner ? 'NFT' : action.endsWith('Remove') ? 'LP' : action === 'getTestFab' ? 'TEST-OKB' : action === 'fragmentBuy' || action === 'projectBuy' ? 'TEST-FAB' : assetSymbol}</span></div>
+        <span>{action === 'buyMiner' ? '#' : miner ? 'NFT' : action.endsWith('Remove') ? 'LP' : action === 'getTestFab' ? MINING_NATIVE_SYMBOL : action === 'fragmentBuy' || action === 'projectBuy' ? 'TEST-FAB' : assetSymbol}</span></div>
       {action.endsWith('Add') && <><label htmlFor={`${id}-second`}>{m.secondAmount}</label>
         <div className="mining-amount-field"><input id={`${id}-second`} inputMode="decimal" placeholder="0" value={second} required autoComplete="off" disabled={locked || preparing} onChange={(e) => setSecond(e.target.value)} /><span>TEST-FAB</span></div></>}
       {action !== 'burnBoost' && action !== 'buyMiner' && <details className="mining-settings"><summary><span><Icon name="settings" size={15} />{m.transactionSettings}</span><span>{lp ? lpSlip : swapSlip}%<Icon name="chevron" size={14} /></span></summary><div className="mining-slippage"><label htmlFor={`${id}-slip`}>{m.slippage}</label>

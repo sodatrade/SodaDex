@@ -12,10 +12,10 @@ export class IndexStore {
       CREATE INDEX IF NOT EXISTS index_event_sender ON index_events(sender,block_number DESC);
       CREATE TABLE IF NOT EXISTS index_pools(id TEXT PRIMARY KEY,created_block INTEGER NOT NULL,value TEXT NOT NULL);
       CREATE TABLE IF NOT EXISTS index_cursors(id TEXT PRIMARY KEY,value TEXT NOT NULL,expires INTEGER NOT NULL);`)
-    if (!this.query('SELECT id FROM index_meta').length) this.save({ schemaVersion: 1, chainId: config.profile.chainId, deploymentVersion: config.version, head: null,
+    if (!this.query('SELECT id FROM index_meta').length) this.save({ schemaVersion: 1, profileId: config.profile.id, chainId: config.profile.chainId, deploymentVersion: config.version, head: null,
       indexedThrough: config.fromBlock - 1, fromBlock: config.fromBlock, syncing: true, lastError: null, generation: 0 })
     const status = this.status()
-    if (status.chainId !== config.profile.chainId || status.deploymentVersion !== config.version) throw Error('Index identity mismatch')
+    if ((status.profileId ?? (status.chainId === 196 ? '196-test' : '1952-mining-test')) !== config.profile.id || status.chainId !== config.profile.chainId || status.deploymentVersion !== config.version) throw Error('Index identity mismatch')
   }
   query(sql: string, ...bindings: SqlValue[]): Record<string, SqlValue>[] { return this.storage.sql.exec(sql, ...bindings).toArray() }
   status(): IndexStatus { return json(this.query('SELECT value FROM index_meta WHERE id=1')[0]?.value) }

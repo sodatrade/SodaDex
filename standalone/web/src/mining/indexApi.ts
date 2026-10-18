@@ -8,7 +8,7 @@ export interface MiningChainEvent {
   transactionFrom: string | null; timestamp: number
 }
 export interface MiningHistoryPage {
-  schemaVersion: 1; chainId: 1952; deploymentVersion: string; asOf: IndexBlock | null
+  schemaVersion: 1; chainId: 1952 | 196; deploymentVersion: string; asOf: IndexBlock | null
   events: MiningChainEvent[]; nextCursor: string | null; index: ChainIndexStatus
 }
 const record = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value)
@@ -30,8 +30,8 @@ export async function loadMiningHistory(d: MiningProductDeployment, query: { own
   const response = await fetch(apiPath(`/api/index/events?${params}`), { signal, credentials: 'same-origin', cache: 'no-store' })
   if (!response.ok) throw new MiningIndexError(response.status === 409)
   const value: unknown = await response.json()
-  if (!record(value) || value.schemaVersion !== 1 || value.chainId !== 1952 || value.deploymentVersion !== d.version ||
-    !indexBlock(value.asOf) || !validIndexStatus(value.index, 1952, d.version) ||
+  if (!record(value) || value.schemaVersion !== 1 || value.chainId !== d.chainId || value.deploymentVersion !== d.version ||
+    !indexBlock(value.asOf) || !validIndexStatus(value.index, d.chainId, d.version) ||
     !Array.isArray(value.events) || value.events.length > 10 || !value.events.every(event) ||
     !(value.nextCursor === null || (typeof value.nextCursor === 'string' && value.nextCursor.length > 0)) ||
     new Set(value.events.map((row) => row.id)).size !== value.events.length) throw new MiningIndexError(false)

@@ -1,3 +1,4 @@
+import { MINING_NATIVE_SYMBOL } from './deployment'
 import { useState, type ReactElement } from 'react'
 import { Button, Icon, Surface } from '../components/primitives'
 import { usePreferences } from '../preferences/context'
@@ -24,7 +25,7 @@ export function MiningActionWorkspace({ kind, symbol, hasPair = true, listingId,
     { title: m.swap, subtitle: `TEST-FAB / ${symbol}`, actions: ['projectBuy', 'projectSell'], icon: 'arrow' },
     { title: m.liquidity, subtitle: m.liquidityHint, actions: ['projectAdd', 'projectRemove'], note: m.lpNote, icon: 'layers' },
     { title: m.burnBoost, subtitle: m.burnHint, actions: ['burnBoost'], note: m.burnNote, icon: 'sun' },
-    { title: m.getTestFab, subtitle: 'TEST-OKB / TEST-FAB', actions: ['getTestFab'], note: m.testAssetNote, icon: 'wallet' },
+    { title: m.getTestFab, subtitle: `${MINING_NATIVE_SYMBOL} / TEST-FAB`, actions: ['getTestFab'], note: m.testAssetNote, icon: 'wallet' },
   ]
   const task = tasks[selected], missingPair = kind === 'fundraising' && selected === 1 && !hasPair
   return <div className="mining-action-layout">

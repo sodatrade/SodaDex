@@ -10,12 +10,13 @@ import { read, assertCanonical, block } from './rpc.ts'
 import { ServiceError, same, hash, record, quantity, type AdmissionSigner, type Block, type Challenge, type Discovery, type ExpiryAnchor, type Rpc, type RuntimeConfig } from './types.ts'
 const EXPIRY_PROOF_BATCH = 8
 export function challengeMessage(c: RuntimeConfig, d: MiningProductDeployment, address: Address, requestId: string, form: MiningLaunchForm, expiresAt: number, origin = c.publicOrigin): string {
-  return `SodaDEX 1952 test project launch\nOrigin: ${origin}\nChain ID: 1952\nDeployment: ${d.version}\nAddress: ${address.toLowerCase()}\nRequest ID: ${requestId}\nExpires at: ${expiresAt}\nName: ${form.name}\nSymbol: ${form.symbol}\nMetadata URI: ${form.metadataURI}`
+  return `SodaDEX ${d.chainId} test project launch\nOrigin: ${origin}\nChain ID: ${d.chainId}\nDeployment: ${d.version}\nAddress: ${address.toLowerCase()}\nRequest ID: ${requestId}\nExpires at: ${expiresAt}\nName: ${form.name}\nSymbol: ${form.symbol}\nMetadata URI: ${form.metadataURI}`
 }
 export class Admission {
   constructor(readonly config: RuntimeConfig, readonly d: MiningProductDeployment, readonly repo: Repository,
     readonly rpc: Rpc, readonly discovery: Discovery, readonly signer?: AdmissionSigner, readonly now = (): number => Math.floor(Date.now() / 1000)) {}
   private enabled(): void {
+    if (this.config.chainId !== this.d.chainId) throw new ServiceError('deployment_config_mismatch', 503)
     if (!this.config.admissionEnabled || !this.config.policy || !this.signer || !same(this.signer.address, this.config.expectedSigner)) throw new ServiceError('admission_disabled', 503)
   }
   private assertOrigin(origin: string, challenge?: Challenge): void {

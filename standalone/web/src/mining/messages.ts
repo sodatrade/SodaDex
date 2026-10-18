@@ -1,3 +1,4 @@
+import { NETWORK } from '../network'
 import type { Locale } from '../preferences/model'
 const zh = {
   chooseAction: '选择操作', custodyHint: 'NFT 与碎片份额互换', liquidityHint: '添加或取回池中资产', buyMinerHint: '从测试市场购买 NFT', burnHint: '毕业后增加分红权重', transactionSettings: '交易设置', viewHistory: '查看交易记录', settlementTools: '收益结算工具', currentWallet: '当前钱包', allWallets: '本机全部', allAssets: '全部资产',
@@ -121,5 +122,11 @@ const yue: Messages = {
   testAssetNote: '用水龍頭領取嘅測試 OKB 換 TEST-FAB，測試兩套業務。', marketNote: '喺 1952 測試市場買有效普通礦機，再用 NFT 編號存入碎片金庫。',
   protectionUntil: '項目交易保護期結束時間', protectionNote: '呢個測試項目喺保護期內都可以兌換，買賣稅跟鏈上規則收取。',
 }
-export function miningMessages(locale: Locale): Messages { return locale === 'en' ? en : locale === 'yue-HK' ? yue : zh }
+export function miningMessages(locale: Locale): Messages {
+  const base = locale === 'en' ? en : locale === 'yue-HK' ? yue : zh
+  if (NETWORK.id !== '196-mining-test') return base
+  const realGas = locale === 'en' ? 'X Layer 196 test contracts · Gas uses real OKB' : locale === 'yue-HK' ? 'X Layer 196 測試合約 · Gas 使用真實 OKB' : 'X Layer 196 测试合约 · Gas 使用真实 OKB'
+  return { ...Object.fromEntries(Object.entries(base).map(([k, v]) => [k, v.replaceAll('1952', '196').replaceAll('testnet', 'test contracts').replaceAll('测试网', '测试合约网络').replaceAll('測試網', '測試合約網絡')])) as Messages,
+    testOnly: realGas, testAssetNote: realGas }
+}
 export type MiningMessageKey = keyof Messages

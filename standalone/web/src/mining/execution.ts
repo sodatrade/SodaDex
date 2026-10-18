@@ -20,14 +20,14 @@ export async function executeMiningCall(c: MiningExecution, tx: MiningTransactio
   const assertCurrent = (): void => {
     const now = c.getIdentity()
     if (!c.isCurrent() || !now || now.provider !== c.identity.provider || now.revision !== c.identity.revision ||
-      now.chainId !== 1952 || now.address.toLowerCase() !== c.identity.address.toLowerCase() ||
+      now.chainId !== c.deployment.chainId || now.address.toLowerCase() !== c.identity.address.toLowerCase() ||
       tx.from.toLowerCase() !== now.address.toLowerCase()) throw new Error('miningIdentityChanged')
   }
   const checkWallet = async (): Promise<void> => {
     assertCurrent()
     const chain = await c.identity.provider.request({ method: 'eth_chainId' }); assertCurrent()
     const accounts = await c.identity.provider.request({ method: 'eth_accounts' }); assertCurrent()
-    if (chain !== '0x7a0' || firstAccount(accounts)?.toLowerCase() !== c.identity.address.toLowerCase()) throw new Error('miningIdentityChanged')
+    if (chain !== toHex(c.deployment.chainId) || firstAccount(accounts)?.toLowerCase() !== c.identity.address.toLowerCase()) throw new Error('miningIdentityChanged')
   }
   if (!validMiningProductCall(tx, c.deployment, true)) throw new Error('miningInvalidAction')
   assertCurrent(); c.onStage('miningChecking')
@@ -45,7 +45,7 @@ export async function executeMiningCall(c: MiningExecution, tx: MiningTransactio
   if (!validMiningProductCall(tx, c.deployment, true)) throw new Error('miningInvalidAction')
   c.onStage('miningWallet')
   let hash: unknown
-  try { hash = await c.identity.provider.request({ method: 'eth_sendTransaction', params: [{ ...tx, chainId: '0x7a0', gas: toHex(gas), gasPrice: toHex(price) }] }) }
+  try { hash = await c.identity.provider.request({ method: 'eth_sendTransaction', params: [{ ...tx, chainId: toHex(c.deployment.chainId), gas: toHex(gas), gasPrice: toHex(price) }] }) }
   catch (cause) {
     if (cause && typeof cause === 'object' && 'code' in cause && cause.code === 4001) throw new Error('miningRejected')
     // A transport rejection may occur AFTER broadcast. Never turn it into a retryable plan.

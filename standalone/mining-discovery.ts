@@ -1,6 +1,6 @@
 import { decodeFunctionResult, encodeFunctionData, keccak256, parseAbi, type Abi, type Hex } from 'viem'
 import { IMPLEMENTATION_SLOT, miningTargets, sameMiningAddress } from './mining-calls'
-import type { MiningAddress, MiningContractIdentity, MiningProductDeployment, MiningProject } from './mining-products'
+import { isMiningTestDeployment, type MiningAddress, type MiningContractIdentity, type MiningProductDeployment, type MiningProject } from './mining-products'
 import { MINING_LAUNCH_TEST_POLICY } from './mining-signed-calls'
 
 export interface MiningDiscoveryRpc { request(method: string, params?: unknown[]): Promise<unknown> }
@@ -62,7 +62,7 @@ async function bindings(rpc: MiningDiscoveryRpc, values: Binding[], block: strin
 /** Source identities stay build-pinned. A catalog may never replace these roots. */
 export async function verifyMiningBase(rpc: MiningDiscoveryRpc, d: MiningProductDeployment,
   expectedSigner: MiningAddress, block?: string): Promise<MiningDiscoveryBlock> {
-  if (d.chainId !== 1952 || !address(expectedSigner) || await rpc.request('eth_chainId') !== '0x7a0') throw new Error('mining_discovery_wrong_chain')
+  if (!isMiningTestDeployment(d) || !address(expectedSigner) || await rpc.request('eth_chainId') !== `0x${d.chainId.toString(16)}`) throw new Error('mining_discovery_wrong_chain')
   const head = await snapshot(rpc, block), c = d.contracts
   await Promise.all(miningTargets(d).map((t) => matchIdentity(rpc, t.identity, head.number)))
   await bindings(rpc, [
@@ -101,7 +101,7 @@ export async function verifyMiningBase(rpc: MiningDiscoveryRpc, d: MiningProduct
  */
 export async function resolveMiningProject(rpc: MiningDiscoveryRpc, d: MiningProductDeployment,
   token: MiningAddress, expectedSigner: MiningAddress, verifiedBase: MiningDiscoveryBlock): Promise<MiningProject> {
-  if (d.chainId !== 1952 || !address(token) || !address(expectedSigner) || await rpc.request('eth_chainId') !== '0x7a0') throw new Error('mining_discovery_wrong_chain')
+  if (!isMiningTestDeployment(d) || !address(token) || !address(expectedSigner) || await rpc.request('eth_chainId') !== `0x${d.chainId.toString(16)}`) throw new Error('mining_discovery_wrong_chain')
   await canonical(rpc, verifiedBase)
   const head = verifiedBase, at = head.number, c = d.contracts
   const read = (to: MiningAddress, signature: string, args: readonly unknown[] = []): Promise<unknown> => miningDiscoveryRead(rpc, to, signature, args, at)

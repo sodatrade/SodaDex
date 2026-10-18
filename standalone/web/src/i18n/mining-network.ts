@@ -1,3 +1,4 @@
+import { NETWORK } from '../network'
 import type { Locale } from '../preferences/model'
 
 const messages = {
@@ -39,4 +40,9 @@ const messages = {
   },
 } as const
 
-export function miningNetworkMessages(locale: Locale): typeof messages[Locale] { return messages[locale] }
+export function miningNetworkMessages(locale: Locale): { [K in keyof typeof messages['en']]: string } {
+  const base = messages[locale]
+  if (NETWORK.id !== '196-mining-test') return base
+  const note = locale === 'en' ? 'X Layer 196 · Test contracts · Real OKB gas' : locale === 'yue-HK' ? 'X Layer 196 · 測試合約 · Gas 使用真實 OKB' : 'X Layer 196 · 测试合约 · Gas 使用真实 OKB'
+  return { ...Object.fromEntries(Object.entries(base).map(([k, v]) => [k, v.replaceAll('1952', '196').replaceAll('testnet', 'test contracts').replaceAll('测试网', '测试合约').replaceAll('測試網', '測試合約')])) as { [K in keyof typeof base]: string }, note, isolated: note }
+}

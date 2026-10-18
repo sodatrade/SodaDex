@@ -37,7 +37,7 @@ export function AutomationPanel({ deployment: d, token, disabled }: {
       <dl className="mining-online-metrics">
         <div><dt>{m.admission}</dt><dd>{data.admissionEnabled ? m.enabled : m.disabled}</dd></div>
         <div><dt>{m.execution}</dt><dd>{data.executionEnabled ? m.enabled : m.disabled}</dd></div>
-        <div><dt>{m.gasBudget}</dt><dd>{formatUnits(BigInt(data.budget.spentWei), 18)} / {formatUnits(BigInt(data.budget.capWei), 18)} TEST-OKB</dd>
+        <div><dt>{m.gasBudget}</dt><dd>{formatUnits(BigInt(data.budget.spentWei), 18)} / {formatUnits(BigInt(data.budget.capWei), 18)} {d.chainId === 196 ? 'OKB' : 'TEST-OKB'}</dd>
           <small>{m.spent} / {m.cap} · {m.reserved} {formatUnits(BigInt(data.budget.reservedWei), 18)}</small></div>
         {data.farm && <><div><dt>{m.miners}</dt><dd>{data.farm.minerCount} / {data.farm.capacity}</dd></div>
           <div><dt>{m.procurement}</dt><dd>{formatUnits(BigInt(data.farm.procurementBudgetFab), 8)} TEST-FAB</dd></div></>}

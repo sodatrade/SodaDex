@@ -283,3 +283,36 @@ measured live baseline is added explicitly, so this is a composed bound rather
 than a claimed live full recovery run. Stale pending retries consume the same
 45-fetch ceiling and fail closed; it is never increased. Any already signed row
 retains its raw/hash and reserve if a later network read fails.
+
+## Independent 196 mining test profile (disabled preparation)
+
+`196-mining-test` is a separate test deployment on X Layer mainnet. Its gas uses
+real OKB. It does not select the existing `196-test` DEX or production contracts.
+The checked-in `cloudflare/wrangler.196-test.jsonc` has no public route, manifest,
+signer, keeper or budget; admission and execution remain false. Do not deploy or
+fund it before the separate rehearsal budget is approved.
+
+The immutable products manifest retains schema 1, with `chainId: 196` and required
+`profileId: "196-mining-test"`. All contract addresses and runtime hashes must
+come from that test deployment's verified receipts. Missing configuration yields
+pending/unavailable; an existing 1952 manifest cannot activate the 196 profile.
+
+Configuration is supplied only by the operator/build, never a request or URL:
+
+- Service: `MINING_NETWORK_PROFILE=196-mining-test`, `MINING_196_DEPLOYMENT` (full
+  manifest JSON), `MINING_EXPECTED_SIGNER` (new authorizer), a separate keeper,
+  exact frontend origin and explicitly approved operating limits.
+- Frontend Worker: `SODADEX_NETWORK_PROFILE=196-mining-test`, the same
+  `MINING_196_DEPLOYMENT`, and only `MINING_API_196` service binding. The prepared
+  config is `standalone/worker/wrangler.196-mining-test.jsonc`.
+- Web build: `VITE_SODADEX_NETWORK_PROFILE=196-mining-test` and
+  `SODADEX_MINING_196_DEPLOYMENT` (the same JSON); output must be a separate
+  `dist-mining-196` directory. The normal unified build stays on 1952 mining.
+
+The new `SodaMining196Test` class uses a new `MINING_196` namespace and binds its
+ledger to chain, profile and deployment version. Existing ledgers are never reset
+or imported. Typed purchase/conversion signatures and launch messages bind the
+manifest chain; the keeper checks that chain before preparing or recovering a
+transaction. The previously approved 1952 expired-transaction recovery hash is
+not valid for 196. Index state persists the explicit profile, so restoring a 196
+mining index cannot silently select the 196 DEX index.

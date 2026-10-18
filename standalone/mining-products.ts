@@ -19,7 +19,8 @@ export interface MiningProject {
 }
 export interface MiningProductDeployment {
   schemaVersion: 1
-  chainId: 1952
+  chainId: 1952 | 196
+  profileId?: '1952-mining-test' | '196-mining-test'
   state: 'ready'
   version: string
   sourceHistoryVersion: 2
@@ -29,7 +30,7 @@ export interface MiningProductDeployment {
   projects: readonly MiningProject[]
   testListingIds?: readonly string[]
 }
-export type MiningDeploymentState = MiningProductDeployment | { state: 'pending'; chainId: 1952 }
+export type MiningDeploymentState = MiningProductDeployment | { state: 'pending'; chainId: 1952 | 196; profileId?: '1952-mining-test' | '196-mining-test' }
 
 function record(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
@@ -42,8 +43,10 @@ function contract(value: unknown): value is MiningContractIdentity {
 
 /** Addresses come from a receipt-verified build artifact, never a URL or localStorage. */
 export function parseMiningDeployment(value: unknown): MiningDeploymentState {
-  if (!record(value) || value.schemaVersion !== 1 || value.chainId !== 1952) throw new Error('Invalid mining deployment')
-  if (value.state === 'pending') return { state: 'pending', chainId: 1952 }
+  if (!record(value) || value.schemaVersion !== 1 || ![1952, 196].includes(value.chainId as number) ||
+      value.chainId === 196 && value.profileId !== '196-mining-test' ||
+      value.chainId === 1952 && value.profileId !== undefined && value.profileId !== '1952-mining-test') throw new Error('Invalid mining deployment')
+  if (value.state === 'pending') return { state: 'pending', chainId: value.chainId as 1952 | 196, ...(value.profileId ? { profileId: value.profileId as '1952-mining-test' | '196-mining-test' } : {}) }
   if (value.state !== 'ready' || value.sourceHistoryVersion !== 2 || typeof value.version !== 'string' ||
       !/^[a-zA-Z0-9._-]{1,80}$/.test(value.version) || typeof value.genesisBlock !== 'string' ||
       !/^(0|[1-9][0-9]*)$/.test(value.genesisBlock) || !Number.isSafeInteger(value.templateId) ||
@@ -72,3 +75,22 @@ export function parseMiningDeployment(value: unknown): MiningDeploymentState {
 }
 
 export const MINING_PRODUCTS = parseMiningDeployment(savedDeployment)
+
+/** 196 mining has no inherited addresses. Only an explicitly supplied deployment enables it. */
+export function miningDeploymentForProfile(profileId: string, configured?: unknown): MiningDeploymentState {
+  if (profileId === '1952-mining-test') return MINING_PRODUCTS
+  if (profileId !== '196-mining-test') throw new Error('Not a mining profile')
+  if (configured === undefined) return { state: 'pending', chainId: 196, profileId }
+  const value = parseMiningDeployment(configured)
+  if (value.chainId !== 196 || value.profileId !== profileId) throw new Error('Mining profile mismatch')
+  return value
+}
+export function miningProfileId(d: Pick<MiningProductDeployment, 'chainId' | 'profileId'>): '1952-mining-test' | '196-mining-test' {
+  if (d.chainId === 1952 && (!d.profileId || d.profileId === '1952-mining-test')) return '1952-mining-test'
+  if (d.chainId === 196 && d.profileId === '196-mining-test') return d.profileId
+  throw new Error('Mining profile mismatch')
+}
+
+export function isMiningTestDeployment(d: Pick<MiningProductDeployment, 'chainId' | 'profileId'>): boolean {
+  return d.chainId === 1952 && (!d.profileId || d.profileId === '1952-mining-test') || d.chainId === 196 && d.profileId === '196-mining-test'
+}

@@ -1,6 +1,6 @@
 import { decodeFunctionData, encodeFunctionData, parseAbi, type Abi, type Hex } from 'viem'
 import { MINING_PRODUCT_READ_ABI, MINING_PRODUCT_WRITE_ABI } from './mining-abi'
-import type { MiningAddress, MiningContractIdentity, MiningProductDeployment } from './mining-products'
+import { isMiningTestDeployment, type MiningAddress, type MiningContractIdentity, type MiningProductDeployment } from './mining-products'
 import { validMiningSignedCall } from './mining-signed-calls'
 
 export const IMPLEMENTATION_SLOT = '0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc'
@@ -41,7 +41,7 @@ const positive = (v: unknown): v is bigint => typeof v === 'bigint' && v > 0n &&
 
 /** Restrict simulations to the same fixed destinations the wallet UI can submit. */
 export function validMiningProductCall(value: unknown, d: MiningProductDeployment, write: boolean, now = Math.floor(Date.now() / 1000)): boolean {
-  if (d.chainId !== 1952 || !value || typeof value !== 'object' || Array.isArray(value)) return false
+  if (!isMiningTestDeployment(d) || !value || typeof value !== 'object' || Array.isArray(value)) return false
   const tx = value as Record<string, unknown>
   if (Object.keys(tx).some((k) => !(write ? ['from', 'to', 'data', 'value'] : ['to', 'data']).includes(k)) ||
       !address(tx.to) || typeof tx.data !== 'string' || !/^0x[0-9a-fA-F]+$/.test(tx.data) || tx.data.length > 4098) return false

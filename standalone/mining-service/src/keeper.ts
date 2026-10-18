@@ -31,7 +31,7 @@ export class Keeper {
   }
   async runOnce(): Promise<void> {
     if (!this.c.executionEnabled || !this.signer || !same(this.signer.address, this.c.keeperAddress ?? '')) return
-    if (quantity(await this.rpc.request('eth_chainId')) !== 1952n) throw new ServiceError('wrong_chain', 503)
+    if (quantity(await this.rpc.request('eth_chainId')) !== BigInt(this.d.chainId) || this.c.chainId !== this.d.chainId) throw new ServiceError('wrong_chain', 503)
     // Check the latest finished execution for a reorg before allocating another nonce.
     const finished = Object.values(this.repo.read().executions).filter(e => ['confirmed', 'reverted'].includes(e.status)).toSorted((a, b) => b.nonce - a.nonce)[0]
     if (finished && await this.recheckFinished(finished)) return
@@ -65,7 +65,7 @@ export class Keeper {
       const head = await block(this.rpc)
       if (BigInt(call.deadline) <= head.timestamp + 5n || call.deadline <= this.now() + 5) throw new ServiceError('authorization_expiring')
     }
-    const plan: TransactionSerializableLegacy = { type: 'legacy', chainId: 1952, to: call.to, data: call.data, value: 0n, gas, gasPrice, nonce: Number(next) }
+    const plan: TransactionSerializableLegacy = { type: 'legacy', chainId: this.d.chainId, to: call.to, data: call.data, value: 0n, gas, gasPrice, nonce: Number(next) }
     const raw = await this.signer.signTransaction(plan), txHash = await validateRaw(raw, plan, from)
     const e: Execution = { hash: txHash, raw, signer: from, nonce: Number(next), to: call.to, data: call.data,
       gas: String(gas), gasPrice: String(gasPrice), maxCostWei: String(maxCost), jobId: call.jobId,

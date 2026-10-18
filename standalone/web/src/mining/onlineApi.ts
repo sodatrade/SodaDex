@@ -2,7 +2,7 @@ import { apiPath } from '../lib/apiPath'
 import { decodeFunctionData, encodeFunctionData, type Hex } from 'viem'
 import { miningAbi, sameMiningAddress, validMiningProductCall, type MiningTransaction } from '../../../mining-calls'
 import { normalizeMiningLaunchForm, type MiningLaunchForm } from '../../../mining-signed-calls'
-import { parseMiningDeployment, type MiningAddress, type MiningProductDeployment, type MiningProject } from '../../../mining-products'
+import { miningProfileId, parseMiningDeployment, type MiningAddress, type MiningProductDeployment, type MiningProject } from '../../../mining-products'
 
 export type { MiningLaunchForm } from '../../../mining-signed-calls'
 export interface MiningOnlineJob {
@@ -39,12 +39,12 @@ function parseForm(value: unknown): MiningLaunchForm {
 }
 export function launchAuthenticationMessage(d: MiningProductDeployment, from: MiningAddress, requestId: string,
   expiresAt: number, form: MiningLaunchForm, origin = location.origin): string {
-  return [`SodaDEX 1952 test project launch`, `Origin: ${origin}`, 'Chain ID: 1952', `Deployment: ${d.version}`,
+  return [`SodaDEX ${d.chainId} test project launch`, `Origin: ${origin}`, `Chain ID: ${d.chainId}`, `Deployment: ${d.version}`,
     `Address: ${from.toLowerCase()}`, `Request ID: ${requestId}`, `Expires at: ${expiresAt}`,
     `Name: ${form.name}`, `Symbol: ${form.symbol}`, `Metadata URI: ${form.metadataURI}`].join('\n')
 }
 function envelope(value: unknown, d: MiningProductDeployment): Record<string, unknown> {
-  if (!record(value) || value.schemaVersion !== 1 || value.chainId !== 1952 || value.deploymentVersion !== d.version) return invalid()
+  if (!record(value) || value.schemaVersion !== 1 || value.chainId !== d.chainId || value.deploymentVersion !== d.version) return invalid()
   return value
 }
 async function request(d: MiningProductDeployment, path: string, body?: unknown): Promise<Record<string, unknown>> {
@@ -54,12 +54,12 @@ async function request(d: MiningProductDeployment, path: string, body?: unknown)
   try {
     const response = await fetch(apiPath(`/api/mining/${path}`), { method: body === undefined ? 'GET' : 'POST', cache: 'no-store',
       credentials: 'same-origin', signal: controller.signal,
-      headers: { 'X-SodaDEX-Network-Profile': '1952-mining-test', ...(body === undefined ? {} : { 'Content-Type': 'application/json' }) },
+      headers: { 'X-SodaDEX-Network-Profile': miningProfileId(d), ...(body === undefined ? {} : { 'Content-Type': 'application/json' }) },
       ...(body === undefined ? {} : { body: JSON.stringify(body) }) })
     if (!response.ok) {
       const error: unknown = await response.json().catch(() => null)
       if (response.status === 503 && ['challenge', 'launch'].includes(path) && record(error) && error.schemaVersion === 1 &&
-          error.chainId === 1952 && error.error === 'expiry_reconciliation_pending') throw new Error('onlineHistoryChecking')
+          error.chainId === d.chainId && error.error === 'expiry_reconciliation_pending') throw new Error('onlineHistoryChecking')
       throw new Error('onlineServiceUnavailable')
     }
     return envelope(await response.json(), d)

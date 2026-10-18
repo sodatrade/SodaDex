@@ -6,7 +6,7 @@ export class HttpRpc implements BatchRpc {
   #id = 0
   #queue: Queued[] = []
   #scheduled = false
-  constructor(readonly url: string, readonly fetcher: typeof fetch = fetch) {}
+  constructor(readonly url: string, readonly fetcher: typeof fetch = fetch, readonly chainId: 1952 | 196 = 1952) {}
   async batch(operations: readonly { method: string; params: unknown[] }[]): Promise<unknown[]> {
     const calls = operations.map(o => ({ jsonrpc: '2.0', id: ++this.#id, ...o }))
     const result = await this.fetcher(this.url, { method: 'POST', headers: { 'content-type': 'application/json' },
@@ -24,7 +24,7 @@ export class HttpRpc implements BatchRpc {
     })
   }
   request(method: string, params: unknown[] = []): Promise<unknown> {
-    if (['eth_call', 'eth_estimateGas'].includes(method) && params[1] === 'pending') return freshPending(this, method, params)
+    if (['eth_call', 'eth_estimateGas'].includes(method) && params[1] === 'pending') return freshPending(this, method, params, undefined, this.chainId)
     if (method === 'eth_sendRawTransaction') return this.batch([{ method, params }]).then(v => {
       if (record(v[0]) && v[0].rpcError) throw new ServiceError('broadcast_unknown', 503)
       return v[0]

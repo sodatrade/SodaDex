@@ -31,6 +31,12 @@ function fixture(count = 23) {
   return { db, store, config, storage, block, events, raw, read, commit }
 }
 describe('persistent chain index', () => {
+  it('rejects a same-chain same-version index restored under another explicit profile', () => {
+    const f = fixture()
+    expect(f.store.status().profileId).toBe('196-test')
+    expect(() => new IndexStore(f.storage, { ...f.config, profile: { ...f.config.profile, id: '196-mining-test' } })).toThrow('identity')
+  })
+
   it('bounds pages at 10, binds filters, preserves snapshot when later rows arrive', async () => {
     const f = fixture(); f.commit()
     const first = await indexPage(new URL('https://index/events?owner=' + address), f.store, f.config, f.read) as { events: IndexedEvent[]; nextCursor: string }

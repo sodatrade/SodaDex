@@ -14,7 +14,7 @@ import { hexQuantity, rpc } from './lib/readRpc'
 import { useWallet } from './lib/useWallet'
 import { NETWORK } from './network'
 import { MiningBaseStatus } from './mining/MiningBaseStatus'
-import { MINING_PRODUCTS } from '../../mining-products'
+import { MINING_PRODUCTS } from './mining/deployment'
 import { MiningProductsWorkspace } from './mining/ProductsWorkspace'
 import { usePreferences } from './preferences/context'
 import { PreferencesProvider } from './preferences/PreferencesProvider'
@@ -59,13 +59,13 @@ function MiningNetworkContent(): ReactElement {
     <Header page="swap" miningPage={tab} navigationDisabled={busy} onMiningPageChange={navigate}
       onPageChange={(page) => { window.location.assign(`${import.meta.env.BASE_URL === '/mining/' ? '/' : 'https://sodadex-preview.jsmsdx2025.workers.dev/'}#${page}`) }}
       wallet={wallet} onWallet={() => setWalletOpen(true)} onPreferences={() => setPreferencesOpen(true)} />
-    <div className="test-notice"><span className="test-notice-label">TESTNET</span><p>{m.note}</p></div>
+    <div className="test-notice"><span className="test-notice-label">{NETWORK.chainId === 1952 ? 'TESTNET' : 'TEST CONTRACTS'}</span><p>{m.note}</p></div>
     <main id="main" tabIndex={-1} className="content-page mining-network-page">
       <div className="page-heading mining-heading"><div><p className="eyebrow">FAB · {NETWORK.chainName} · {NETWORK.chainId}</p>
         <h1>{MINING_PRODUCTS.state === 'ready' ? title : m.title}</h1><p>{tab === 'fragments' ? m.fragmentsIntro : tab === 'fundraising' ? m.fundraisingIntro : tab === 'positions' ? messages.dividendNote : tab === 'history' ? messages.historyNote : messages.testOnly}</p></div>
-        <span className="mining-chain-chip"><Icon name="layers" size={15} />1952 · TESTNET</span></div>
+        <span className="mining-chain-chip"><Icon name="layers" size={15} />{NETWORK.chainId} · TEST</span></div>
       {!wallet.session && tab !== 'fundraising' && tab !== 'fragments' ? <div className="mining-wallet-prompt"><span>{messages.connect}</span><Button onClick={() => setWalletOpen(true)}>{t('connectWallet')}</Button></div>
-        : wallet.session && wallet.session.chainId !== 1952 ? <div className="mining-wallet-prompt" role="status"><span>{messages.miningWrongNetwork}</span>
+        : wallet.session && wallet.session.chainId !== NETWORK.chainId ? <div className="mining-wallet-prompt" role="status"><span>{messages.miningWrongNetwork}</span>
           <Button appearance="primary" disabled={wallet.status !== 'idle'} onClick={() => void wallet.switchChain()}>{m.switchTestnet}</Button></div> : null}
       {wallet.error && <p role="alert">{t(wallet.error)}</p>}
       {MINING_PRODUCTS.state === 'ready' ? <MiningProductsWorkspace deployment={MINING_PRODUCTS} wallet={wallet} activeTab={tab} onTabChange={navigate} onBusyChange={setBusy} onConnect={!wallet.session ? () => setWalletOpen(true) : undefined} /> : <Surface className="mining-network-status" aria-labelledby="mining-network-title">
@@ -81,13 +81,13 @@ function MiningNetworkContent(): ReactElement {
         {wallet.session && !address && <Button appearance="primary" disabled={wallet.status !== 'idle'} onClick={() => void wallet.switchChain()}>{t('switchNetwork')}</Button>}
         {balance.isError && <p role="alert">{t('networkUnavailable')}</p>}
       </Surface>}
-      {MINING_PRODUCTS.state === 'ready' ? <details className="mining-base-disclosure"><summary>{m.baseAddresses}</summary>
+      {NETWORK.chainId === 1952 && (MINING_PRODUCTS.state === 'ready' ? <details className="mining-base-disclosure"><summary>{m.baseAddresses}</summary>
         <MiningBaseStatus block={network.isSuccess ? network.data.block : undefined} account={address} /></details>
-        : <MiningBaseStatus block={network.isSuccess ? network.data.block : undefined} account={address} />}
+        : <MiningBaseStatus block={network.isSuccess ? network.data.block : undefined} account={address} />)}
       <p className="dialog-note">{m.isolated}</p>
     </main>
     <footer className="site-footer"><div className={`rpc-status${network.isError ? ' status-error' : ''}`} role="status"><span className="status-dot" />
-      <span>X Layer 1952 · {network.isPending ? t('networkLoading') : network.isError ? t('networkUnavailable') : t('networkConnected')}</span></div>
+      <span>X Layer {NETWORK.chainId} · {network.isPending ? t('networkLoading') : network.isError ? t('networkUnavailable') : t('networkConnected')}</span></div>
       <a href="https://github.com/sodatrade/SodaDex" target="_blank" rel="noreferrer">GitHub<Icon name="external" size={13} /></a></footer>
     {walletOpen && <WalletDialog wallet={wallet} onClose={() => setWalletOpen(false)} />}
     {preferencesOpen && <PreferencesDialog onClose={() => setPreferencesOpen(false)} />}

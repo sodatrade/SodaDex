@@ -56,7 +56,7 @@ export async function buildMiningPlan(i: MiningPlanInput): Promise<MiningPlan> {
     if (!Array.isArray(amounts) || amounts.length !== 2) throw new Error('miningReadFailed')
     const output = miningUint(amounts[1]), minimum = minimumMiningAmount(output, slip)
     add(c.router.address, 'router', 'swapExactETHForTokens', [minimum, path, account, deadline], false, toHex(input))
-    show('input', input, 18, 'TEST-OKB'); show('output', output, 8, 'TEST-FAB'); show('minimum', minimum, 8, 'TEST-FAB')
+    show('input', input, 18, d.chainId === 196 ? 'OKB' : 'TEST-OKB'); show('output', output, 8, 'TEST-FAB'); show('minimum', minimum, 8, 'TEST-FAB')
   } else if (action === 'buyMiner') {
     if (!/^(0|[1-9][0-9]*)$/.test(i.amount)) throw new Error('miningInvalidMiner')
     const id = BigInt(i.amount), listing = await query(c.circuitMarket.address, 'circuitMarket', 'listingView', [id])
@@ -65,7 +65,7 @@ export async function buildMiningPlan(i: MiningPlanInput): Promise<MiningPlan> {
       await query(c.fragmentVault.address, 'fragmentVault', 'admissibleMiner', [listing[2]]) !== true) throw new Error('miningInvalidMiner')
     const price = miningUint(listing[3])
     if (price === 0n) throw new Error('miningInvalidMiner')
-    add(c.minerBuyer.address, 'minerBuyer', 'buy', [id, listing[2], price], false, toHex(price)); show('input', price, 18, 'TEST-OKB')
+    add(c.minerBuyer.address, 'minerBuyer', 'buy', [id, listing[2], price], false, toHex(price)); show('input', price, 18, d.chainId === 196 ? 'OKB' : 'TEST-OKB')
     details.push({ label: 'output', value: `NFT #${listing[2]}` })
   } else if (action === 'fragmentBuy' || action === 'fragmentSell') {
     const shareIn = action === 'fragmentSell', input = miningAmount(i.amount, shareIn ? 18 : 8)

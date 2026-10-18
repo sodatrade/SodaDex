@@ -37,7 +37,7 @@ export async function verifyMiningIdentity(read: MiningRpc, identity: MiningCont
 }
 /** A proxy's runtime alone does not prove which business implementation is active. */
 export async function verifyMiningDeployment(read: MiningRpc, d: MiningProductDeployment): Promise<void> {
-  if (await read('eth_chainId') !== '0x7a0') throw new Error('miningWrongNetwork')
+  if (await read('eth_chainId') !== `0x${d.chainId.toString(16)}`) throw new Error('miningWrongNetwork')
   const block = await read('eth_blockNumber')
   if (typeof block !== 'string' || !/^0x[0-9a-fA-F]+$/.test(block)) throw new Error('miningReadFailed')
   await Promise.all(miningTargets(d).map((target) => verifyMiningIdentity(read, target.identity, block)))

@@ -1,0 +1,39 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "sodadex-mining-test-196",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-16",
+  "workers_dev": false,
+  "preview_urls": false,
+  "vars": {
+    "SODADEX_NETWORK_PROFILE": "196-mining-test"
+  },
+  "services": [
+    {
+      "binding": "MINING_API_196",
+      "service": "sodadex-mining-api-test-196"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "CHAIN_INDEX",
+        "class_name": "SodaChainIndex"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1-chain-index-sqlite",
+      "new_sqlite_classes": [
+        "SodaChainIndex"
+      ]
+    }
+  ],
+  "assets": {
+    "directory": "../web/dist-mining-196",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": true
+  }
+}

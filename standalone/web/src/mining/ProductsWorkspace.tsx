@@ -38,11 +38,11 @@ export function MiningProductsWorkspace({ deployment: base, wallet, activeTab, o
   const inFlight = useRef(false)
   useEffect(() => { onBusyChange?.(busy) }, [busy, onBusyChange])
   const project = d.projects.find((p) => p.token.address.toLowerCase() === projectToken?.toLowerCase()) ?? d.projects[0]
-  const account = wallet.session?.chainId === 1952 ? wallet.session.address : undefined
+  const account = wallet.session?.chainId === d.chainId ? wallet.session.address : undefined
   const ready = useQuery({ queryKey: ['mining-ready', d.version, catalog.revision], queryFn: async () => { await verifyMiningDeployment(rpc, d); return true }, retry: false, refetchInterval: 30_000 })
   const paused = useQuery({ queryKey: ['mining-paused', d.version], enabled: ready.isSuccess,
     queryFn: () => productRead(rpc, d.contracts.mining.address, 'mining', 'paused'), retry: false, refetchInterval: 15_000 })
-  const native = useQuery({ queryKey: ['native-balance', '1952-mining-test', account], enabled: ready.isSuccess && !!account,
+  const native = useQuery({ queryKey: ['native-balance', NETWORK.id, account], enabled: ready.isSuccess && !!account,
     queryFn: async () => hexQuantity(await rpc('eth_getBalance', [account!, 'latest'])), retry: false, refetchInterval: 20_000 })
   const protection = useQuery({ queryKey: ['mining-protection', d.version, catalog.revision, project?.token.address], enabled: ready.isSuccess && !!project,
     queryFn: async () => ({ active: await productRead(rpc, project!.token.address, 'projectToken', 'protectionActive'),
@@ -97,7 +97,7 @@ export function MiningProductsWorkspace({ deployment: base, wallet, activeTab, o
     </div>
     {catalog.unavailable && <p className="dialog-note" role="status">{online.serviceUnavailable}</p>}
     {account && balances.data && <details className="mining-wallet-assets"><summary><span><Icon name="wallet" size={16} />{m.balance}</span><span className="mining-wallet-summary"><strong>{formatBalance(balances.data[0], 8)} TEST-FAB</strong><span>{m.allAssets}</span><Icon name="chevron" size={14} /></span></summary><dl className="mining-balances">
-      <div><dt><img className="mining-native-icon" src="/assets/okb.png" alt="" />TEST-OKB</dt><dd title={native.data === undefined ? undefined : formatUnits(native.data, 18)}>{native.data === undefined ? '—' : formatBalance(native.data, 18)}</dd></div>
+      <div><dt><img className="mining-native-icon" src="/assets/okb.png" alt="" />{d.chainId === 196 ? 'OKB' : 'TEST-OKB'}</dt><dd title={native.data === undefined ? undefined : formatUnits(native.data, 18)}>{native.data === undefined ? '—' : formatBalance(native.data, 18)}</dd></div>
       {[['TEST-FAB', 8], ['TEST-fFAB', 18], ['TEST-fFAB LP', 18], ...(project ? [[project.symbol, 18]] : []), ...(project?.pair ? [[`${project.symbol} LP`, 18]] : [])].map(([symbol, decimals], index) =>
         <div key={String(symbol)}><dt>{symbol}</dt><dd title={formatUnits(balances.data[index], Number(decimals))}>{formatBalance(balances.data[index], Number(decimals))}</dd></div>)}
     </dl></details>}

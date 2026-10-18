@@ -1,4 +1,4 @@
-import type { MiningProductDeployment } from '../../mining-products.ts'
+import { miningProfileId, type MiningProductDeployment } from '../../mining-products.ts'
 import { ServiceError, type PersistentState } from './types.ts'
 export interface StateStorage {
   load(): string | undefined
@@ -13,8 +13,9 @@ export class Repository {
       const saved = storage.load()
       if (saved) {
         const s = JSON.parse(saved) as PersistentState
-        if (s.schema !== 1 || s.deploymentVersion !== deployment.version) throw new ServiceError('storage_deployment_mismatch', 503)
-      } else storage.save(JSON.stringify({ schema: 1, deploymentVersion: deployment.version, revision: 0,
+        if (s.schema !== 1 || s.deploymentVersion !== deployment.version ||
+            (s.profileId ?? '1952-mining-test') !== miningProfileId(deployment) || (s.chainId ?? 1952) !== deployment.chainId) throw new ServiceError('storage_deployment_mismatch', 503)
+      } else storage.save(JSON.stringify({ schema: 1, profileId: miningProfileId(deployment), chainId: deployment.chainId, deploymentVersion: deployment.version, revision: 0,
         challenges: {}, projects: Object.fromEntries(deployment.projects.map(p => [p.token.address.toLowerCase(), p])),
         jobs: {}, executions: {}, spentWei: '0', reservedWei: '0', cursor: 0, requested: false, authorizations: {},
       } satisfies PersistentState))
