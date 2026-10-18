@@ -49,12 +49,12 @@ export function TradeMarketPanel({ context, active = true }: { context?: TradeMa
       <Button appearance="icon" aria-label={m.retry} onClick={retry} disabled={!pool || chart.isFetching}><Icon name="refresh" size={17} /></Button></div>
       <div className="trade-market-price"><span>{m.title}</span><strong>{data ? `1 ${context!.from.symbol} = ${formatPrice(currentPrice, locale)} ${context!.to.symbol}` : '—'}</strong>
         <small className="trade-market-source">{data ? `${m.snapshot} · ${new Date(data.asOf.timestamp * 1000).toLocaleString(locale)}` : m.source}</small></div>
-      <div className="trade-chart-toolbar"><div role="group" aria-label={m.interval}>{CHART_INTERVALS.map((value) => <button key={value} aria-pressed={interval === value} onClick={() => setInterval(value)}>{value}</button>)}</div>
-        <div role="group" aria-label={m.chartView}>{(['line', 'candles'] as const).map((value) => <button key={value} aria-pressed={mode === value} onClick={() => setMode(value)}>{m[value]}</button>)}</div></div>
       {!pool ? <p className="trade-market-empty" role="status">{unavailable}</p> : chart.isPending ? <p className="trade-market-empty" role="status">{m.loading}</p>
         : chart.isError ? <div className="trade-market-empty" role="alert"><p>{chart.error instanceof DataError && chart.error.code === 'CHART_RANGE_TOO_LARGE' ? m.rangeLimit : chart.error instanceof DataError && chart.error.code !== 'UNAVAILABLE' ? m.stale : m.unavailable}</p><Button onClick={retry}>{m.retry}</Button>
             {lastPage && <small>{m.range}: #{lastPage.query.fromBlock} – #{lastPage.query.toBlock}<br />{m.lastScan}: #{lastPage.coverage.fromBlock} – #{lastPage.coverage.toBlock}</small>}</div>
           : data && (!data.candles.length ? <p className="trade-market-empty">{m.noTrades}</p> : !candles.length ? <p className="trade-market-empty">{m.noPrices}</p> : <TradeChart candles={candles} mode={mode} unit={unit} />)}
+      <div className="trade-chart-toolbar"><div role="group" aria-label={m.interval}>{CHART_INTERVALS.map((value) => <button key={value} aria-pressed={interval === value} onClick={() => setInterval(value)}>{value}</button>)}</div>
+        <div role="group" aria-label={m.chartView}>{(['line', 'candles'] as const).map((value) => <button key={value} aria-pressed={mode === value} onClick={() => setMode(value)}>{m[value]}</button>)}</div></div>
       {data && <><div className="trade-market-statistics"><div><span>{m.observed}</span><strong>{data.trades.length}</strong></div>
         <div><span>{m.volume}</span><strong title={volume?.from}>{volume?.from ?? '—'} {context!.from.symbol}</strong><small title={volume?.to}>{volume?.to ?? '—'} {context!.to.symbol}</small></div>
         <div><span>{m.change}</span><strong>{change === undefined ? '—' : `${change >= 0 ? '+' : ''}${change.toFixed(2)}%`}</strong></div></div>

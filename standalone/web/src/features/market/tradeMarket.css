@@ -135,3 +135,33 @@
   .trade-order-column.has-order-modes .limit-panel > .limit-refresh { top: 12px; right: 12px; }
   .trade-order-column .general-swap .route-summary button, .trade-order-column .general-swap .swap-card-heading .button { min-height: 44px; }
 }
+
+/* Price-first canvas: shared light/dark tokens and restrained chart controls. */
+.trade-market-heading { padding-bottom: 20px; border-bottom: 1px solid var(--soda-line-soft); }
+.trade-market-price { margin: 18px 0 6px; }
+.trade-market-price > strong { font-size: 15px; letter-spacing: 0; }
+.trade-price-chart { margin: 20px 0 18px; }
+.trade-chart-readout { display: grid; gap: 10px; margin-bottom: 14px; font-variant-numeric: tabular-nums; }
+.trade-chart-readout > strong { font-size: clamp(28px, 3vw, 44px); font-weight: 560; letter-spacing: -1.2px; line-height: 1.2; overflow-wrap: anywhere; }
+.trade-chart-readout small { font-size: 13px; font-weight: 450; letter-spacing: 0; color: var(--soda-muted); }
+.trade-chart-readout > div { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; font-size: 12px; }
+.trade-chart-readout time { color: var(--soda-muted); }
+.chart-positive { color: var(--soda-highlight); }
+.chart-negative { color: var(--soda-error); }
+.trade-price-chart figcaption { font-size: 10px; gap: 6px 14px; margin-bottom: 10px; }
+.trade-chart-frame, .trade-chart-frame svg { height: 310px; }
+.trade-chart-frame { grid-template-columns: minmax(0, 1fr) 80px; }
+.trade-chart-frame svg { outline-offset: 5px; border-radius: 4px; }
+.trade-chart-axis { padding: 20px 0; font-size: 10px; }
+.trade-chart-times { margin-top: 16px; margin-right: 90px; }
+.trade-chart-toolbar { padding: 8px 0 22px; border: 0; }
+.trade-chart-toolbar > div { padding: 4px; border: 1px solid var(--soda-line); border-radius: 999px; }
+.trade-chart-toolbar button { border-radius: 999px; font-size: 12px; }
+.trade-chart-toolbar button[aria-pressed="true"] { background: var(--soda-hover); color: var(--soda-text); }
+@media (max-width: 600px) {
+  .trade-chart-frame, .trade-chart-frame svg { height: 230px; }
+  .trade-chart-frame { grid-template-columns: minmax(0, 1fr) 62px; gap: 6px; }
+  .trade-chart-times { margin-right: 68px; font-size: 10px; }
+  .trade-chart-readout > strong { font-size: 30px; }
+  .trade-chart-toolbar button { min-width: 32px; padding: 7px; }
+}
