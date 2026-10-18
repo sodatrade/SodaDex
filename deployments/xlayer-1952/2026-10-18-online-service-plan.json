@@ -3,9 +3,9 @@
   "phase": "mining-online-assets-1952-v1",
   "chainId": 1952,
   "stage": "test",
-  "approved": false,
-  "approvalReference": null,
-  "status": "prepared_disabled_pending_new_phase_approval",
+  "approved": true,
+  "approvalReference": "User approval 2026-10-18: \u540c\u610f\u6309\u4e0a\u8ff0\u4e0a\u9650\u542f\u7528\u5e76\u9a8c\u6536 1952; question call_49f5cbab25774ef2a6b107d8fc35b84c",
+  "status": "approved_preparing_public_assets",
   "productionTouched": false,
   "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
   "authorizer": "0x5DeAca6ecc97b07cA95D700f2BB26e4466774Ab6",
@@ -76,7 +76,7 @@
   "validation": {
     "webPassed": 435,
     "webConfiguredSkipped": 22,
-    "workerPassed": 177,
+    "workerPassed": 179,
     "servicePassed": 70,
     "assetExecutionTestsPassed": 39,
     "assetExecutionTestsSkipped": 0,
@@ -97,5 +97,35 @@
     "launch-zh-desktop.png": "267577ae24e678ecb9927f0c0af5430d9451715396ab783bbf883bae6cb6cced",
     "public-rpc-read.json": "873672a92458e381d494a5da137f118c9ee99e0d4713b81709c5040c91b63a2e",
     "sqlite-expiry.json": "10be8f917ec7d5f4155eba4de816e0999b291f570fc815289be0c9c9005d8240"
+  },
+  "approvedAt": "2026-10-18T00:13:07.455785+00:00",
+  "approvedBudget": {
+    "totalGasCapWei": "1000000000000000",
+    "ownerGasCapWei": "500000000000000",
+    "keeperGasCapWei": "500000000000000",
+    "keeperFundingWei": "500000000000000",
+    "nativePrincipalCapWei": "1000000000000000",
+    "fabPrincipalCapRaw": "1500000000000",
+    "fabDecimals": 8,
+    "keeperFundingCountsInsideTotalGasCap": true,
+    "unusedKeeperBalanceIsNotAnActualFee": true
+  },
+  "approvedOperatingPolicy": {
+    "maxProjects": 3,
+    "maxProjectsPerWallet": 2,
+    "allowedListingIds": [
+      "3",
+      "4"
+    ],
+    "inventorySeller": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+    "maxProcurementFabRaw": "200000000",
+    "maxMinerPriceWei": "10000000000",
+    "maxConversionInputRaw": "1000000000000000000000000",
+    "slippageBps": 50
+  },
+  "approvedKeeperLimits": {
+    "maxGasPerTransaction": "2500000",
+    "maxGasPriceWei": "30000000",
+    "pollMs": 15000
   }
 }

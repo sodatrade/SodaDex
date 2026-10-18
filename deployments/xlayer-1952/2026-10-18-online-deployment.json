@@ -1,0 +1,126 @@
+{
+  "capturedAt": "2026-10-18T00:11:12.019Z",
+  "sourceHead": "cbe7d9319",
+  "privateWorkerVersion": "d9382c02-cd8e-460d-90cc-4fb77ce871c6",
+  "frontendVersion": "d89ef0a7-4f01-4d18-9df9-6d4b36b6d533",
+  "signingSecretsUploaded": false,
+  "publicChainWrites": false,
+  "results": [
+    {
+      "name": "status",
+      "status": 200,
+      "elapsedMs": 889,
+      "body": {
+        "schemaVersion": 1,
+        "chainId": 1952,
+        "deploymentVersion": "phase2-9eb904673520-43780614",
+        "admissionEnabled": false,
+        "executionEnabled": false,
+        "signer": "0x5DeAca6ecc97b07cA95D700f2BB26e4466774Ab6",
+        "keeper": null,
+        "budget": {
+          "capWei": "0",
+          "spentWei": "0",
+          "reservedWei": "0"
+        },
+        "farm": null,
+        "jobs": [],
+        "reason": "policy_pending"
+      }
+    },
+    {
+      "name": "catalog",
+      "status": 200,
+      "elapsedMs": 809,
+      "body": {
+        "schemaVersion": 1,
+        "chainId": 1952,
+        "deploymentVersion": "phase2-9eb904673520-43780614",
+        "revision": "0",
+        "projects": [
+          {
+            "symbol": "TEST-A",
+            "token": {
+              "address": "0xf71c2666394361016b10A3310C7A6d4F15Af0934",
+              "runtimeKeccak256": "0xd9e795626672ef48d8e7a7cc3bd904713b4fe71f7611a1fdc391f7354e399a4b"
+            },
+            "vault": {
+              "address": "0x4acE41319812BD273CBc010C39EBed3B3162deB7",
+              "runtimeKeccak256": "0x9bd5dcdaa5db3822be0bf156d26ecca341460f8778817f683d461833369a340e"
+            },
+            "holder": {
+              "address": "0xc4D4d2367ddfb3632FA9b025e27a0671E35A81Dc",
+              "runtimeKeccak256": "0xe0d880cfa1ddeef7721160135bca1b1588f5a5f1190af0a444339ab1674f0cac"
+            },
+            "pair": {
+              "address": "0xc3C595d36881a72B6646512b7f9ceC19Ea16e384",
+              "runtimeKeccak256": "0x5b83bdbcc56b2e630f2807bbadd2b0c21619108066b92a58de081261089e9ce5"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "selected-catalog",
+      "status": 200,
+      "elapsedMs": 6153,
+      "body": {
+        "schemaVersion": 1,
+        "chainId": 1952,
+        "deploymentVersion": "phase2-9eb904673520-43780614",
+        "revision": "0",
+        "projects": [
+          {
+            "symbol": "TEST-A",
+            "token": {
+              "address": "0xf71c2666394361016b10A3310C7A6d4F15Af0934",
+              "runtimeKeccak256": "0xd9e795626672ef48d8e7a7cc3bd904713b4fe71f7611a1fdc391f7354e399a4b"
+            },
+            "vault": {
+              "address": "0x4acE41319812BD273CBc010C39EBed3B3162deB7",
+              "runtimeKeccak256": "0x9bd5dcdaa5db3822be0bf156d26ecca341460f8778817f683d461833369a340e"
+            },
+            "holder": {
+              "address": "0xc4D4d2367ddfb3632FA9b025e27a0671E35A81Dc",
+              "runtimeKeccak256": "0xe0d880cfa1ddeef7721160135bca1b1588f5a5f1190af0a444339ab1674f0cac"
+            },
+            "pair": {
+              "address": "0xc3C595d36881a72B6646512b7f9ceC19Ea16e384",
+              "runtimeKeccak256": "0x5b83bdbcc56b2e630f2807bbadd2b0c21619108066b92a58de081261089e9ce5"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "network-build",
+      "status": 200,
+      "elapsedMs": 859,
+      "body": {
+        "id": "1952-mining-test",
+        "chainId": 1952
+      }
+    },
+    {
+      "name": "foreign-origin",
+      "status": 403,
+      "elapsedMs": 857,
+      "body": {
+        "error": "origin_not_allowed",
+        "reason": "origin_not_allowed",
+        "chainId": 1952
+      }
+    },
+    {
+      "name": "foreign-profile",
+      "status": 409,
+      "elapsedMs": 791,
+      "body": {
+        "error": "network_profile_mismatch",
+        "reason": "network_profile_mismatch",
+        "chainId": 1952
+      }
+    }
+  ],
+  "configurationState": "disabled_no_signing_secrets"
+}
