@@ -7,6 +7,7 @@ import { importCurrency, positionCurrency, validateCurrency } from './currencies
 import { createdAbi, initializedAbi, deploymentLogs } from './events'
 import { call } from './rpc'
 import { LiquidityError, type LiquidityPool, type PoolDraft, type PublicRpc } from './types'
+import { getPools } from '../data/dex'
 export const poolKey = (p: Pick<LiquidityPool, 'currency0' | 'currency1' | 'fee' | 'tickSpacing'>) => ({
   currency0: p.currency0.address,
   currency1: p.currency1.address,
@@ -93,6 +94,9 @@ export async function refreshPool(pool: LiquidityPool, read: PublicRpc): Promise
 }
 /** Seed pools plus hookless deployment events whose assets and current state can be read. */
 export async function listPools(read: PublicRpc = rpc): Promise<LiquidityPool[]> {
+  // Browser discovery reads the shared persistent directory. Explicit RPC adapters
+  // retain direct discovery for isolated forks and protocol acceptance tests.
+  if (read === rpc) return indexedPools(read)
   const stable = await importCurrency(pools.stable.address, read)
   const result = await Promise.all([
     discoverPool({ protocol: 'v3', currencyA: NATIVE_CURRENCY, currencyB: stable, fee: pools.v3.fee }, read),
@@ -151,5 +155,27 @@ export async function listPools(read: PublicRpc = rpc): Promise<LiquidityPool[]>
       /* A single unreadable asset must not hide all other pools. */
     }
   }
+  return result
+}
+
+async function indexedPools(read: PublicRpc): Promise<LiquidityPool[]> {
+  const catalog = await getPools(), result: LiquidityPool[] = []
+  // Bound concurrent metadata/state reads as permissionless pool counts grow.
+  for (let offset = 0; offset < catalog.pools.length; offset += 4) {
+    const batch = await Promise.all(catalog.pools.slice(offset, offset + 4).map(async (pool) => {
+      if (pool.hooks.toLowerCase() !== zeroAddress) return null
+      try {
+        const [currencyA, currencyB] = await Promise.all([
+          positionCurrency(pool.token0 as Address, pool.protocol, read),
+          positionCurrency(pool.token1 as Address, pool.protocol, read),
+        ])
+        const current = await discoverPool({ protocol: pool.protocol, currencyA, currencyB, fee: pool.fee, tickSpacing: pool.tickSpacing }, read)
+        // A directory supplies candidates, never authority over a pool identity.
+        return current.id.toLowerCase() === pool.id.toLowerCase() && current.initialized ? current : null
+      } catch { return null }
+    }))
+    for (const pool of batch) if (pool) result.push(pool)
+  }
+  if (catalog.pools.length && !result.length) throw new LiquidityError('failed')
   return result
 }

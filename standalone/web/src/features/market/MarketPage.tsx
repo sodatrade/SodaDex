@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useState, type ReactElement } from 'react'
 import { formatUnits } from 'viem'
 import { Button, Icon, Surface } from '../../components/primitives'
+import { IndexProgress } from '../../components/IndexProgress'
 import { ASSETS, EXPLORER_URL, shortenAddress } from '../../domain/assets'
 import { dataMessages } from '../../i18n/data'
 import { usePreferences } from '../../preferences/context'
@@ -47,6 +48,7 @@ export function MarketPage(): ReactElement {
           <Icon name="refresh" size={16} />{m.retry}
         </Button>
       </div>
+      <IndexProgress status={pools.data?.index} />
       <form className="data-range" onSubmit={(e) => {
         e.preventDefault()
         if (!pool) return

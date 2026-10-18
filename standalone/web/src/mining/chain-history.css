@@ -1,0 +1,20 @@
+.mining-history-source { width: fit-content; min-width: 240px; margin-bottom: 20px; }
+.mining-chain-history .mining-action-switch { min-width: 240px; }
+.mining-index-status { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 16px 0; color: var(--soda-muted); font-size: 12px; }
+.mining-index-status .button { flex-shrink: 0; }
+.mining-chain-history .mining-history-list li > div { grid-template-columns: 1fr 1fr 1.5fr; align-items: center; gap: 8px 16px; min-width: 0; }
+.mining-chain-history .mining-history-list a { display: inline-flex; align-items: center; gap: 6px; }
+.mining-chain-history .mining-history-list small { text-align: right; }
+.mining-chain-history details { grid-column: 1 / -1; min-width: 0; }
+.mining-chain-history summary { width: fit-content; color: var(--soda-muted); font-size: 12px; cursor: pointer; padding-block: 4px; }
+.mining-chain-history summary:hover { color: var(--soda-text); }
+.mining-chain-history .review-details { margin-top: 12px; }
+.mining-chain-history .review-details dd { overflow-wrap: anywhere; }
+@media (max-width: 640px) {
+  .mining-history-source { width: 100%; }
+  .mining-chain-history .mining-action-switch { min-width: 0; }
+  .mining-index-status { align-items: flex-start; }
+  .mining-chain-history .mining-history-list li > div { grid-template-columns: 1fr 1fr; }
+  .mining-chain-history .mining-history-list a { justify-self: end; }
+  .mining-chain-history .mining-history-list small { grid-column: 1 / -1; text-align: left; }
+}

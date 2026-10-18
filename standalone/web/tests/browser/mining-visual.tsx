@@ -35,6 +35,19 @@ globalThis.fetch = async (input, options) => {
     return Response.json({ jsonrpc: '2.0', id: body.id, result })
   }
   const envelope = { schemaVersion: 1, chainId: 1952, deploymentVersion: d.version }
+  if (path.startsWith('/api/index/events')) {
+    if (scenario === 'read-failed') return Response.json({ error: 'Fixture index failure' }, { status: 503 })
+    const query = new URL(path, location.origin).searchParams, offset = Number(query.get('cursor') ?? 0)
+    const head = { number: 1000, hash: `0x${'a'.repeat(64)}`, timestamp: 1_760_000_000 }
+    const count = query.has('owner') ? 4 : 23
+    return Response.json({ ...envelope, asOf: head, nextCursor: offset + 10 < count ? String(offset + 10) : null,
+      index: { ...envelope, head, indexedThrough: 950, fromBlock: 1, syncing: true, lastError: null, generation: 0 },
+      events: Array.from({ length: Math.max(0, Math.min(10, count - offset)) }, (_, i) => ({
+        id: `event-${offset + i}`, address: d.contracts.fragmentPool.address, event: ['Swapped', 'Deposited', 'RewardsPaid'][(offset + i) % 3],
+        blockNumber: 900 - offset - i, blockHash: head.hash, transactionHash: `0x${(offset + i + 1).toString(16).padStart(64, '0')}`,
+        logIndex: offset + i, args: { amount: '100000000' }, transactionFrom: MINING_TEST_ACCOUNT, timestamp: head.timestamp - (offset + i) * 30,
+      })) })
+  }
   if (path.startsWith('/api/mining/projects')) return Response.json({ ...envelope, revision: 'visual', projects: d.projects })
   if (path === '/api/mining/status') return Response.json({ ...envelope, admissionEnabled: false, executionEnabled: false, signer: MINING_TEST_ACCOUNT, keeper: null,
     budget: { capWei: '0', spentWei: '0', reservedWei: '0' }, farm: null, jobs: [] })

@@ -14,7 +14,7 @@ import { miningTab, MINING_TABS, type MiningTab } from './navigation'
 import { MiningActionWorkspace } from './ActionWorkspace'
 import { AutomationPanel } from './AutomationPanel'
 import { executeMiningCall, type MiningStage } from './execution'
-import { MiningHistoryPanel } from './HistoryPanel'
+import { MiningHistoryWorkspace } from './ChainHistoryPanel'
 import { loadMiningJournal, saveMiningSubmission, type MiningSubmission } from './journal'
 import { LaunchProjectPanel } from './LaunchProjectPanel'
 import { miningMessages, type MiningMessageKey } from './messages'
@@ -114,7 +114,7 @@ export function MiningProductsWorkspace({ deployment: base, wallet, activeTab, o
     {tab === 'fragments' && <MiningActionWorkspace key="fragments" kind="fragments" listingId={d.testListingIds?.[0]}
       disabled={disabled || paused.data !== false} busy={busy} onConnect={onConnect} onPreview={preview} />}
     {tab === 'positions' && <MiningRewardsPanel deployment={d} project={project} account={account} disabled={disabled} onPlan={selectPlan} />}
-    {tab === 'history' && <MiningHistoryPanel account={account} entries={entries} onUpdate={update} />}
+    {tab === 'history' && <MiningHistoryWorkspace deployment={d} account={account} entries={entries} initialView={completed ? 'local' : 'chain'} onUpdate={update} />}
     {tab === 'launch' && <LaunchProjectPanel deployment={d} wallet={wallet} disabled={disabled} onBusy={setBusy} onSubmission={update}
       onRegistered={(registered) => { catalog.accept(registered); setProjectToken(registered.project.token.address); setTab('fundraising') }} />}
     {tab === 'automation' && <AutomationPanel deployment={d} token={project?.token.address} disabled={!ready.isSuccess || busy} />}

@@ -23,6 +23,8 @@ export default defineConfig({
     proxy: {
       '/api/network': { target: 'http://127.0.0.1:8787', changeOrigin: true },
       '/api/mining': { target: 'http://127.0.0.1:8787', changeOrigin: false },
+      '/api/index': { target: 'http://127.0.0.1:8787', changeOrigin: false },
+      '/api/dex': { target: 'http://127.0.0.1:8787', changeOrigin: false },
       '/api/rpc': {
         target: 'http://127.0.0.1:8787',
         changeOrigin: true,
