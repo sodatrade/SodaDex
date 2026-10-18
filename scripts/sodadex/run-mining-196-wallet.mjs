@@ -45,8 +45,8 @@ else if(v.mode==='execute') {
     if((await recoverMessageAddress({message:item.intent.message,signature:result})).toLowerCase()!==journal.owner.toLowerCase())throw new Error('Challenge signature owner mismatch')
   } else {
     const tx={...item.intent,value:toHex(BigInt(item.intent.value)),chainId:'0xc4'}
-    if(!await policy.validate(tx,'wallet'))throw new Error('CLI wallet policy denied')
     const call={from:tx.from,to:tx.to,data:tx.data,value:tx.value}
+    if(!await policy.validate(call,'wallet'))throw new Error('CLI wallet policy denied')
     const gas=(BigInt(await rpc.request('eth_estimateGas',[call,'pending']))*120n+99n)/100n
     queue.claimForCli(item.id,item.digest,{gasLimit:String(gas),gasPrice:'21000000'})
     result=await execution.execute(tx)
