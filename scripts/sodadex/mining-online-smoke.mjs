@@ -18,6 +18,7 @@ const S = '0x5DeAca6ecc97b07cA95D700f2BB26e4466774Ab6'
 const ORIGIN = 'https://sodadex-mining-test-1952.jsmsdx2025.workers.dev'
 const GAS_CAP = 500_000_000_000_000n, FAB_CAP = 1_500_000_000_000n, PRICE_CAP = 30_000_000n
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms))
+const decodeSmokeEvent = (log, abi) => { try { return decodeEventLog({ abi, data: log.data, topics: log.topics, strict: true }).args } catch { return undefined } }
 export function automationComplete(receipts) {
   return ['conversion', 'fund', 'purchase'].every(kind => receipts.has(kind)) &&
     BigInt(receipts.get('fund').blockNumber) >= BigInt(receipts.get('conversion').blockNumber)
@@ -197,6 +198,29 @@ export async function recheckAutomationReceipts(s, confirmed, seen) {
   s.state.automationReceipts = Object.fromEntries(confirmed); s.save()
   return automationComplete(confirmed)
 }
+export async function holderRewardSnapshot(s, at = 'latest', expectedHash) {
+  const block = await s.rpc.request('eth_getBlockByNumber', [at, false])
+  if (!block || typeof block.number !== 'string' || typeof block.hash !== 'string' || at !== 'latest' && block.number !== at || expectedHash && block.hash !== expectedHash) throw new Error('Holder reward snapshot block changed')
+  const query = (to, signature) => s.m.miningDiscoveryRead(s.rpc, to, signature, [ONLINE_OWNER], block.number)
+  const [claimable, withdrawn, balance] = await Promise.all([
+    query(s.project.holder.address, 'function claimable(address) view returns(uint256)'),
+    query(s.project.holder.address, 'function withdrawnRewards(address) view returns(uint256)'),
+    query(s.d.contracts.fab.address, 'function balanceOf(address) view returns(uint256)'),
+  ])
+  if ([claimable, withdrawn, balance].some(value => typeof value !== 'bigint' || value < 0n) ||
+      (await s.rpc.request('eth_getBlockByNumber', [block.number, false]))?.hash !== block.hash) throw new Error('Holder reward snapshot is not canonical')
+  return { blockNumber: block.number, blockHash: block.hash, claimableRaw: String(claimable), withdrawnRaw: String(withdrawn), fabBalanceRaw: String(balance) }
+}
+export function assertHolderRewardPayment(before, after, receipt, holder, fab) {
+  const paidAbi = parseAbi(['event RewardsPaid(address indexed account,uint256 amount)'])
+  const transferAbi = parseAbi(['event Transfer(address indexed from,address indexed to,uint256 value)'])
+  const paid = receipt.logs.filter(log => same(log.address, holder)).map(log => decodeSmokeEvent(log, paidAbi)).filter(e => e && same(e.account, ONLINE_OWNER))
+  const transfers = receipt.logs.filter(log => same(log.address, fab)).map(log => decodeSmokeEvent(log, transferAbi)).filter(e => e && same(e.from, holder) && same(e.to, ONLINE_OWNER))
+  if (receipt.status !== '0x1' || BigInt(before.claimableRaw) <= 0n || paid.length !== 1 || transfers.length !== 1 || paid[0].amount <= 0n ||
+      transfers[0].value !== paid[0].amount || BigInt(after.withdrawnRaw) - BigInt(before.withdrawnRaw) !== paid[0].amount ||
+      BigInt(after.fabBalanceRaw) - BigInt(before.fabBalanceRaw) !== paid[0].amount) throw new Error('Positive holder reward payment was not proven')
+  return String(paid[0].amount)
+}
 export async function awaitAutomationAndClaim(s, api, baseline) {
   const confirmed = new Map(), seen = new Set()
   for (let i = 0; i < 40; i++) {
@@ -213,8 +237,18 @@ export async function awaitAutomationAndClaim(s, api, baseline) {
     if (i === 39) throw new Error('Automation pending; inspect saved status, do not rerun smoke')
     await s.pause(15000)
   }
+  if (!await recheckAutomationReceipts(s, confirmed, seen)) throw new Error('Automation receipts changed before harvest; stop')
+  await s.executePlan(s.m.simpleMiningPlan(ONLINE_OWNER, s.project.holder.address, 'holder', 'harvest', 'harvest'))
+  const before = await holderRewardSnapshot(s)
+  s.state.holderRewards = { before, harvestHash: s.state.transactions.at(-1)?.receipt.transactionHash }; s.save()
+  if (BigInt(before.claimableRaw) <= 0n) throw new Error('Holder rewards are zero after harvest; completion unconfirmed')
   if (!await recheckAutomationReceipts(s, confirmed, seen)) throw new Error('Automation receipts changed before claim; stop')
   await s.executePlan(s.m.simpleMiningPlan(ONLINE_OWNER, s.project.holder.address, 'holder', 'claim', 'claim'))
+  const receipt = s.state.transactions.at(-1)?.receipt
+  if (!receipt) throw new Error('Holder claim receipt required')
+  const after = await holderRewardSnapshot(s, receipt.blockNumber, receipt.blockHash)
+  const paidRaw = assertHolderRewardPayment(before, after, receipt, s.project.holder.address, s.d.contracts.fab.address)
+  s.state.holderRewards = { ...s.state.holderRewards, after, paidRaw, claimHash: receipt.transactionHash }; s.save()
   if (!await recheckAutomationReceipts(s, confirmed, seen)) {
     s.state.completed = false; s.save()
     throw new Error('Automation receipts changed after claim; completion unconfirmed')

@@ -4,7 +4,7 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { execFileSync } from 'node:child_process'
-import { keccak256, toHex } from 'viem'
+import { keccak256, toHex, encodeEventTopics, encodeAbiParameters, parseAbiParameters, parseAbi } from 'viem'
 import { loadSmokeModules, validateSmokeApproval, SmokeSender, automationComplete } from './mining-online-smoke.mjs'
 import { ONLINE_OWNER } from './mining-online-assets.mjs'
 const root=process.cwd(), keeper='0x553D8C2e637fe67C5c7AdE3810E8Bc02799D41D4'
@@ -122,7 +122,6 @@ test('challenge uses the real human-readable origin/deployment binding and rejec
 })
 test('registration must match the exact new Manager receipt and TEST-ONLINE symbol',async()=>{
  const {assertSmokeRegistration}=await import('./mining-online-smoke.mjs')
- const {encodeEventTopics,encodeAbiParameters,parseAbiParameters,parseAbi}=await import('viem')
  const d=JSON.parse(fs.readFileSync(path.join(root,'deployments/xlayer-1952/products.json'))),project={...d.projects[0],symbol:'TEST-ONLINE'}
  const abi=parseAbi(['event TokenCreated(address indexed token,address indexed creator,address indexed quote,uint256 graduation,string metadataURI,address vault,address tracker,uint16 templateId)'])
  const log={address:d.contracts.manager.address,topics:encodeEventTopics({abi,eventName:'TokenCreated',args:{token:project.token.address,creator:ONLINE_OWNER,quote:d.contracts.fab.address}}),data:encodeAbiParameters(parseAbiParameters('uint256,string,address,address,uint16'),[500000000000n,'',project.vault.address,project.holder.address,d.templateId])}
@@ -132,19 +131,22 @@ test('registration must match the exact new Manager receipt and TEST-ONLINE symb
  assert.throws(()=>assertSmokeRegistration({logs:[]},d,project))
 })
 function automationFixture() {
- const token='0x1111111111111111111111111111111111111111',vault='0x2222222222222222222222222222222222222222',farm='0x3333333333333333333333333333333333333333'
- const receipts=new Map(),headers=new Map(),hashes={},state={},saves=[]
+ const token='0x1111111111111111111111111111111111111111',vault='0x2222222222222222222222222222222222222222',farm='0x3333333333333333333333333333333333333333',fab='0x4444444444444444444444444444444444444444'
+ const receipts=new Map(),headers=new Map(),hashes={},state={transactions:[]},saves=[]
  for(const [i,kind]of ['conversion','fund','purchase'].entries()){
   const hash=keccak256(toHex(BigInt(i+1))),blockNumber=toHex(BigInt(10+i)),blockHash=keccak256(toHex(BigInt(i+10)))
   hashes[kind]=hash;receipts.set(hash,{transactionHash:hash,from:keeper,to:kind==='purchase'?farm:vault,status:'0x1',blockNumber,blockHash})
   headers.set(blockNumber,{number:blockNumber,hash:blockHash})
  }
  let claims=0,head='0x20'
- const s={d:{contracts:{farm:{address:farm}}},project:{token:{address:token},vault:{address:vault},holder:{address:token}},state,
-  save:()=>saves.push(structuredClone(state)),pause:async()=>{},m:{simpleMiningPlan:()=>({calls:[]})},
-  executePlan:async()=>{claims++},rpc:{request:async(method,args=[])=>{
+ const claimReceipt=rewardReceipt(5n,token,fab)
+ headers.set(claimReceipt.blockNumber,{number:claimReceipt.blockNumber,hash:claimReceipt.blockHash})
+ const s={d:{contracts:{farm:{address:farm},fab:{address:fab}}},project:{token:{address:token},vault:{address:vault},holder:{address:token}},state,
+  save:()=>saves.push(structuredClone(state)),pause:async()=>{},m:{simpleMiningPlan:(_from,_to,_role,action)=>({action,calls:[]}),
+   miningDiscoveryRead:async(_rpc,_to,sig)=>sig.includes('balanceOf')?(claims?105n:100n):sig.includes('withdrawnRewards')?(claims?5n:0n):(claims?0n:5n)},
+  executePlan:async plan=>{if(plan.action==='claim'){claims++;state.transactions.push({receipt:claimReceipt});head='0x22'}else state.transactions.push({receipt:{transactionHash:keccak256('0x1111')}})},rpc:{request:async(method,args=[])=>{
    if(method==='eth_getTransactionReceipt')return receipts.get(args[0])??null
-   if(method==='eth_getBlockByNumber')return headers.get(args[0])
+   if(method==='eth_getBlockByNumber')return headers.get(args[0])??{number:args[0]==='latest'?head:args[0],hash:keccak256(head)}
    if(method==='eth_blockNumber')return head
    throw new Error(`Unexpected automation RPC ${method}`)
   }}}
@@ -169,10 +171,47 @@ test('two polling rounds cannot combine a reorged cached conversion with later f
 test('a reorg after claim prevents completed=true and removes the invalid cached receipt',async()=>{
  const {awaitAutomationAndClaim}=await import('./mining-online-smoke.mjs'),f=automationFixture()
  let claims=0
- f.s.executePlan=async()=>{claims++;f.receipts.delete(f.hashes.fund)}
+ const execute=f.s.executePlan
+ f.s.executePlan=async plan=>{await execute(plan);if(plan.action==='claim'){claims++;f.receipts.delete(f.hashes.fund)}}
  await assert.rejects(()=>awaitAutomationAndClaim(f.s,{loadOnlineStatus:async()=>({jobs:f.jobs(['conversion','fund','purchase'])})},new Set()),/changed after claim/)
  assert.equal(claims,1);assert.equal(f.s.state.completed,false);assert.equal(f.s.state.automationReceipts.fund,undefined)
  assert.ok(f.saves.every(snapshot=>snapshot.completed!==true))
+})
+function rewardReceipt(amount,holder,fab) {
+ const data=encodeAbiParameters(parseAbiParameters('uint256'),[amount])
+ return {transactionHash:keccak256('0x2222'),blockNumber:'0x21',blockHash:keccak256('0x3333'),status:'0x1',logs:[
+  {address:holder,topics:encodeEventTopics({abi:parseAbi(['event RewardsPaid(address indexed account,uint256 amount)']),eventName:'RewardsPaid',args:{account:ONLINE_OWNER}}),data},
+  {address:fab,topics:encodeEventTopics({abi:parseAbi(['event Transfer(address indexed from,address indexed to,uint256 value)']),eventName:'Transfer',args:{from:holder,to:ONLINE_OWNER}}),data},
+ ]}
+}
+test('harvest precedes a positive claim with matching paid event, FAB transfer and ledger/balance increments',async()=>{
+ const {awaitAutomationAndClaim}=await import('./mining-online-smoke.mjs'),f=automationFixture(),actions=[]
+ const execute=f.s.executePlan;f.s.executePlan=async plan=>{actions.push(plan.action);await execute(plan)}
+ await awaitAutomationAndClaim(f.s,{loadOnlineStatus:async()=>({jobs:f.jobs(['conversion','fund','purchase'])})},new Set())
+ assert.deepEqual(actions,['harvest','claim']);assert.equal(f.claims(),1);assert.equal(f.s.state.completed,true)
+ assert.equal(f.s.state.holderRewards.before.claimableRaw,'5');assert.equal(f.s.state.holderRewards.paidRaw,'5')
+ assert.equal(f.s.state.holderRewards.after.withdrawnRaw,'5');assert.equal(f.s.state.holderRewards.after.fabBalanceRaw,'105')
+})
+test('zero claimable after harvest and a successful zero-payment claim cannot complete smoke',async()=>{
+ const {awaitAutomationAndClaim}=await import('./mining-online-smoke.mjs')
+ for(const kind of ['claimable','receipt']){
+  const f=automationFixture()
+  if(kind==='claimable'){
+   const read=f.s.m.miningDiscoveryRead;f.s.m.miningDiscoveryRead=(...args)=>args[2].includes('claimable')?0n:read(...args)
+  }else{
+   const execute=f.s.executePlan;f.s.executePlan=async plan=>{await execute(plan);if(plan.action==='claim')f.s.state.transactions.at(-1).receipt.logs=[]}
+  }
+  await assert.rejects(()=>awaitAutomationAndClaim(f.s,{loadOnlineStatus:async()=>({jobs:f.jobs(['conversion','fund','purchase'])})},new Set()),kind==='claimable'?/zero after harvest/:/payment was not proven/)
+  assert.notEqual(f.s.state.completed,true);assert.equal(f.claims(),kind==='claimable'?0:1)
+ }
+})
+test('holder payment evidence rejects any mismatch between event, transfer, withdrawn rewards and FAB balance',async()=>{
+ const {assertHolderRewardPayment}=await import('./mining-online-smoke.mjs'),holder='0x1111111111111111111111111111111111111111',fab='0x4444444444444444444444444444444444444444'
+ const before={claimableRaw:'5',withdrawnRaw:'0',fabBalanceRaw:'100'},after={withdrawnRaw:'5',fabBalanceRaw:'105'},r=rewardReceipt(5n,holder,fab)
+ assert.equal(assertHolderRewardPayment(before,after,r,holder,fab),'5')
+ for(const mutate of [v=>{v.after.withdrawnRaw='4'},v=>{v.after.fabBalanceRaw='104'},v=>{v.r.logs[1].data=encodeAbiParameters(parseAbiParameters('uint256'),[4n])},v=>{v.r.logs[0].data=encodeAbiParameters(parseAbiParameters('uint256'),[0n])}]){
+  const v=structuredClone({before,after,r});mutate(v);assert.throws(()=>assertHolderRewardPayment(v.before,v.after,v.r,holder,fab),/payment was not proven/)
+ }
 })
 test('every cached receipt field, original canonical block, and confirmation height is rechecked; invalid seen hashes are released',async()=>{
  const {recheckAutomationReceipts}=await import('./mining-online-smoke.mjs')
