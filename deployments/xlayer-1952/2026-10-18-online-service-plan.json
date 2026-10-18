@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "phase": "mining-online-assets-1952-v1",
+  "chainId": 1952,
+  "stage": "test",
+  "approved": false,
+  "approvalReference": null,
+  "status": "prepared_disabled_pending_new_phase_approval",
+  "productionTouched": false,
+  "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+  "authorizer": "0x5DeAca6ecc97b07cA95D700f2BB26e4466774Ab6",
+  "keeper": "0x553D8C2e637fe67C5c7AdE3810E8Bc02799D41D4",
+  "privateService": "sodadex-mining-api-test-1952",
+  "publicOrigin": "https://sodadex-mining-test-1952.jsmsdx2025.workers.dev",
+  "keyPlacement": {
+    "owner": "local encrypted keystore only",
+    "authorizer": "proposed dedicated1952 Cloudflare Secret",
+    "keeper": "proposed dedicated1952 Cloudflare Secret; gas-only"
+  },
+  "proposedBudget": {
+    "totalGasCapWei": "1000000000000000",
+    "ownerGasCapWei": "500000000000000",
+    "keeperGasCapWei": "500000000000000",
+    "keeperFundingWei": "500000000000000",
+    "nativePrincipalCapWei": "1000000000000000",
+    "fabPrincipalCapRaw": "1500000000000",
+    "fabDecimals": 8,
+    "keeperFundingCountsInsideTotalGasCap": true,
+    "unusedKeeperBalanceIsNotAnActualFee": true
+  },
+  "proposedOperatingPolicy": {
+    "maxProjects": 3,
+    "maxProjectsPerWallet": 2,
+    "allowedListingIds": [
+      "3",
+      "4"
+    ],
+    "inventorySeller": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+    "maxProcurementFabRaw": "200000000",
+    "maxMinerPriceWei": "10000000000",
+    "maxConversionInputRaw": "1000000000000000000000000",
+    "slippageBps": 50
+  },
+  "proposedKeeperLimits": {
+    "maxGasPerTransaction": "2500000",
+    "maxGasPriceWei": "30000000",
+    "pollMs": 15000
+  },
+  "assets": {
+    "planFile": "evidence/online-local-2026-10-18/assets-plan.json",
+    "planSha256": "ead4317833dd9aab4347814eab7e16c24e084d060e3c19900bf29365652b3e24",
+    "publicWrites": false,
+    "localForkTransactions": 14,
+    "allLocalReceiptsSuccessful": true,
+    "sourceBlock": {
+      "number": "0x29cadfb",
+      "hash": "0x5b7f26b262721e1cc52daaa29d2aa03357fd0cfec48ecf4af83e333ea912bbb2"
+    },
+    "expectedOwnerNonce": "118",
+    "fixedGasPriceWei": "20000001",
+    "gasUpperBoundWei": "90155944507797",
+    "liquidityFabRaw": "900000000000",
+    "liquidityNativeWei": "899819738236227",
+    "lpRecipient": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+    "newMinerIds": [
+      "6",
+      "7"
+    ],
+    "newListingIds": [
+      "3",
+      "4"
+    ],
+    "reservedRetailListing": "2",
+    "reservedRetailMiner": "5"
+  },
+  "validation": {
+    "webPassed": 435,
+    "webConfiguredSkipped": 22,
+    "workerPassed": 177,
+    "servicePassed": 70,
+    "assetExecutionTestsPassed": 39,
+    "assetExecutionTestsSkipped": 0,
+    "realLocalBrowserTransactions": 31,
+    "realLocalKeeperTransactions": 14,
+    "realLocalCanonicalSuccessfulReceipts": 45,
+    "localOnlyBusinessInfrastructureMock": "OP zero-surcharge predeploys only; business bytecode is real",
+    "publicEnabledEndToEnd": "pending new phase approval; not completed"
+  },
+  "evidence": "evidence/online-local-2026-10-18",
+  "evidenceSha256": {
+    "assets-plan.json": "ead4317833dd9aab4347814eab7e16c24e084d060e3c19900bf29365652b3e24",
+    "assets-receipts.json": "71aa64fea4f2c70e680a158e2d896e0c5b5dfb2fcaea68401ce6eb0fb7bef95a",
+    "automation-confirmed-zh.png": "c9e0ec6598dceb0883dc09c92e55e167d9827525f6ebd3b3591ea23cca1834b7",
+    "automation-yue-mobile.png": "e3905240eaa61dd8dea5ba35df398fbfdad9b951e763ea9dd79f956e9ebfdef4",
+    "business-receipts.json": "ac534b9e9ffbeca28439db970a3b6027d3ad6ea7b47d1243a847d7c9b62ab4fb",
+    "history-reload.json": "0ac1b4060acc6c9de7eb8a836bdaea40f7b021e086dd37d6ebe3debc7c1c9eff",
+    "launch-zh-desktop.png": "267577ae24e678ecb9927f0c0af5430d9451715396ab783bbf883bae6cb6cced",
+    "public-rpc-read.json": "873672a92458e381d494a5da137f118c9ee99e0d4713b81709c5040c91b63a2e",
+    "sqlite-expiry.json": "10be8f917ec7d5f4155eba4de816e0999b291f570fc815289be0c9c9005d8240"
+  }
+}

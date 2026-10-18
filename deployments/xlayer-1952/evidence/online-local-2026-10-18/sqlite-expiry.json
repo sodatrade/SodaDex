@@ -1,0 +1,59 @@
+{
+  "capturedAt": "2026-10-18T00:03:25.091Z",
+  "isolatedLocalOnly": true,
+  "sourceHead": "23cf42b45",
+  "originalDatabaseUnmodified": true,
+  "syntheticExpiredRows": 46,
+  "distinctCanonicalProofBlocks": 46,
+  "reopenedSQLiteBetweenEveryRound": true,
+  "rounds": [
+    {
+      "round": 1,
+      "fetches": 14,
+      "error": "expiry_reconciliation_pending",
+      "cursor": 8,
+      "pending": true,
+      "expired": 46
+    },
+    {
+      "round": 2,
+      "fetches": 14,
+      "error": "expiry_reconciliation_pending",
+      "cursor": 16,
+      "pending": true,
+      "expired": 46
+    },
+    {
+      "round": 3,
+      "fetches": 14,
+      "error": "expiry_reconciliation_pending",
+      "cursor": 24,
+      "pending": true,
+      "expired": 46
+    },
+    {
+      "round": 4,
+      "fetches": 14,
+      "error": "expiry_reconciliation_pending",
+      "cursor": 32,
+      "pending": true,
+      "expired": 46
+    },
+    {
+      "round": 5,
+      "fetches": 14,
+      "error": "expiry_reconciliation_pending",
+      "cursor": 40,
+      "pending": true,
+      "expired": 46
+    },
+    {
+      "round": 6,
+      "fetches": 15,
+      "error": null,
+      "cursor": null,
+      "pending": false,
+      "expired": 46
+    }
+  ]
+}
