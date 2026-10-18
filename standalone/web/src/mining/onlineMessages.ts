@@ -117,6 +117,7 @@ export function onlineReason(reason: string | undefined, m: Messages): string {
     not_graduated: 'reasonNotGraduated', source_paused: 'reasonPaused', tax_dust: 'reasonDust', quote_too_small: 'reasonDust',
     authorization_pending: 'reasonAuthorization', authorization_expiring: 'reasonAuthorization', authorization_expired: 'reasonReconcile',
     nonce_cancellation_pending: 'reasonCancelling', nonce_cancellation_broadcast_unknown: 'reasonCancelling', authorization_cancelled: 'reasonCancelled',
+    recovery_pending_confirmation: 'reasonReconcile',
     rpc_event_budget: 'reasonChain', pending_rpc_stale: 'reasonChain', rpc_call_failed: 'reasonChain', rpc_unavailable: 'reasonChain',
     rpc_invalid: 'reasonChain', service_unavailable: 'reasonChain', chain_reorg: 'reasonChain', simulation_reverted: 'reasonSimulation',
     receipt_reorg: 'reasonReconcile', nonce_consumed_unknown: 'reasonReconcile', nonce_state_unavailable: 'reasonReconcile',

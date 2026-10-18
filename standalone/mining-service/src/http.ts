@@ -44,7 +44,7 @@ export async function handleRequest(request: Request, app: Application): Promise
     const envelope = { schemaVersion: 1, chainId: 1952, deploymentVersion: d.version }
     if (request.method === 'GET' && url.pathname === '/v1/status' && !url.search) {
       const s = repo.read()
-      return response({ ...envelope, serviceBuild: 'online-1952-20261018-v5-budget', admissionEnabled: c.admissionEnabled, executionEnabled: c.executionEnabled,
+      return response({ ...envelope, serviceBuild: 'online-1952-20261018-v6-recovery', admissionEnabled: c.admissionEnabled, executionEnabled: c.executionEnabled,
         signer: c.expectedSigner, keeper: c.keeperAddress, budget: { capWei: String(c.gasCapWei), spentWei: s.spentWei, reservedWei: s.reservedWei },
         farm: s.farm ?? null, jobs: Object.values(s.jobs).toSorted((a, b) => b.updatedAt - a.updatedAt).slice(0, 50),
         ...(!c.policy ? { reason: 'policy_pending' } : {}) })
