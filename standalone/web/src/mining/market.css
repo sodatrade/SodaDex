@@ -1,0 +1,10 @@
+.mining-market { margin: 0 0 24px; min-width: 0; }
+.mining-market-tabs { margin: 16px 0; max-width: 280px; }
+.mining-market .trade-chart-frame { max-height: 260px; }
+.mining-market-status, .mining-market-note { font-size: 12px; line-height: 1.6; color: var(--soda-muted); margin: 12px 0 0; }
+.mining-market-table { overflow-x: auto; }
+.mining-market-table table { border-collapse: collapse; width: 100%; font-size: 13px; }
+.mining-market-table th, .mining-market-table td { padding: 14px 12px; text-align: left; border-bottom: 1px solid var(--soda-line-soft); white-space: nowrap; }
+.mining-market-table th { color: var(--soda-muted); font-weight: 500; }
+.mining-market-table a { color: var(--soda-highlight); text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 600px) { .mining-market { padding: 16px; } .mining-market .trade-chart-frame { max-height: 210px; } }

@@ -53,6 +53,10 @@ try {
   const miningCold = await read('/mining/api/index/status'); assert.equal(miningCold.body.chainId, 1952)
   await until(async () => !(await read('/api/index/status')).body.syncing && !(await read('/mining/api/index/status')).body.syncing, 'both actors indexed')
   const chart = await read('/chart?pool=' + active.v3.address + '&interval=5m'); assert.equal(chart.status, 200); assert.equal(chart.body.rows.length, 23); assert.equal(chart.body.rows[0].block.timestamp, 1000)
+  const beforeMarket = rpcCount
+  const miningMarket = await read('/mining/api/index/market?token=' + mining.contracts.fragmentVault.address + '&interval=5m')
+  assert.equal(miningMarket.status, 200); assert.equal(miningMarket.body.chainId, 1952); assert.equal(miningMarket.body.trades.length, 0); assert.equal(miningMarket.body.candles.length, 0)
+  assert.ok(rpcCount - beforeMarket <= 1, 'market reads indexed snapshot without scanning history')
   const firstPage = await read('/api/index/events'); assert.equal(firstPage.body.events.length, 10); assert.ok(firstPage.body.nextCursor)
   const second = await read('/api/index/events?cursor=' + firstPage.body.nextCursor); assert.equal(second.body.events.length, 10)
   const third = await read('/api/index/events?cursor=' + second.body.nextCursor); assert.equal(third.body.events.length, 3); assert.equal(third.body.nextCursor, null)

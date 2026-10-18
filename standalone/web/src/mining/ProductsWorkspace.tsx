@@ -1,3 +1,4 @@
+import { MiningMarketPanel } from './MiningMarketPanel'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useRef, useState, type ReactElement } from 'react'
 import { formatUnits } from 'viem'
@@ -109,6 +110,8 @@ export function MiningProductsWorkspace({ deployment: base, wallet, activeTab, o
     {completed && completed.from.toLowerCase() === account?.toLowerCase() && !plan && tab !== 'history' && <div className="mining-feedback" role="status"><Icon name="check" size={18} /><span>{m.miningSuccess}</span><a href={`${NETWORK.explorerUrl}/tx/${completed.hash}`} target="_blank" rel="noreferrer" title={completed.hash}>{shortenAddress(completed.hash)}<Icon name="external" size={13} /></a>
       <Button appearance="ghost" disabled={busy} onClick={() => setTab('history')}>{m.viewHistory}<Icon name="arrow" size={14} /></Button></div>}
     {error && !plan && <p className="mining-pause-note" role="alert">{m[error]}</p>}
+    {tab === 'fundraising' && project && <MiningMarketPanel key={project.token.address} deployment={d} token={project.token.address} symbol={project.symbol} />}
+    {tab === 'fragments' && <MiningMarketPanel key="fragment-market" deployment={d} token={d.contracts.fragmentVault.address} symbol="TEST-fFAB" />}
     {tab === 'fundraising' && (project ? <MiningActionWorkspace key={`fundraising:${project.token.address}`} kind="fundraising"
       symbol={project.symbol} hasPair={!!project.pair} disabled={disabled || paused.data !== false} busy={busy} onConnect={onConnect} onPreview={preview} /> : <p>{m.noProjects}</p>)}
     {tab === 'fragments' && <MiningActionWorkspace key="fragments" kind="fragments" listingId={d.testListingIds?.[0]}

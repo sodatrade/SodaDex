@@ -1,3 +1,4 @@
+import { miningMarket } from './mining-market'
 import { EVENTS, record, same } from '../contracts'
 import { toEventSelector } from 'viem'
 import { matchesTopics } from './log-cache'
@@ -42,7 +43,7 @@ export class SodaChainIndex {
           if (!addresses.length || addresses.some(a => typeof a !== 'string' || !known.some(k => same(k, a))) || !first.length || first.some(t => typeof t !== 'string' || !selectors.some(k => same(k, t))) || from < config.fromBlock || to < from || to - from >= 2000 || to > store.status().indexedThrough) return Response.json({ logs: null })
           return Response.json({ logs: store.logs(addresses as string[], from, to).filter(log => matchesTopics(log.topics, filter.topics as unknown[])) })
         }
-        const response = await indexPage(url, store, config, read, request.headers.get('X-Index-Legacy') === 'true')
+        const response = url.pathname === '/market' ? miningMarket(url, store, config) : await indexPage(url, store, config, read, request.headers.get('X-Index-Legacy') === 'true')
         if (await this.state.storage.getAlarm() === null) await this.state.storage.setAlarm(Date.now() + 1000)
         return Response.json(response)
       } catch (error) {
@@ -84,7 +85,7 @@ export async function chainIndexApi(request: Request, env: IndexEnv, profileId: 
   try {
     networkProfile(profileId)
     const config = baseConfig(profileId, env), path = url.pathname.split('/').at(-1)
-    if (!['status', 'events', 'pools'].includes(path!)) return Response.json({ error: 'Not found' }, { status: 404, headers })
+    if (!['status', 'events', 'pools', 'market'].includes(path!)) return Response.json({ error: 'Not found' }, { status: 404, headers })
     const internal = new URL(`https://index.internal/${profileId}/${path}${url.search}`)
     const response = await env.CHAIN_INDEX.get(env.CHAIN_INDEX.idFromName(actorName(config))).fetch(new Request(internal, { headers: { 'X-Index-Legacy': String(legacy) } }))
     return new Response(response.body, { status: response.status, headers: { ...headers, 'Content-Type': 'application/json' } })
