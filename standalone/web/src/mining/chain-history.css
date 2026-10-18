@@ -3,6 +3,7 @@
 .mining-chain-history .mining-history-source { margin: 0; }
 .mining-history-controls { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .mining-history-controls .mining-action-switch { min-width: 0; flex: 1; }
+.mining-history-controls .mining-action-switch .button { white-space: nowrap; min-width: max-content; }
 .mining-history-controls > .button { flex-shrink: 0; min-height: 44px; padding-inline: 12px; font-size: 12px; }
 .mining-history-note { margin: 12px 0 0; color: var(--soda-muted); font-size: 12px; line-height: 1.7; }
 .mining-index-status { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 8px 0 12px; color: var(--soda-muted); font-size: 11px; line-height: 1.6; font-variant-numeric: tabular-nums; }
@@ -32,6 +33,8 @@
   .mining-history-source { width: 100%; }
   .mining-chain-history .mining-history-heading { align-items: stretch; gap: 10px; }
   .mining-history-controls { width: 100%; }
+  .mining-history-controls > .button { width: 44px; min-width: 44px; padding: 0; }
+  .mining-history-refresh-label { display: none; }
   .mining-history-controls .mining-action-switch .button { font-size: 11px; padding-inline: 6px; }
   .mining-index-status { align-items: flex-start; }
   .mining-chain-event > summary { grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; padding-block: 12px; }

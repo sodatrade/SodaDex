@@ -32,7 +32,7 @@ function ChainHistory({ deployment, account, sourceSwitch }: { deployment: Minin
         <Button aria-pressed={!mine} onClick={() => { setMine(false); reset() }}>{m.all}</Button>
         <Button aria-pressed={mine} disabled={!account} onClick={() => { setMine(true); reset() }}>{common.currentWallet}</Button>
       </div>
-      <Button disabled={events.isFetching} onClick={() => { reset(); if (page === 0) void events.refetch() }}><Icon name="refresh" size={14} />{m.retry}</Button>
+      <Button aria-label={m.retry} disabled={events.isFetching} onClick={() => { reset(); if (page === 0) void events.refetch() }}><Icon name="refresh" size={14} /><span className="mining-history-refresh-label">{m.retry}</span></Button>
     </div></header>
     <p className="mining-history-note">{m.note}</p>
     <div className="mining-index-status"><span role="status">{result && <>
