@@ -1,0 +1,110 @@
+{
+  "startedAt": "2026-10-18T02:41:13.181Z",
+  "readOnly": true,
+  "chainId": 1952,
+  "publicWrites": 0,
+  "signatures": 0,
+  "receipt": {
+    "hash": "0x5a73b28b52f5f2e9596de8cd4a1cf4d9d3e27fc7d734c7bfdbed47892f24c4ad",
+    "status": "0x1",
+    "canonical": true,
+    "blockNumber": "0x29cd42e",
+    "blockHash": "0x7b9b1910500cf34640b471dabe5597a347ae08d877bed60ee96ef5e306ebff96",
+    "from": "0x553d8c2e637fe67c5c7ade3810e8bc02799d41d4",
+    "to": "0xba7a7be2f42accc067ef1c441d7a46f3b83af690",
+    "nonce": "25",
+    "chainId": "1952",
+    "valueWei": "0",
+    "gasLimit": "88581",
+    "gasUsed": "68336",
+    "effectiveGasPriceWei": "20000001",
+    "feeWei": "1366720068336",
+    "selector": "0xfff6cae9"
+  },
+  "before": {
+    "block": "0x29cd42d",
+    "fabBalance": "51055337",
+    "reserved": "51030403",
+    "totalRecognised": "5103040307",
+    "protocolOwed": "51030403",
+    "creatorOwed": "0",
+    "farmPending": "0",
+    "protocolBps": "100",
+    "creatorBps": "0"
+  },
+  "after": {
+    "block": "0x29cd42e",
+    "fabBalance": "51055337",
+    "reserved": "51055337",
+    "totalRecognised": "5103065241",
+    "protocolOwed": "51030652",
+    "creatorOwed": "0",
+    "farmPending": "24685",
+    "protocolBps": "100",
+    "creatorBps": "0"
+  },
+  "events": [
+    {
+      "address": "0xba7a7be2f42accc067ef1c441d7a46f3b83af690",
+      "event": "TaxRecognised",
+      "args": {
+        "amount": "24934",
+        "protocol": "249",
+        "creator": "0",
+        "farm": "24685"
+      },
+      "logIndex": "0x0"
+    }
+  ],
+  "cumulativeAllocation": {
+    "before": {
+      "protocol": "51030403",
+      "creator": "0",
+      "farm": "5052009904"
+    },
+    "after": {
+      "protocol": "51030652",
+      "creator": "0",
+      "farm": "5052034589"
+    },
+    "delta": {
+      "protocol": "249",
+      "creator": "0",
+      "farm": "24685"
+    }
+  },
+  "status": {
+    "serviceBuild": "online-1952-20261018-v6-recovery",
+    "budget": {
+      "capWei": "456372669318633",
+      "spentWei": "397882999862649",
+      "reservedWei": "0"
+    }
+  },
+  "checks": {
+    "canonical": true,
+    "success": true,
+    "nonce25": true,
+    "chain1952": true,
+    "keeper": true,
+    "correctVault": true,
+    "correctCall": true,
+    "zeroValue": true,
+    "exactRecognised24934": true,
+    "exactProtocol249": true,
+    "exactCreator0": true,
+    "exactFarm24685": true,
+    "recognisedCounter": true,
+    "protocolLedger": true,
+    "creatorLedger": true,
+    "farmLedger": true,
+    "allocationConserved": true,
+    "noFabTransfer": true,
+    "reservedEqualsRecognisedBalance": true,
+    "actualFeesOnlyOnce": true,
+    "withinPriceCap": true,
+    "withinGasCap": true
+  },
+  "allChecksPassed": true,
+  "completedAt": "2026-10-18T02:41:17.246Z"
+}

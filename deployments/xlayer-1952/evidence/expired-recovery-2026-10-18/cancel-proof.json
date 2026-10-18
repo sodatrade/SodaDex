@@ -1,0 +1,90 @@
+{
+  "capturedAt": "2026-10-18T02:37:04.693Z",
+  "readOnly": true,
+  "chainId": 1952,
+  "publicWrites": 0,
+  "signatures": 0,
+  "originalHash": "0x0fb7c2a1a0a532e8531744e408a31422b2e0c43a93ed8847e7eec3a46707c3a5",
+  "discovery": {
+    "source": "/tmp/sodadex-expired-recovery-cancel-discovery-readonly.json",
+    "lowerBlock": "0x29cd159",
+    "upperBlock": "0x29cd35b",
+    "countProbeCount": 11,
+    "fullBlocksRead": 1
+  },
+  "transaction": {
+    "hash": "0x0e844ba7e59279d369462f5234aad6850df261e9d49e5a3743be984a3d6aaf9f",
+    "blockNumber": "0x29cd345",
+    "blockHash": "0x3420188a8786665f1480b9cc7d2f957c2e115755398246183e3cf93218a850ae",
+    "from": "0x553d8c2e637fe67c5c7ade3810e8bc02799d41d4",
+    "to": "0x553d8c2e637fe67c5c7ade3810e8bc02799d41d4",
+    "nonce": "23",
+    "chainId": "1952",
+    "valueWei": "0",
+    "gas": "25200",
+    "gasPriceWei": "30000000",
+    "emptyData": true
+  },
+  "receipt": {
+    "status": "0x1",
+    "canonical": true,
+    "blockNumber": "0x29cd345",
+    "blockHash": "0x3420188a8786665f1480b9cc7d2f957c2e115755398246183e3cf93218a850ae",
+    "gasUsed": "21000",
+    "effectiveGasPriceWei": "30000000",
+    "feeWei": "630000000000",
+    "logCount": 0
+  },
+  "oldOriginal": {
+    "receiptFound": false,
+    "transactionFound": false
+  },
+  "nonce": {
+    "before": "23",
+    "after": "24"
+  },
+  "keeperNative": {
+    "beforeWei": "108125000406251",
+    "afterWei": "107495000406251",
+    "decreaseWei": "630000000000"
+  },
+  "ledger": {
+    "statusCapturedAt": "2026-10-18T02:37:03.370Z",
+    "serviceBuild": "online-1952-20261018-v6-recovery",
+    "spentBeforeWei": "391874999593749",
+    "spentAfterWei": "392504999593749",
+    "deltaWei": "630000000000",
+    "reservedBeforeWei": "5758280287914",
+    "reservedAfterWei": "0",
+    "capWei": "456372669318633",
+    "oldJob": {
+      "id": "execution:0x0fb7c2a1a0a532e8531744e408a31422b2e0c43a93ed8847e7eec3a46707c3a5",
+      "kind": "conversion",
+      "status": "failed",
+      "reason": "authorization_cancelled",
+      "token": "0x2AE439a89b7d0332764507E4e021bfEc348beCDE",
+      "hash": "0x0fb7c2a1a0a532e8531744e408a31422b2e0c43a93ed8847e7eec3a46707c3a5",
+      "updatedAt": 1792290981000
+    }
+  },
+  "checks": {
+    "selfTransfer": true,
+    "zeroValue": true,
+    "emptyData": true,
+    "chain1952": true,
+    "approvedPrice": true,
+    "canonicalBoundary": true,
+    "oneFullBlockOnly": true,
+    "receiptSuccess": true,
+    "canonicalReceipt": true,
+    "emptyKeeperCode": true,
+    "noOldWinner": true,
+    "nonceConsumedExactly23": true,
+    "actualFee630e9": true,
+    "ledgerOnlyActualFeeOnce": true,
+    "nativeDecreaseOnlyFee": true,
+    "reservedReleased": true,
+    "oldMarkedCancelled": true
+  },
+  "allChecksPassed": true
+}

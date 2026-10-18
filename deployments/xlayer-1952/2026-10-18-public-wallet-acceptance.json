@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "phase": "mining-public-wallet-1952-v1",
-  "capturedAt": "2026-10-18T02:25:42.049719+00:00",
+  "capturedAt": "2026-10-18T02:43:44.475633+00:00",
   "chainId": 1952,
   "frontend": "https://sodadex-mining-test-1952.jsmsdx2025.workers.dev/",
   "publicWallet": "0xe57f88c05810a9ad2b27f216665260c2d9f2b2da",
   "actualBrowser": "Google Chrome + actual OKX extension",
   "financialConfirmation": "Human user performs every final wallet confirmation",
-  "status": "frontend_wallet_complete_backend_recovery_pending",
+  "status": "completed",
   "productionTouched": false,
   "chain196Mutated": false,
   "project": {
@@ -37,9 +37,7 @@
       "Explicit real NFT4 mining-income harvest and subsequent positive dividend claim",
       "Reload, reconnect and restore all36 successful transaction history entries"
     ],
-    "remaining": [
-      "User-approved one-hash expired backend authorization recovery, fresh tax conversion and farm funding"
-    ]
+    "remaining": []
   },
   "walletGasLimitWei": "990000000000000",
   "walletFeesScope": "All36 canonical successful real frontend wallet receipts, nonce120..155; latest=pending156. Financial confirmations were performed by the human user.",
@@ -56,8 +54,37 @@
     "securityProtectionDisabled": false
   },
   "budgetApproval": "2026-10-18-expired-recovery-approved-plan.json",
-  "keeperDeploymentVersion": "d75eaa86-3b19-4fa9-a50d-f935b6339da0",
-  "keeperRuntimeValidation": {
+  "keeperDeploymentVersion": "3e0e4954-6fc2-4f45-8ca0-0badef4b4560",
+  "verifiedUiReceiptCount": 36,
+  "walletGasSpentWei": "957639569204524",
+  "walletGasRemainingWei": "32360430795476",
+  "confirmedDividendFabRaw": "1407672952",
+  "ownerPreparationGasSpentWei": "36535281826764",
+  "ownerPreparationGasCapWei": "40000000000000",
+  "phaseGasCapWei": "1300000000000000",
+  "phaseKnownGasSpentWei": "1248517063716898",
+  "phaseCostScope": "All36 listed real frontend wallet receipts and7 preparation receipts, plus keeper cumulative actual spending after the fixed old baseline. Four new recovery receipts are independently verified and uniquely charged. Snapshot only; no future activity is included.",
+  "dividendProofs": [
+    "evidence/public-wallet-2026-10-18/dividend-claims.json",
+    "evidence/public-wallet-2026-10-18/final-wallet.json"
+  ],
+  "oldNftIncomeExcludedFromDividendsFabRaw": "77813623676",
+  "walletNativePrincipalWei": "1010000000000",
+  "keeperCurrentRecovery": {
+    "originalHash": "0x0fb7c2a1a0a532e8531744e408a31422b2e0c43a93ed8847e7eec3a46707c3a5",
+    "status": "completed",
+    "acceptance": "2026-10-18-expired-recovery-acceptance.json",
+    "newPublicTransactions": 4,
+    "oldLedgerPreserved": true
+  },
+  "frontendProofs": [
+    "evidence/public-wallet-2026-10-18/final-wallet.json",
+    "evidence/public-wallet-2026-10-18/fragment-closeout.json",
+    "evidence/public-wallet-2026-10-18/project-lp-burn.json",
+    "evidence/public-wallet-2026-10-18/native-getfab.json"
+  ],
+  "burnMechanism": "One project token transferred to0xdead, totalSupply unchanged; active credit increased by one token for exactly7days. Balance reduction offsets credit, so absolute weight did not increase. Public7day wait is not claimed.",
+  "priorKeeperFundingValidation": {
     "serviceBuild": "online-1952-20261018-v5-budget",
     "capWei": "406372669318633",
     "spentWei": "391874999593749",
@@ -71,34 +98,20 @@
     "proof": "evidence/public-wallet-2026-10-18/keeper-fund.json",
     "snapshotScope": "Historical successful prior funding under v5; later new10-token tax is blocked by the original expired authorization. Recovery not yet deployed at this checkpoint."
   },
-  "verifiedUiReceiptCount": 36,
-  "walletGasSpentWei": "957639569204524",
-  "walletGasRemainingWei": "32360430795476",
-  "confirmedDividendFabRaw": "1407672952",
-  "ownerPreparationGasSpentWei": "36535281826764",
-  "ownerPreparationGasCapWei": "40000000000000",
-  "phaseGasCapWei": "1300000000000000",
-  "phaseKnownGasSpentWei": "1199677181306404",
-  "phaseCostScope": "Wallet receipt list and owner preparation are complete through capture; keeper is an independently timestamped cumulative snapshot, not a permanent final total.",
-  "dividendProofs": [
-    "evidence/public-wallet-2026-10-18/dividend-claims.json",
-    "evidence/public-wallet-2026-10-18/final-wallet.json"
-  ],
-  "oldNftIncomeExcludedFromDividendsFabRaw": "77813623676",
-  "walletNativePrincipalWei": "1010000000000",
-  "keeperCurrentRecovery": {
-    "originalHash": "0x0fb7c2a1a0a532e8531744e408a31422b2e0c43a93ed8847e7eec3a46707c3a5",
-    "status": "approved_not_yet_deployed",
-    "keeperAdditionalCapWei": "270000000000000",
-    "keeperCumulativeCapWei": "456372669318633",
-    "taxPendingTokenRaw": "10000000000000000000",
-    "unchangedLedger": true
+  "keeperRuntimeValidation": {
+    "serviceBuild": "online-1952-20261018-v6-recovery",
+    "capWei": "456372669318633",
+    "spentWei": "440714882004243",
+    "reservedWei": "0",
+    "baselineWei": "186372669318633",
+    "newPhaseSpentWei": "254342212685610",
+    "newPhaseCapWei": "270000000000000",
+    "newTaxFundedFabRaw": "24685",
+    "newTaxFarmPendingRaw": "0",
+    "hash": "0xb7cbf30602a1fbf8019d0e82b3a8a029a76d89369ec7774d9df72f2d1c373670",
+    "proof": "evidence/expired-recovery-2026-10-18/final-proof.json"
   },
-  "frontendProofs": [
-    "evidence/public-wallet-2026-10-18/final-wallet.json",
-    "evidence/public-wallet-2026-10-18/fragment-closeout.json",
-    "evidence/public-wallet-2026-10-18/project-lp-burn.json",
-    "evidence/public-wallet-2026-10-18/native-getfab.json"
-  ],
-  "burnMechanism": "One project token transferred to0xdead, totalSupply unchanged; active credit increased by one token for exactly7days. Balance reduction offsets credit, so absolute weight did not increase. Public7day wait is not claimed."
+  "phaseGasRemainingWei": "51482936283102",
+  "frontendDeploymentVersion": "6a2c8262-c7d9-4635-a36a-492260bab3c6",
+  "mainDexNavigation": "1952 mining workspace is part of SodaDEX source;196 preview navigation remains separate and unmodified."
 }
