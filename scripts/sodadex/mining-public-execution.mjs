@@ -22,9 +22,9 @@ export function miningFeeReservation(rows, index, feeCap, actualFees, currentGas
 }
 export async function validateSignedMiningTransaction(raw, expected) {
   const tx = parseTransaction(raw)
-  if (tx.type !== 'legacy' || tx.chainId !== 1952 || tx.nonce !== Number(expected.nonce) || tx.gas !== expected.gas ||
+  if (tx.type !== 'legacy' || tx.chainId !== (expected.chainId ?? 1952) || tx.nonce !== Number(expected.nonce) || tx.gas !== expected.gas ||
     tx.gasPrice !== expected.gasPrice || (tx.value ?? 0n) !== expected.value || !equal(tx.to, expected.to) ||
-    !equal(tx.data, expected.data) || !equal(await recoverTransactionAddress({ serializedTransaction: raw }), expected.from))
+    !equal(tx.data ?? '0x', expected.data ?? '0x') || !equal(await recoverTransactionAddress({ serializedTransaction: raw }), expected.from))
     throw new Error('Signed transaction differs from the reviewed intent')
   return keccak256(raw)
 }
@@ -98,7 +98,7 @@ export class PublicMiningExecution extends LoopbackMiningPlan {
     if (this.pending) throw new Error('A prior submission needs receipt reconciliation')
     const row = this.rehearsal.transactions[this.rows.length]
     if (!row || row.label !== label || !equal(row.to, to) || row.data.slice(0, 10) !== data.slice(0, 10)) throw new Error('Execution order or target differs from rehearsal')
-    await assertReviewedMiningIntent(this, root, row, to, data, value)
+    await assertReviewedMiningIntent(this, root, row, to, data, value, this.resolveArtifact)
     const nonce = this.startNonce + BigInt(this.rows.length)
     if (BigInt(await this.rpc('eth_getTransactionCount', [this.owner, 'pending'])) !== nonce ||
       BigInt(await this.rpc('eth_getTransactionCount', [this.owner, 'latest'])) !== nonce) throw new Error('Owner nonce drifted')
@@ -112,7 +112,7 @@ export class PublicMiningExecution extends LoopbackMiningPlan {
     await this.checkFeeModel(BigInt(data.length / 2 + 256), gas)
     if (BigInt(await this.rpc('eth_getBalance', [this.owner, 'pending'])) < value + gas * this.feeCap) throw new Error('Insufficient public test balance')
     const raw = await this.signIntent({ nonce, gas, value, to, data })
-    const hash = await validateSignedMiningTransaction(raw, { from: this.owner, to, data, value, gas, gasPrice: this.feeCap, nonce })
+    const hash = await validateSignedMiningTransaction(raw, { from: this.owner, to, data, value, gas, gasPrice: this.feeCap, nonce, chainId: this.chainId ?? 1952 })
     await this.checkFeeModel(BigInt((raw.length - 2) / 2), gas)
     this.pending = { label, nonce: String(nonce), to: to ?? null, dataKeccak256: keccak256(data), value: String(value), gas: String(gas), hash, submission: 'unknown' }; this.save()
     if (!equal(await this.rpc('eth_sendRawTransaction', [raw]), hash)) throw new Error('Submission result is uncertain; reconcile the saved hash')

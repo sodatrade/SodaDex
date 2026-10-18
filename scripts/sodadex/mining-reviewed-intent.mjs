@@ -14,12 +14,12 @@ export function miningExecutionSources(root) {
 const json = (x) => JSON.stringify(x, (_, value) => typeof value === 'bigint' ? value.toString() : value)
 
 /** Only time-bound authorization and real-block proofs may differ from the full rehearsal. */
-export async function assertReviewedMiningIntent(plan, root, row, to, data, value) {
+export async function assertReviewedMiningIntent(plan, root, row, to, data, value, resolveArtifact = productArtifact) {
   if (BigInt(row.value) !== value) throw new Error('Native amount differs from reviewed intent')
   if (row.data.toLowerCase() === data.toLowerCase()) return
   if (!to) throw new Error('Creation bytecode differs from reviewed intent')
   const abi = ['IgnixManager', 'FabMiningFarm', 'MiningProjectVault', 'FabFragmentPool', 'IgnixLiquidityHelper']
-    .flatMap((name) => productArtifact(root, name).value.abi)
+    .flatMap((name) => resolveArtifact(root, name).value.abi)
   abi.push(...sourceArtifact(root, 'PodMining').value.abi, ...parseAbi([
     'function addLiquidityETH(address,uint256,uint256,uint256,address,uint256) payable returns(uint256,uint256,uint256)',
     'function swapExactTokensForTokensSupportingFeeOnTransferTokens(uint256,uint256,address[],address,uint256)',
