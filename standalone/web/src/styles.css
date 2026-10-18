@@ -12,26 +12,27 @@
 :root {
   font-family: "Soda Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
   font-synthesis: none;
-  --soda-bg: #09090b;
-  --soda-surface: #101013;
-  --soda-raised: #1b1b21;
-  --soda-field: #19191e;
-  --soda-hover: #25252d;
-  --soda-text: #f5f5f7;
-  --soda-muted: #a5a5b0;
-  --soda-faint: #91919e;
-  --soda-line: #2d2d35;
-  --soda-line-soft: #232329;
-  --soda-control-line: #6f6879;
-  --soda-control-hover: #82788c;
-  --soda-focus: #c080b0;
-  --soda-accent: #f33aa6;
-  --soda-accent-hover: #ff67bc;
-  --soda-accent-text: #190c15;
-  --soda-highlight: #ff80ca;
-  --soda-accent-dim: #321524;
+  --soda-bg: #0b100e;
+  --soda-surface: #111915;
+  --soda-raised: #18241e;
+  --soda-field: #142019;
+  --soda-hover: #21342a;
+  --soda-text: #edf5ef;
+  --soda-muted: #abbdaf;
+  --soda-faint: #91a898;
+  --soda-line: #2a3c31;
+  --soda-line-soft: #203128;
+  --soda-control-line: #4e6b59;
+  --soda-control-hover: #739680;
+  --soda-focus: #6a9e7b;
+  --soda-accent: #6bd89a;
+  --soda-accent-hover: #8ae5b0;
+  --soda-accent-text: #10291c;
+  --soda-highlight: #87e0aa;
+  --soda-accent-dim: #183727;
+  --soda-brand: var(--soda-accent);
   --soda-warning: #e6bd73;
-  --soda-error: #f6a3af;
+  --soda-error: #f28b91;
   --soda-overlay: #050508b8;
   --soda-shadow: 0 16px 56px #00000024;
   --soda-radius-card: 20px;
@@ -43,26 +44,27 @@
 }
 
 :root[data-theme="light"] {
-  --soda-bg: #fffafd;
+  --soda-bg: #f8fcfa;
   --soda-surface: #ffffff;
-  --soda-raised: #fff4f9;
-  --soda-field: #fff9fc;
-  --soda-hover: #fbedf5;
-  --soda-text: #17151b;
-  --soda-muted: #696372;
-  --soda-faint: #78717f;
-  --soda-line: #f0e3eb;
-  --soda-line-soft: #f6edf2;
-  --soda-control-line: #dbc8d4;
-  --soda-control-hover: #c6aabd;
-  --soda-focus: #ac6b95;
-  --soda-accent: #c02580;
-  --soda-accent-hover: #a61c6d;
+  --soda-raised: #f0f8f4;
+  --soda-field: #fbfefc;
+  --soda-hover: #e7f3ec;
+  --soda-text: #17251e;
+  --soda-muted: #5c6d63;
+  --soda-faint: #6b7c71;
+  --soda-line: #e0ebe4;
+  --soda-line-soft: #edf3ef;
+  --soda-control-line: #bdcfc3;
+  --soda-control-hover: #91b29f;
+  --soda-focus: #629b7d;
+  --soda-accent: #167347;
+  --soda-accent-hover: #105b38;
   --soda-accent-text: #ffffff;
-  --soda-highlight: #b51e78;
-  --soda-accent-dim: #fcecf5;
+  --soda-highlight: #12683f;
+  --soda-accent-dim: #e6f4ec;
+  --soda-brand: var(--soda-accent);
   --soda-warning: #946315;
-  --soda-error: #bb364d;
+  --soda-error: #c4484d;
   --soda-shadow: 0 4px 20px #29203005;
   color-scheme: light;
 }
@@ -85,7 +87,7 @@ button, a { touch-action: manipulation; }
 .ambient-grid { position: absolute; inset: 120px 0 0; background-image: radial-gradient(var(--soda-line) .7px, transparent .7px); background-size: 28px 28px; opacity: .22; mask-image: linear-gradient(90deg, #000 5%, transparent 60%); }
 .site-header { width: min(100%, var(--soda-page-width)); margin: 0 auto; display: flex; align-items: center; gap: 40px; padding: 28px 40px; min-height: 100px; }
 .brand { display: flex; align-items: center; gap: 9px; border: 0; padding: 0; background: none; font-size: 24px; font-weight: 650; letter-spacing: -.8px; white-space: nowrap; }
-.soda-mark { width: 34px; height: 34px; fill: var(--soda-highlight); flex-shrink: 0; }
+.soda-mark { width: 34px; height: 34px; fill: var(--soda-brand); flex-shrink: 0; }
 .brand-dex { color: var(--soda-muted); font-weight: 400; }
 .test-tag { align-self: flex-start; margin: 3px 0 0 2px; padding: 3px 5px; border: 1px solid var(--soda-line); border-radius: 4px; color: var(--soda-muted); font-size: 9px; line-height: 1; letter-spacing: 1px; font-weight: 500; }
 .main-nav { display: flex; gap: 24px; align-self: stretch; }

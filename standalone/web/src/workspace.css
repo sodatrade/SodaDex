@@ -2,7 +2,7 @@
 .app-shell .site-header { width: 100%; max-width: none; min-height: 72px; padding: 0 32px; gap: 32px; background: var(--soda-bg); border-bottom: 1px solid var(--soda-line-soft); }
 .app-shell .brand { font-size: 24px; font-weight: 720; letter-spacing: -1px; gap: 7px; }
 .app-shell .brand-dex { color: var(--soda-text); font-weight: 720; }
-.app-shell .brand .soda-mark { width: 30px; height: 30px; fill: var(--soda-accent); }
+.app-shell .brand .soda-mark { width: 30px; height: 30px; fill: var(--soda-brand); }
 .app-shell .test-tag { align-self: center; margin: 0 0 0 3px; padding: 4px 5px; background: var(--soda-accent-dim); border: 1px solid color-mix(in srgb, var(--soda-accent) 25%, transparent); border-radius: 4px; color: var(--soda-highlight); font-size: 8px; letter-spacing: .6px; font-weight: 650; }
 .app-shell .main-nav { gap: 26px; align-items: center; justify-content: flex-start; align-self: stretch; }
 .app-shell .main-nav button, .app-shell .main-nav .nav-product, .app-shell .main-nav .nav-launch { height: 100%; min-height: 44px; padding: 0; font-size: 13px; font-weight: 550; white-space: nowrap; }
@@ -76,7 +76,8 @@
   .app-shell .site-header { flex-wrap: wrap; min-height: 112px; gap: 0 8px; padding: 12px 20px 0; }
   .app-shell .brand { font-size: 22px; }
   .app-shell .header-actions { margin-left: auto; }
-  .app-shell .main-nav { order: 3; flex-wrap: nowrap; width: 100%; align-self: auto; min-height: 46px; gap: 28px; overflow-x: auto; margin-top: 8px; padding: 0; }
+  .app-shell .main-nav { order: 3; flex-wrap: nowrap; width: 100%; align-self: auto; min-height: 46px; gap: 28px; overflow-x: auto; margin-top: 8px; padding: 0; scrollbar-width: none; }
+  .app-shell .main-nav::-webkit-scrollbar { display: none; }
   .app-shell .main-nav button, .app-shell .main-nav .nav-product, .app-shell .main-nav .nav-launch { min-height: 46px; font-size: 13px; }
   .app-shell .test-notice { justify-content: flex-start; padding-inline: 20px; font-size: 10px; }
   .app-shell .content-page { padding: 28px 20px 48px; }

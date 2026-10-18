@@ -1,12 +1,12 @@
 /* Mining uses the shared SodaDEX palette and controls; only the workspace composition lives here. */
-.app-shell .mining-network-page { width: min(1120px, 100%); padding-top: 24px; }
-.mining-heading { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 16px; }
+.app-shell .mining-network-page { width: min(1120px, 100%); padding-top: 20px; }
+.mining-heading { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 8px; }
 .mining-heading .eyebrow { color: var(--soda-muted); font-size: 10px; letter-spacing: .7px; }
-.app-shell .mining-heading h1 { font-size: 28px; margin: 0 0 8px; }
+.app-shell .mining-heading h1 { font-size: 28px; margin: 0 0 4px; }
 .mining-heading > div > p:last-child { color: var(--soda-muted); font-size: 13px; line-height: 1.7; margin: 0; max-width: 66ch; }
 .mining-chain-chip { display: inline-flex; align-items: center; gap: 7px; flex-shrink: 0; padding: 8px 10px; border: 1px solid var(--soda-line); border-radius: 6px; font-size: 10px; color: var(--soda-muted); }
 .mining-workspace { margin-bottom: 32px; }
-.mining-workspace-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; border-bottom: 1px solid var(--soda-line); margin-bottom: 20px; }
+.mining-workspace-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; border-bottom: 1px solid var(--soda-line); margin-bottom: 16px; }
 .mining-tabs { display: flex; gap: 22px; min-width: 0; max-width: 100%; overflow-x: auto; scrollbar-width: thin; }
 .mining-tabs .button { flex: 0 0 auto; border: 0; border-bottom: 2px solid transparent; border-radius: 0; padding: 12px 0; background: transparent; color: var(--soda-muted); white-space: nowrap; }
 .mining-tabs .button[aria-current="page"] { border-bottom-color: var(--soda-accent); color: var(--soda-text); }
@@ -23,7 +23,7 @@
 .mining-balances dt { color: var(--soda-muted); font-size: 12px; margin-bottom: 6px; }
 .mining-balances dd { margin: 0; font-size: 18px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .mining-native-icon { width: 14px; height: 14px; vertical-align: middle; margin-right: 6px; border-radius: 50%; }
-.mining-project-select { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.mining-project-select { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
 .mining-project-select label { color: var(--soda-muted); font-size: 12px; }
 .mining-project-select select { max-width: 280px; min-width: 0; padding: 10px 36px 10px 12px; border: 1px solid var(--soda-line); border-radius: var(--soda-radius-control); color: var(--soda-text); background: var(--soda-surface); font: inherit; font-size: 13px; }
 .mining-action-layout { display: grid; grid-template-columns: minmax(280px, .85fr) minmax(0, 1.65fr); gap: 24px; align-items: stretch; }
@@ -47,6 +47,7 @@
 .mining-action-switch { display: flex; padding: 4px; gap: 4px; background: var(--soda-surface); border: 1px solid var(--soda-line); border-radius: var(--soda-radius-control); margin-bottom: 12px; }
 .mining-action-switch .button { flex: 1; min-width: 0; padding: 10px 8px; background: transparent; border-color: transparent; color: var(--soda-muted); border-radius: 7px; font-size: 12px; }
 .mining-action-switch .button[aria-pressed="true"] { background: var(--soda-accent-dim); border-color: transparent; color: var(--soda-highlight); }
+.mining-action-switch .button:disabled { background: transparent; color: var(--soda-faint); border-color: transparent; }
 .mining-action-card label { color: var(--soda-text); font-size: 12px; font-weight: 550; }
 .mining-action-card input { border: 1px solid var(--soda-control-line); border-radius: var(--soda-radius-control); padding: 14px; color: var(--soda-text); background: var(--soda-surface); width: 100%; min-width: 0; font: inherit; }
 .mining-action-card input:focus-visible { border-color: var(--soda-focus); outline: none; }
@@ -81,6 +82,7 @@
 .mining-feedback .button, .mining-wallet-prompt .button { margin-left: auto; }
 .mining-wallet-prompt { color: var(--soda-muted); }
 .mining-pause-note[role="alert"] { color: var(--soda-error); }
+.mining-pause-note { margin-bottom: 16px; }
 .mining-history-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .mining-history-heading h2 { display: flex; align-items: center; gap: 8px; margin: 0; }
 .mining-history-heading h2 > span { font-size: 12px; color: var(--soda-muted); font-weight: 400; }
