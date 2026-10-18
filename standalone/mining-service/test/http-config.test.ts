@@ -43,6 +43,8 @@ describe('strict 1952 HTTP boundary and explicit config', () => {
     const result = cloudConfig(env)
     expect(result.config.admissionEnabled).toBe(false); expect(result.config.executionEnabled).toBe(false); expect(result.config.gasCapWei).toBe(0n); expect(result.config.policy).toBeNull()
     expect(() => cloudConfig({ ...env, MINING_EXECUTION_ENABLED: 'true' })).toThrow('policy_pending')
+    expect(() => cloudConfig({ ...env, MINING_EXPIRED_RECOVERY_HASH: `0x${'01'.repeat(32)}` })).toThrow('invalid_recovery_policy')
+    expect(cloudConfig({ ...env, MINING_EXPIRED_RECOVERY_HASH: '0x0fb7c2a1a0a532e8531744e408a31422b2e0c43a93ed8847e7eec3a46707c3a5' }).config.expiredRecoveryHash).toBe('0x0fb7c2a1a0a532e8531744e408a31422b2e0c43a93ed8847e7eec3a46707c3a5')
     const c = fixture().c
     expect(validateConfig(c).expectedSigner).toBe(TEST_SIGNER)
     expect(() => validateConfig({ ...c, chainId: 196 as 1952 })).toThrow('invalid_1952_config')

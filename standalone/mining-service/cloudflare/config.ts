@@ -25,7 +25,7 @@ export function cloudConfig(env: MiningEnv): { config: RuntimeConfig; authorizer
   if (keeperAddress !== null && !address(keeperAddress)) throw new ServiceError('invalid_keeper', 503)
   const config = validateConfig({ chainId: 1952, rpcUrl: TEST_RPC, publicOrigin: env.MINING_PUBLIC_ORIGIN,
     admissionEnabled: env.MINING_ADMISSION_ENABLED === 'true', executionEnabled: env.MINING_EXECUTION_ENABLED === 'true',
-    expectedSigner: TEST_SIGNER, keeperAddress, gasCapWei: uint(env.MINING_GAS_CAP_WEI), maxGasPerTransaction: uint(env.MINING_MAX_GAS_PER_TRANSACTION),
+    expectedSigner: TEST_SIGNER, keeperAddress, ...(env.MINING_EXPIRED_RECOVERY_HASH === undefined ? {} : { expiredRecoveryHash: env.MINING_EXPIRED_RECOVERY_HASH as Hex }), gasCapWei: uint(env.MINING_GAS_CAP_WEI), maxGasPerTransaction: uint(env.MINING_MAX_GAS_PER_TRANSACTION),
     maxGasPriceWei: uint(env.MINING_MAX_GAS_PRICE_WEI), policy: policy(env.MINING_OPERATING_POLICY), pollMs: env.MINING_POLL_MS ? Number(env.MINING_POLL_MS) : null })
   let authorizer: AdmissionSigner | undefined, keeper: KeeperSigner | undefined
   if (env.MINING_SIGNER_PRIVATE_KEY) {

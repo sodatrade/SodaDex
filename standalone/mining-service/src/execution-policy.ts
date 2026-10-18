@@ -48,11 +48,11 @@ export async function validateSaved(e: Execution, d: MiningProductDeployment, pr
 }
 
 /** Live authorization is required immediately before any broadcast, including recovery. */
-export async function assertLiveExecution(e: Execution, c: RuntimeConfig, d: MiningProductDeployment, rpc: Rpc, discovery: Discovery, projects: readonly MiningProject[], initialProof?: Block): Promise<void> {
+export async function assertLiveExecution(e: Pick<Execution, 'signer' | 'to' | 'data' | 'gas' | 'gasPrice'>, c: RuntimeConfig, d: MiningProductDeployment, rpc: Rpc, discovery: Discovery, projects: readonly MiningProject[], initialProof?: Block): Promise<void> {
   if (!c.executionEnabled || !c.policy || !c.keeperAddress || !same(c.keeperAddress, e.signer) ||
       BigInt(e.gas) > c.maxGasPerTransaction || BigInt(e.gasPrice) > c.maxGasPriceWei) throw new ServiceError('execution_policy_changed')
   const b = initialProof ?? await discovery.verifyBase(rpc, d, c.expectedSigner)
-  await assertCanonical(rpc, b)
+  if (!initialProof) await assertCanonical(rpc, b)
   const project = projects.find(p => same(p.vault.address, e.to))
   const farm = d.contracts.farm.address
   const role = same(e.to, farm) ? 'farm' : project ? 'projectVault' : undefined

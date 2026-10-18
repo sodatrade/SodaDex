@@ -93,6 +93,7 @@ Durable Object has picked up its new settings.
 | `MINING_GAS_CAP_WEI` | Cumulative actual plus reserved keeper gas ceiling |
 | `MINING_MAX_GAS_PER_TRANSACTION` | Maximum estimated gas including 20% gas-unit headroom |
 | `MINING_MAX_GAS_PRICE_WEI` | Explicit gas price ceiling |
+| `MINING_EXPIRED_RECOVERY_HASH` | Optional; only the separately approved exact 1952 expired execution hash is accepted |
 | `MINING_POLL_MS` | Explicit alarm interval, at least 1,000 ms |
 | `MINING_OPERATING_POLICY` | Exact JSON object below, or `policy_pending` |
 
@@ -162,6 +163,41 @@ unknown, it stays blocked with its full reserve. A pending/consumed unknown nonc
 also blocks new execution. An expired stored authorization is retained and not
 broadcast again. These states require reconciliation rather than deleting rows.
 
+The separately approved 2026-10-18 exception is opt-in through
+`MINING_EXPIRED_RECOVERY_HASH`, accepted only for
+`0x0fb7c2a1a0a532e8531744e408a31422b2e0c43a93ed8847e7eec3a46707c3a5`.
+It adds no HTTP/admin signing endpoint. `src/expired-recovery.ts` first validates
+that saved raw/hash/signer/nonce/calldata, the true EIP-712 deadline/signature and
+contract digest, unused conversion nonce, canonical 1952 runtime/project binding,
+and empty-code keeper. The chain timestamp must be **strictly later** than the
+authorization deadline; a server clock alone never proves permissionless expiry.
+
+Only then may the same keeper sign one separately persisted legacy cancellation:
+same nonce, recipient itself, zero value, empty calldata, fixed 30,000,000-wei gas
+price within the existing ceiling. Its estimation/simulation uses the canonical
+empty-code proof block, whose ancestry is checked again before broadcast. Ordinary
+contract calls retain the stricter pending-state code/freshness probes. The
+original raw transaction is never replayed by this recovery path. A price that
+cannot replace the original, unknown nonce/pending state, changed code, insufficient
+balance/full additional reserve, or failed proof stops it without relaxing limits.
+
+Original and cancellation raw/hash records remain linked; both maximum reserves
+stay held until one unique canonical receipt wins. Only the winner's actual fee
+is charged, once; the other row is retained as replaced. The original winning
+still settles normally. Cancellation winning marks the original business job
+`failed / authorization_cancelled`, never a successful tax conversion. The next
+alarm may obtain a fresh quote and fresh business authorization. Lost responses
+or restarts reuse the same cancellation hash/raw, with at most the existing one
+identical rebroadcast. A receipt reorg atomically reverses winner costs and
+restores **both** linked reserves before any further reads or new planning.
+Schema-1 storage, prior spending, deployment identity and DO namespace remain.
+
+New purchase/conversion calls also compare their deadline against a fresh chain
+head **after** slow discovery/simulation/estimation and before keeper signing or
+persisting. Same-event canonical proof checks are reused; restarts still perform
+complete live verification. Signature lifetime stays 60 seconds. This prevents
+known-expired newly prepared rows without discarding existing signed history.
+
 Successful and reverted canonical receipts both charge actual
 `gasUsed * effectiveGasPrice + l1Fee + operatorFee`, releasing only the known unused
 reserve. The zero L1/operator fee model is checked against GasPriceOracle **and**
@@ -222,3 +258,17 @@ eight-call chain/header/code/nonce probe. Each cloud event stops before exceedin
 broadcast after a canonical-block check; restart/rebroadcast always verifies live
 root and project identities again. Successful cycles clear stale service-level
 errors; per-transaction jobs and receipts remain persisted.
+
+### Recovery request-budget evidence
+
+The private Cloudflare alarm still stops after 45 upstream HTTP fetches. The
+real read-only 1952 adapter measurement at block `0x29cd0d3` used 12 fetches for
+`verifyMiningBase` and 10 for `resolveMiningProject(TEST-WALLET)`. Focused tests
+exercise the remaining real `HttpRpc` batching: cancellation preparation/broadcast
+uses 12, while a fresh conversion uses 21. Including the two-fetch settled
+ancestor check gives composed normal-path bounds of 36 and 45 respectively.
+Discovery itself is mocked in those focused transport tests; the separately
+measured live baseline is added explicitly, so this is a composed bound rather
+than a claimed live full recovery run. Stale pending retries consume the same
+45-fetch ceiling and fail closed; it is never increased. Any already signed row
+retains its raw/hash and reserve if a later network read fails.

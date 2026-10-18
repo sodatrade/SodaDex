@@ -27,7 +27,7 @@ export interface OperatingPolicy {
 export interface RuntimeConfig {
   chainId: 1952; publicOrigin: string; rpcUrl: string; admissionEnabled: boolean; executionEnabled: boolean
   expectedSigner: Address; keeperAddress: Address | null; gasCapWei: bigint; maxGasPerTransaction: bigint
-  maxGasPriceWei: bigint; policy: OperatingPolicy | null; pollMs: number | null
+  maxGasPriceWei: bigint; expiredRecoveryHash?: Hex; policy: OperatingPolicy | null; pollMs: number | null
 }
 export type JobKind = 'sync' | 'fund' | 'purchase' | 'conversion'
 export interface Job {
@@ -50,7 +50,8 @@ export interface ExpiryReconciliation {
 }
 export interface Execution {
   hash: Hex; raw: Hex; signer: Address; nonce: number; to: Address; data: Hex; gas: string; gasPrice: string
-  maxCostWei: string; jobId: string; status: 'prepared' | 'broadcast' | 'confirmed' | 'reverted' | 'nonce_conflict'
+  maxCostWei: string; jobId: string; status: 'prepared' | 'broadcast' | 'confirmed' | 'reverted' | 'nonce_conflict' | 'replaced'
+  recoveryOf?: Hex; cancellationHash?: Hex; replacementWinner?: Hex
   receiptBlock?: Hex; receiptBlockHash?: Hex; actualCostWei?: string; deadline?: number; broadcasts: number
 }
 export interface PersistentState {
