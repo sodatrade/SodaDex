@@ -8,7 +8,7 @@ import re
 ROOT = Path(__file__).resolve().parents[2]
 TEST_OWNER = "0x6ecf746b078d46391f8C425B150153212F7C0545"
 PROFILES = {stage: ROOT / "deployments/fees" / filename for stage, filename in
-            (("test", "test-1952.json"), ("production", "production-pending.json"))}
+            (("test", "test-1952.json"), ("test-196", "test-196.json"), ("production", "production-pending.json"))}
 
 # These checks describe the pinned implementations, not permission to change them.
 # Unimplemented output fees have only the mathematical BPS bound here; product must
@@ -134,7 +134,7 @@ def inspect_profile(profile, stage):
                     valid = valid and (number == 0 or number >= 2_000)
                 if not valid:
                     errors.append(label + ": outside current implementation bounds; code changes require separate validation")
-                elif stage == "test" and number != minimum:
+                elif stage in ("test", "test-196") and number != minimum:
                     errors.append(label + ": test profile must use the lowest supported value")
 
     fee_groups = profile["fees"] if isinstance(profile["fees"], dict) else {}
@@ -148,10 +148,10 @@ def inspect_profile(profile, stage):
                 enabled = mining.get("v2ProtocolEnabled") if isinstance(mining, dict) else None
                 if value == "0x" + "00" * 20 and enabled == 0:
                     continue
-                if not _address(value) or stage == "test":
+                if not _address(value) or stage in ("test", "test-196"):
                     errors.append(label + ": disabled test protocol must use zero feeTo; enabled production needs a recipient")
                 continue
-            if not _address(value) or (stage == "test" and value.lower() != TEST_OWNER.lower()):
+            if not _address(value) or (stage in ("test", "test-196") and value.lower() != TEST_OWNER.lower()):
                 errors.append(label + ": invalid or unexpected test recipient")
 
     if isinstance(mining, dict):
@@ -166,7 +166,7 @@ def inspect_profile(profile, stage):
     if _keys(profile["launchRules"], ("graduationProtectionSeconds",), "launchRules", errors):
         value = profile["launchRules"]["graduationProtectionSeconds"]
         if required(value, "launchRules.graduationProtectionSeconds"):
-            if type(value) is not int or value < 86_400 or value >= 2**64 or (stage == "test" and value != 86_400):
+            if type(value) is not int or value < 86_400 or value >= 2**64 or (stage in ("test", "test-196") and value != 86_400):
                 errors.append("V2 graduation protection is at least 86400 seconds; test uses the source minimum")
 
     if _keys(profile["assetAllocation"], ("fabPremineBps", "fabPremineRecipient"), "assetAllocation", errors):
@@ -176,19 +176,19 @@ def inspect_profile(profile, stage):
                 errors.append("FAB premine is fixed at 5% by pinned source; it is not a fee")
         value = allocation["fabPremineRecipient"]
         if required(value, "assetAllocation.fabPremineRecipient"):
-            if not _address(value) or (stage == "test" and value.lower() != TEST_OWNER.lower()):
+            if not _address(value) or (stage in ("test", "test-196") and value.lower() != TEST_OWNER.lower()):
                 errors.append("Invalid FAB premine recipient")
 
     if _keys(profile["operations"], OPERATIONS, "operations", errors):
         for name, value in profile["operations"].items():
             if required(value, "operations." + name) and (not isinstance(value, str) or not value.strip()):
                 errors.append("operations." + name + ": explicit product rule required")
-        if stage == "test" and profile["operations"] != TEST_OPERATIONS:
+        if stage in ("test", "test-196") and profile["operations"] != TEST_OPERATIONS:
             errors.append("Test automatic execution must use sponsored gas and no production fee policy")
 
     if _keys(profile["approval"], APPROVAL_FIELDS, "approval", errors):
         approval = profile["approval"]
-        if stage == "test":
+        if stage in ("test", "test-196"):
             if approval != {"state": "test-only", "approvedBy": None, "decisionReference": None, "configurationSha256": None}:
                 errors.append("Test profile cannot carry production approval")
         else:
@@ -206,9 +206,11 @@ def inspect_profile(profile, stage):
             "scope": "Fee parameters only; not proof of implementation, deployment readiness or human authorization"}
 
 
-def require_test_profile(path):
+def require_test_profile(path, stage="test"):
+    if stage not in ("test", "test-196"):
+        raise ValueError("Explicit test stage required")
     profile = read_profile(path)
-    result = inspect_profile(profile, "test")
+    result = inspect_profile(profile, stage)
     if not result["valid"]:
-        raise ValueError("Invalid 1952 test fee profile: " + "; ".join(result["errors"]))
+        raise ValueError(f"Invalid {1952 if stage == 'test' else 196} test fee profile: " + "; ".join(result["errors"]))
     return result

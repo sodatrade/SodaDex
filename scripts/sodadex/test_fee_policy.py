@@ -11,6 +11,16 @@ class FeePolicyTest(unittest.TestCase):
         self.test = read_profile(PROFILES["test"])
         self.production = read_profile(PROFILES["production"])
 
+    def test_196_test_scope_is_explicit_and_cannot_be_production(self):
+        profile = read_profile(PROFILES["test-196"])
+        self.assertTrue(require_test_profile(PROFILES["test-196"], "test-196")["valid"])
+        self.assertFalse(inspect_profile(profile, "production")["valid"])
+        self.assertFalse(inspect_profile(profile, "test")["valid"])
+        with self.assertRaises(ValueError):
+            require_test_profile(PROFILES["test-196"])
+        profile["fees"]["mining"]["buyTaxBps"] = 101
+        self.assertFalse(inspect_profile(profile, "test-196")["valid"])
+
     def approved_fixture(self):
         profile = copy.deepcopy(self.test)
         profile.update(stage="production", chainId=196)

@@ -11,9 +11,9 @@ const ceil = (a, b) => (a + b - 1n) / b
 const minimum = (q) => { if (q <= 1n) throw new Error('Quote too small'); return q * 995n / 1000n }
 const same = (a, b) => a.toLowerCase() === b.toLowerCase()
 
-export async function exerciseMiningProducts(plan, root, s) {
+export async function exerciseMiningProducts(plan, root, s, options = {}) {
   if (!plan.miners || plan.business) throw new Error('Business rehearsal requires prepared miners and a fresh business state')
-  const pabi = (name) => productArtifact(root, name).value.abi
+  const pabi = (name) => (options.productArtifact ?? productArtifact)(root, name).value.abi
   const managerAbi = pabi('IgnixManager'), farmAbi = pabi('FabMiningFarm'), vaultAbi = pabi('MiningProjectVault')
   const marketAbi = sourceArtifact(root, 'CircuitMarket').value.abi
   const tx = (label, address, abi, name, args) => plan.send(label, address, encodeFunctionData({ abi, functionName: name, args }))
@@ -21,13 +21,13 @@ export async function exerciseMiningProducts(plan, root, s) {
   const deadline = async () => await now() + 600n
   const bal = (address, account = plan.owner) => plan.call(address, 'function balanceOf(address) view returns(uint256)', [account])
   const approve = (address, spender, amount) => plan.write('Bounded test asset approval', address, 'function approve(address,uint256) returns(bool)', [spender, amount])
-  const sign = (digest, raw) => {
+  const sign = options.sign ?? ((digest, raw) => {
     const folder = path.join(os.homedir(), '.local/share/sodadex/wallets/xlayer-1952-mining-authorizer')
     const args = ['wallet', 'sign', '--keystore', path.join(folder, 'authorizer'), '--password-file', path.join(folder, 'password'), ...(raw ? ['--no-hash'] : []), digest]
     const signature = execFileSync('cast', args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim()
     if (!/^0x[0-9a-fA-F]{130}$/.test(signature)) throw new Error('Invalid local admission signature')
     return signature
-  }
+  })
   const event = (receipt, address, abi, name) => {
     for (const log of receipt.logs.filter((l) => same(l.address, address))) {
       try { const decoded = decodeEventLog({ abi, data: log.data, topics: log.topics }); if (decoded.eventName === name) return decoded.args } catch {}
@@ -47,23 +47,26 @@ export async function exerciseMiningProducts(plan, root, s) {
     return curveOutput({ buyFee: BigInt(st[1]), sellFee: BigInt(st[2]), buyTax: BigInt(st[3]), sellTax: BigInt(st[4]),
       snipe, vQuote: st[9], vToken: st[10], sold: st[11], sellable: st[13] }, buy, amount)
   }
-  const seedFab = 1000n * FAB, seedNative = 100_000_000_000_000n
+  const nativeDivisor = BigInt(options.nativeDivisor ?? 1n)
+  if (nativeDivisor < 1n || 10_000_000_000n % nativeDivisor !== 0n) throw new Error('Invalid native test scale')
+  const minerPrice = 10_000_000_000n / nativeDivisor
+  const seedFab = 1000n * FAB, seedNative = 100_000_000_000_000n / nativeDivisor
   spend(seedFab, seedNative)
   await approve(s.fab, s.router, seedFab)
   await plan.write('Seed real TEST FAB/native liquidity', s.router,
     'function addLiquidityETH(address,uint256,uint256,uint256,address,uint256) payable returns(uint256,uint256,uint256)',
     [s.fab, seedFab, seedFab, seedNative, plan.owner, await deadline()], seedNative)
   const create = managerAbi.find((i) => i.name === 'createToken'), zero = `0x${'0'.repeat(64)}`
-  const p = { name: 'SodaDEX TEST FAB Mining', symbol: 'TEST-A', metadataURI: '', salt: keccak256(stringToHex('sodadex-1952-mining-phase2-v1')),
+  const p = { name: 'SodaDEX TEST FAB Mining', symbol: 'TEST-A', metadataURI: '', salt: keccak256(stringToHex(`sodadex-${options.chainId ?? 1952}-mining-phase2-v1`)),
     quote: s.fab, graduation: 5000n * FAB, buyFeeBps: 100, sellFeeBps: 100, taxBuyBps: 100, taxSellBps: 100,
     snipeStartBps: 0, snipeMins: 0, listingFee: 0n, firstBuy: 0n, founderBps: 0, founderSecs: 0, founderRoot: zero }
   const data = encodeAbiParameters(parseAbiParameters('uint16,uint16,uint16,uint16'), [100, 100, 100, 0])
   const expiry = await now() + 3600n
   const payload = keccak256(encodeAbiParameters([{ type: 'uint256' }, { type: 'address' }, { type: 'address' }, create.inputs[0],
     ...parseAbiParameters('uint16,bytes,uint64,address,uint8,uint64,uint24,address')],
-  [1952n, s.manager, plan.owner, p, 0, data, expiry, s.miningFactory, 1, 86400n, 0, s.launchFactory]))
+  [BigInt(options.chainId ?? 1952), s.manager, plan.owner, p, 0, data, expiry, s.miningFactory, 1, 86400n, 0, s.launchFactory]))
   const launched = await tx('Signed genuine test fundraiser launch', s.manager, managerAbi, 'createToken',
-    [p, 0, data, expiry, s.miningFactory, 1, 86400n, sign(payload, false)])
+    [p, 0, data, expiry, s.miningFactory, 1, 86400n, await sign(payload, false)])
   const created = event(launched, s.manager, managerAbi, 'TokenCreated'), token = created.token, vault = created.vault, holder = created.tracker
   check(same(await plan.call(vault, 'function tracker() view returns(address)'), holder), 'Tracker binding mismatch')
   // Reserve only the known curve funding ceiling; actual final gross is checked below.
@@ -76,14 +79,14 @@ export async function exerciseMiningProducts(plan, root, s) {
   await plan.write('Recognise actual curve tax', vault, 'function sync()')
   await plan.write('Fund shared miner procurement', vault, 'function fundFarm()')
   await plan.write('Approve test miner sale', s.circuits, 'function approve(address,uint256)', [s.circuitMarket, BigInt(plan.miners.farm)])
-  const listingReceipt = await tx('List ordinary miner for farm procurement', s.circuitMarket, marketAbi, 'list', [s.circuits, BigInt(plan.miners.farm), 10_000_000_000n])
+  const listingReceipt = await tx('List ordinary miner for farm procurement', s.circuitMarket, marketAbi, 'list', [s.circuits, BigInt(plan.miners.farm), minerPrice])
   const listed = event(listingReceipt, s.circuitMarket, marketAbi, 'Listed')
   const listingId = listed.listingId ?? listed.id
   check(typeof listingId === 'bigint', 'Missing market listing ID')
-  const purchase = { listingId, minerId: BigInt(plan.miners.farm), nativePrice: 10_000_000_000n, maxFab: FAB, nonce: 1n, deadline: await now() + 60n }
+  const purchase = { listingId, minerId: BigInt(plan.miners.farm), nativePrice: minerPrice, maxFab: FAB, nonce: 1n, deadline: await now() + 60n }
   spend(FAB, purchase.nativePrice)
   const digest = await plan.readAbi(s.farm, farmAbi, 'purchaseDigest', [purchase])
-  await tx('Signed farm miner procurement', s.farm, farmAbi, 'buyMiner', [purchase, sign(digest, true)])
+  await tx('Signed farm miner procurement', s.farm, farmAbi, 'buyMiner', [purchase, await sign(digest, true)])
   check(same(await plan.call(s.circuits, 'function ownerOf(uint256) view returns(address)', [purchase.minerId]), s.farm), 'Farm NFT custody failed')
   await plan.advanceRewards(60)
   const beforeClaim = await bal(s.fab)
@@ -132,7 +135,7 @@ export async function exerciseMiningProducts(plan, root, s) {
   const redeem = await plan.call(s.fragmentVault, 'function previewRedeem(uint256) view returns(uint256)', [BigInt(plan.miners.user)])
   await plan.write('Redeem second miner', s.fragmentVault, 'function redeem(uint256,uint256) returns(uint256)', [BigInt(plan.miners.user), redeem])
   await plan.write('Approve retail test miner listing', s.circuits, 'function approve(address,uint256)', [s.circuitMarket, BigInt(plan.miners.user)])
-  const retail = await tx('Leave user-purchasable test miner', s.circuitMarket, marketAbi, 'list', [s.circuits, BigInt(plan.miners.user), 10_000_000_000n])
+  const retail = await tx('Leave user-purchasable test miner', s.circuitMarket, marketAbi, 'list', [s.circuits, BigInt(plan.miners.user), minerPrice])
   const retailEvent = event(retail, s.circuitMarket, marketAbi, 'Listed'), retailId = retailEvent.listingId ?? retailEvent.id
   // Taxed V2 tokens support taxed swaps during protection. Exercise the real branch.
   const swapIn = FAB / 1000n, swapPath = [s.fab, token]; spend(swapIn)
@@ -153,7 +156,7 @@ export async function exerciseMiningProducts(plan, root, s) {
   const conversion = { input: tax, minimumFab: minimum(taxQuote[1]), nonce: 1n, deadline: await now() + 60n }
   check(tax > 0n, 'No actual graduated token tax')
   const conversionDigest = await plan.readAbi(vault, vaultAbi, 'conversionDigest', [conversion])
-  await tx('Convert actual project tax to FAB', vault, vaultAbi, 'convertTax', [conversion, sign(conversionDigest, true)])
+  await tx('Convert actual project tax to FAB', vault, vaultAbi, 'convertTax', [conversion, await sign(conversionDigest, true)])
   await plan.write('Recognise converted tax', vault, 'function sync()')
   await plan.write('Reinvest converted tax in farm budget', vault, 'function fundFarm()')
   await approve(token, holder, A)
