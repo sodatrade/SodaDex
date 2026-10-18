@@ -3,8 +3,9 @@
 .general-swap .swap-card-heading { padding: 0 0 18px; min-height: 44px; }
 .general-swap .swap-card-heading h2 { margin: 0; font-size: 20px; font-weight: 620; letter-spacing: -.5px; }
 .general-swap .swap-card-heading .button { width: 40px; min-height: 40px; }
-.general-swap .amount-panel { padding: 18px; min-height: 130px; border: 1px solid transparent; border-radius: 12px; background: var(--soda-field); }
-.general-swap .amount-panel:focus-within { border-color: var(--soda-highlight); box-shadow: 0 0 0 2px var(--soda-accent-dim); }
+.general-swap .amount-panel { padding: 18px; min-height: 130px; border: 1px solid var(--soda-control-line); border-radius: 12px; background: var(--soda-surface); }
+.general-swap .amount-panel:focus-within { border-color: var(--soda-highlight); }
+.general-swap .receive-panel { background: var(--soda-field); border-color: var(--soda-line); }
 .general-swap .amount-panel.has-error { border-color: var(--soda-error); }
 .general-swap .amount-label { align-items: baseline; gap: 8px; margin-bottom: 12px; font-size: 12px; }
 .general-swap .amount-label > span:first-child { min-width: 0; }

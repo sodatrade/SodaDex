@@ -9,7 +9,7 @@
 .app-shell .main-nav .nav-product.active, .app-shell .main-nav button.active { color: var(--soda-text); }
 .app-shell .main-nav button.active::after { bottom: 0; left: 0; width: 100%; transform: none; height: 2px; border-radius: 0; }
 .app-shell .header-actions { gap: 10px; min-width: 0; }
-.app-shell .header-search { width: 205px; justify-content: flex-start; gap: 8px; min-height: 38px; padding: 8px 10px; background: var(--soda-field); border: 1px solid var(--soda-line-soft); color: var(--soda-muted); border-radius: 8px; }
+.app-shell .header-search { width: 205px; justify-content: flex-start; gap: 8px; min-height: 38px; padding: 8px 10px; background: var(--soda-surface); border: 1px solid var(--soda-control-line); color: var(--soda-muted); border-radius: 8px; }
 .header-search > span { font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .header-search > svg { flex-shrink: 0; width: 16px; }
 .app-shell .network-badge { display: flex; gap: 6px; padding: 7px 0; margin: 0; font-size: 11px; }
@@ -19,9 +19,9 @@
 .app-shell .header-tool { min-width: 40px; width: auto; min-height: 40px; padding: 8px; }
 .header-preferences > span { font-size: 10px; font-weight: 550; }
 .app-shell .button { border-radius: var(--soda-radius-control); font-weight: 550; }
-.app-shell .button-secondary { background: transparent; border-color: var(--soda-line); }
-.app-shell .button-secondary:hover:not(:disabled) { background: var(--soda-hover); border-color: var(--soda-muted); }
-.app-shell .button:disabled { background: var(--soda-raised); color: var(--soda-faint); }
+.app-shell .button-secondary { background: var(--soda-surface); border-color: var(--soda-control-line); }
+.app-shell .button-secondary:hover:not(:disabled) { background: var(--soda-hover); border-color: var(--soda-muted); color: var(--soda-text); }
+.app-shell .button:disabled { background: var(--soda-raised); color: var(--soda-faint); border-color: var(--soda-line-soft); }
 .app-shell .test-notice { justify-content: center; padding: 8px 24px; border-top: 0; border-bottom: 1px solid var(--soda-line-soft); background: var(--soda-bg); color: var(--soda-muted); font-size: 11px; gap: 9px; }
 .app-shell .test-notice-label { color: var(--soda-highlight); border: 0; background: var(--soda-accent-dim); border-radius: 4px; padding: 3px 6px; font-size: 9px; letter-spacing: 0; font-weight: 600; }
 .app-shell main { min-width: 0; }

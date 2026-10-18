@@ -31,7 +31,7 @@ function ChainHistory({ deployment, account }: { deployment: MiningProductDeploy
       <Button aria-pressed={!mine} onClick={() => { setMine(false); reset() }}>{m.all}</Button>
       <Button aria-pressed={mine} disabled={!account} onClick={() => { setMine(true); reset() }}>{common.currentWallet}</Button>
     </div></header>
-    <p className="dialog-note">{m.note}</p>
+    <p className="mining-history-note">{m.note}</p>
     <div className="mining-index-status"><span role="status">{result && <>
       {result.index.lastError ? m.lag : result.index.syncing ? m.syncing : m.synced}
       {' · '}{m.through} #{result.index.indexedThrough}
@@ -41,10 +41,14 @@ function ChainHistory({ deployment, account }: { deployment: MiningProductDeploy
     {events.isError && <p role="alert">{restart ? m.restart : m.unavailable}</p>}
     {result && !result.events.length && <p className="mining-empty">{m.empty}</p>}
     {!restart && <ol className="mining-history-list">{result?.events.map((row) => <li key={row.id}>
-      <div><strong>{indexEventName(row.event, locale)}</strong><a href={`${NETWORK.explorerUrl}/tx/${row.transactionHash}`} target="_blank" rel="noreferrer" title={row.transactionHash}>
-        {shortenAddress(row.transactionHash)} <Icon name="external" size={13} /></a>
-      <small><time dateTime={new Date(row.timestamp * 1000).toISOString()}>{new Date(row.timestamp * 1000).toLocaleString(locale)}</time> · #{row.blockNumber}</small>
-      <details><summary>{m.details}</summary><dl className="review-details">{Object.entries(row.args).map(([name, value]) => <div key={name}><dt>{name}</dt><dd>{String(value)}</dd></div>)}</dl></details></div>
+      <details className="mining-chain-event"><summary>
+        <strong>{indexEventName(row.event, locale)}</strong>
+        <span className="mining-chain-event-meta"><a href={`${NETWORK.explorerUrl}/tx/${row.transactionHash}`} target="_blank" rel="noreferrer" title={row.transactionHash}>
+          {shortenAddress(row.transactionHash)} <Icon name="external" size={13} /></a>
+          <small><time dateTime={new Date(row.timestamp * 1000).toISOString()}>{new Date(row.timestamp * 1000).toLocaleString(locale)}</time><span>#{row.blockNumber}</span></small>
+        </span>
+        <span className="mining-chain-event-action">{m.details}<Icon name="chevron" size={14} /></span>
+      </summary><dl className="review-details">{Object.entries(row.args).map(([name, value]) => <div key={name}><dt>{name}</dt><dd>{String(value)}</dd></div>)}</dl></details>
     </li>)}</ol>}
     {(page > 0 || result?.nextCursor) && <nav className="list-pagination" aria-label={common.history}>
       <span aria-live="polite">{m.page} {page + 1}</span><div>
