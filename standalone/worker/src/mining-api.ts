@@ -5,7 +5,7 @@ export interface MiningApiBinding { fetch(request: Request): Promise<Response> }
 const paths: Readonly<Record<string, 'GET' | 'POST'>> = { status: 'GET', projects: 'GET', challenge: 'POST', launch: 'POST', register: 'POST', run: 'POST' }
 const failure = (status: number, reason: string): Response => Response.json({ error: reason, reason, chainId: 1952 }, { status, headers: { 'Cache-Control': 'no-store' } })
 const record = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v)
-const privateKeys = new Set(['privatekey', 'private_key', 'password', 'keystore', 'rawtransaction', 'raw_transaction', 'walletsignature', 'authsignature', 'signature'])
+const privateKeys = new Set(['privatekey', 'private_key', 'password', 'keystore', 'raw', 'rawtransaction', 'raw_transaction', 'walletsignature', 'authsignature', 'signature'])
 function containsPrivate(value: unknown): boolean {
   if (Array.isArray(value)) return value.some(containsPrivate)
   return record(value) && Object.entries(value).some(([key, item]) => privateKeys.has(key.toLowerCase()) || containsPrivate(item))
@@ -56,7 +56,13 @@ export async function miningApi(request: Request, binding: MiningApiBinding | un
   try {
     const response = await binding.fetch(internal(`${path}${url.search}`, url.origin, { method: request.method, body }))
     const value: unknown = await response.json()
-    if (!record(value) || containsPrivate(value) || value.chainId !== 1952 || response.status >= 500) return failure(503, 'mining_service_unavailable')
+    if (!record(value) || containsPrivate(value) || value.chainId !== 1952) return failure(503, 'mining_service_unavailable')
+    if (response.status === 503 && ['challenge', 'launch'].includes(path) && value.schemaVersion === 1 && value.error === 'expiry_reconciliation_pending') {
+      // Forward only this fixed retry state, never private backend diagnostics.
+      return Response.json({ schemaVersion: 1, chainId: 1952, error: 'expiry_reconciliation_pending' },
+        { status: 503, headers: { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' } })
+    }
+    if (response.status >= 500) return failure(503, 'mining_service_unavailable')
     if (response.ok && (value.schemaVersion !== 1 || value.deploymentVersion !== MINING_PRODUCTS.version)) return failure(502, 'mining_service_version_mismatch')
     return Response.json(value, { status: response.status, headers: { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' } })
   } catch { return failure(503, 'mining_service_unavailable') }

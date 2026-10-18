@@ -39,9 +39,17 @@ describe('1952 private signing service bridge', () => {
     expect((await miningApi(request('launch', { junk: 'x'.repeat(20_000) }), { fetch }, profile)).status).toBe(413)
     expect(fetch).not.toHaveBeenCalled()
   })
-  it.each([{ privateKey: 'secret' }, { execution: { rawTransaction: 'secret' } }, { signature: 'secret' }, { chainId: 196 }])('does not expose private or cross-network response fields', async (fields) => {
+  it.each([{ privateKey: 'secret' }, { execution: { rawTransaction: 'secret' } }, { raw: 'secret' }, { signature: 'secret' }, { chainId: 196 }])('does not expose private or cross-network response fields', async (fields) => {
     const fetch = vi.fn<MiningApiBinding['fetch']>().mockResolvedValue(Response.json(envelope(fields)))
     expect((await miningApi(request('status'), { fetch }, profile)).status).toBe(503)
+  })
+  it('forwards only the fixed bounded-history retry state from the actual service bridge', async () => {
+    const pending = { schemaVersion: 1, chainId: 1952, error: 'expiry_reconciliation_pending' }
+    const fetch = vi.fn<MiningApiBinding['fetch']>().mockResolvedValue(Response.json({ ...pending, diagnostic: 'internal' }, { status: 503 }))
+    const response = await miningApi(request('challenge', { requestId: 'x' }), { fetch }, profile)
+    expect(response.status).toBe(503); expect(await response.json()).toEqual(pending)
+    fetch.mockResolvedValueOnce(Response.json({ ...pending, raw: 'private' }, { status: 503 }))
+    expect(await (await miningApi(request('challenge', { requestId: 'x' }), { fetch }, profile)).text()).not.toContain('private')
   })
   it('allows the exact launch calldata response, rather than rejecting its encoded authorization', async () => {
     const fetch = vi.fn<MiningApiBinding['fetch']>().mockResolvedValue(Response.json(envelope({ tx: { data: '0x1234' } })))
