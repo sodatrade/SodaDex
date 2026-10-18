@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "chainId": 196,
+  "sourceRoot": "/Users/LevyHoo/XTruthWorkspace/contract",
+  "artifacts": {
+    "CurveTrading": {
+      "file": "/Users/LevyHoo/XTruthWorkspace/contract/out/CurveTrading.sol/CurveTrading.json",
+      "sha256": "9e5b65cc931676b201586e094baea8a2e78c303202996305176419f6de8c8afa"
+    },
+    "FabFragmentPool": {
+      "file": "/Users/LevyHoo/XTruthWorkspace/contract/out/FabFragmentPool.sol/FabFragmentPool.json",
+      "sha256": "5a7dbdf676a5e0de65218765d4f080a61ba688d83c8f2a5124831722bbf0b09b"
+    },
+    "FabFragmentVault": {
+      "file": "/Users/LevyHoo/XTruthWorkspace/contract/out/FabFragmentVault.sol/FabFragmentVault.json",
+      "sha256": "b849c10e5862429ec89b0192b4e11adb314b4783e7e11d6941df4ab8d76c6a74"
+    },
+    "FabMinerTestBuyer": {
+      "file": "/Users/LevyHoo/XTruthWorkspace/contract/out/FabMinerTestBuyer.sol/FabMinerTestBuyer.json",
+      "sha256": "f76d25be4883cb354e6b878f76ab4688a3bc6972c5dc0057847aa44f1122c719"
+    },
+    "FabMiningFarm": {
+      "file": "/Users/LevyHoo/XTruthWorkspace/contract/out/FabMiningFarm.sol/FabMiningFarm.json",
+      "sha256": "225c24a062180f3048480e1a1f0af2bcb6b6f3d19325e1b2078c0557e84f1057"
+    },
+    "IgnixLaunchFactory": {
+      "file": "/Users/LevyHoo/XTruthWorkspace/contract/out/IgnixLaunchFactory.sol/IgnixLaunchFactory.json",
+      "sha256": "629ed6a553e13e3245abb2255c9ecdb3d9055907e19edec75e5e3afeda529180"
+    },
+    "IgnixLiquidityHelper": {
+      "file": "/Users/LevyHoo/XTruthWorkspace/contract/out/IgnixLiquidityHelper.sol/IgnixLiquidityHelper.json",
+      "sha256": "e8cdd48522b8767aae69610adeab1b8377fd421ad723bf3da1450b14420fb1a2"
+    },
+    "IgnixLpLocker": {
+      "file": "/Users/LevyHoo/XTruthWorkspace/contract/out/IgnixLpLocker.sol/IgnixLpLocker.json",
+      "sha256": "ff719f7371619902e4e7c7aa8210d9a9938aeb3f7e11e22ad7dd874453cf70c6"
+    },
+    "IgnixManager": {
+      "file": "/Users/LevyHoo/XTruthWorkspace/contract/out/IgnixManager.sol/IgnixManager.json",
+      "sha256": "70e8116c15eb13408f9313d242b8f1907b37c83a3a4f569216dee4927e2fe9d9"
+    },
+    "IgnixPoolGuard": {
+      "file": "/Users/LevyHoo/XTruthWorkspace/contract/out/IgnixPoolGuard.sol/IgnixPoolGuard.json",
+      "sha256": "f2503c467108222968bf99853e0c1ad2a229e10d896a914b9af60a6d3ed8b9a8"
+    },
+    "IgnixToken": {
+      "file": "/Users/LevyHoo/XTruthWorkspace/contract/out/IgnixToken.sol/IgnixToken.json",
+      "sha256": "707fe7febb0f72fb0b1ca704d8b2ede4935f0ded585a12b9e0970309a099dcb7"
+    },
+    "IgnixV2Locker": {
+      "file": "/Users/LevyHoo/XTruthWorkspace/contract/out/IgnixV2Locker.sol/IgnixV2Locker.json",
+      "sha256": "13f190cb01192e20b605e9a668267f3608c64e2507f7964c238172092e72f3f6"
+    },
+    "IgnixV4Router": {
+      "file": "/Users/LevyHoo/XTruthWorkspace/contract/out/IgnixV4Router.sol/IgnixV4Router.json",
+      "sha256": "816516cb2795f4f0a21616957425fbff2f7fce6d2aa77c35dbef32f176cec709"
+    },
+    "LaunchLogic": {
+      "file": "/Users/LevyHoo/XTruthWorkspace/contract/out/LaunchLogic.sol/LaunchLogic.json",
+      "sha256": "8577c415fad5cc99f81df5a4d71d19c064d34cd4ecfc001cd268dbcbcf88ff50"
+    },
+    "MiningHolderRewards": {
+      "file": "/Users/LevyHoo/XTruthWorkspace/contract/out/MiningHolderRewards.sol/MiningHolderRewards.json",
+      "sha256": "bec631217605a7dc89d97263f0479d4e36e39ba60b1c8df0c7cadaba01877fdb"
+    },
+    "MiningProjectFactory": {
+      "file": "/Users/LevyHoo/XTruthWorkspace/contract/out/MiningProjectFactory.sol/MiningProjectFactory.json",
+      "sha256": "5745517efe396a7fafb73ddedce57e9278a83cf9fd064c1bbbd3c2cd416a23f2"
+    },
+    "MiningProjectVault": {
+      "file": "/Users/LevyHoo/XTruthWorkspace/contract/out/MiningProjectVault.sol/MiningProjectVault.json",
+      "sha256": "925dec675f030ef39267c8294cbe53ce3206fcde8247e363c2414d50d1842206"
+    },
+    "V2Graduation": {
+      "file": "/Users/LevyHoo/XTruthWorkspace/contract/out/V2GraduationMiningTest.sol/V2Graduation.json",
+      "sha256": "4faff84de92e17a92691cad29b061d5549447cadf059f26d409dce1c9193f049",
+      "testVariant": "src/mining/test-deployment/V2GraduationMiningTest.sol:V2Graduation"
+    },
+    "VaultRegistry": {
+      "file": "/Users/LevyHoo/XTruthWorkspace/contract/out/VaultRegistry.sol/VaultRegistry.json",
+      "sha256": "b81b1319ae425b99c9e4d19a31cdbee1f8d58700ef356b6dd2d241f9ad76d7f2"
+    }
+  }
+}
