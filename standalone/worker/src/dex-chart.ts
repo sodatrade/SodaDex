@@ -68,6 +68,18 @@ async function processPage(state: ChartCursor, upstreamFetch: typeof fetch): Pro
     state.pageToBlock = null
   }
 }
+export interface IndexedChartSource { asOf: Block; rows: { log: ChainLog; block: Block }[] }
+export type ChartSourceReader = (url: URL) => Promise<IndexedChartSource>
+export async function indexedChart(url: URL, upstreamFetch: typeof fetch, read: ChartSourceReader): Promise<ChartResponse> {
+  interval(url)
+  const source = await read(url)
+  const state = await initial(url, source.asOf, upstreamFetch)
+  if (source.rows.length > MAX_CHART_TRADES) throw new ChartRangeTooLarge('Chart range exceeds 5000 trades; choose a narrower block range')
+  state.trades = source.rows.map(({ log, block }) => chartTrade(log, block, state.pool, state.token0, state.token1))
+  await verifyAnchor(state, upstreamFetch)
+  const price = chartPrice(state.pool.sqrtPriceX96!, state.token0.decimals, state.token1.decimals)
+  return { schemaVersion: 1, chainId: 196, asOf: state.asOf, coverage: { fromBlock: state.fromBlock, toBlock: state.targetBlock, complete: state.fromBlock === FIRST_BLOCK && state.targetBlock === state.asOf.number, nextFromBlock: null }, pool: state.pool, token0: state.token0, token1: state.token1, interval: state.interval, query: { fromBlock: state.fromBlock, toBlock: state.targetBlock }, priceToken1PerToken0: price, priceUnavailableReason: price === null ? 'Token decimals unavailable' : null, candles: chartCandles(state.trades, state.interval), trades: state.trades, queryComplete: true, nextCursor: null }
+}
 export async function chart(url: URL, current: Block, upstreamFetch: typeof fetch, store: CursorStore): Promise<ChartResponse> {
   // Validate interval even on continuations; the stored query also prevents parameter substitution.
   interval(url)

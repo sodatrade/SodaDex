@@ -22,7 +22,7 @@ export function TradeMarketPanel({ context, active = true }: { context?: TradeMa
   const pool = context?.activePool
   const queryKey = ['trade-chart', pool?.protocol, pool?.id, interval, range]
   const chart = useInfiniteQuery({ queryKey, initialPageParam: {} as CursorPage, enabled: active && !!pool,
-    retry: false, staleTime: Infinity, queryFn: async ({ pageParam }) => {
+    retry: false, staleTime: 30_000, refetchInterval: active ? 30_000 : false, queryFn: async ({ pageParam }) => {
       const data = await getChart(chartPool(pool!), { interval, ...range, ...(pageParam.cursor ? { cursor: pageParam.cursor } : {}) })
       if (pageParam.anchor && pageParam.anchor !== data.asOf.hash) throw new DataError('CHAIN_REORGANIZED')
       return data

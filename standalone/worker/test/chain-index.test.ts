@@ -31,6 +31,18 @@ function fixture(count = 23) {
   return { db, store, config, storage, block, events, raw, read, commit }
 }
 describe('persistent chain index', () => {
+  it('reads persisted chart timestamps in order, filters pools/ranges and removes rolled-back trades', () => {
+    const f = fixture(); f.commit()
+    const restored = new IndexStore(f.storage, f.config)
+    const rows = restored.chartRows(pools.v3.address, 100, 110)
+    expect(rows).toHaveLength(23)
+    expect(rows[0].block).toEqual(f.block)
+    expect(rows[0].log.logIndex).toBe('0x0')
+    expect(restored.chartRows(other, 100, 110)).toEqual([])
+    expect(restored.chartRows(pools.v3.address, 100, 109)).toEqual([])
+    restored.rollback()
+    expect(restored.chartRows(pools.v3.address, 100, 110)).toEqual([])
+  })
   it('rejects a same-chain same-version index restored under another explicit profile', () => {
     const f = fixture()
     expect(f.store.status().profileId).toBe('196-test')

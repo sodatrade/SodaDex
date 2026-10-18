@@ -63,6 +63,13 @@ export class IndexStore {
     if (!addresses.length) return []
     return this.query(`SELECT raw FROM index_events WHERE block_number BETWEEN ? AND ? AND address IN (${addresses.map(() => '?').join(',')}) ORDER BY block_number,log_index`, from, to, ...addresses.map(a => a.toLowerCase())).map(row => json<ChainLog>(row.raw))
   }
+  chartRows(pool: string, from: number, to: number): { log: ChainLog; block: Block }[] {
+    const filter = pool.length === 42 ? 'address=?' : "lower(json_extract(args,'$.id'))=?"
+    return this.query(`SELECT value,raw FROM index_events WHERE event='Swap' AND ${filter} AND block_number BETWEEN ? AND ? ORDER BY block_number,log_index LIMIT 5001`, pool.toLowerCase(), from, to).map(row => {
+      const event = json<IndexedEvent>(row.value)
+      return { log: json<ChainLog>(row.raw), block: { number: event.blockNumber, hash: event.blockHash, timestamp: event.timestamp } }
+    })
+  }
   cursor(id: string): SavedCursor | null { return json(this.query('SELECT value FROM index_cursors WHERE id=? AND expires>?', id, Date.now())[0]?.value ?? 'null') }
   saveCursor(cursor: SavedCursor): string {
     this.query('DELETE FROM index_cursors WHERE expires<=?', Date.now())

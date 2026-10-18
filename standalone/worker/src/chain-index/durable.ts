@@ -2,7 +2,7 @@ import { EVENTS, record, same } from '../contracts'
 import { toEventSelector } from 'viem'
 import { matchesTopics } from './log-cache'
 import { networkProfile, type NetworkProfileId } from '../../../network-profile'
-import { BadRequest } from '../dex-data'
+import { BadRequest, integer } from '../dex-data'
 import { actorName, baseConfig, currentConfig } from './config'
 import { indexPage, IndexRestart } from './api'
 import { IndexStore } from './store'
@@ -23,6 +23,16 @@ export class SodaChainIndex {
         const read = indexFetch(config)
         if (!await verifyIndex(store, read)) throw new IndexRestart('Chain changed; index rebuilding')
         url.pathname = url.pathname.slice(id.length + 1)
+        if (url.pathname === '/chart-source' && request.method === 'GET' && id === '196-test') {
+          const pool = url.searchParams.get('pool'), anchor = store.anchor()
+          if (!pool || !/^0x(?:[0-9a-f]{40}|[0-9a-f]{64})$/i.test(pool)) throw new BadRequest('Invalid pool')
+          if (!anchor) { await this.state.storage.setAlarm(Date.now() + 1000); return Response.json({ error: 'Index warming up' }, { status: 503 }) }
+          const from = integer(url.searchParams.get('fromBlock'), config.fromBlock)
+          const to = Math.min(integer(url.searchParams.get('toBlock'), anchor.number), anchor.number)
+          if (from < config.fromBlock || from > to) throw new BadRequest('Invalid block range')
+          if (await this.state.storage.getAlarm() === null) await this.state.storage.setAlarm(Date.now() + 1000)
+          return Response.json({ asOf: anchor, rows: store.chartRows(pool, from, to) })
+        }
         if (url.pathname === '/logs' && request.method === 'POST' && id === '196-test') {
           const filter: unknown = await request.json()
           if (!record(filter) || typeof filter.fromBlock !== 'string' || typeof filter.toBlock !== 'string' || !/^0x[0-9a-f]+$/i.test(filter.fromBlock) || !/^0x[0-9a-f]+$/i.test(filter.toBlock) || !Array.isArray(filter.topics)) return Response.json({ logs: null })

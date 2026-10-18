@@ -25,7 +25,7 @@ function sourceLogs(chain) {
     data: chain === 196 ? encodeAbiParameters(parseAbiParameters('int256,int256,uint160,uint128,int24'), [1n, -1n, 1n, 1n, 0]) : i === 22 ? '0x' : encodeAbiParameters(parseAbiParameters('uint256'), [BigInt(i + 1)]) }))
 }
 const entry = resolve(folder, 'entry.ts'), bundle = resolve(folder, 'worker.mjs')
-await writeFile(entry, `import {chainIndexApi} from ${JSON.stringify(resolve(root, 'standalone/worker/src/chain-index/durable.ts'))};export {SodaChainIndex} from ${JSON.stringify(resolve(root, 'standalone/worker/src/chain-index/durable.ts'))};export default {fetch(request,env){return chainIndexApi(request,env,new URL(request.url).pathname.startsWith('/mining/')?'1952-mining-test':'196-test')}}`)
+await writeFile(entry, `import {indexedChartSource} from ${JSON.stringify(resolve(root, 'standalone/worker/src/chain-index/chart-source.ts'))};import {chainIndexApi} from ${JSON.stringify(resolve(root, 'standalone/worker/src/chain-index/durable.ts'))};export {SodaChainIndex} from ${JSON.stringify(resolve(root, 'standalone/worker/src/chain-index/durable.ts'))};export default {fetch(request,env){if(new URL(request.url).pathname==='/chart')return indexedChartSource(env)(new URL(request.url)).then(data=>Response.json(data));return chainIndexApi(request,env,new URL(request.url).pathname.startsWith('/mining/')?'1952-mining-test':'196-test')}}`)
 await build({ entryPoints: [entry], outfile: bundle, bundle: true, format: 'esm', platform: 'browser', target: 'es2022' })
 const options = () => ({ name: 'chain-index-fixture', script: readFileSync(bundle, 'utf8'), modules: true, compatibilityDate: '2026-10-18', port: 0, cf: false, log: new Log(LogLevel.NONE),
   durableObjects: { CHAIN_INDEX: { className: 'SodaChainIndex', useSQLite: true } }, resourcePersistencePath: resolve(folder, 'persist'), unsafeInspectDurableObjects: true, telemetry: { enabled: false },
@@ -52,6 +52,7 @@ try {
   const cold = await read('/api/index/pools'); assert.equal(cold.body.pools.length, 2); assert.equal(cold.body.index.syncing, true)
   const miningCold = await read('/mining/api/index/status'); assert.equal(miningCold.body.chainId, 1952)
   await until(async () => !(await read('/api/index/status')).body.syncing && !(await read('/mining/api/index/status')).body.syncing, 'both actors indexed')
+  const chart = await read('/chart?pool=' + active.v3.address + '&interval=5m'); assert.equal(chart.status, 200); assert.equal(chart.body.rows.length, 23); assert.equal(chart.body.rows[0].block.timestamp, 1000)
   const firstPage = await read('/api/index/events'); assert.equal(firstPage.body.events.length, 10); assert.ok(firstPage.body.nextCursor)
   const second = await read('/api/index/events?cursor=' + firstPage.body.nextCursor); assert.equal(second.body.events.length, 10)
   const third = await read('/api/index/events?cursor=' + second.body.nextCursor); assert.equal(third.body.events.length, 3); assert.equal(third.body.nextCursor, null)

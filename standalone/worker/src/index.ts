@@ -1,3 +1,4 @@
+import { indexedChartSource } from './chain-index/chart-source'
 import { indexedDexFetch } from './chain-index/log-cache'
 import { chainIndexApi } from './chain-index/durable'
 import type { IndexEnv } from './chain-index/types'
@@ -63,7 +64,7 @@ export default {
       return Response.json({ error: 'Contracts are not deployed for this network profile', chainId: profile.chainId }, { status: 503 })
     if (path === '/api/orders' || path.startsWith('/api/orders/')) return ordersApi(request, env.ORDERS_API?.fetch.bind(env.ORDERS_API))
     if (path.startsWith('/api/reference/')) return referenceApi(request)
-    if (path.startsWith('/api/dex/')) return dexApi(request, indexedDexFetch(env))
+    if (path.startsWith('/api/dex/')) return dexApi(request, indexedDexFetch(env), undefined, indexedChartSource(env))
     if (path.startsWith('/api/')) return Response.json({ error: 'Not found' }, { status: 404 })
     const response = await env.ASSETS.fetch(request)
     const headers = new Headers(response.headers)
