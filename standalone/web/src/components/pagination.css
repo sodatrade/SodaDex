@@ -1,0 +1,7 @@
+.list-pagination { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding-top: 20px; color: var(--soda-muted); font-size: 12px; }
+.list-pagination > div { display: flex; align-items: center; gap: 12px; }
+.list-pagination .button { background: var(--soda-surface); border-color: var(--soda-line); color: var(--soda-text); }
+.list-pagination .button:hover:not(:disabled) { border-color: var(--soda-accent); background: var(--soda-accent-dim); }
+.list-pagination .button:disabled { background: var(--soda-raised); color: var(--soda-muted); }
+.list-pagination span { font-variant-numeric: tabular-nums; }
+@media (max-width: 540px) { .list-pagination { justify-content: center; }.list-pagination > span { width: 100%; text-align: center; } }

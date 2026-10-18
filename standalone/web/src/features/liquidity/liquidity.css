@@ -18,6 +18,9 @@
 .lp-pool { border-top: 1px solid var(--soda-line-soft); min-height: 98px; }
 .lp-pool > .lp-actions { justify-content: flex-end; flex-wrap: nowrap; gap: 4px; }
 .lp-pool .button { font-size: 12px; padding-left: 12px; padding-right: 12px; }
+.lp-pool .button-secondary { background: var(--soda-surface); border-color: color-mix(in srgb, var(--soda-muted) 50%, var(--soda-surface)); color: var(--soda-text); }
+.lp-pool .button-secondary:hover:not(:disabled) { background: var(--soda-accent-dim); border-color: var(--soda-accent); }
+.lp-pool .button:disabled { background: var(--soda-raised); color: var(--soda-muted); border-color: var(--soda-line); }
 .lp-pool-protocol { font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .lp-pool-status { font-size: 12px; color: var(--soda-muted); }
 .lp-pair, .lp-currency { display: inline-flex; align-items: center; gap: 9px; flex-wrap: wrap; min-width: 0; max-width: 100%; }
@@ -75,7 +78,6 @@
 .lp-approvals li { margin-bottom: 12px; overflow-wrap: anywhere; }
 .lp-approvals span { display: block; color: var(--soda-muted); line-height: 1.7; }
 .lp-full-width { width: 100%; }
-.lp-back-swap { margin-top: 24px; }
 .lp-quote { border-top: 1px solid var(--soda-line); margin-top: 16px; padding-top: 16px; }
 @media (max-width: 1050px) {
   .lp-pool, .lp-pool-heading { grid-template-columns: minmax(0, 1fr) 105px 90px 210px; gap: 14px; padding-left: 20px; padding-right: 20px; }

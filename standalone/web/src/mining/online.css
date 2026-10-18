@@ -5,9 +5,12 @@
 .mining-online-heading .button { flex: none; }
 .mining-online-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-items: stretch; }
 .mining-online-form { display: flex; flex-direction: column; align-items: stretch; gap: 10px; }
-.mining-online-form label { font-size: 13px; font-weight: 550; color: var(--soda-muted); }
-.mining-online-form input, .mining-online-recovery input { min-width: 0; width: 100%; border: 1px solid var(--soda-line); border-radius: 8px; padding: 13px 14px; color: var(--soda-text); background: var(--soda-field); font: inherit; }
-.mining-online-form input { margin-bottom: 8px; }.mining-online-form input:focus-visible, .mining-online-recovery input:focus-visible { outline: 2px solid var(--soda-accent); outline-offset: 2px; }
+.mining-online-form label { font-size: 13px; font-weight: 550; color: var(--soda-text); }
+.mining-online-form input, .mining-online-recovery input { min-width: 0; width: 100%; border: 1px solid color-mix(in srgb, var(--soda-muted) 75%, var(--soda-surface)); border-radius: 8px; padding: 13px 14px; color: var(--soda-text); background: var(--soda-surface); font: inherit; transition: border-color .18s; }
+.mining-online-form input { margin-bottom: 8px; }
+.mining-online-form input:hover:not(:disabled), .mining-online-recovery input:hover:not(:disabled) { border-color: var(--soda-accent); }
+.mining-online-form input:focus-visible, .mining-online-recovery input:focus-visible { border-color: var(--soda-accent); outline: 1px solid var(--soda-accent); outline-offset: 0; }
+.mining-online-form input:disabled, .mining-online-recovery input:disabled { background: var(--soda-raised); color: var(--soda-muted); border-color: var(--soda-line); cursor: not-allowed; }
 .mining-online-form .button { margin-top: 10px; }.mining-online-form small { color: var(--soda-muted); line-height: 1.6; }
 .mining-online-form, .mining-online-policy { min-width: 0; padding: 20px; border: 1px solid var(--soda-line); background: var(--soda-field); border-radius: var(--soda-radius-control); }
 .mining-online-policy h3, .mining-online-jobs h3 { margin: 0 0 16px; font-size: 15px; }

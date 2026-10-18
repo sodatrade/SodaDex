@@ -20,6 +20,27 @@ function mount(ui: ReactElement): void {
   render(<QueryClientProvider client={client}><PreferencesProvider>{ui}</PreferencesProvider></QueryClientProvider>)
 }
 describe('market and history user paths', () => {
+  it('shows a noninteractive loading selector and never queries market data without a pool', () => {
+    vi.spyOn(api, 'getPools').mockImplementation(() => new Promise(() => {}))
+    const market = vi.spyOn(api, 'getMarket')
+    mount(<MarketPage />)
+    expect(screen.getByRole('combobox', { name: '流动性池' })).toBeDisabled()
+    expect(screen.getByRole('combobox')).toHaveTextContent('正在读取链上数据')
+    expect(screen.getByRole('button', { name: '读取区间' })).toBeDisabled()
+    expect(market).not.toHaveBeenCalled()
+  })
+  it('distinguishes failed discovery from an empty catalog and retries only the catalog', async () => {
+    const getPools = vi.spyOn(api, 'getPools').mockRejectedValueOnce(Error('offline')).mockResolvedValue({ ...base, pools: [] })
+    const market = vi.spyOn(api, 'getMarket'), user = userEvent.setup()
+    mount(<MarketPage />)
+    expect(await screen.findByRole('alert')).toHaveTextContent('数据暂不可用')
+    expect(screen.getByRole('combobox')).toHaveTextContent('数据暂不可用')
+    await user.click(screen.getByRole('button', { name: '重试' }))
+    expect(await screen.findByRole('status')).toHaveTextContent('暂无可用的测试池')
+    expect(screen.getByRole('combobox')).toBeDisabled()
+    expect(getPools).toHaveBeenCalledTimes(2)
+    expect(market).not.toHaveBeenCalled()
+  })
   it('renders onchain price and raw volume without inventing fiat TVL or LP income', async () => {
     vi.spyOn(api, 'getPools').mockResolvedValue({ ...base, pools: [pool] })
     vi.spyOn(api, 'getMarket').mockResolvedValue({ ...base, pool,
@@ -29,6 +50,7 @@ describe('market and history user paths', () => {
       reserves: { token0Raw: '2000000', token1Raw: '20000000000000000', reason: null }, tvlUsd: null, apr: null, unavailableReasons: [], priceHistory: [] })
     mount(<MarketPage />)
     expect(await screen.findByText('1 USD₮0 = 0.008 WOKB')).toBeVisible()
+    expect(screen.getByRole('combobox')).toBeEnabled()
     expect(screen.getByText('1.234567 USD₮0')).toBeVisible()
     expect(screen.getByText(/不等于已领取的 LP 收入/)).toBeVisible()
     expect(screen.getByText(/暂不显示美元 TVL 或 APR/)).toBeVisible()

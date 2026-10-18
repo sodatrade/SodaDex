@@ -2,6 +2,7 @@ import './liquidity.css'
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useState, type ReactElement } from 'react'
 import { Button, Icon } from '../../components/primitives'
+import { Pagination, usePagination } from '../../components/Pagination'
 import { CHAIN_ID } from '../../domain/assets'
 import { liquidityText } from '../../i18n/liquidity'
 import type { WalletController } from '../../lib/useWallet'
@@ -21,12 +22,11 @@ import { useLiquidityOperation } from './useLiquidityOperation'
 interface Props {
   wallet: WalletController
   onConnect: () => void
-  onSwap: () => void
 }
 type Editor =
   | { kind: 'mint'; pool?: LiquidityPool }
   | { kind: 'increase' | 'decrease' | 'collect' | 'transfer' | 'burn'; position: LiquidityPosition }
-export function LiquidityPage({ wallet, onConnect, onSwap }: Props): ReactElement {
+export function LiquidityPage({ wallet, onConnect }: Props): ReactElement {
   const [tab, setTab] = useState<'pools' | 'positions'>('pools')
   const [detail, setDetail] = useState<LiquidityPool>()
   const [editor, setEditor] = useState<Editor>()
@@ -74,9 +74,10 @@ export function LiquidityPage({ wallet, onConnect, onSwap }: Props): ReactElemen
   const owned = (position: LiquidityPosition): boolean =>
     !!wallet.session && correctChain && sameAddress(position.owner, wallet.session.address)
   const visiblePositions = positions.data ?? []
+  const positionPagination = usePagination(visiblePositions, wallet.session?.address.toLowerCase())
   const extraFound =
     found &&
-    !visiblePositions.some((position) => position.protocol === found.protocol && position.tokenId === found.tokenId)
+    !positionPagination.items.some((position) => position.protocol === found.protocol && position.tokenId === found.tokenId)
       ? [found]
       : []
   return (
@@ -154,7 +155,7 @@ export function LiquidityPage({ wallet, onConnect, onSwap }: Props): ReactElemen
                 <p className="lp-empty">{l('emptyPositions')}</p>
               ) : null}
               <div className="lp-position-list">
-                {[...visiblePositions, ...extraFound].map((position) => (
+                {[...positionPagination.items, ...extraFound].map((position) => (
                   <div key={`${position.protocol}:${position.tokenId}`}>
                     <PositionCard
                       position={position}
@@ -166,15 +167,12 @@ export function LiquidityPage({ wallet, onConnect, onSwap }: Props): ReactElemen
                   </div>
                 ))}
               </div>
+              <Pagination {...positionPagination} />
               <PositionLookup l={l} onPosition={setFound} />
             </>
           ) : null}
         </div>
       )}
-      <Button appearance="ghost" className="lp-back-swap" onClick={onSwap}>
-        {l('backSwap')}
-        <Icon name="arrow" size={15} />
-      </Button>
       {detail && (
         <PoolDetailDialog
           pool={detail}

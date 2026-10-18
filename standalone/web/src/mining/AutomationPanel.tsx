@@ -3,6 +3,7 @@ import { useState, type ReactElement } from 'react'
 import { formatUnits } from 'viem'
 import type { MiningAddress, MiningProductDeployment } from '../../../mining-products'
 import { Button, Surface } from '../components/primitives'
+import { Pagination, usePagination } from '../components/Pagination'
 import { usePreferences } from '../preferences/context'
 import { loadOnlineStatus, requestOnlineCheck, type MiningOnlineJob } from './onlineApi'
 import { onlineMessages, onlineReason, type MiningOnlineMessageKey } from './onlineMessages'
@@ -15,6 +16,7 @@ export function AutomationPanel({ deployment: d, token, disabled }: {
   const [busy, setBusy] = useState(false), [queued, setQueued] = useState(false), [error, setError] = useState(false)
   const status = useQuery({ queryKey: ['mining-online-status', d.version], queryFn: () => loadOnlineStatus(d), retry: false, refetchInterval: 10_000 })
   const data = status.data
+  const pagination = usePagination(data?.jobs ?? [], d.version)
   const run = async (): Promise<void> => {
     if (busy || disabled || !data?.executionEnabled) return
     setBusy(true); setQueued(false); setError(false)
@@ -50,13 +52,14 @@ export function AutomationPanel({ deployment: d, token, disabled }: {
     </>}
     {queued && <p role="status">{m.queued}</p>}{error && <p role="alert">{m.onlineServiceUnavailable}</p>}
     {data && <div className="mining-online-jobs"><h3>{m.jobs}</h3>
-      {!data.jobs.length ? <p className="dialog-note">{m.noJobs}</p> : <ol>{data.jobs.map((job) => <li key={job.id}>
+      {!data.jobs.length ? <p className="dialog-note">{m.noJobs}</p> : <ol>{pagination.items.map((job) => <li key={job.id}>
         <div className="mining-online-job-title"><strong>{m[kind[job.kind]]}</strong><span>{m[state[job.status] ?? 'statusUnknown']}</span></div>
         {job.reason && <p>{onlineReason(job.reason, m)}</p>}
         {job.token && <p className="mining-online-address">{m.jobToken}: {job.token}</p>}
         {job.hash && <a href={`https://www.oklink.com/xlayer-test/tx/${job.hash}`} target="_blank" rel="noreferrer">{m.transaction} ↗</a>}
         <small>{m.updated} <time dateTime={new Date(job.updatedAt).toISOString()}>{new Date(job.updatedAt).toLocaleString(locale)}</time></small>
       </li>)}</ol>}
+      <Pagination {...pagination} />
     </div>}
   </Surface>
 }

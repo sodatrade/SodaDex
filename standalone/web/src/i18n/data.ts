@@ -1,6 +1,6 @@
 import type { Locale } from '../preferences/model'
 const zh = {
-  market: '行情', history: '历史', marketTitle: '链上的每一次流动。', historyTitle: '交易记录，随时可查。',
+  market: '行情', history: '历史', marketTitle: '链上的每一次流动。', historyTitle: '交易记录，随时可查。', noPools: '暂无可用的测试池',
   marketNote: '以下为 SodaDEX 测试池的链上数据。池内价格并非独立市场参考价。',
   historyNote: '分页读取 SodaDEX 合约事件。记录按区块扫描，尚未覆盖的区间不会显示为零。',
   loading: '正在读取链上数据…', unavailable: '数据暂不可用', retry: '重试', pool: '流动性池', price: '池内价格',
@@ -20,7 +20,7 @@ const zh = {
 } as const
 type DataMessages = Record<keyof typeof zh, string>
 const en: DataMessages = {
-  market: 'Market', history: 'History', marketTitle: 'Every move, onchain.', historyTitle: 'Your activity, always traceable.',
+  market: 'Market', history: 'History', marketTitle: 'Every move, onchain.', historyTitle: 'Your activity, always traceable.', noPools: 'No test pools available',
   marketNote: 'Live SodaDEX test pool data. Pool prices are not an independent market reference.',
   historyNote: 'SodaDEX contract events are scanned in pages. Unscanned ranges are never presented as zero activity.',
   loading: 'Reading onchain data…', unavailable: 'Data unavailable', retry: 'Retry', pool: 'Pool', price: 'Pool price',
@@ -39,7 +39,7 @@ const en: DataMessages = {
   scanRestart: 'The chain or scan cursor changed. Restart this range.',
 }
 const yue: DataMessages = {
-  ...zh, market: '行情', history: '紀錄', marketTitle: '鏈上每一次流動。', historyTitle: '交易紀錄，隨時查到。',
+  ...zh, market: '行情', history: '紀錄', marketTitle: '鏈上每一次流動。', historyTitle: '交易紀錄，隨時查到。', noPools: '暫時冇可用測試池',
   marketNote: '以下係 SodaDEX 測試池嘅鏈上數據。池內價格唔係獨立市場參考價。',
   historyNote: '分頁讀取 SodaDEX 合約事件。未掃描嘅區間唔會當成零交易。', loading: '讀取鏈上數據中…',
   unavailable: '數據暫時用唔到', retry: '再試', pool: '流動性池', price: '池內價格', volume: '掃描區間交易量',

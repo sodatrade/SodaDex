@@ -1,5 +1,6 @@
 import { useState, type ReactElement } from 'react'
 import { Button, Icon, Surface } from '../components/primitives'
+import { Pagination, usePagination } from '../components/Pagination'
 import { shortenAddress } from '../lib/address'
 import { rpc } from '../lib/readRpc'
 import { NETWORK } from '../network'
@@ -17,6 +18,7 @@ export function MiningHistoryPanel({ entries, account, onUpdate }: { account?: s
   const { locale } = usePreferences(), m = miningMessages(locale)
   const [scope, setScope] = useState<'all' | 'wallet'>('all')
   const visible = scope === 'wallet' && account ? entries.filter((entry) => entry.from.toLowerCase() === account.toLowerCase()) : entries
+  const pagination = usePagination([...visible].reverse(), `${scope}:${account?.toLowerCase() ?? ''}`)
   const [checking, setChecking] = useState<string>(), [error, setError] = useState(false)
   return <Surface className="mining-action-card mining-history"><header className="mining-history-heading"><h2>{m.history}<span>{visible.length}</span></h2>
     {account && <div className="mining-action-switch" role="group" aria-label={m.history}>
@@ -24,7 +26,7 @@ export function MiningHistoryPanel({ entries, account, onUpdate }: { account?: s
       <Button appearance="ghost" aria-pressed={scope === 'wallet'} onClick={() => setScope('wallet')}>{m.currentWallet}</Button>
     </div>}</header><p className="dialog-note">{m.historyNote}</p>
     {!visible.length && <p className="mining-empty"><Icon name="layers" size={28} />{m.noHistory}</p>}
-    <ol className="mining-history-list">{[...visible].reverse().map((entry) => <li key={entry.hash}>
+    <ol className="mining-history-list">{pagination.items.map((entry) => <li key={entry.hash}>
       <div><strong>{entry.approval && `${m.approval} · `}{entry.action in m ? m[entry.action as MiningMessageKey] : entry.action}</strong>
         <a href={`${NETWORK.explorerUrl}/tx/${entry.hash}`} target="_blank" rel="noreferrer" title={entry.hash}>{shortenAddress(entry.hash)}</a>
         <small><SubmissionTime at={entry.at} locale={locale} /> · {shortenAddress(entry.from)}</small></div>
@@ -38,6 +40,7 @@ export function MiningHistoryPanel({ entries, account, onUpdate }: { account?: s
           }).finally(() => setChecking(undefined))
       }}>{m.receipt}</Button>}
     </li>)}</ol>
+    <Pagination {...pagination} />
     {error && <p role="alert">{m.unavailable}</p>}
   </Surface>
 }

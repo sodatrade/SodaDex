@@ -37,29 +37,32 @@ export function MarketPage(): ReactElement {
       <div className="page-heading"><span className="eyebrow">MARKET / X LAYER</span>
         <h1 id="market-title">{m.market}</h1><p>{m.marketNote}</p></div>
       <div className="data-toolbar">
-        <label>{m.pool}<select value={pool?.id ?? ''} onChange={(e) => setSelected(e.target.value)}>
+        <label>{m.pool}<select value={pool?.id ?? ''} disabled={!pool} onChange={(e) => setSelected(e.target.value)}>
+          {!pool && <option value="">{pools.isPending ? m.loading : pools.isError ? m.unavailable : m.noPools}</option>}
           {pools.data?.pools.map((p) => <option key={p.id} value={p.id}>
             {p.protocol.toUpperCase()} · {tokenName(p.token0)} / {tokenName(p.token1)} · {p.fee / 10000}%
           </option>)}
         </select></label>
-        <Button onClick={() => { void pools.refetch(); void market.refetch() }} disabled={pools.isFetching || market.isFetching}>
+        <Button onClick={() => { void pools.refetch(); if (pool) void market.refetch() }} disabled={pools.isFetching || market.isFetching}>
           <Icon name="refresh" size={16} />{m.retry}
         </Button>
       </div>
       <form className="data-range" onSubmit={(e) => {
         e.preventDefault()
+        if (!pool) return
         if (!fromBlock && !toBlock) { setRange(undefined); setRangeError(false); return }
         const from = Number(fromBlock), to = Number(toBlock)
         if (!/^\d+$/.test(fromBlock) || !/^\d+$/.test(toBlock) || !Number.isSafeInteger(from) || !Number.isSafeInteger(to) || from > to) { setRangeError(true); return }
         setRangeError(false); setRange({ fromBlock: from, toBlock: to })
       }}>
-        <label>{m.fromBlock}<input value={fromBlock} onChange={(e) => setFromBlock(e.target.value)} inputMode="numeric" placeholder={m.recent} /></label>
-        <label>{m.toBlock}<input value={toBlock} onChange={(e) => setToBlock(e.target.value)} inputMode="numeric" placeholder={m.recent} /></label>
-        <Button type="submit">{m.applyRange}</Button>
+        <label>{m.fromBlock}<input disabled={!pool} value={fromBlock} onChange={(e) => setFromBlock(e.target.value)} inputMode="numeric" placeholder={m.recent} /></label>
+        <label>{m.toBlock}<input disabled={!pool} value={toBlock} onChange={(e) => setToBlock(e.target.value)} inputMode="numeric" placeholder={m.recent} /></label>
+        <Button type="submit" disabled={!pool}>{m.applyRange}</Button>
       </form>
       {rangeError && <p className="error-text" role="alert">{m.rangeError}</p>}
       {(pools.isPending || (pool && market.isPending)) && <p role="status">{m.loading}</p>}
       {(pools.isError || market.isError) && <p className="error-text" role="alert">{m.unavailable}</p>}
+      {pools.isSuccess && !pool && <p role="status">{m.noPools}</p>}
       {d && <>
         <Surface className="market-price-surface">
           <span className="eyebrow">{pool?.protocol.toUpperCase()} · {symbol0} / {symbol1}</span>
