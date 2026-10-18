@@ -60,7 +60,7 @@ export class Admission {
       throw error
     }
   }
-  /** Migrate old proofs under one snapshot; never infer coverage from the highest old proof. */
+  /** Migrate old proofs along a verified snapshot chain, never from the highest old proof alone. */
   private async reconcileHistory(b: Block): Promise<void> {
     let history = this.repo.read().admissionExpiry
     const previous = history?.scan?.snapshot ?? history?.anchor
@@ -97,7 +97,12 @@ export class Admission {
     await this.assertExpirySnapshot(b)
     this.repo.change(s => {
       if (cursor === scan.requestIds.length) s.admissionExpiry = { pending: true, anchor: { number: b.number, hash: b.hash } }
-      else s.admissionExpiry!.scan!.cursor = cursor
+      else {
+        // This descendant covers every earlier batch as well as this batch's
+        // potentially higher proofs. Persist it atomically with the new cursor.
+        s.admissionExpiry!.scan!.cursor = cursor
+        s.admissionExpiry!.scan!.snapshot = { number: b.number, hash: b.hash }
+      }
     })
     await this.repo.flush()
     if (cursor < scan.requestIds.length) throw new ServiceError('expiry_reconciliation_pending', 503)

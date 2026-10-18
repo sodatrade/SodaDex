@@ -111,6 +111,33 @@ describe('bounded admission expiry history', () => {
     expect(Object.values(f.repo.read().challenges).every(c => c.status === 'authorized' && !c.expiryProof)).toBe(true)
   })
 
+  it('anchors each completed batch at its newer head before accepting mixed-height proof history', async () => {
+    const f = setup(17, true), heights = [1, 2, 3, 4, 5, 6, 7, 8, 144, 145, 146, 147, 148, 149, 150, 151, 10]
+    f.repo.change(s => heights.forEach((height, index) => {
+      s.challenges[requestId(index + 1)].expiryProof = { number: toHex(height), hash: h(height), previousStatus: 'authorized' }
+    }))
+    // Dictionary order puts 0x90..0x97 between 0x8 and 0xa. The second
+    // batch therefore validates blocks above the first snapshot's height.
+    await expect(f.restart().reconcileExpired()).rejects.toThrow('expiry_reconciliation_pending')
+    expect(f.repo.read().admissionExpiry!.scan!.cursor).toBe(8)
+    f.head.number = toHex(200); f.head.hash = h(200)
+    await expect(f.restart().reconcileExpired()).rejects.toThrow('expiry_reconciliation_pending')
+    expect(f.repo.read().admissionExpiry!.scan!.cursor).toBe(16)
+    expect(f.repo.read().admissionExpiry!.scan!.snapshot).toEqual({ number: toHex(200), hash: h(200) })
+
+    const implementation = vi.mocked(f.rpc.request).getMockImplementation()!
+    vi.mocked(f.rpc.request).mockImplementation(async (method, params) => {
+      const value = await implementation(method, params)
+      if (method !== 'eth_getBlockByNumber' || params?.[0] === f.head.number || BigInt(String(params?.[0])) <= 100n) return value
+      return { ...(value as object), hash: h(Number(BigInt(String(params?.[0]))) + 1000) }
+    })
+    f.head.number = toHex(201); f.head.hash = h(201); f.failLogs(true)
+    await expect(f.restart().reconcileExpired()).rejects.toThrow('rpc_unavailable')
+    expect(Object.values(f.repo.read().challenges).every(c => c.status === 'authorized' && !c.expiryProof)).toBe(true)
+    expect(f.repo.read().admissionExpiry).toEqual({ pending: true })
+    expect(() => f.restart().challenge(authority.address, requestId(999), form)).toThrow('expiry_reconciliation_pending')
+  })
+
   it('restores reservations when the final canonical check detects a mid-scan reorg', async () => {
     const f = setup(46), implementation = vi.mocked(f.rpc.request).getMockImplementation()!
     vi.mocked(f.rpc.request).mockImplementation(async (method, params) => {
