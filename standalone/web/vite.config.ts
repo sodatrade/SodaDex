@@ -1,12 +1,12 @@
+import { svelte } from '@sveltejs/vite-plugin-svelte'
 import tailwindcss from '@tailwindcss/vite'
-import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
+import { noServerPrebundle } from './tooling/no-server-prebundle'
 import { preferencesPrepaint } from './tooling/preferences-prepaint'
 import { local, resolveOptions } from './tooling/resolve'
 
 export default defineConfig({
-  plugins: [react(), tailwindcss(), preferencesPrepaint()],
-  define: { __DEV__: JSON.stringify(process.env.NODE_ENV !== 'production') },
+  plugins: [noServerPrebundle(), svelte(), tailwindcss(), preferencesPrepaint()],
   resolve: resolveOptions,
   server: {
     fs: { allow: [local('../../')] },

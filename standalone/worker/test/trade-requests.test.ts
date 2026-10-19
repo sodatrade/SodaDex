@@ -68,3 +68,22 @@ describe('verified pool RPC boundary', () => {
     expect(validContractRequest(quote4('0x00'), false)).toBe(false)
   })
 })
+
+const read = (to: string, data: string): object => ({ to, data })
+
+describe('pool price reads', () => {
+  const stateView = deployment.contracts.v4StateView as Address
+  const slot0 = parseAbi(['function getSlot0(bytes32 poolId) view returns (uint160,int24,uint24,uint24)'])
+
+  it('allows only slot0 on the deployed V3 pool and getSlot0 for the deployed V4 pool id', () => {
+    expect(validContractRequest(read(pools.v3.address, '0x3850c7bd'), false)).toBe(true)
+    expect(validContractRequest(read(stateView, encodeFunctionData({ abi: slot0, functionName: 'getSlot0', args: [pools.v4.poolId as Hex] })), false)).toBe(true)
+  })
+
+  it('rejects other pool calls, other pool ids and price reads presented as simulations', () => {
+    expect(validContractRequest(read(pools.v3.address, '0x1a686502'), false)).toBe(false)
+    expect(validContractRequest(read(pools.v3.address, '0x3850c7bd00'), false)).toBe(false)
+    expect(validContractRequest(read(stateView, encodeFunctionData({ abi: slot0, functionName: 'getSlot0', args: [`0x${'1'.repeat(64)}`] })), false)).toBe(false)
+    expect(validContractRequest({ from: owner, ...read(pools.v3.address, '0x3850c7bd') }, true)).toBe(false)
+  })
+})

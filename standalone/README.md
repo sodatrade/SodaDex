@@ -1,6 +1,6 @@
 # SodaDEX 测试前端
 
-独立构建的 SodaDEX 界面，复用本仓库的 Mycelium 样式工厂。`web/` 保存界面、钱包连接状态和交易流程；`worker/` 提供静态文件及同源 RPC 代理。它不依赖上游缺失的 `tools/uniswap-nx`。
+独立构建的 SodaDEX 界面，使用 Svelte 5、Tailwind CSS v4 与 shadcn-svelte（`web/src/lib/components/ui`）。`web/` 保存界面、钱包连接状态和交易流程；`worker/` 提供静态文件及同源 RPC 代理。它不依赖上游缺失的 `tools/uniswap-nx`。
 
 ## 本地运行
 

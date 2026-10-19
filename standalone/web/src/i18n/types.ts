@@ -6,3 +6,7 @@ export type TranslateArgs<Key extends MessageKey> = [Slots<(typeof zhCN)[Key]>] 
   ? [params?: never]
   : [params: Record<Slots<(typeof zhCN)[Key]>, string | number>]
 export type Translate = <Key extends MessageKey>(key: Key, ...args: TranslateArgs<Key>) => string
+/** Keys whose message has no `{slot}`, so `t(key)` needs no parameters. */
+export type PlainMessageKey = {
+  [Key in MessageKey]: [Slots<(typeof zhCN)[Key]>] extends [never] ? Key : never
+}[MessageKey]

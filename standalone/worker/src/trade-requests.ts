@@ -15,6 +15,12 @@ const ERC20 = parseAbi(['function approve(address spender,uint256 amount)', 'fun
 const PERMITS = parseAbi(['function allowance(address owner,address token,address spender) view returns (uint160,uint48,uint48)', 'function approve(address token,address spender,uint160 amount,uint48 expiration)'])
 const V3_QUOTE = parseAbi(['function quoteExactInputSingle((address tokenIn,address tokenOut,uint256 amountIn,uint24 fee,uint160 sqrtPriceLimitX96) params) returns (uint256,uint160,uint32,uint256)'])
 const V4_QUOTE = parseAbi(['function quoteExactInputSingle(((address currency0,address currency1,uint24 fee,int24 tickSpacing,address hooks) poolKey,bool zeroForOne,uint128 exactAmount,bytes hookData) params) returns (uint256,uint256)'])
+const STATE_VIEW_ABI = parseAbi(['function getSlot0(bytes32 poolId) view returns (uint160,int24,uint24,uint24)'])
+const V3_POOL = pools.v3.address.toLowerCase()
+const STATE_VIEW = deployment.contracts.v4StateView.toLowerCase()
+// Pool price reads for the pools page: exact calldata only, for this deployment's own pools.
+const V3_SLOT0 = '0x3850c7bd'
+const V4_SLOT0 = encodeFunctionData({ abi: STATE_VIEW_ABI, functionName: 'getSlot0', args: [pools.v4.poolId as Hex] })
 const EXECUTE = parseAbi(['function execute(bytes commands,bytes[] inputs,uint256 deadline) payable'])
 const V3_SWAP = parseAbiParameters('address recipient,uint256 amountIn,uint256 amountOutMinimum,bytes path,bool payerIsUser,uint256[] minHopPriceX36')
 const V4_SWAP = parseAbiParameters('((address currency0,address currency1,uint24 fee,int24 tickSpacing,address hooks) poolKey,bool zeroForOne,uint128 amountIn,uint128 amountOutMinimum,uint256 minHopPriceX36,bytes hookData) swap')
@@ -108,6 +114,8 @@ export function validContractRequest(value: unknown, simulation: boolean): boole
       const [quote] = decoded.args
       return same(encodeFunctionData({ abi: V4_QUOTE, functionName: decoded.functionName, args: decoded.args }), data) && knownKey(quote.poolKey) && positive(quote.exactAmount) && quote.hookData === '0x'
     }
+    if (!simulation && amount === 0n && to === V3_POOL) return data.toLowerCase() === V3_SLOT0
+    if (!simulation && amount === 0n && to === STATE_VIEW) return same(data, V4_SLOT0)
     return to === ROUTER && typeof value.from === 'string' && validExecute(data, value.from, amount)
   } catch { return false }
 }
