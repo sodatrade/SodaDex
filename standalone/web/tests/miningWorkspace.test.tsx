@@ -37,8 +37,10 @@ describe('1952 mining wallet workspace', () => {
     const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } })
     render(<QueryClientProvider client={client}><PreferencesProvider><MiningProductsWorkspace deployment={d} wallet={wallet} /></PreferencesProvider></QueryClientProvider>)
     expect(await screen.findByText('合约与实现版本已核验')).toBeVisible()
+    expect(screen.getByText(/项目币不是单台矿机的碎片/)).toBeVisible()
     const user = userEvent.setup()
     await user.click(screen.getByRole('button', { name: '矿机碎片' }))
+    expect(screen.getAllByText(/整个金库的碎片份额/)[0]).toBeVisible()
     const card = screen.getByRole('heading', { name: '兑换' }).closest('section')!
     await user.type(within(card).getByRole('textbox', { name: '数量' }), '0.001')
     await user.click(within(card).getByRole('button', { name: '预览交易' }))

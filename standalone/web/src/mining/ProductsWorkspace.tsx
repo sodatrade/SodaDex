@@ -96,6 +96,7 @@ export function MiningProductsWorkspace({ deployment: base, wallet, activeTab, o
       {ready.isPending ? m.verifying : ready.isSuccess ? m.verified : m.versionError}</span>
       <Button appearance="ghost" disabled={ready.isFetching || busy} onClick={() => void client.invalidateQueries({ predicate: (q) => String(q.queryKey[0]).startsWith('mining-') })}><Icon name="refresh" size={14} />{m.refresh}</Button></div>
     </div>
+    {(tab === 'fundraising' || tab === 'fragments') && <p className="dialog-note">{tab === 'fundraising' ? m.fundraisingNote : m.fragmentNote}</p>}
     {catalog.unavailable && <p className="dialog-note" role="status">{online.serviceUnavailable}</p>}
     {account && balances.data && <details className="mining-wallet-assets"><summary><span><Icon name="wallet" size={16} />{m.balance}</span><span className="mining-wallet-summary"><strong>{formatBalance(balances.data[0], 8)} TEST-FAB</strong><span>{m.allAssets}</span><Icon name="chevron" size={14} /></span></summary><dl className="mining-balances">
       <div><dt><img className="mining-native-icon" src="/assets/okb.png" alt="" />{d.chainId === 196 ? 'OKB' : 'TEST-OKB'}</dt><dd title={native.data === undefined ? undefined : formatUnits(native.data, 18)}>{native.data === undefined ? '—' : formatBalance(native.data, 18)}</dd></div>

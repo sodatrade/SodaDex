@@ -2,7 +2,7 @@ import type { Locale } from '../preferences/model'
 
 const zh = {
   launch: '发行测试项目', automation: '自动处理', launchTitle: '创建 FAB 募资分红项目',
-  launchIntro: '设置名称后，先在钱包签名确认本次请求，再预览并确认链上发行交易。签名认证本身不发币、不转账。',
+  launchIntro: '发行与 FAB 配对的项目币，交易税用于共享矿场采购和分红；不是把一台矿机拆份募资。先签名认证，再预览并确认发行交易。认证本身不发币、不转账。',
   name: '项目名称', symbol: '代币符号', metadata: '资料链接（选填）', fixedRules: '本轮固定测试参数',
   graduation: '毕业募资额', curveFee: '曲线买卖手续费', transferTax: '代币买卖税', taxSplit: '税款分配',
   protection: '毕业后保护期', protocolShare: '平台占税款 1%，创建者 0%，其余进入矿场采购预算',
@@ -39,7 +39,7 @@ const zh = {
 type Messages = Record<keyof typeof zh, string>
 const en: Messages = {
   launch: 'Launch test project', automation: 'Automation', launchTitle: 'Create a FAB fundraising project',
-  launchIntro: 'Set a name, sign to authenticate this request, then review and confirm the on-chain launch. Authentication does not issue tokens or transfer funds.',
+  launchIntro: 'Launch a project token paired with FAB. Trading tax funds shared-farm purchases and rewards; this does not split one miner for fundraising. Authenticate, then review and confirm the launch. Authentication does not issue tokens or transfer funds.',
   name: 'Project name', symbol: 'Token symbol', metadata: 'Metadata link (optional)', fixedRules: 'Fixed test parameters',
   graduation: 'Graduation funding', curveFee: 'Curve trading fee', transferTax: 'Token trading tax', taxSplit: 'Tax allocation',
   protection: 'Post-graduation protection', protocolShare: 'Platform receives 1% of tax; creator 0%; the rest funds miner purchases',
@@ -75,7 +75,7 @@ const en: Messages = {
 }
 const yue: Messages = {
   ...zh, launch: '發行測試項目', automation: '自動處理', launchTitle: '建立 FAB 募資分紅項目',
-  launchIntro: '填好名稱後，先喺銀包簽名認證今次請求，再預覽同確認鏈上發行交易。簽名認證唔會發幣或者轉賬。',
+  launchIntro: '發行同 FAB 配對嘅項目幣，交易稅用於共享礦場採購同分紅；唔係將單台礦機拆份募資。先簽名認證，再預覽同確認發行交易。認證唔會發幣或者轉賬。',
   name: '項目名稱', symbol: '代幣符號', metadata: '資料連結（可留空）', fixedRules: '今輪固定測試參數',
   graduation: '畢業募資額', curveFee: '曲線買賣手續費', transferTax: '代幣買賣稅', taxSplit: '稅款分配', protection: '畢業後保護期',
   protocolShare: '平台佔稅款 1%，建立者 0%，其餘撥入礦場採購預算', issueCost: '發行費同首次買入都係 0；銀包另外支付測試 gas。',

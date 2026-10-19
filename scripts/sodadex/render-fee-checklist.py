@@ -1,176 +1,92 @@
 #!/usr/bin/env python3
-"""Render the product fee checklist from the local profiles; no network or wallet access."""
-
-from decimal import Decimal
+"""Product decision report; render only, never apply fee configuration."""
+from pathlib import Path
 from html import escape
-from fee_policy import PROFILES, ROOT, inspect_profile, read_profile
+out = Path(__file__).resolve().parents[2] / 'deployments/fees/checklist.html'
+groups=[('募资分红：交易和收益怎么收费', [('发行项目费', 'FAB → 平台；现有发行流程按募资币收费', '0', '每次发行收多少 FAB（可为 0）；如要改收费币种，另行决定'), ('募资曲线买卖费', '买入：从支付的 FAB 扣；卖出：从换得的 FAB 扣 → 平台', '买 1%／卖 1%', '买、卖分别收多少；与曲线阶段买卖税分别扣取'), ('项目代币买卖税', '曲线阶段扣 FAB：买入扣支付额，卖出扣换得额 → 税款金库', '买 1%／卖 1%', 'PRD 双侧 1%–10%，默认各 1%；毕业后扣币方式见下一项'), ('毕业后项目币买卖税', '买入：从收到的项目币扣；卖出：从付出的项目币扣 → 税款金库，再换 FAB', '买 1%／卖 1%', '确认沿用现有 V2 扣项目币方式；若要统一扣 FAB，需另定并改实现'), ('税款怎么分', '按金库实际到账的 FAB 分配；毕业后收的项目币先换成 FAB', '平台取税款 1%；发币人取剩余部分 0%；余款买矿机', 'PRD 平台 1%–10%、创作者取余款 0%–50%；转换影响实际到账 FAB'), ('矿机收益服务费', '从实际挖出的 FAB 扣 → 平台；余下 FAB 分给持有人', '0%', 'PRD 默认平台 5%；调费边界待定，非零扣费待实现验证'), ('毕业后的交易池费', '买入项目币扣 FAB；卖出项目币扣项目币。费用留在池内归 LP', 'V2 池 0.3%', '是否沿用 V2 0.3%；另有项目币买卖税，不能简单相加当作到手比例'), ('毕业锁定 LP 的收入分成', '领取所得可同时有 FAB 和项目币，分别按比例分给平台与发币人', '平台 50%／发币人 50%', '两方各分多少；是否统一换成 FAB 再支付另定'), ('V2 协议抽成', '通过增发 LP 份额给协议钱包实现；不是直接再扣用户一笔 FAB', '关闭', '是否开启、收款钱包；兑现所得可含 FAB 和项目币'), ('开盘防抢跑附加费', '曲线阶段买入从支付的 FAB 扣 → 平台；创建时首笔买入豁免', '关闭', '是否启用、起始费率、持续多久；测试关闭')]), ('矿机碎片：买卖、存取和分红', [('碎片买卖费', '买碎片：扣 FAB；卖碎片：扣碎片币。来自本次输入金额', '买、卖各 0.5%', 'PRD 已定各 0.5%；不另叠 V2 0.3%'), ('碎片交易费分成', '买入费按 FAB 分；卖出费按碎片币分 → 平台和 LP', '平台 30%／LP 70%', 'PRD 已定平台 30%／LP 70%；平台是否换成 FAB 另定'), ('碎片挖矿收益服务费', '从实际挖出的 FAB 扣 → 平台；余下 FAB 用于分红', '0%', 'PRD 已定 10%；测试零费不代表生产费率'), ('存入／赎回矿机费', 'PRD 已定不收产品费；用户自行支付 OKB Gas', '存入 0%／赎回 0%', 'PRD 已定存取免费；用户付 Gas，赎回销毁份额不算手续费')]), ('普通兑换和限价单（按 FAB／项目币说明）', [('V3／V4 池交易费', '若为 FAB／项目币：买入扣 FAB，卖出扣项目币 → LP', '已有 196 测试池：V3 0.01%，V4 0%', '按池设费率；这里只说明扣币方式，不代表当前带税项目币已支持 V3／V4'), ('V3 协议抽成', '从输入币的池手续费中分取：买入 FAB，卖出项目币 → 平台', '测试配置关闭', '是否开启、分取比例；不在已有池费之外再收'), ('V4 协议费', '从输入币扣：买入 FAB，卖出项目币 → 平台', '测试配置 0%', '各方向费率；与 LP 费共同计入报价'), ('页面额外服务费', '待定：扣输入币、输出币，还是统一收 FAB', '0%', '是否收费、费率、扣费币种及基数；当前不收'), ('限价单佣金', '待定：成交时扣 FAB 或项目币；当前不收佣金', '0%', '是否收费、费率、扣输入或输出；成交池费用仍适用')])]
+css=''' :root{--ink:#18352d;--muted:#5e7069;--line:#dce7e0;--accent:#18734e}*{box-sizing:border-box}body{margin:0;background:#f4f8f5;color:var(--ink);font:16px/1.7 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}main{overflow-wrap:anywhere;max-width:1120px;margin:32px auto;background:#fff;border:1px solid var(--line);border-radius:16px;padding:44px 48px}h1{font-size:32px;line-height:1.35;letter-spacing:-.6px;margin:10px 0 16px}h2{font-size:22px;margin:0 0 14px}p{margin:8px 0 14px}.eyebrow{font-size:13px;color:var(--accent);letter-spacing:1px}.lead{font-size:18px}.muted,small{color:var(--muted);font-size:13px}nav{display:flex;gap:16px;flex-wrap:wrap;margin:24px 0}a{color:var(--accent);text-underline-offset:4px}section{border-top:1px solid var(--line);margin-top:28px;padding-top:26px}table{border-collapse:collapse;width:100%;font-size:14px;table-layout:fixed}th,td{padding:13px 12px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;overflow-wrap:anywhere}th{background:#edf6f0;font-weight:600}th:nth-child(1){width:20%}th:nth-child(2){width:25%}th:nth-child(3){width:23%}th:nth-child(4){width:32%}td:first-child{font-weight:600}.fill{display:block;color:#6b7b73;font-size:12px;margin-top:6px}.callout{background:#f0f7f2;border-left:3px solid var(--accent);padding:14px 18px;margin:20px 0}.callout p{margin:0}.checklist{padding-left:22px}.checklist li{margin:10px 0}.sign{padding:18px 0;line-height:2.3}.sources{font-size:12px;color:var(--muted);overflow-wrap:anywhere}[contenteditable]{background:#fff;border:1px solid #cdded3;border-radius:6px;padding:8px;min-height:54px}[contenteditable]:focus{outline:2px solid var(--accent);outline-offset:2px}.flow-list{list-style:none;padding:0;max-width:850px;margin:18px auto}.flow-list li{position:relative;border:1px solid var(--line);border-radius:10px;padding:16px 20px;margin:0 0 30px;background:#f8fcf9}.flow-list li:not(:last-child):after{content:"↓";position:absolute;bottom:-29px;left:50%;color:var(--accent);font-size:22px}.flow-list p{margin:4px 0 0}.flow-list li{break-inside:avoid}summary{cursor:pointer;padding:10px 0}a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:4px}@media(max-width:680px){main{margin:10px;padding:24px 18px;border-radius:10px}h1{font-size:26px}h2{font-size:20px}thead{display:none}table,tr,td,tbody{display:block;width:100%}tr{padding:12px 0;border-bottom:1px solid var(--line)}td{padding:4px 0;border:0}td:first-child{font-size:16px;margin-bottom:5px}td:not(:first-child):before{content:attr(data-label) '：';font-weight:600;color:var(--muted)}.fill{margin:5px 0}nav{gap:10px}}@media print{body{background:#fff;font-size:12px}main{max-width:none;border:0;margin:0;padding:0}nav,details{display:none}h1{font-size:26px}h2{font-size:18px}table{font-size:11px}th,td{padding:8px}tr{break-inside:avoid}section{margin-top:20px;padding-top:18px}h2{break-after:avoid}.callout{break-inside:avoid}}'''
+parts=['<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SodaDEX｜生产收费决策单</title><style>'+css+'</style></head><body><main>',
+'<header><div class="eyebrow">SODADEX · 产品决策 · 2026 年 10 月 19 日</div><h1>正式上线，哪些钱要收、怎么分？</h1><p class="lead">请产品逐项确认：<strong>收不收费、收多少、分给谁。</strong><br>先看两套流程，再核对 PRD 已定基线、填写生产待确认事项。测试值仅供参考，不会自动用于生产。</p><p class="muted">范围：SodaDEX 的矿机募资发行、碎片交易，以及相关 DEX 收费。FAB 原有 CPU、晶体管、流片和矿机市场规则已定，不在本次决策范围。LP 指向交易池提供资金的人。</p><div class="callout"><p><strong>已确定事项：募资使用 FAB，交易对为 FAB／项目币。</strong><br>每个募资项目以自己发行的项目币与 FAB 配对。例如项目发行 A 币，则交易对为 FAB／A；用户用 FAB 买入 A，卖出 A 换回 FAB。<br>FAB 合约地址：<code>0x72f349b1eee7833b26f8c81a8410775a4e231ed2</code><br><small>地址由项目方提供；仅确认募资资产，不代表各项手续费也统一用 FAB 支付。所属网络与代币信息在部署接入前核验。</small></p></div></header>',
+'<div class="callout"><p><strong>先分清三笔钱：</strong>用户交的手续费、手续费内部的分成、付给网络的 Gas。<br>“平台拿手续费的 30%”不等于“向用户收成交额的 30%”；Gas 不属于平台收入。</p></div>',
+'<nav aria-label="目录">'+''.join(f'<a href="#s{i}">{title.split("：")[0]}</a>' for i,(title,_) in enumerate(groups,1))+'<a href="#common">共同规则</a></nav>']
+
+summary_rows = [
+('发行项目费','FAB（沿用现有流程）','每次 ____ FAB／免费','平台；收款钱包 ____'),
+('募资曲线买卖费','买、卖都扣 FAB','买 ____%；卖 ____%','平台；收款钱包 ____'),
+('曲线阶段买卖税','买、卖都扣 FAB','买 ____%；卖 ____%','进入税款金库，按下项分配'),
+('毕业后买卖税','现有流程扣项目币，再换 FAB；是否沿用 ____','买 ____%；卖 ____%','进入税款金库，按下项分配'),
+('税款分成（不是新增收费）','按金库实际收到的 FAB 分','平台 ____%；发币人取剩余部分的 ____%','平台、发币人；余款用于买矿机'),
+('募资项目收益服务费','从挖矿 FAB 收益中扣','____%／免费','平台；余款分给合格持有人'),
+('毕业后 V2 池交易费','买项目币扣 FAB；卖项目币扣项目币','____%（现有 0.3%，待确认）','流动性提供者（LP）'),
+('锁定 LP 收入分成','FAB、项目币分别分；统一换 FAB？____','平台 ____%；发币人 ____%（合计 100%）','平台、发币人；非成交额分成'),
+('V2 协议抽成','通过 LP 份额分配；兑现可含 FAB、项目币','开／关 ____；沿用标准规则？____','协议收款钱包 ____'),
+('开盘防抢跑附加费','现有曲线买入扣 FAB','开／关 ____；起始 ____%；持续 ____','现有归平台；生产确认 ____'),
+('碎片买卖费','买碎片扣 FAB；卖碎片扣碎片币','买 ____%；卖 ____%','平台 ____%；LP ____%（合计 100%）'),
+('碎片收益服务费','从挖矿 FAB 收益中扣','____%／免费','平台；余款用于持有人分红'),
+('存入／赎回矿机费','当前免费；若收费，币种 ____','存入 ____；赎回 ____；计费基数 ____','收款对象 ____'),
+('普通 V3／V4 池交易费','按输入币：买入 FAB；卖出项目币','V3 ____%；V4 ____%','LP；带税项目币兼容性须另验证'),
+('V3 协议抽成','从原池手续费中分取同一种币','开／关 ____；分取 ____','平台；收款钱包 ____'),
+('V4 协议费','按输入币：买入 FAB；卖出项目币','买 ____%；卖 ____%','平台；收款钱包 ____'),
+('页面额外服务费','待定：输入币／输出币／FAB ____','____%／免费；计费基数 ____','平台／其他 ____'),
+('限价单成交佣金','待定：FAB／项目币 ____','____%／免费；扣输入／输出 ____','平台／其他 ____'),
+]
+summary_rows = [row for row in summary_rows if row[0] not in {'曲线阶段买卖税', '毕业后买卖税', '税款分成（不是新增收费）', '募资项目收益服务费', '碎片买卖费', '碎片收益服务费', '存入／赎回矿机费'}]
+summary = '<section id="decisions"><h2>待产品补充：生产上线确认表</h2><p>下表为 PRD 未明确或需要部署前补充的事项。已定收费基线单列在前面，不重复要求定价。币种与收款对象注明“现有”或“沿用”的，是当前实现口径，不等于生产批准；可填写“沿用”或写出新方案。<strong>免费请填 0，分成不是再收费。</strong></p><p class="muted">点击白色填写区域可编辑，完成后打印为 PDF 留档；页面刷新不会保存填写内容。各项机制与测试参考值在后面的说明中。</p><table><thead><tr><th>待拍板事项</th><th>收什么币</th><th>生产费率／金额</th><th>分给谁</th></tr></thead><tbody>'
+for row in summary_rows:
+ summary += '<tr>' + ''.join('<td data-label="'+label+'">'+(escape(value) if j==0 else '<div contenteditable="true" role="textbox" aria-label="'+escape(row[0]+'：'+label)+'">'+escape(value)+'</div>')+'</td>' for j,(value,label) in enumerate(zip(row,['待拍板事项','收什么币','生产费率／金额','分给谁']))) + '</tr>'
+summary += '</tbody></table><p><strong>本表确认：</strong>确认人 __________　日期 __________　适用版本 __________</p><p class="muted">尚未决定的项请标“待定”，不视作免费或允许上线。Gas 补贴及自动执行成本见文末共同规则。</p></section>'
+baseline = '<section id="baseline"><h2>PRD 已定：两种业务与收费基线</h2><p><strong>募资分红：</strong>发行项目币，用交易税采购共享矿场的矿机；项目币不是单台矿机的碎片。<br><strong>矿机碎片：</strong>先存入矿机 NFT，再按算力发行整个金库的份额；无募资成功或失败阶段。首次 1 点基础权重兑换 1,000 份，后续按金库比例发行。</p><table><thead><tr><th>事项</th><th>扣费币种</th><th>PRD 基线</th><th>分配与状态</th></tr></thead><tbody>'
+for row in [
+ ('募资项目买卖税','曲线期 FAB；现有毕业后 V2 扣项目币，再换 FAB','双侧各 1%–10%；默认各 1%','创作者在范围内选择，创建时锁定'),
+ ('募资税款分配','实际收到的 FAB 税款','平台取税款 1%–10%（默认 10%）；创作者取余款 0%–50%（默认 10%）','剩余进入共享矿场；不是新增收费'),
+ ('募资挖矿收益','FAB','平台默认 5%，持有人 95%','PRD 允许调费；权限、上下限及存量生效规则待定；测试未启用此扣费'),
+ ('碎片买卖费','买入扣 FAB；卖出扣碎片币','各 0.5%；平台 30%／LP 70%','按输入币计费，不再叠加一层 AMM 费'),
+ ('碎片收益服务费','实际领取的 FAB 收益','平台 10%，余下 90% 分红','PRD 已定；当前测试零费，生产非零扣费尚需实现验证'),
+ ('碎片存入／赎回','不收产品手续费；网络 Gas 用 OKB','产品费 0','赎回销毁份额不是手续费'),
+ ('碎片分红发放','FAB；网络实际 Gas 为 OKB','约 1 USD 门槛，每日自动分发；否则手动领取','自动 Gas 从分红扣；手动 Gas 用户付。换算、上限及失败处理待补；当前未完整实现')
+]:
+ baseline += '<tr>'+''.join('<td data-label="'+label+'">'+escape(v)+'</td>' for v,label in zip(row,['事项','扣费币种','PRD 基线','分配与状态']))+'</tr>'
+baseline += '</tbody></table><p class="muted">依据：募资分红 V1.5 §0、§6；碎片化 V1.2 §3、§5。PRD 已定不等于生产已部署；本次不改测试费率或生产配置。若产品要改基线，应明确记录变更。</p></section>'
+flows = '<section id="flows"><h2>先看懂：两份 PRD 是两条不同的路</h2><p><strong>这里的“金库份额币”专指 V1.2 矿机碎片金库发行的 ERC-20 币。</strong>它代表同一个金库内合格矿机的共同权益，不绑定原来那一台 NFT，也不是 V1.5 的项目币。</p>'
+for title, intro, steps, exit_note in [
+ ('V1.5 募资分红：发项目币，用交易税买矿机', '适合发行项目的团队和买项目币的用户。用户买的是项目币 A；矿场分红是它附带的权益。', [
+ ('① 发行项目币 A', '发行方创建 FAB 计价的项目；用户支付 FAB 买 A，也可卖 A 换回 FAB。'),
+ ('② 从交易中收税', '只把税款中扣除平台与创作者分成后的余款注入矿场，不是把用户全部买币本金拿去买矿机。'),
+ ('③ 共享矿场记账并采购', '按项目实际注入的 FAB 记录矿场内部份额；多个项目共享矿场，资金足够时采购合格矿机，NFT 由矿场合约持有。'),
+ ('④ 挖矿产出 FAB', '先按各项目的矿场份额分配收益，再按项目内合格持有人权重分红；烧币加权是该项目的规则。'),
+ ('⑤ 用户领取 FAB', '项目币持有人手动领取已结算分红。测试补充规则：矿机购入后就累计收益，不等毕业才开始。')
+ ], '退出：用户卖出项目币 A。项目的矿场内部份额不能转让或撤资，持有 A 不能赎回整台矿机。毕业指进入后续交易阶段，不是单台矿机募资成功。'),
+ ('V1.2 矿机碎片：先存矿机，再发行共同金库份额', '适合已有矿机的矿主，以及想小额持有矿机份额的用户。FABX 金库用 FAB 交易和分红。', [
+ ('① 矿主存入矿机 NFT', '先结算旧收益并校验准入；NFT 转入碎片金库合约保管。只让合格、同质的矿机进入同一金库。'),
+ ('② 给矿主发行份额币', '首次 1 点合格基础权重换 1,000 份；之后按新增权重占金库权重的比例发行。份额代表整个金库，不是一机一币。'),
+ ('③ 建 FAB／份额币交易池', '项目方提供 FAB 和有真实矿机背书的份额作为初始流动性；普通用户支付 FAB 买份额，卖出份额换 FAB。买卖资金进入交易池，不是自动采购预算。'),
+ ('④ 金库统一收取挖矿收益', 'FAB 收益按各时段份额归属累计；卖出前已产生的分红仍归原持有人。池内份额的收益归对应 LP。'),
+ ('⑤ 领取收益或赎回矿机', '份额持有人领取 FAB；也可凑足份额并销毁，取回一台符合条件的完整 NFT。')
+ ], '退出：卖出部分或全部份额，或销毁足额份额赎回合规矿机。不要求原存入者，也不保证取回原来那台；没有“募满才托管”和“失败退款”阶段。')
+]:
+ flows += '<h3>'+title+'</h3><p>'+intro+'</p><ol class="flow-list">'+''.join('<li><strong>'+head+'</strong><p>'+body+'</p></li>' for head,body in steps)+'</ol><div class="callout"><p>'+exit_note+'</p></div>'
+flows += '<h3>三种名称不要混用</h3><table><thead><tr><th>名称</th><th>属于哪套</th><th>用户能否买卖</th><th>代表什么</th></tr></thead><tbody><tr><td>项目币 A</td><td>V1.5 募资分红</td><td>可以，用 FAB 买卖</td><td>项目代币及按规则分红的资格；不能据此赎回矿机</td></tr><tr><td>项目的矿场内部份额</td><td>V1.5 共享矿场</td><td>不可以转让或撤资</td><td>项目注入采购资金后，在共享矿场收益中占多少</td></tr><tr><td>矿机碎片份额币</td><td>V1.2 碎片金库</td><td>可以，用 FAB 买卖</td><td>整个对应金库的共同矿机权益，可按规则销毁赎回 NFT</td></tr></tbody></table><p class="muted">流程图说明 PRD 的产品设计，不代表每个生产功能已实现。非零收益收费、自动分红扣 Gas 等缺口见基线表；BEM 分支仍按此前决定后补。</p></section>'
+parts.insert(2, flows + baseline + summary)
 
 
-def amount(value, divisor, suffix):
-    if value is None:
-        return "待产品确认"
-    return format(Decimal(value) / Decimal(divisor), "f") + suffix
 
+for i,(title,rows) in enumerate(groups,1):
+ parts.append(f'<section id="s{i}"><h2>{i}. {title}</h2><table><thead><tr><th>收费项</th><th>扣什么币／分给谁</th><th>测试参考</th><th>生产确认／调整</th></tr></thead><tbody>')
+ for row in rows:
+  parts.append('<tr>'+''.join(f'<td data-label="{label}">{escape(value)}'+('<span class="fill">上线复核／变更：________________</span>' if j==3 else '')+'</td>' for j,(value,label) in enumerate(zip(row,['收费项','扣什么币／分给谁','测试参考','生产确认／调整'])))+'</tr>')
+ parts.append('</tbody></table>')
+ if i==1: parts.append('<p class="muted">分成示例（按测试规则）：税款金库直接收到或转换后实际收到 100 FAB → 平台 1 FAB，发币人 0 FAB，买矿机预算 99 FAB。这里分的是已收到的税款。</p>')
+ if i==2: parts.append('<p class="muted">收费示例（按测试规则）：输入 100 FAB → 手续费 0.5 FAB，其中平台 0.15 FAB、LP 0.35 FAB。</p>')
+ parts.append('</section>')
+parts.append('''<section id="common"><h2>4. 一起确认这 4 条规则</h2><ol class="checklist">
+<li><strong>收款与分账：</strong>每种平台收入由谁收？发币人、LP 的收入如何领取？明确正式收款钱包，不沿用测试钱包。</li>
+<li><strong>自动执行成本：</strong>限价单、税款转换、采购矿机和收益结算的 Gas，碎片分红按 PRD 从用户分红扣 Gas；其他服务逐项确认承担方，并补充换算方式及上限。X Layer 网络 Gas 用 OKB 支付；如向用户收回成本，用 FAB 还是其他币需产品决定。</li>
+<li><strong>以后调费：</strong>谁能改、最高多少、提前多久告知、是否影响旧项目和旧挂单？部分参数创建后固定，不能默认随时可改。</li>
+<li><strong>无合格持有人期间的收益：</strong>目前单独保留，不给后来买家或平台。生产归属仍由产品决定。</li>
 
-def table(rows):
-    body = ""
-    for row in rows:
-        cells = []
-        for cell in row:
-            first, _, rest = cell.partition("\n")
-            content = escape(first)
-            if rest:
-                content = '<strong>' + content + '</strong><br><span class="cell-note">' + escape(rest) + '</span>'
-            cells.append('<td>' + content + '</td>')
-        body += '<tr>' + ''.join(cells) + '</tr>'
-    return ('<div class="table-wrap" tabindex="0" aria-label="费用表，窄屏可左右滑动"><table><thead><tr>'
-            '<th scope="col">收什么钱，给谁</th><th scope="col">测试怎么设</th><th scope="col">正式上线前要定什么</th>'
-            '</tr></thead><tbody>' + body + '</tbody></table></div>')
-
-
-def render():
-    test, production = read_profile(PROFILES["test"]), read_profile(PROFILES["production"])
-    test_check, production_check = inspect_profile(test, "test"), inspect_profile(production, "production")
-    if not test_check["valid"] or production_check["errors"]:
-        raise ValueError("Invalid fee profiles; check parameters before rendering the checklist")
-    t, p = test["fees"], production["fees"]
-
-    def rate(group, key, divisor=100):
-        return amount(t[group][key], divisor, "%")
-
-    def prod(group, key, decision, divisor=100):
-        return amount(p[group][key], divisor, "%") + "\n" + decision
-
-    mining = [
-        ("创建项目时一次收取的发行费 → 平台",
-         amount(t["mining"]["listingFeeRaw"], 10**8, " TEST-FAB") + "（测试计划）\n可以免费发行；和买卖时收费分开。",
-         "待产品确认\n每次发行收多少，创建时一次结清，不追补已经发行的项目。"),
-        ("刚开盘买入的防抢跑附加费 → 平台",
-         "关闭（测试计划）\n不会在普通买税和平台交易费之外，再加这项开盘附加费。",
-         "待产品确认\n是否启用；如启用，起始为 20%–90%，按设定时长降到零，且与其他买入费合计不得超过 95%。"),
-        ("毕业前买卖的平台交易费 → 平台",
-         "买 " + rate("mining", "curveBuyPlatformBps") + "，卖 " + rate("mining", "curveSellPlatformBps") + "\n现有发行模块固定收取，和下面的代币税分开；不能只改配置设成零。",
-         "待产品确认\n是否沿用这项 1% 固定费用；若要减免，需要修改发行合约并重新验证。"),
-        ("买卖代币时收的税 → 税收金库",
-         "买 " + rate("mining", "buyTaxBps") + "，卖 " + rate("mining", "sellTaxBps") + "\n这是源码允许的最低值；发行和收税已在本地跑通，尚未部署。",
-         "买：" + amount(p["mining"]["buyTaxBps"], 100, "%") + "；卖：" + amount(p["mining"]["sellTaxBps"], 100, "%") + "\n买税、卖税分别在 1%–10% 内确定，创建项目时锁定。"),
-        ("平台从税款里分走多少 → 平台",
-         "实际税款的 " + rate("mining", "protocolShareOfTaxBps") + "\n实际税款分账、进入矿场采购已在本地跑通，尚未部署。",
-         prod("mining", "protocolShareOfTaxBps", "从实际收到的税款中分 1%–10%，不额外向交易者收一次。")),
-        ("发币人从剩余税款里分走多少 → 发币人",
-         "剩余税款的 " + rate("mining", "creatorShareOfNetTaxBps") + "\n先扣平台分成，再算发币人分成；最后的余款用于买矿机。",
-         prod("mining", "creatorShareOfNetTaxBps", "可选 0%–50%；产品文档写的是 10%，尚未批准用于生产。")),
-        ("矿机收益到账后，平台分多少 → 平台",
-         rate("mining", "outputPlatformBps") + "\n本地测试不扣收益服务费；生产收费规则仍需产品决定。",
-         prod("mining", "outputPlatformBps", "产品文档写的是 5%，是否采用待定；只对实际领取到账的收益计算。")),
-        ("项目代币 A 与 FAB 的交易池手续费 → LP",
-         rate("mining", "v2LpBps") + "（已确认的测试规则）\n这是 V2 池的交易费，和代币买卖税分开；已本地跑通，尚未部署。",
-         prod("mining", "v2LpBps", "是否沿用 0.3%；这笔钱给 LP，不全归平台。修改费率需要改合约。")),
-        ("毕业时锁定的 LP 赚到手续费后，平台分多少 → 平台 / 发币人",
-         "平台 " + rate("mining", "graduationLpPlatformShareBps") + "，发币人 50%\n分的是该笔锁定 LP 的收入，不是再向所有交易者收 50%。",
-         "待产品确认\n是否沿用各半分配；现有合约固定如此，调整需要改合约。"),
-        ("V2 池是否再从 LP 收益中分协议收入 → 指定钱包",
-         "关闭（测试计划）\n不在 0.3% 之外加收；测试不启用从 LP 收益中再分一份的开关。",
-         "待产品确认\n是否启用及收款钱包；以后开关变化会影响同一工厂的旧池，不能承诺旧池永远关闭。"),
-    ]
-    fragmentation = [
-        ("买卖矿机碎片的手续费 → 平台和 LP",
-         "买、卖各 " + rate("fragmentation", "tradeBps") + "\n按每笔输入资产计算，只收这一层交易费；已本地实现，尚未部署。",
-         prod("fragmentation", "tradeBps", "产品文档写的是 0.5%；是否采用待定，不能再叠加一层池子手续费。")),
-        ("这笔交易费怎么分 → 平台 / LP",
-         "平台 " + rate("fragmentation", "platformShareOfFeeBps") + "，LP 70%\n换算到交易输入额：平台 0.15%，LP 0.35%；分成计算已写好。",
-         prod("fragmentation", "platformShareOfFeeBps", "是否沿用平台 30%、LP 70%；这两个比例分的是手续费。")),
-        ("碎片对应的矿机收益到账后，平台分多少 → 平台",
-         rate("fragmentation", "outputServiceBps") + "\n本地真实矿机集成已通过，测试不扣收益服务费；尚未部署。",
-         prod("fragmentation", "outputServiceBps", "产品文档写的是 10%，是否采用待定；只对实际领取到账的收益计算。")),
-        ("存入 / 赎回矿机 NFT 的产品手续费",
-         "存入 " + rate("fragmentation", "depositBps") + "，赎回 " + rate("fragmentation", "redeemBps") + "\n本地存取测试已通过，尚未部署；用户发交易仍要付网络费。",
-         "待产品确认\n是否继续免费；如果要收费，需先改产品规则和合约实现。"),
-    ]
-    setup_labels = [
-        ("cpuCreationWei", "创建 CPU 的费用 → 平台协议钱包", "每次创建收多少 OKB。"),
-        ("transistorUnitPriceWei", "晶体管的购买单价 → 创建者", "每个晶体管卖多少；这是售价，不是额外平台手续费。"),
-        ("transistorMintProtocolWei", "领取晶体管时的额外手续费 → 平台协议钱包", "每笔领取收多少 OKB；不按晶体管个数重复收。"),
-        ("tapeoutWei", "流片（制作电路）的费用 → 指定收款钱包", "每个电路收多少 OKB，以及收款钱包。"),
-    ]
-    setup = [(label, amount(t["setup"][key], 10**18, " 测试 OKB") + "（首组已设好）",
-              amount(p["setup"][key], 10**18, " OKB") + "\n" + decision) for key, label, decision in setup_labels]
-    setup.append(("买卖矿机 NFT 的市场手续费 → 平台市场钱包",
-                  rate("setup", "nftMarketBps") + "（已设好）",
-                  prod("setup", "nftMarketBps", "可选 0%–3%；费率按挂单时的设置计算。")))
-    dex = [
-        ("普通 V3 池的兑换手续费 → LP",
-         rate("dex", "v3LpPips", 10_000) + "（1952 测试计划）\n还没接入；现有 196 测试池仍收 0.01%。",
-         prod("dex", "v3LpPips", "每个池收多少；旧池不能直接改费率，需要另建池。", 10_000)),
-        ("V3 从池子手续费中抽成 → 平台",
-         "关闭（测试计划）\n它分的是 LP 的手续费，不是再按成交额收一次。",
-         ("待产品确认" if p["dex"]["v3ProtocolDenominator"] is None else str(p["dex"]["v3ProtocolDenominator"])) + "\n是否抽成；开启后可分走 LP 手续费的 1/4–1/10。"),
-        ("普通 V4 池的兑换手续费 → LP",
-         rate("dex", "v4LpPips", 10_000) + "（1952 测试计划）\n还没接入；现有 196 的 V4 池也为 0%。",
-         prod("dex", "v4LpPips", "每个池的 LP 费率。", 10_000)),
-        ("V4 的平台协议费 → 平台",
-         rate("dex", "v4ProtocolPips", 10_000) + "（测试计划）",
-         prod("dex", "v4ProtocolPips", "是否收取；每个交易方向最高为输入资产的 0.1%。", 10_000)),
-        ("兑换页面额外收的服务费 → 平台",
-         rate("dex", "interfaceBps") + "\n当前兑换流程没有这项额外扣费。",
-         prod("dex", "interfaceBps", "是否收费；如要收费，需要同时改报价、交易和页面展示。")),
-        ("限价单成交佣金 → 平台",
-         rate("dex", "limitOrderCommissionBps") + "\n现有 196 测试合约写死为 0；1952 限价单还没接入。",
-         prod("dex", "limitOrderCommissionBps", "是否收费；现有合约不能调费，需要新合约版本。")),
-    ]
-    body = '''<header><p class="meta">SodaDEX × IGNIX · 2026-10-17 · 上线前费用清单</p>
-<h1>测试少收费，正式上线前再定价</h1>
-<p class="lead">这份表说明：收什么钱、给谁、测试收多少，以及正式上线前需要产品决定什么。</p>
-<div class="reading-note"><strong>先记住三件事</strong><ul>
-<li><strong>测试能免就免。</strong>不能设为零的，按源码最低值或此前已确认的测试规则执行。</li>
-<li><strong>生产收费还没定。</strong>所有生产参数都留空，产品文档里的 5% 和 10% 只是候选值。</li>
-<li><strong>有些是计划，还没生效。</strong>1952 已部署的首组矿机基础收费为零；两套矿机业务和 1952 DEX 的新收费仍有功能待实现或接入。</li>
-</ul></div>
-<p class="scope">生产合约暂不部署，测试按表中费用推进；本页会区分已部署、正在实现和待产品确认的事项。</p>
-<nav aria-label="报告目录"><a href="#products">两套矿机业务</a><a href="#setup">制作和买卖矿机</a><a href="#dex">DEX 交易</a><a href="#decisions">产品要决定什么</a><a href="#verification">当前进度</a></nav></header>
-<section><h2 id="products">1. 两套矿机业务，各收哪些钱</h2>
-<p>LP 指给交易池提供资金的人。他们赚的池子手续费，和平台直接收的钱分开计算。</p>
-<h3>募资买矿机、分配挖矿收益</h3>'''
-    body += table(mining)
-    body += '''<div class="example"><h4>例子：金库实际收到 1 FAB 交易税</h4>
-<p class="formula">平台 0.01 FAB ＋ 发币人 0 FAB ＋ 买矿机资金 0.99 FAB</p>
-<p>这里平台拿的是<strong>税款的 1%</strong>，不是再向用户收成交额的 1%。</p></div>
-<p><strong>毕业后的保护期不是额外收费。</strong>测试采用最短 1 天，从毕业开始计时；期间和期后官方交易池仍按既定买卖税收费。税币换 FAB、FAB 换 OKB 买矿机时，也会有实际兑换池的交易费，不能把这些兑换费用说成免除。</p>
-<h3>把矿机变成可交易的碎片</h3>'''
-    body += table(fragmentation)
-    body += '''<div class="example"><h4>例子：用 100 FAB 交易矿机碎片</h4>
-<p class="formula">总手续费 0.5 FAB ＝ 平台 0.15 FAB ＋ LP 0.35 FAB</p>
-<p>这条交易路径不再叠加上面 A/FAB 池的 0.3% 手续费。</p></div>
-<p>两套业务的收益服务费都只按<strong>实际领取到账的收益</strong>计算，界面显示的“预计可领取”不直接扣费。测试设为零后，仍需另外验证非零收费时的分账是否正确。</p></section>'''
-    body += '<section><h2 id="setup">2. 制作和买卖矿机时的费用</h2><p>下面五项在 1952 已部署的首组基础合约中都已设为零。用户自己发交易的网络费仍由用户支付。</p>' + table(setup)
-    body += '''<p><strong>以后新建 CPU 还要单独设零：</strong>源码默认流片费仍是 0.0013 OKB，当前脚本只处理了第一个 CPU。以后每建一个，都要设置并核对一次；只检查工厂配置不够。</p>
-<p>市场费率按<strong>挂单时</strong>锁定，收款钱包按<strong>成交时</strong>的设置取值。正式上线前，产品也要确认这两条规则。</p></section>'''
-    body += '<section><h2 id="dex">3. 兑换和限价单的费用</h2><p>此处“1952 测试计划”还没部署接入，不会自动改变现有 196 测试池。</p>' + table(dex)
-    body += '<p>如果平台自己给池子提供资金，也会按持有份额赚 LP 手续费。这部分收益要和平台协议费分开记账。</p></section>'
-    body += '''<section><h2 id="decisions">4. 正式上线前，产品确认这四件事</h2>
-<ol class="decisions"><li><strong>定价格：</strong>逐项确定上面各项费率或固定金额。测试的零费率不会自动成为生产价格，产品文档中的候选值也不会自动启用。</li>
-<li><strong>定收款人：</strong>税款分成、挖矿收益分成、碎片交易费、碎片服务费、V3 / V4 协议费、市场费和流片费分别打给哪个钱包；发币人收入也要单独确定。可以使用同一钱包，但要明确决定，不能直接沿用测试管理员地址。</li>
-<li><strong>定谁能改、什么时候生效：</strong>谁有调费权限，最高能调多少，是否影响已经创建的项目和旧挂单。矿机募资的税率、税款分成和税收金库收款地址在创建时锁定。发行平台费、曲线平台交易费和毕业锁定 LP 的平台收入，则付给领取时的管理员；更换管理员会改变这几项后续的收款人。</li>
-<li><strong>定自动执行的网络费由谁出：</strong>自动分红和限价单成交的测试计划是由执行钱包补贴；现有 196 限价单已由专用钱包付费。生产要决定继续补贴，还是向用户收回实际成本。若从分红扣成本，还需定成本凭据、FAB 换算方式、扣款上限和余额不足时怎么办；这部分功能尚未实现。用户自己签名发交易的网络费仍由用户支付。</li></ol>
-<h3>另外一笔要定的钱：FAB 初始分配</h3>
-<p>当前源码会预先铸造总上限的 <strong>5%，即 1,050,000 FAB</strong>，测试时交给测试管理员。正式上线前，产品要决定这笔币给谁、做什么；想改 5% 比例需要改源码。这是初始代币分配，不是手续费。</p>
-<h3>暂时没有合格持有人时，挖矿收益给谁</h3>
-<p>矿机仍在矿场名下，但项目代币可能暂时全在交易池或其他不参与分红的合约里。测试时，这段时间的 FAB <strong>单独保留</strong>，不送给后来买家，也不转给平台。正式归属由产品决定，确认前不动用。</p>
-<p>买矿机的本金、长期出资份额、份额的算力权重、毕业门槛，也都不应算成平台收费。</p></section>
-<section><h2 id="verification">5. 当前进度</h2>
-<p><strong>已完成：</strong>1952 的 FAB、矿机 NFT、挖矿和市场基础合约已部署，首组基础收费已设为零。</p>
-<p><strong>本地已跑通：</strong>募资发行、曲线买卖、采购矿机、毕业前分红、毕业建池与池内兑换；碎片存取、交易、加减流动性和分红。烧币凭证到期和供应封顶时的分红，也已用真实矿机合约验证。</p>
-<p><strong>正在推进：</strong>补齐完整验收、部署 1952 两套业务并接入前端。当前仍未在测试站开放这些新业务，标注“测试计划”的项目也不代表已经部署。</p>
-<p><strong>上线前待定：</strong>生产费率、收款人、调费权限，以及自动执行成本由谁承担，均由产品最终确认。测试参数不会自动用于生产。</p>
-<p class="note">本页依据两份矿机产品文档（募资分红 V1.5、碎片化 V1.2）和已确认的测试规则整理。基础合约零费依据 2026-10-17 已保存的链上核验；生产合约保持不动。</p></section>'''
-    css = '''*{box-sizing:border-box}body{margin:0;background:#f6f5f1;color:#202c32;font:18px/1.8 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}main{max-width:1120px;margin:24px auto;padding:32px 44px;background:#fff;border:1px solid #d8dedc}h1{font-size:34px;line-height:1.4;margin:8px 0 18px}h2{font-size:25px;line-height:1.5;margin:0 0 14px}h3{font-size:21px;margin:26px 0 12px}h4{font-size:17px;margin:0 0 6px}p{margin:10px 0 16px}.meta,.note,.scope{font-size:15px;color:#526169}.lead{font-size:20px}.reading-note{background:#f1f6f3;border-left:3px solid #397360;padding:18px 22px;margin:24px 0 16px}.reading-note ul{padding-left:22px;margin:10px 0 0}.reading-note li+li{margin-top:8px}nav{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:16px;margin-top:22px}section{border-top:1px solid #d8dedc;margin-top:30px;padding-top:28px}li+li{margin-top:12px}.decisions{padding-left:25px}.decisions li+li{margin-top:18px}a{color:#15665b;text-underline-offset:3px}.example{margin:18px 0 24px;padding:16px 20px;background:#faf8f1;border-left:3px solid #b9a66c}.example p{margin:6px 0 0}.formula{font-size:19px;font-weight:600}code{font:.85em/1.6 ui-monospace,monospace;background:#f3f2ef;border:1px solid #e8e6e0;border-radius:4px;padding:2px 5px;overflow-wrap:anywhere}pre{padding:16px;border:1px solid #d8dedc;background:#fafaf8;white-space:pre-wrap;overflow-wrap:anywhere;font-size:15px}pre code{background:none;border:0;padding:0}.table-wrap{overflow:auto}table{width:100%;min-width:680px;border-collapse:collapse;font-size:16px;line-height:1.7}th,td{text-align:left;vertical-align:top;padding:15px 14px;border-bottom:1px solid #d8dedc}th{background:#edf5f1}th:first-child{width:27%}th:nth-child(2){width:35%}.cell-note{color:#526169;font-size:15px}details{border-top:1px solid #d8dedc;margin-top:22px;padding-top:8px;font-size:16px}summary{cursor:pointer;padding:12px 0;font-weight:600}a:focus-visible,summary:focus-visible,.table-wrap:focus-visible{outline:3px solid #15665b;outline-offset:4px}.skip{position:absolute;top:-80px;background:white;padding:8px}.skip:focus{top:8px}@media(max-width:600px){body{font-size:17px}main{margin:10px;padding:24px 20px}h1{font-size:27px}h2{font-size:22px}h3{font-size:20px}.lead,.formula{font-size:18px}.reading-note{padding:16px}.table-wrap{margin-top:12px}}@media print{main{margin:0;border:0;padding:0}table{min-width:0}.skip{display:none}}'''
-    return ('<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-            '<meta name="test-fee-configuration-sha256" content="' + escape(test_check["configurationSha256"]) + '">'
-            '<title>SodaDEX 费用清单：测试与正式上线</title><style>' + css + '</style></head><body>'
-            '<a class="skip" href="#main">跳到正文</a><main id="main">' + body + '</main></body></html>\n')
-
-
-if __name__ == "__main__":
-    output = ROOT / "deployments/fees/checklist.html"
-    output.write_text(render())
-    print(output)
+</ol></section>
+<div class="callout"><p><strong>决定“免费”请明确写 0，不要留空。</strong><br>曲线买卖费、V2 池费、锁定 LP 分成、碎片费及其分成等，当前有固定规则；部分新增收费尚无实现。产品定案后由 Codex 调整、验证，再进入生产部署，不是填写后立即生效。</p></div>
+<section><h2>产品确认</h2><div class="sign">确认人：________________　确认日期：________________<br>适用版本／上线批次：________________________________<br>未决事项：________________________________________________</div>
+<p class="muted">本页是决策材料，不是生产配置。没有修改费率、收款地址或任何生产合约。</p>
+<details><summary>参考口径</summary><p class="sources">2026-10-19 核对仓库中的生产待定清单、1952／196 测试费率配置、费用校验规则，以及已有 196 V3／V4 测试池部署记录。测试列是已保存配置或部署记录，不代表本次重新做了链上逐项核验。普通 V3／V4 参考值来自已有 OKB 相关测试池，不是 FAB／项目币生产池的已定费率。普通 V3 测试池采用部署记录中的 0.01%，未将统一测试配置中的 0% 计划值当作已部署值。</p><p class="sources">依据：production-pending.json、test-1952.json、test-196.json（deployments/fees）；deployments/xlayer-test/pools.json；scripts/sodadex/fee_policy.py；SodaLimitSettlement.sol；另核对现有 CurveTrading、IgnixManager、IgnixToken、MiningProjectVault、MiningRevenueVault、FabFragmentPool 与 IgnixV2Locker 源码中的扣币及分账路径。现有实现用于说明机制，不视作生产费率批准。</p></details></section></main></body></html>''')
+out.write_text('\n'.join(parts));print(out)
