@@ -25,7 +25,17 @@
     "webSkip": 22,
     "workerPass": 216,
     "workerdSqlite": "10/10/3, persistence after restart, no RPC on page read",
-    "browser": "desktop 1440, tablet 900, mobile 390; actual 4 public trades; fixture pagination 10/10/3; readonly quote; Pool add/remove UI; My scope"
+    "browser": "desktop 1440, tablet 900, mobile 390; actual 4 public trades; fixture pagination 10/10/3; readonly quote; Pool add/remove UI; My scope",
+    "specialPoolContracts": "12 business tests and 2 invariants passed; each invariant 256 runs / 128000 calls; not full audit"
   },
-  "owner": "current SodaDEX task"
+  "owner": "current SodaDEX task",
+  "publication": {
+    "sourceCommit": "1d71a5350647d8f19d855e2e15ffe48aa5e18d2a",
+    "version": "129d1433-9dd6-4698-832e-763ff2a40e7e",
+    "url": "https://sodadex-preview.jsmsdx2025.workers.dev",
+    "navigation": "Swap / Pool / My",
+    "actualTrades": 4,
+    "indexCaughtUp": true,
+    "indexLastError": null
+  }
 }

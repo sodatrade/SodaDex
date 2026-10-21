@@ -2,7 +2,7 @@ import type { Locale } from '../preferences/model'
 const zh = {
   reserves: '池内储备', received: '实际收到', time: '时间', pageSize: '每页 10 条', chartHint: '最近 500 笔真实成交 · 每份 sFAB 的 OKB 成交价',
   indexReady: '成交已同步', indexSyncing: '正在同步新成交', indexDelayed: '同步暂缓，保留已收录成交', marketError: '行情暂时不可用，请重试', pageExpired: '记录已更新，请返回第一页',
-  ignixScope: '矿机、金库及收益领取由 IGNIX 提供。这里仅展示钱包资产和 LP 本金份额。', dex: 'DEX', pool: 'Pool', mine: '我的', connect: '连接钱包', settings: '偏好设置', test: '独立测试合约 · 交易由你的钱包确认',
+  ignixScope: '矿机、金库及收益领取由 IGNIX 提供。这里仅展示钱包资产和 LP 本金份额。', dex: 'Swap', pool: 'Pool', mine: '我的', connect: '连接钱包', settings: '偏好设置', test: '独立测试合约 · 交易由你的钱包确认',
   notDeployed: '新版本尚未配置部署地址。配置并校验新合约后即可操作；旧合约不会被当作新版本使用。',
   unavailable: '合约读取失败，请刷新重试', retry: '刷新', swap: '兑换', pay: '支付', receive: '预计收到', reverse: '切换兑换方向',
   shares: '矿机份额', preview: '预览交易', confirm: '确认并打开钱包', cancel: '取消', amount: '数量',
@@ -30,7 +30,7 @@ export type Messages = typeof zh
 const en: Messages = {
   reserves: 'Pool reserves', received: 'Received', time: 'Time', pageSize: '10 per page', chartHint: 'Latest 500 on-chain trades · OKB execution price per sFAB',
   indexReady: 'Trades synced', indexSyncing: 'Syncing trades', indexDelayed: 'Sync delayed · Showing saved trades', marketError: 'Market unavailable. Please retry.', pageExpired: 'History updated. Return to the first page.',
-  ignixScope: 'IGNIX handles miners, vaults and reward claims. This page shows wallet assets and LP principal only.', dex: 'DEX', pool: 'Pool', mine: 'My', connect: 'Connect wallet', settings: 'Preferences', test: 'Independent test contracts · Confirm transactions in your wallet',
+  ignixScope: 'IGNIX handles miners, vaults and reward claims. This page shows wallet assets and LP principal only.', dex: 'Swap', pool: 'Pool', mine: 'My', connect: 'Connect wallet', settings: 'Preferences', test: 'Independent test contracts · Confirm transactions in your wallet',
   notDeployed: 'New deployment addresses are not configured. Actions require verified new contracts; legacy contracts are not used as substitutes.',
   unavailable: 'Contract reads failed. Please retry.', retry: 'Refresh', swap: 'Swap', pay: 'Pay', receive: 'Estimated receive', reverse: 'Reverse direction',
   shares: 'Miner shares', preview: 'Preview transaction', confirm: 'Confirm in wallet', cancel: 'Cancel', amount: 'Amount',

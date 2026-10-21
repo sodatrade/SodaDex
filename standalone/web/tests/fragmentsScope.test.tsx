@@ -7,10 +7,10 @@ import { minimum } from '../src/fragments/client'
 import { deploymentKey, parseDeployment, type FragmentDeployment } from '../src/fragments/config'
 
 describe('SodaDEX and IGNIX responsibility boundary', () => {
-  it('exposes only DEX, Pool and My without mining or payout actions', async () => {
+  it('exposes only Swap, Pool and My without mining or payout actions', async () => {
     render(<QueryClientProvider client={new QueryClient()}><FragmentApp /></QueryClientProvider>)
     const nav=screen.getByRole('navigation',{name:'SodaDEX'})
-    expect(within(nav).getAllByRole('button').map(b=>b.textContent)).toEqual(['DEX','Pool','我的'])
+    expect(within(nav).getAllByRole('button').map(b=>b.textContent)).toEqual(['Swap','Pool','我的'])
     for(const tab of within(nav).getAllByRole('button')) {
       await userEvent.click(tab)
       expect(screen.queryByRole('button',{name:/存入矿机|赎回矿机|领取.*收益|分红|发行/})).not.toBeInTheDocument()
