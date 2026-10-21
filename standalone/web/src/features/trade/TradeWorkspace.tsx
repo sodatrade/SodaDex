@@ -9,7 +9,7 @@ import { GeneralSwapCard } from '../swap/GeneralSwapCard'
 import type { TradeMarketContext } from './context'
 export interface TradeWorkspaceProps {
   wallet: WalletController; balances: Record<AssetId, bigint> | undefined; balancesLoading: boolean; balancesError: boolean
-  onConnect: () => void; onCreatePool?: () => void; active?: boolean
+  onConnect: () => void; onBusyChange?: (busy: boolean) => void; onCreatePool?: () => void; active?: boolean
   activeMode?: 'swap' | 'limit'; orderMarketContext?: TradeMarketContext; orderModeControl?: ReactNode; renderOrderPanel?: (context: TradeMarketContext) => ReactNode
 }
 export function TradeWorkspace({ active = true, activeMode = 'swap', orderMarketContext, orderModeControl, renderOrderPanel, ...swapProps }: TradeWorkspaceProps): ReactElement {

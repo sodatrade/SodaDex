@@ -7,7 +7,7 @@
   "preview_urls": false,
   "vars": {
     "SODADEX_MINING_MOUNT": "disabled",
-    "SODADEX_FRAGMENTS_DEPLOYMENT": "{\"chainId\":196,\"pool\":\"0x6366dba62dd679de99078819c212b1fdd431a953\",\"vault\":\"0xb97d23f0c874fc1380016fa31d975d7ccd13b94d\",\"policy\":\"0xb678a4b26ba091d6eeb3aaa85d6abd6afc794937\",\"rewards\":\"0xbBD5ce08aFa04D173982585E0cFC75194eAe3900\",\"locker\":\"0xf9851d7a14ce5cd681aa2e639d8fa0def63bb7fe\",\"fromBlock\":\"73733936\"}"
+    "SODADEX_FRAGMENTS_DEPLOYMENT": "{\"chainId\":196,\"pool\":\"0x39fa6467abac258ee61acc18ff6c7910a52af92e\",\"vault\":\"0xb97d23f0c874fc1380016fa31d975d7ccd13b94d\",\"policy\":\"0xb678a4b26ba091d6eeb3aaa85d6abd6afc794937\",\"rewards\":\"0xA48BA81F035278AcAdEa10dD9C4Aa06EBFBAa82D\",\"locker\":\"0xb5b0b5a1073f6c8fa84efd04b261a263cce894a2\",\"fromBlock\":\"73784265\"}"
   },
   "services": [
     {

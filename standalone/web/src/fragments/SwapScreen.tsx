@@ -18,7 +18,7 @@ export function SwapScreen({ client, deployment: d, snapshot: s, account, m, pre
     <label className="fragment-amount">{m.pay}<span className="fragment-input-row"><input aria-label={m.pay} inputMode="decimal" value={amount} placeholder="0.00" onChange={e => setAmount(e.target.value)} /><strong>{shareIn ? 'sFAB' : 'OKB'}</strong></span></label>
     <Button className="fragment-reverse" aria-label={m.reverse} onClick={() => setShareIn(!shareIn)}>↓</Button>
     <div className="fragment-amount"><span>{m.receive}</span><div className="fragment-input-row"><output>{quote.isFetching ? '…' : quote.data ? formatEther(quote.data[0]) : '—'}</output><strong>{shareIn ? 'OKB' : 'sFAB'}</strong></div></div>
-    <p className="fragment-muted">{m.fee}</p><label className="fragment-field">{m.slippage}<input inputMode="decimal" value={slippage} onChange={e => setSlippage(e.target.value)} /></label>
+    <p className="fragment-muted">{m.fee}</p><details className="fragment-trade-settings"><summary>{m.tradeSettings}<span>{slippage}%</span></summary><label className="fragment-field">{m.slippage}<input inputMode="decimal" value={slippage} onChange={e => setSlippage(e.target.value)} /></label></details>
     {quote.data && valid && <p>{m.minOut}: {formatEther(minimum(quote.data[0], bps))} {shareIn ? 'OKB' : 'sFAB'}</p>}
     {quote.isError && <p role="alert">{m.quoteError}</p>}{s.okb === 0n && <p>{m.noLiquidity}</p>}
     <Button appearance="primary" disabled={!account || !valid || quote.isFetching} onClick={() => prepare(m.swap, async () => {

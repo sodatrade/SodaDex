@@ -16,6 +16,17 @@ describe('SodaDEX and IGNIX responsibility boundary', () => {
       expect(screen.queryByRole('button',{name:/存入矿机|赎回矿机|领取.*收益|分红|发行/})).not.toBeInTheDocument()
     }
   })
+  it('keeps ordinary pools accessible without miner deployment and opens wallet connection for creation', async () => {
+    render(<QueryClientProvider client={new QueryClient({defaultOptions:{queries:{retry:false}}})}><FragmentApp /></QueryClientProvider>)
+    const nav=screen.getByRole('navigation',{name:'SodaDEX'})
+    await userEvent.click(within(nav).getByRole('button',{name:'Pool'}))
+    const create=await screen.findByRole('button',{name:'创建池 / 新仓位'})
+    expect(create).toBeEnabled()
+    await userEvent.click(create)
+    expect(await screen.findByRole('dialog')).toBeVisible()
+    await userEvent.click(screen.getByRole('button',{name:/关闭/}))
+    expect(within(nav).getByRole('button',{name:'Swap'})).toBeEnabled()
+  })
   it('does not revive removed pages through legacy URLs', () => {
     for(const hash of ['#launch','#fundraising','#orders','#explore','#history']) expect(fragmentTab(hash)).toBe('swap')
   })

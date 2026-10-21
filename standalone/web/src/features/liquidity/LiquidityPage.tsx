@@ -22,11 +22,13 @@ import { useLiquidityOperation } from './useLiquidityOperation'
 interface Props {
   wallet: WalletController
   onConnect: () => void
+  onBusyChange?: (busy: boolean) => void
+  embedded?: boolean
 }
 type Editor =
   | { kind: 'mint'; pool?: LiquidityPool }
   | { kind: 'increase' | 'decrease' | 'collect' | 'transfer' | 'burn'; position: LiquidityPosition }
-export function LiquidityPage({ wallet, onConnect }: Props): ReactElement {
+export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded }: Props): ReactElement {
   const [tab, setTab] = useState<'pools' | 'positions'>('pools')
   const [detail, setDetail] = useState<LiquidityPool>()
   const [editor, setEditor] = useState<Editor>()
@@ -52,6 +54,8 @@ export function LiquidityPage({ wallet, onConnect }: Props): ReactElement {
     refetchInterval: 30_000,
   })
   const busy = operation.preparing || operation.executing || !!operation.blocked
+  const navigationBusy = busy || !!operation.review || !!editor || !!detail
+  useEffect(() => { onBusyChange?.(navigationBusy) }, [navigationBusy, onBusyChange])
   const open = (value: Editor): void => {
     if (!wallet.session) {
       onConnect()
@@ -79,11 +83,11 @@ export function LiquidityPage({ wallet, onConnect }: Props): ReactElement {
   const displayedPositions = found ? [found, ...visiblePositions.filter((position) => position.protocol !== found.protocol || position.tokenId !== found.tokenId)] : visiblePositions
   const positionPagination = usePagination(displayedPositions, accountKey)
   return (
-    <section className="content-page lp-page" aria-labelledby="lp-title">
+    <section className={`content-page lp-page${embedded ? ' lp-embedded' : ''}`} aria-labelledby="lp-title">
       <div className="lp-page-heading">
         <div className="page-heading">
           <span className="eyebrow">SodaDEX / X LAYER</span>
-          <h1 id="lp-title">{l('title')}</h1>
+          <h2 id="lp-title">{l('title')}</h2>
           <p>{l('description')}</p>
         </div>
         <Button appearance="primary" onClick={() => open({ kind: 'mint' })} disabled={busy}>

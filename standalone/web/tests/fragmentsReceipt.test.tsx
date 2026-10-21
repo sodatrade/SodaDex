@@ -24,6 +24,6 @@ it('rechecks a broadcast receipt after timeout without sending the transaction a
   await userEvent.click(screen.getByRole('button',{name:'Refresh'}))
   await waitFor(()=>expect(done).toHaveBeenCalledWith(hash))
   expect(request.mock.calls.filter(([arg])=>arg.method==='eth_sendTransaction')).toHaveLength(1)
-  expect(request).toHaveBeenCalledWith({method:'eth_sendTransaction',params:[expect.objectContaining({gas:'0xf4240'})]})
+  expect(request).toHaveBeenCalledWith({method:'eth_sendTransaction',params:[expect.objectContaining({gas:'0x16e360'})]})
   expect(waitForTransactionReceipt).toHaveBeenCalledTimes(2)
 })

@@ -7,12 +7,13 @@ import { spawnSync } from 'node:child_process'
 const require=createRequire(new URL('../../standalone/web/package.json',import.meta.url))
 const {createPublicClient,http,keccak256}=require('viem')
 const root=path.resolve(import.meta.dirname,'../..'),folder=path.join(root,'deployments/xlayer-196-fragments-test')
-const run=JSON.parse(fs.readFileSync(path.join(folder,'public-journal.json')))
-if(!run.completed||!run.publicDeployed||run.localOnly||run.pending||run.productionTouched||run.chainId!==196)throw Error('Completed public TEST journal required')
+const journal=process.argv.includes('--pool-v3')?'pool-v3/public-journal.json':'public-journal.json'
+const run=JSON.parse(fs.readFileSync(path.join(folder,journal)))
+if((!run.completed&&!run.deploymentVerified)||!run.publicDeployed||run.localOnly||run.pending||run.productionTouched||run.chainId!==196||run.rows.some(row=>row.status!=='success'))throw Error('Completed public TEST journal required')
 const client=createPublicClient({transport:http('https://rpc.ignix.bot/rpc/196')})
 if(await client.getChainId()!==196)throw Error('Wrong chain')
 const old=JSON.parse(fs.readFileSync(path.join(root,'deployments/xlayer-196-mining-test/public-2026-10-18/addresses.json'))).contracts
-const integration={testDependencies:Object.fromEntries(['fab','mining','circuits','nftFactory'].map(k=>[k,old[k]])),rpcUrl:'https://rpc.ignix.bot/rpc/196',chainId:196,environment:'independent-test',status:'DEPLOYED',productionTouched:false,owner:run.owner,treasury:run.treasury,fromBlock:run.rows[0].blockNumber,contracts:{}}
+const integration={testDependencies:Object.fromEntries(['fab','mining','circuits','nftFactory'].map(k=>[k,old[k]])),rpcUrl:'https://rpc.ignix.bot/rpc/196',chainId:196,environment:'independent-test',status:run.completed?'ACCEPTED':'ACCEPTANCE_PENDING',journal,productionTouched:false,owner:run.owner,treasury:run.treasury,fromBlock:run.rows[0].blockNumber,contracts:{}}
 for(const [name,identity]of Object.entries(run.contracts)){
  if(keccak256(await client.getCode({address:identity.address,blockNumber:BigInt(run.rows.at(-1).blockNumber)}))!==identity.runtimeHash)throw Error(`Runtime mismatch ${name}`)
  const a=JSON.parse(fs.readFileSync(path.join(os.homedir(),`XTruthWorkspace/contract/out/${name}.sol/${name}.json`)))

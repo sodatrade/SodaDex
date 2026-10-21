@@ -33,7 +33,7 @@ export function TransactionReview({ tx, client, deployment, wallet, m, onClose, 
       await client.call({ account: tx.account, to: tx.to, data: tx.data, value: tx.value })
       // Fork evidence: newly accrued mining income can add a settlement path before inclusion.
       const estimate = await client.estimateGas({ account: tx.account, to: tx.to, data: tx.data, value: tx.value, blockTag: 'pending' })
-      const gas = estimate * 2n
+      const gas = estimate * 3n
       if (wallet.getIdentity()?.revision !== identity.revision) throw new Error(m.walletChanged)
       const accounts = await identity.provider.request({ method: 'eth_accounts' })
       const chain = await identity.provider.request({ method: 'eth_chainId' })

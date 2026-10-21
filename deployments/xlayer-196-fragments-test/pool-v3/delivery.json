@@ -41,7 +41,7 @@
     },
     "fullContractSuite": "running; fork-only environment failures tracked separately",
     "web": {
-      "passed": 498,
+      "passed": 499,
       "skipped": 22,
       "typecheck": "pass",
       "lint": "pass",
@@ -68,5 +68,8 @@
     "awsOrIgnixBackend": "not applicable: no backend changes",
     "oldLiquidity": "preserved, old locker unchanged",
     "postDeployment": "runtime hashes, actual browser five operations, LP lock and indexed market must be checked before completion"
-  }
+  },
+  "contractCommit": "007291a",
+  "runnerCommit": "95544eb55",
+  "deploymentStatus": "deployed and runtime verified; browser acceptance pending"
 }

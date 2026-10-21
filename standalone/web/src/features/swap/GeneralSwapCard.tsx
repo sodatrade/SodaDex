@@ -25,7 +25,7 @@ import { useTokenCatalog } from './useTokenCatalog'
 import { useSwapOperation, type SwapReview } from './useSwapOperation'
 interface Props {
   wallet: WalletController; balances: Record<AssetId, bigint> | undefined
-  balancesLoading: boolean; balancesError: boolean; onConnect: () => void; onCreatePool?: () => void; onContextChange?: (context: TradeMarketContext) => void
+  balancesLoading: boolean; balancesError: boolean; onConnect: () => void; onCreatePool?: () => void; onContextChange?: (context: TradeMarketContext) => void; onBusyChange?: (busy: boolean) => void
 }
 function builtin(currency: Currency): AssetId | undefined {
   if (currency.native) return 'okb'
@@ -35,7 +35,7 @@ function builtin(currency: Currency): AssetId | undefined {
 async function customBalance(currency: Currency, address: Address): Promise<bigint> {
   return hexQuantity(await rpc('eth_call', [{ to: currency.address, data: `0x70a08231${address.slice(2).padStart(64, '0')}` }, 'latest']))
 }
-export function GeneralSwapCard({ wallet, balances, balancesLoading, balancesError, onConnect, onCreatePool, onContextChange }: Props): ReactElement {
+export function GeneralSwapCard({ wallet, balances, balancesLoading, balancesError, onConnect, onCreatePool, onContextChange, onBusyChange }: Props): ReactElement {
   const { locale, t } = usePreferences(), m = tradeMessages(locale)
   const [from, setFrom] = useState<Currency>(NATIVE_CURRENCY)
   const [to, setTo] = useState<Currency>(KNOWN_CURRENCIES.find((c) => c.address.toLowerCase() === STABLE_ADDRESS.toLowerCase()) ?? KNOWN_CURRENCIES[2])
@@ -47,6 +47,7 @@ export function GeneralSwapCard({ wallet, balances, balancesLoading, balancesErr
   const [settings, setSettings] = useState(false)
   const [review, setReview] = useState<{ value: SwapReview; identity: TradeIdentity; from: Currency; to: Currency }>()
   const operation = useSwapOperation(wallet), locked = operation.busy || operation.unresolved
+  useEffect(() => { onBusyChange?.(locked || !!review || !!selector || settings) }, [locked, review, selector, settings, onBusyChange])
   const wrongChain = !!wallet.session && wallet.session.chainId !== CHAIN_ID
   const enabled = publicSwapsEnabled(), bps = slippageValue(slippage)
   const fromBuiltin = builtin(from), toBuiltin = builtin(to)

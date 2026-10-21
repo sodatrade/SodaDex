@@ -108,14 +108,14 @@
   .trade-market-activity th:last-child, .trade-market-activity td:last-child { padding-right: 16px; }
 }
 
-.trade-order-column .general-swap.swap-card { padding: 24px; border: 0; position: static; background: transparent; box-shadow: none; }
+.trade-order-column .general-swap.swap-card { padding: 20px; border: 0; position: static; background: transparent; box-shadow: none; }
 .trade-order-column.has-order-modes .general-swap .swap-card-heading { position: absolute; top: 18px; right: 22px; padding: 0; min-height: 40px; }
 .trade-order-column.has-order-modes .general-swap .swap-card-heading h2 { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .trade-order-column .general-swap .amount-panel { min-height: 120px; padding: 14px; border-radius: 12px; }
 .trade-order-column .general-swap .amount-label { margin-bottom: 8px; }
 .trade-order-column .general-swap .amount-label > span:last-child { font-size: 12px; }
-.trade-order-column .general-swap .token-selector strong { font-size: 16px; }
-.trade-order-column .general-swap .amount-row input { font-size: 30px; }
+.trade-order-column .general-swap .token-selector strong { font-size: 15px; }
+.trade-order-column .general-swap .amount-row input { font-size: 26px; }
 .trade-order-column .general-swap .swap-footnote { font-size: 11px; }
 @media (max-width: 540px) {
   .trade-order-column .general-swap.swap-card { padding: 16px; }
