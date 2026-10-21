@@ -5,27 +5,33 @@ import { describe, expect, it } from 'vitest'
 import { FragmentApp, fragmentTab } from '../src/fragments/FragmentApp'
 import { minimum } from '../src/fragments/client'
 import { deploymentKey, parseDeployment, type FragmentDeployment } from '../src/fragments/config'
+import { PREFERENCES_KEY } from '../src/preferences/model'
 
 describe('SodaDEX and IGNIX responsibility boundary', () => {
-  it('exposes only Swap, Pool and My without mining or payout actions', async () => {
+  it('exposes only localized Swap, Liquidity Pools and Portfolio without mining actions', async () => {
     render(<QueryClientProvider client={new QueryClient()}><FragmentApp /></QueryClientProvider>)
     const nav=screen.getByRole('navigation',{name:'SodaDEX'})
-    expect(within(nav).getAllByRole('button').map(b=>b.textContent)).toEqual(['Swap','Pool','我的'])
+    expect(within(nav).getAllByRole('button').map(b=>b.textContent)).toEqual(['兑换','流动性池','我的'])
     for(const tab of within(nav).getAllByRole('button')) {
       await userEvent.click(tab)
       expect(screen.queryByRole('button',{name:/存入矿机|赎回矿机|领取.*收益|分红|发行/})).not.toBeInTheDocument()
     }
   })
+  it('uses natural English labels for the same three pages', () => {
+    localStorage.setItem(PREFERENCES_KEY, JSON.stringify({ locale: 'en' }))
+    render(<QueryClientProvider client={new QueryClient()}><FragmentApp /></QueryClientProvider>)
+    expect(within(screen.getByRole('navigation', {name:'SodaDEX'})).getAllByRole('button').map(b=>b.textContent)).toEqual(['Swap','Liquidity Pools','Portfolio'])
+  })
   it('keeps ordinary pools accessible without miner deployment and opens wallet connection for creation', async () => {
     render(<QueryClientProvider client={new QueryClient({defaultOptions:{queries:{retry:false}}})}><FragmentApp /></QueryClientProvider>)
     const nav=screen.getByRole('navigation',{name:'SodaDEX'})
-    await userEvent.click(within(nav).getByRole('button',{name:'Pool'}))
+    await userEvent.click(within(nav).getByRole('button',{name:'流动性池'}))
     const create=await screen.findByRole('button',{name:'创建池 / 新仓位'})
     expect(create).toBeEnabled()
     await userEvent.click(create)
     expect(await screen.findByRole('dialog')).toBeVisible()
     await userEvent.click(screen.getByRole('button',{name:/关闭/}))
-    expect(within(nav).getByRole('button',{name:'Swap'})).toBeEnabled()
+    expect(within(nav).getByRole('button',{name:'兑换'})).toBeEnabled()
   })
   it('does not revive removed pages through legacy URLs', () => {
     for(const hash of ['#launch','#fundraising','#orders','#explore','#history']) expect(fragmentTab(hash)).toBe('swap')

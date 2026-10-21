@@ -158,6 +158,7 @@ main { flex: 1; width: 100%; outline: none; }
 .token-selector > svg { color: var(--soda-muted); }
 .asset-icon { display: inline-grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0; position: relative; }
 .asset-icon.small { width: 27px; height: 27px; }
+.token-initial { background: var(--soda-line); color: var(--soda-text); font-size: 11px; }
 .asset-icon img { display: block; width: 100%; height: 100%; border-radius: 50%; object-fit: contain; }
 .wrap-badge { width: 16px; height: 16px; border: 2px solid var(--soda-field); font-size: 10px; font-weight: 600; position: absolute; right: -3px; bottom: -1px; border-radius: 50%; display: grid; place-items: center; color: #243119; background: #d5ff75; }
 .small .wrap-badge { width: 12px; height: 12px; font-size: 8px; border-width: 1px; right: -2px; bottom: -2px; }

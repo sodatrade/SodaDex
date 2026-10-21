@@ -20,7 +20,7 @@ it('rechecks a broadcast receipt after timeout without sending the transaction a
   const done=vi.fn()
   render(<PreferencesProvider><TransactionReview tx={{to:account,account,data:'0x',value:0n,chainId:1952,label:'Test'}} deployment={{} as FragmentDeployment} wallet={wallet} client={client} m={messages('en')} onClose={()=>{}} onSuccess={done}/></PreferencesProvider>)
   await userEvent.click(screen.getByRole('button',{name:'Confirm in wallet'}))
-  expect(await screen.findByRole('alert')).toHaveTextContent('RPC timeout')
+  expect(await screen.findByRole('alert')).toHaveTextContent('Transaction status is not confirmed. Check your wallet before submitting again.')
   await userEvent.click(screen.getByRole('button',{name:'Refresh'}))
   await waitFor(()=>expect(done).toHaveBeenCalledWith(hash))
   expect(request.mock.calls.filter(([arg])=>arg.method==='eth_sendTransaction')).toHaveLength(1)

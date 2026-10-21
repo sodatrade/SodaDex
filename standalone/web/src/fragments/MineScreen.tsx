@@ -19,12 +19,12 @@ export function MineScreen({ snapshot: s, account, deployment, m }: ScreenProps)
   const selectedBalance = selected === 'LP' ? s.lpBalance : selected === 'sFAB' ? s.shareBalance : s.okbBalance
   return <div className="fragment-stack">
     <section className="fragment-card fragment-account-section"><h2>{m.balances}</h2>
-      <div className="fragment-table fragment-account-table"><table aria-label={m.balances}><thead><tr><th>{m.asset}</th><th>{m.balance}</th><th>{m.details}</th></tr></thead>
+      <div className="fragment-table fragment-account-table"><table aria-label={m.balances}><thead><tr><th>{m.asset}</th><th>{m.balance}</th><th><span className="sr-only">{m.details}</span></th></tr></thead>
         <tbody>{assets.items.map(asset => <tr key={asset.symbol}><td><strong>{asset.symbol}</strong></td><td>{amount(asset.balance)}</td><td>{details(asset.symbol, () => setSelected(asset.symbol))}</td></tr>)}</tbody>
       </table></div><Pagination {...assets} />
     </section>
     <section className="fragment-card fragment-account-section"><h2>{m.lpPositions}</h2><p className="fragment-muted">{m.principal}</p>
-      <div className="fragment-table fragment-account-table"><table aria-label={m.lpPositions}><thead><tr><th>{m.pair}</th><th>{m.lpAmount}</th><th>{m.details}</th></tr></thead>
+      <div className="fragment-table fragment-account-table"><table aria-label={m.lpPositions}><thead><tr><th>{m.pair}</th><th>{m.lpAmount}</th><th><span className="sr-only">{m.details}</span></th></tr></thead>
         <tbody>{positions.items.map(position => <tr key={position.pair}><td><strong>{position.pair}</strong></td><td>{amount(position.lp)}</td><td>{details(position.pair, () => setSelected('LP'))}</td></tr>)}</tbody>
       </table></div><Pagination {...positions} /><p className="fragment-muted">{m.ignixScope}</p>
     </section>

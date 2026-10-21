@@ -8,6 +8,7 @@ import { TransientNotice } from './TransientNotice'
 import { Dialog } from '../components/Dialog'
 import { Button } from '../components/primitives'
 import type { Messages } from './messages'
+import { fragmentErrorMessage } from './errorMessage'
 export function TransactionReview({ tx, client, deployment, wallet, m, onClose, onSuccess }: {
   tx: PreparedTransaction; client: FragmentClient; deployment: FragmentDeployment; wallet: WalletController; m: Messages
   onClose: () => void; onSuccess: (hash: Hex) => void
@@ -19,9 +20,9 @@ export function TransactionReview({ tx, client, deployment, wallet, m, onClose, 
     setBusy(true); setError('')
     try {
       const receipt = await client.waitForTransactionReceipt({ hash: sent })
-      if (receipt.status !== 'success') throw new Error(m.actionError)
+      if (receipt.status !== 'success') { setError(m.transactionReverted); return }
       onSuccess(sent)
-    } catch (e) { setError(e instanceof Error ? e.message : m.actionError) }
+    } catch { setError(m.receiptUnavailable) }
     finally { setBusy(false) }
   }
   async function execute(): Promise<void> {
@@ -42,7 +43,7 @@ export function TransactionReview({ tx, client, deployment, wallet, m, onClose, 
       if (typeof result !== 'string' || !/^0x[0-9a-fA-F]{64}$/.test(result)) throw new Error(m.actionError)
       const sent = result as Hex; setHash(sent)
       await checkReceipt(sent)
-    } catch (e) { setError(e instanceof Error ? e.message : m.actionError) }
+    } catch (e) { setError(fragmentErrorMessage(e, m)) }
     finally { setBusy(false) }
   }
   return <Dialog onEscape={() => busy} title={m.review} description={tx.label} onClose={() => { if (!busy) onClose() }}>

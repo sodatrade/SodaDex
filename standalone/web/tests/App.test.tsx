@@ -61,7 +61,7 @@ afterEach(() => {
 })
 
 describe('SodaDex user paths', () => {
-  it('keeps browsing read-only, exposes the test status and supports asset choice', async () => {
+  it('keeps browsing read-only and directs unknown Swap assets to pool creation', async () => {
     const user = userEvent.setup()
     renderApp()
     await screen.findByText('X Layer 已连接')
@@ -72,10 +72,12 @@ describe('SodaDex user paths', () => {
     const dialog = screen.getByRole('dialog', { name: '选择币种' })
     await user.type(within(dialog).getByRole('textbox'), 'wrapped')
     expect(within(dialog).queryByRole('button', { name: /^OKB / })).not.toBeInTheDocument()
-    await user.click(within(dialog).getByRole('button', { name: /WOKB/ }))
-    expect(within(card).getByRole('button', { name: '选择支付资产，当前 WOKB' })).toBeVisible()
+    expect(within(dialog).queryByRole('button', { name: /WOKB/ })).not.toBeInTheDocument()
+    expect(within(dialog).getByRole('status')).toHaveTextContent('未找到有 SodaDEX 流动性的匹配币种')
+    await user.click(within(dialog).getByRole('button', { name: '关闭对话框' }))
+    expect(within(card).getByRole('button', { name: '选择支付资产，当前 OKB' })).toBeVisible()
     expect(within(card).getByRole('button', { name: '选择接收资产，当前 USD₮0' })).toBeVisible()
-    expect(within(card).getByLabelText('你将支付')).toHaveValue('')
+    expect(within(card).getByLabelText('你将支付')).toHaveValue('1')
     await user.click(screen.getByRole('button', { name: '流动性' }))
     expect(await screen.findByRole('heading', { name: '流动性' })).toBeVisible()
     expect(screen.getByRole('button', { name: '创建池 / 新仓位' })).toBeVisible()

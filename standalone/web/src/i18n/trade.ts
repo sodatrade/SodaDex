@@ -1,6 +1,8 @@
 import type { Locale } from '../preferences/model'
 const en = {
   reference: 'X Layer token list', createPool: 'Create a pool', referenceLoading: 'Checking token on X Layer…',
+  poolTokensNote: 'Tokens with liquidity in SodaDEX pools. Search by name, symbol or contract address.',
+  noPoolToken: 'No matching token with SodaDEX liquidity. Create or fund its pool in Liquidity Pools first.',
   title: 'Swap', subtitle: 'Your tokens. Your next move.', choose: 'Select a token', search: 'Search name, symbol or contract',
   import: 'Import token', importNote: 'Token metadata is read from X Layer. Verify the contract address before selecting.', imported: 'Imported token',
   address: 'Contract address', invalidToken: 'Could not read this token on X Layer.', native: 'Native asset', token: 'ERC-20 token',
@@ -25,6 +27,8 @@ const en = {
 type Key = keyof typeof en
 const zh: Record<Key, string> = {
   reference: 'X Layer 代币列表', createPool: '创建资金池', referenceLoading: '正在 X Layer 核验代币…',
+  poolTokensNote: '仅显示 SodaDEX 池中有流动性的币种，可按名称、符号或合约地址搜索。',
+  noPoolToken: '未找到有 SodaDEX 流动性的匹配币种，请先到“流动性池”创建或添加流动性。',
   title: '兑换', subtitle: '从你的资产，到更多可能。', choose: '选择币种', search: '搜索名称、符号或合约地址',
   import: '导入代币', importNote: '从 X Layer 读取代币信息。选择前请核对合约地址。', imported: '已导入代币',
   address: '合约地址', invalidToken: '无法读取该代币的 X Layer 信息。', native: '原生资产', token: 'ERC-20 代币',
@@ -48,6 +52,8 @@ const zh: Record<Key, string> = {
 }
 const yue: Record<Key, string> = {
   ...zh, reference: 'X Layer 代幣列表', createPool: '建立資金池', referenceLoading: '喺 X Layer 核對代幣中…', title: '兌換', subtitle: '由你嘅資產，去更多可能。', choose: '選擇幣種', search: '搜尋名稱、符號或合約地址',
+  poolTokensNote: '只顯示 SodaDEX 池內有流動性嘅幣種，可按名稱、符號或合約地址搜尋。',
+  noPoolToken: '搵唔到有 SodaDEX 流動性嘅匹配幣種，請先去「流動性池」建立或加入流動性。',
   import: '匯入代幣', importNote: '由 X Layer 讀取代幣資料，揀選前請核對合約地址。', imported: '已匯入代幣',
   address: '合約地址', invalidToken: '讀唔到呢隻代幣嘅 X Layer 資料。', native: '原生資產', token: 'ERC-20 代幣',
   pools: 'SodaDEX 資金池', noPool: '呢個交易對暫時未有已初始化嘅 SodaDEX 資金池。', poolError: '載入資金池失敗。', reload: '重試',

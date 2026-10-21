@@ -140,28 +140,30 @@ describe('main swap interactions', () => {
     await userEvent.click(await screen.findByRole('button', { name: /NEW/ })); await amount()
     expect(trades.getPoolTradeQuote).toHaveBeenCalledWith(expect.objectContaining({ fee: 500, currency1: custom }), true, 1000000000000n, 50)
   })
-  it('validates an unknown contract before making it selectable', async () => {
+  it('does not import an unrelated contract into Swap without a SodaDEX pool', async () => {
     mount(); await userEvent.click(screen.getByRole('button', { name: /Choose receive/ }))
     await userEvent.type(screen.getByRole('textbox', { name: 'Search name, symbol or contract' }), custom.address)
-    await userEvent.click(screen.getByRole('button', { name: 'Import token' }))
-    await waitFor(() => expect(liquidity.importCurrency).toHaveBeenCalledWith(custom.address))
-    await userEvent.click(await screen.findByRole('button', { name: 'Import token' }))
-    expect(screen.getByRole('button', { name: /Choose receive.*NEW/ })).toBeInTheDocument()
-    expect(screen.getByText('No initialized SodaDEX pool for this pair.')).toBeInTheDocument()
+    expect(screen.getByRole('status')).toHaveTextContent('No matching token with SodaDEX liquidity.')
+    expect(screen.queryByRole('button', { name: 'Import token' })).not.toBeInTheDocument()
+    expect(liquidity.importCurrency).not.toHaveBeenCalled()
   })
-  it('loads reference tokens and rechecks on-chain metadata before selecting', async () => {
+  it('ignores the global reference token list in Swap', async () => {
     vi.stubGlobal('fetch', vi.fn(async () => new Response(JSON.stringify({ chainId: 196, tokens: [{ ...custom, symbol: 'LISTED' }] }), { status: 200 })))
     mount(); await userEvent.click(screen.getByRole('button', { name: /Choose receive/ }))
-    await userEvent.click(await screen.findByRole('button', { name: /LISTED/ }))
-    await waitFor(() => expect(liquidity.importCurrency).toHaveBeenCalledWith(custom.address))
-    expect(screen.getByRole('button', { name: /Choose receive.*NEW/ })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /LISTED/ })).not.toBeInTheDocument()
+    expect(liquidity.importCurrency).not.toHaveBeenCalled()
+    expect(fetch).not.toHaveBeenCalledWith('/api/reference/tokens', expect.anything())
   })
-  it('keeps built-in tokens and manual imports usable when the reference list fails', async () => {
+  it('does not expose saved imports or zero-liquidity pool assets', async () => {
+    localStorage.setItem('sodadex.imported-tokens.196.v1', JSON.stringify([custom.address]))
+    vi.mocked(liquidity.listAllPools).mockResolvedValue([pool, { ...pool, id: `0x${'c'.repeat(64)}`, currency1: custom, liquidity: 0n }])
     vi.stubGlobal('fetch', vi.fn(async () => new Response('{}', { status: 503 })))
     mount(); await userEvent.click(screen.getByRole('button', { name: /Choose receive/ }))
-    expect(screen.getByRole('button', { name: /WOKB/ })).toBeEnabled()
+    expect(await screen.findByRole('button', { name: /WOKB/ })).toBeEnabled()
     await userEvent.type(screen.getByRole('textbox', { name: 'Search name, symbol or contract' }), custom.address)
-    expect(screen.getByRole('button', { name: 'Import token' })).toBeEnabled()
+    expect(screen.queryByRole('button', { name: 'Import token' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /NEW/ })).not.toBeInTheDocument()
+    expect(liquidity.importCurrency).not.toHaveBeenCalled()
   })
   it('supports wrap as an explicit 1:1 wallet operation', async () => {
     mount(); await userEvent.click(screen.getByRole('button', { name: /Choose receive/ })); await userEvent.click(screen.getByRole('button', { name: /WOKB/ }))

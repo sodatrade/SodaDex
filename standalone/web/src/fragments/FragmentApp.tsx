@@ -20,6 +20,7 @@ import { MineScreen } from './MineScreen'
 import { MarketPanel } from './MarketPanel'
 import { TransactionReview } from './TransactionReview'
 import { TransientNotice } from './TransientNotice'
+import { fragmentErrorMessage } from './errorMessage'
 import './fragments.css'
 const OrdinaryLiquidity = lazy(async () => ({ default: (await import('../features/liquidity/LiquidityPage')).LiquidityPage }))
 const OrdinarySwap = lazy(async () => ({ default: (await import('./OrdinarySwap')).OrdinarySwap }))
@@ -36,7 +37,7 @@ function FragmentWorkspace(): ReactElement {
   const [swapLoaded, setSwapLoaded] = useState(() => fragmentTab(location.hash) === 'swap' && NETWORK.dexEnabled)
   const [ordinaryLoaded, setOrdinaryLoaded] = useState(() => fragmentTab(location.hash) === 'pool' && NETWORK.dexEnabled)
   const wallet = useWallet(), { locale } = usePreferences(), m = messages(locale), cache = useQueryClient()
-  const { deployment, error: configError } = useMemo(deploymentState, [])
+  const { deployment } = useMemo(deploymentState, [])
   const client = useMemo(() => deployment ? makeClient(deployment) : undefined, [deployment])
   const account = wallet.session?.chainId === NETWORK.chainId ? wallet.session.address : undefined
   const snapshot = useQuery({ queryKey: ['fragment-snapshot', deploymentKey(deployment), account], enabled: !!deployment && !!client,
@@ -58,7 +59,7 @@ function FragmentWorkspace(): ReactElement {
       await client.call({ account: identity.address, to: tx.to, data: tx.data, value: tx.value ?? 0n })
       if (wallet.getIdentity()?.revision !== identity.revision) throw new Error(m.walletChanged)
       setTransaction({ ...tx, value: tx.value ?? 0n, label: tx.label ?? label, account: identity.address, chainId: identity.chainId })
-    }).catch((e: unknown) => setError(e instanceof Error ? e.message : m.actionError)).finally(() => setPreparing(false))
+    }).catch((e: unknown) => setError(fragmentErrorMessage(e, m))).finally(() => setPreparing(false))
   }
   const screen = client && deployment && snapshot.data && !snapshot.isError ? { client, deployment, snapshot: snapshot.data, account, m, prepare, busy: preparing || !!transaction } : undefined
   const fallback = <p role="status">{snapshot.isError ? m.unavailable : m.loading}</p>
@@ -70,7 +71,7 @@ function FragmentWorkspace(): ReactElement {
       {(!NETWORK.dexEnabled || tab === 'mine') && <div>
       <div className="fragment-overview">{!NETWORK.dexEnabled && snapshot.data && <><span>{m.reserves}</span><span>OKB <strong>{formatBalance(snapshot.data.okb)}</strong></span><span>sFAB <strong>{formatBalance(snapshot.data.shares)}</strong></span></>}</div>
       <div className={tab === 'swap' && deployment ? 'fragment-grid' : undefined}>{tab === 'swap' && deployment && <MarketPanel key={deploymentKey(deployment)} deployment={deployment} m={m} />}<div>
-      {!deployment ? <section className="fragment-card"><p role="status">{m.notDeployed}</p>{configError && <p role="alert">{configError}</p>}</section> : snapshot.isPending ? <p role="status">{m.loading}</p> : snapshot.isError ? <section className="fragment-card"><p role="alert">{m.unavailable}</p><p>{snapshot.error.message}</p><Button disabled={snapshot.isFetching} onClick={() => void snapshot.refetch()}>{m.retry}</Button></section> : client && snapshot.data && <>
+      {!deployment ? <section className="fragment-card"><p role="status">{m.notDeployed}</p></section> : snapshot.isPending ? <p role="status">{m.loading}</p> : snapshot.isError ? <section className="fragment-card"><p role="alert">{m.unavailable}</p><Button disabled={snapshot.isFetching} onClick={() => void snapshot.refetch()}>{m.retry}</Button></section> : client && snapshot.data && <>
 
         {preparing && <p role="status">{m.loading}</p>}{success && <p role="status">{m.success} · <a target="_blank" rel="noreferrer" href={`${NETWORK.explorerUrl}/tx/${success}`}>{m.explorer} ↗</a></p>}
         <fieldset disabled={preparing || !!transaction} className="fragment-workspace">

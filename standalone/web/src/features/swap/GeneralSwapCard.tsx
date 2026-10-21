@@ -23,7 +23,7 @@ import { bestPoolQuote, bestPoolExactOutputQuote, currencyKey, isExactOutput, ma
 import { SwapReviewDialog } from './SwapReviewDialog'
 import { SwapSettings } from './SwapSettings'
 import { TradeDetails } from './TradeDetails'
-import { useTokenCatalog } from './useTokenCatalog'
+import { swapCurrencies } from './poolCurrencies'
 import { useSwapOperation, type SwapReview } from './useSwapOperation'
 import type { PairExtension } from './pairExtension'
 interface Props {
@@ -44,8 +44,6 @@ export function GeneralSwapCard({ wallet, balances, balancesLoading, balancesErr
   const [from, setFrom] = useState<Currency>(NATIVE_CURRENCY)
   const [to, setTo] = useState<Currency>(KNOWN_CURRENCIES.find((c) => c.address.toLowerCase() === STABLE_ADDRESS.toLowerCase()) ?? KNOWN_CURRENCIES[2])
   const extendedPair = pairExtension?.matches(from, to) ?? false
-  const [imported, setImported] = useState<Currency[]>([])
-  const catalog = useTokenCatalog()
   const [amount, setAmount] = useState(''), [editedSide, setEditedSide] = useState<'from' | 'to'>('from')
   const [selector, setSelector] = useState<'from' | 'to'>()
   const [protocol, setProtocol] = useState<Protocol>('auto'), [slippage, setSlippage] = useState('0.5')
@@ -85,12 +83,10 @@ export function GeneralSwapCard({ wallet, balances, balancesLoading, balancesErr
     failed: pools.isError && !matches.length, quote: validQuote }),
     [from, to, protocol, allPools, matches.length, pools.isPending, pools.isError, validQuote])
   useEffect(() => { onContextChange?.(context) }, [context, onContextChange])
-  const currencies = [...KNOWN_CURRENCIES, ...(pairExtension?.currencies ?? []), ...imported, ...catalog, ...allPools.flatMap((p) => [p.currency0, p.currency1])]
-    .filter((c, index, all) => all.findIndex((v) => currencyKey(v) === currencyKey(c)) === index)
+  const currencies = swapCurrencies(allPools, pairExtension?.currencies)
   const changed = (): void => { operation.cancel(); operation.reset(); setReview(undefined) }
   const select = (currency: Currency): void => {
     changed()
-    if (!currencies.some((c) => sameCurrency(c, currency))) setImported((all) => [...all, currency])
     if (!currency.native && !builtin(currency)) rememberToken(currency.address)
     if (selector === 'from') { if (sameCurrency(currency, to)) setTo(from); setFrom(currency) }
     else { if (sameCurrency(currency, from)) setFrom(to); setTo(currency) }
@@ -160,7 +156,7 @@ export function GeneralSwapCard({ wallet, balances, balancesLoading, balancesErr
         {operation.unresolved && <Button onClick={() => void operation.recheck()} disabled={operation.checking || operation.busy}>{m[operation.checking ? 'loading' : 'receipt']}</Button>}</div>}
       {wallet.error && <p role="alert" className="error-text">{t(wallet.error)}</p>}
     </Surface>}
-    {selector && <CurrencyPicker currencies={currencies} selected={selector === 'from' ? from : to} onSelect={select} onClose={() => setSelector(undefined)} />}
+    {selector && <CurrencyPicker poolOnly currencies={currencies} selected={selector === 'from' ? from : to} onSelect={select} onClose={() => setSelector(undefined)} loading={pools.isPending} failed={pools.isError && currencies.length === 0} onRetry={() => void pools.refetch()} />}
     {settings && <SwapSettings protocol={protocol} slippage={slippage} onProtocol={(p) => { changed(); setProtocol(p) }} onSlippage={(value) => { changed(); setSlippage(value) }} onClose={() => setSettings(false)} />}
     {review && <SwapReviewDialog review={review.value} from={review.from} to={review.to} current={!!current} operation={operation}
       onConfirm={() => { if (current && enabled && !locked) operation.execute(review.value, review.identity) }} onClose={() => { operation.cancel(); setReview(undefined) }} />}

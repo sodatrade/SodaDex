@@ -1,4 +1,5 @@
 import type { AnyPool } from '../../liquidity/v2Types'
+import { hasSwapLiquidity } from './poolCurrencies'
 import { WOKB_ADDRESS, type Protocol } from '../../domain/assets'
 import type { Currency } from '../../liquidity/types'
 import { getPoolTradeQuote, type PoolTradeQuote } from '../../trading/poolTrade'
@@ -16,7 +17,7 @@ function compatible(selected: Currency, pool: Currency, protocol: string): boole
 export function matchingPools(pools: AnyPool[], from: Currency, to: Currency, protocol: Protocol): { pool: AnyPool; zeroForOne: boolean }[] {
   if (sameCurrency(from, to)) return []
   return pools.flatMap((pool) => {
-    if (!pool.initialized || (pool.protocol === 'v2' ? pool.reserve0 === 0n || pool.reserve1 === 0n : pool.liquidity === 0n) || (protocol !== 'auto' && pool.protocol !== protocol)) return []
+    if (!hasSwapLiquidity(pool) || (protocol !== 'auto' && pool.protocol !== protocol)) return []
     const direct = compatible(from, pool.currency0, pool.protocol) && compatible(to, pool.currency1, pool.protocol)
     const reverse = compatible(from, pool.currency1, pool.protocol) && compatible(to, pool.currency0, pool.protocol)
     if (!direct && !reverse) return []
