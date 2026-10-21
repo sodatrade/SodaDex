@@ -23,7 +23,9 @@ import { SwapSettings } from './SwapSettings'
 import { TradeDetails } from './TradeDetails'
 import { useTokenCatalog } from './useTokenCatalog'
 import { useSwapOperation, type SwapReview } from './useSwapOperation'
+import type { PairExtension } from './pairExtension'
 interface Props {
+  pairExtension?: PairExtension
   wallet: WalletController; balances: Record<AssetId, bigint> | undefined
   balancesLoading: boolean; balancesError: boolean; onConnect: () => void; onCreatePool?: () => void; onContextChange?: (context: TradeMarketContext) => void; onBusyChange?: (busy: boolean) => void
 }
@@ -35,10 +37,11 @@ function builtin(currency: Currency): AssetId | undefined {
 async function customBalance(currency: Currency, address: Address): Promise<bigint> {
   return hexQuantity(await rpc('eth_call', [{ to: currency.address, data: `0x70a08231${address.slice(2).padStart(64, '0')}` }, 'latest']))
 }
-export function GeneralSwapCard({ wallet, balances, balancesLoading, balancesError, onConnect, onCreatePool, onContextChange, onBusyChange }: Props): ReactElement {
+export function GeneralSwapCard({ wallet, balances, balancesLoading, balancesError, onConnect, onCreatePool, onContextChange, onBusyChange, pairExtension }: Props): ReactElement {
   const { locale, t } = usePreferences(), m = tradeMessages(locale)
   const [from, setFrom] = useState<Currency>(NATIVE_CURRENCY)
   const [to, setTo] = useState<Currency>(KNOWN_CURRENCIES.find((c) => c.address.toLowerCase() === STABLE_ADDRESS.toLowerCase()) ?? KNOWN_CURRENCIES[2])
+  const extendedPair = pairExtension?.matches(from, to) ?? false
   const [imported, setImported] = useState<Currency[]>([])
   const catalog = useTokenCatalog()
   const [amount, setAmount] = useState(''), [editedSide, setEditedSide] = useState<'from' | 'to'>('from')
@@ -67,7 +70,7 @@ export function GeneralSwapCard({ wallet, balances, balancesLoading, balancesErr
   const quote = useQuery<SwapPoolQuote>({ queryKey: ['swap', 'quote', currencyKey(from), currencyKey(to), protocol, bps, editedSide,
     matches.map((p) => p.pool.id).join(','), parsed.kind === 'valid' ? parsed.units.toString() : ''],
     queryFn: () => (editedSide === 'to' ? bestPoolExactOutputQuote : bestPoolQuote)(matches, parsed.kind === 'valid' ? parsed.units : 0n, bps ?? 50),
-    enabled: !direction && matches.length > 0 && parsed.kind === 'valid' && !entryError && bps !== undefined,
+    enabled: !extendedPair && !direction && matches.length > 0 && parsed.kind === 'valid' && !entryError && bps !== undefined,
     retry: false, refetchInterval: 15_000 })
   const validQuote = !quote.isError && matches.length > 0 && !entryError ? quote.data : undefined
   const requiredInput = direction || editedSide === 'from' ? parsed.kind === 'valid' ? parsed.units : undefined
@@ -78,7 +81,7 @@ export function GeneralSwapCard({ wallet, balances, balancesLoading, balancesErr
     failed: pools.isError, quote: validQuote }),
     [from, to, protocol, pools.data, pools.isPending, pools.isError, validQuote])
   useEffect(() => { onContextChange?.(context) }, [context, onContextChange])
-  const currencies = [...KNOWN_CURRENCIES, ...imported, ...catalog, ...(pools.data ?? []).flatMap((p) => [p.currency0, p.currency1])]
+  const currencies = [...KNOWN_CURRENCIES, ...(pairExtension?.currencies ?? []), ...imported, ...catalog, ...(pools.data ?? []).flatMap((p) => [p.currency0, p.currency1])]
     .filter((c, index, all) => all.findIndex((v) => currencyKey(v) === currencyKey(c)) === index)
   const changed = (): void => { operation.cancel(); operation.reset(); setReview(undefined) }
   const select = (currency: Currency): void => {
@@ -118,16 +121,18 @@ export function GeneralSwapCard({ wallet, balances, balancesLoading, balancesErr
     : !enabled ? m.paused : locked ? m.pending : error ? t(error.code === 'amountPrecision' ? 'amountInvalid' : error.code)
       : parsed.kind !== 'valid' ? t('enterAmount') : quote.isFetching ? m.quote : direction ? m[direction] : m.review
   return <>
-    <Surface className="swap-card general-swap" aria-label={t('swapRegion')}>
+    {extendedPair && pairExtension ? pairExtension.render({ from, to, onSelect: setSelector, onReverse: () => { changed(); setFrom(to); setTo(from); setAmount(''); setEditedSide('from') } }) : <Surface className="swap-card general-swap" aria-label={t('swapRegion')}>
       <div className="swap-card-heading"><h2>{m.title}</h2>
         <Button appearance="icon" aria-label={t('swapSettings')} onClick={() => setSettings(true)} disabled={locked}><Icon name="settings" /></Button></div>
       <AmountPanel currency={from} pay amount={payAmount} estimated={!direction && editedSide === 'to'} balance={balanceText(fromBalance, fromBuiltin, from)} disabled={locked}
+        balanceExact={fromBalance === undefined ? undefined : `${formatUnits(fromBalance, from.decimals)} ${from.symbol}`}
         error={!!error && (editedSide === 'from' || error.code === 'amountInsufficient')} hint={validQuote && isExactOutput(validQuote) ? `${m.maximum}: ${formatUnits(validQuote.maximumIn, from.decimals)} ${from.symbol}${from.native ? ` · ${m.nativeMax}` : ''}` : from.native ? m.nativeMax : undefined} onSelect={() => setSelector('from')}
         onMax={!from.native && fromBalance !== undefined && account ? () => editAmount('from', formatUnits(fromBalance, from.decimals)) : undefined}
         onAmount={(value) => editAmount('from', value)} />
       <div className="direction-row"><Button appearance="icon" className="direction-button" aria-label={t('changeDirection')} disabled={locked}
         onClick={() => { changed(); setFrom(to); setTo(from); setAmount(''); setEditedSide('from') }}><Icon name="arrow" size={19} /></Button></div>
       <AmountPanel currency={to} amount={receiveAmount} estimated={!direction && editedSide === 'from'} error={!!entryError && editedSide === 'to'} onAmount={(value) => editAmount('to', value)} balance={balanceText(toBalance, toBuiltin, to)} disabled={locked} onSelect={() => setSelector('to')}
+        balanceExact={toBalance === undefined ? undefined : `${formatUnits(toBalance, to.decimals)} ${to.symbol}`}
         hint={direction ? m.wrapping : quote.isFetching ? m.quote : !enabled ? m.readonly : undefined} />
       {error && <p id="swap-amount-error" role="alert" className="amount-error">{error.code === 'amountPrecision' ? t(error.code, { decimals: error.decimals }) : t(error.code)}</p>}
       {!direction && bps === undefined && <p role="alert" className="error-text">{m.slippageError}</p>}
@@ -150,7 +155,7 @@ export function GeneralSwapCard({ wallet, balances, balancesLoading, balancesErr
       {operation.record && <div className="swap-submitted"><a className="transaction-link" href={`${EXPLORER_URL}/tx/${operation.record.hash}`} target="_blank" rel="noreferrer">{m.submitted} {shortenAddress(operation.record.hash)} <Icon name="external" size={14} /></a>
         {operation.unresolved && <Button onClick={() => void operation.recheck()} disabled={operation.checking || operation.busy}>{m[operation.checking ? 'loading' : 'receipt']}</Button>}</div>}
       {wallet.error && <p role="alert" className="error-text">{t(wallet.error)}</p>}
-    </Surface>
+    </Surface>}
     {selector && <CurrencyPicker currencies={currencies} selected={selector === 'from' ? from : to} onSelect={select} onClose={() => setSelector(undefined)} />}
     {settings && <SwapSettings protocol={protocol} slippage={slippage} onProtocol={(p) => { changed(); setProtocol(p) }} onSlippage={(value) => { changed(); setSlippage(value) }} onClose={() => setSettings(false)} />}
     {review && <SwapReviewDialog review={review.value} from={review.from} to={review.to} current={!!current} operation={operation}

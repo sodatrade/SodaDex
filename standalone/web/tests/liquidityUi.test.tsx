@@ -136,6 +136,18 @@ beforeEach(() => {
   })
   vi.mocked(client.recheckLiquidityReceipt).mockResolvedValue('success')
 })
+it('chooses the miner pool from the shared create dialog without creating an ordinary V3/V4 pool', async () => {
+  const choose=vi.fn(), {wallet}=setupWallet()
+  render(<QueryClientProvider client={new QueryClient({defaultOptions:{queries:{retry:false}}})}><PreferencesProvider><LiquidityPage wallet={wallet} onConnect={vi.fn()} specialPool={{label:'矿机碎片专用池',onChoose:choose,row:<div role="row">OKB / sFAB 专用池</div>}} /></PreferencesProvider></QueryClientProvider>)
+  expect(await screen.findByText('OKB / sFAB 专用池')).toBeVisible()
+  await userEvent.click(screen.getByRole('button',{name:'创建池 / 新仓位'}))
+  await userEvent.click(screen.getByRole('radio',{name:'矿机碎片专用池'}))
+  expect(screen.queryByLabelText('资产 A')).not.toBeInTheDocument()
+  await userEvent.click(within(screen.getByRole('dialog')).getByRole('button',{name:'添加流动性'}))
+  expect(choose).toHaveBeenCalledOnce()
+  expect(client.discoverPool).not.toHaveBeenCalled()
+  expect(client.executeLiquidity).not.toHaveBeenCalled()
+})
 async function openAmounts(user: ReturnType<typeof userEvent.setup>): Promise<HTMLElement> {
   await screen.findByText('已初始化')
   await user.click(screen.getByRole('button', { name: '添加流动性' }))

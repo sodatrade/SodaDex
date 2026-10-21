@@ -8,7 +8,7 @@
   "rpcUrl": "https://rpc.ignix.bot/rpc/196",
   "chainId": 196,
   "environment": "independent-test",
-  "status": "ACCEPTANCE_PENDING",
+  "status": "ACCEPTED",
   "journal": "pool-v3/public-journal.json",
   "productionTouched": false,
   "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",

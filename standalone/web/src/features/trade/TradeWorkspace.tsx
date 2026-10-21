@@ -7,12 +7,15 @@ import { POOLS } from '../../trading/config'
 import { TradeMarketPanel } from '../market/TradeMarketPanel'
 import { GeneralSwapCard } from '../swap/GeneralSwapCard'
 import type { TradeMarketContext } from './context'
+import type { PairExtension } from '../swap/pairExtension'
 export interface TradeWorkspaceProps {
+  pairExtension?: PairExtension
+  renderMarket?: (context: TradeMarketContext | undefined) => ReactNode
   wallet: WalletController; balances: Record<AssetId, bigint> | undefined; balancesLoading: boolean; balancesError: boolean
   onConnect: () => void; onBusyChange?: (busy: boolean) => void; onCreatePool?: () => void; active?: boolean
   activeMode?: 'swap' | 'limit'; orderMarketContext?: TradeMarketContext; orderModeControl?: ReactNode; renderOrderPanel?: (context: TradeMarketContext) => ReactNode
 }
-export function TradeWorkspace({ active = true, activeMode = 'swap', orderMarketContext, orderModeControl, renderOrderPanel, ...swapProps }: TradeWorkspaceProps): ReactElement {
+export function TradeWorkspace({ active = true, activeMode = 'swap', orderMarketContext, orderModeControl, renderOrderPanel, renderMarket, ...swapProps }: TradeWorkspaceProps): ReactElement {
   const { t } = usePreferences(), [context, setContext] = useState<TradeMarketContext>()
   return <div className="dex-workspace">
     <div className="trade-terminal">
@@ -20,9 +23,9 @@ export function TradeWorkspace({ active = true, activeMode = 'swap', orderMarket
         {orderModeControl && <div className="trade-mode-bar">{orderModeControl}</div>}
         <div hidden={activeMode !== 'swap'}><GeneralSwapCard {...swapProps} onContextChange={setContext} /></div>
         {activeMode === 'limit' && context && renderOrderPanel?.(context)}
-        <div className="trade-meta"><span><Icon name="layers" size={15} />{t(POOLS.ready ? 'poolsReady' : 'deploymentPending')}</span><span>{t('platformZero')}</span></div>
+        {!context || !swapProps.pairExtension?.matches(context.from, context.to) ? <div className="trade-meta"><span><Icon name="layers" size={15} />{t(POOLS.ready ? 'poolsReady' : 'deploymentPending')}</span><span>{t('platformZero')}</span></div> : null}
       </div>
-      <TradeMarketPanel context={activeMode === 'limit' ? orderMarketContext ?? context : context} active={active} />
+      {renderMarket?.(context) ?? <TradeMarketPanel context={activeMode === 'limit' ? orderMarketContext ?? context : context} active={active} />}
     </div>
   </div>
 }

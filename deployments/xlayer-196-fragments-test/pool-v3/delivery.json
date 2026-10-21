@@ -8,7 +8,7 @@
       "repo": "sodatrade/SodaDex",
       "worktree": "/Users/LevyHoo/Documents/SodaDex",
       "branch": "codex/feat/mining-products-1952",
-      "expectedHead": "26132f12a2f42b204a3b05a38640981f81d9fb82",
+      "expectedHead": "2a507b83253f213a74b877e37a4f587eda4def74",
       "base": "codex/feat/sodadex-bootstrap",
       "baseSha": "7506ce36138dfb6262ef11d1e3ca4828fec5ede3",
       "pr": 2
@@ -17,7 +17,7 @@
       "repo": "okasplaunchpad/contract",
       "worktree": "/Users/LevyHoo/XTruthWorkspace/contract",
       "branch": "codex/feat/mining-products-1952",
-      "expectedHead": "ec10161c136a437722e50d8e581a94511e0f34c3",
+      "expectedHead": "007291a",
       "base": "develop",
       "baseSha": "1426a613b6386be26c6ac91e14612ec581ff9c4c",
       "pr": 3
@@ -27,7 +27,10 @@
     "Pool v3 LP rounding preserves newly minted LP backing and refunds unused OKB",
     "Stop after pending or failed receipt, preserve fee journal",
     "Restore existing general-token V3/V4 entry points",
-    "Compact UI, 0.5% default slippage inside settings"
+    "Compact UI, 0.5% default slippage inside settings",
+    "Unified token picker and pool list; configured miner pool selected inside create dialog",
+    "Subscript zero-count display for small balances and market amounts; exact inputs preserved",
+    "Refresh pool reserves when preparing liquidity preview"
   ],
   "preserved": [
     "All unrelated dirty files",
@@ -39,9 +42,13 @@
       "passed": 29,
       "failed": 0
     },
-    "fullContractSuite": "running; fork-only environment failures tracked separately",
+    "fullContractSuite": {
+      "passed": 938,
+      "failed": 3,
+      "failureScope": "Environment-gated EarlyAuthorizeFork (missing XLAYER_RPC_URL), PoolGuardFork and TaxGuardFork (hook address flags not configured)"
+    },
     "web": {
-      "passed": 499,
+      "passed": 502,
       "skipped": 22,
       "typecheck": "pass",
       "lint": "pass",
@@ -55,6 +62,11 @@
     "runner": {
       "passed": 8,
       "mode": "in-memory, no signing/broadcast"
+    },
+    "browser": {
+      "publicWalletOperations": 5,
+      "successfulStageReceipts": 10,
+      "unifiedUi": "1440x1000 and 390x844; shared picker, create option, add dialog, indexed chart, exact-value tooltips"
     }
   },
   "deploymentChecklist": {
@@ -71,5 +83,7 @@
   },
   "contractCommit": "007291a",
   "runnerCommit": "95544eb55",
-  "deploymentStatus": "deployed and runtime verified; browser acceptance pending"
+  "deploymentStatus": "All 10 receipts successful; independent TEST pool active; remaining LP locked for 60 days",
+  "acceptance": "acceptance.json",
+  "releasePrerequisites": "No further chain writes. Publish frontend bundle and push approved requirement branches; no merge."
 }

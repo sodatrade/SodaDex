@@ -3,7 +3,7 @@ import { encodeFunctionData, formatEther, parseEther } from 'viem'
 import { Button } from '../components/primitives'
 import { roundedContribution } from './liquidityQuote'
 import { poolAbi } from './abi'
-import { approveIfNeeded, minimum } from './client'
+import { approveIfNeeded, minimum, readSnapshot } from './client'
 import type { ScreenProps } from './types'
 export function PoolForm({ client, deployment: d, snapshot: s, account, m, prepare }: ScreenProps): ReactElement {
   const [mode, setMode] = useState<'add' | 'remove'>('add'), [shares, setShares] = useState(''), [okb, setOkb] = useState(''), [lp, setLp] = useState(''), [slip, setSlip] = useState('0.5')
@@ -16,17 +16,18 @@ export function PoolForm({ client, deployment: d, snapshot: s, account, m, prepa
       if (!account) throw new Error(m.walletRequired)
       const deadline = BigInt(Math.floor(Date.now() / 1000) + 1200), bps = Number(slip) * 100
       minimum(1n, bps)
+      const current = await readSnapshot(client, d, account)
       if (mode === 'remove') {
         const liquidity = parseEther(lp)
-        if (liquidity <= 0n || s.lpSupply === 0n || liquidity > s.lpBalance) throw new Error(m.amountError)
-        return { to: d.pool, data: encodeFunctionData({ abi: poolAbi, functionName: 'removeLiquidity', args: [liquidity, minimum(s.shares * liquidity / s.lpSupply, bps), minimum(s.okb * liquidity / s.lpSupply, bps), deadline] }) }
+        if (liquidity <= 0n || current.lpSupply === 0n || liquidity > current.lpBalance) throw new Error(m.amountError)
+        return { to: d.pool, data: encodeFunctionData({ abi: poolAbi, functionName: 'removeLiquidity', args: [liquidity, minimum(current.shares * liquidity / current.lpSupply, bps), minimum(current.okb * liquidity / current.lpSupply, bps), deadline] }) }
       }
       if (!s.preciseLiquidity) throw new Error(m.lpUpdating)
       const desiredShares = parseEther(shares), value = parseEther(okb)
       if (desiredShares <= 0n || value <= 0n) throw new Error(m.amountError)
       const approval = await approveIfNeeded(client, d.vault, account, d.pool, desiredShares)
       if (approval) return { ...approval, label: m.approval }
-      const { shares: actualShares, okb: actualOkb } = roundedContribution(desiredShares, value, s.shares, s.okb, s.lpSupply)
+      const { shares: actualShares, okb: actualOkb } = roundedContribution(desiredShares, value, current.shares, current.okb, current.lpSupply)
       return { to: d.pool, data: encodeFunctionData({ abi: poolAbi, functionName: 'addLiquidity', args: [desiredShares, minimum(actualShares, bps), minimum(actualOkb, bps), deadline] }), value }
     })}>{m.preview}</Button>
   </section>

@@ -11,10 +11,11 @@ interface Props {
   l: LiquidityText
   disabled: boolean
   onPool: (pool: LiquidityPool) => void
+  specialPool?: { label: string; onChoose: () => void }
 }
-export function CurrencyConfiguration({ l, disabled, onPool }: Props): ReactElement {
+export function CurrencyConfiguration({ l, disabled, onPool, specialPool }: Props): ReactElement {
   const id = useId()
-  const [protocol, setProtocol] = useState<LiquidityProtocol>('v3')
+  const [protocol, setProtocol] = useState<LiquidityProtocol | 'miner'>('v3')
   const [currencies, setCurrencies] = useState<readonly Currency[]>(KNOWN_CURRENCIES)
   const [currencyA, setA] = useState(NATIVE_CURRENCY)
   const [currencyB, setB] = useState(
@@ -26,6 +27,7 @@ export function CurrencyConfiguration({ l, disabled, onPool }: Props): ReactElem
   const discovery = useMutation({
     retry: false,
     mutationFn: async () => {
+      if (protocol === 'miner') throw new LiquidityError('invalidPool')
       const feeUnits = decimalInput(fee, 4)
       if (feeUnits > BigInt(Number.MAX_SAFE_INTEGER)) throw new LiquidityError('invalidPool')
       return discoverPool({
@@ -64,7 +66,8 @@ export function CurrencyConfiguration({ l, disabled, onPool }: Props): ReactElem
       className="lp-form"
       onSubmit={(event) => {
         event.preventDefault()
-        discovery.mutate()
+        if (protocol === 'miner') specialPool?.onChoose()
+        else discovery.mutate()
       }}
     >
       <fieldset className="lp-protocols" disabled={busy}>
@@ -83,7 +86,9 @@ export function CurrencyConfiguration({ l, disabled, onPool }: Props): ReactElem
             {value.toUpperCase()}
           </label>
         ))}
+        {specialPool && <label><input type="radio" name={`${id}-protocol`} checked={protocol === 'miner'} onChange={() => setProtocol('miner')} />{specialPool.label}</label>}
       </fieldset>
+      {protocol === 'miner' ? <><div className="lp-pair"><strong>OKB / sFAB</strong><span className="lp-pill">0.5%</span></div><Button appearance="primary" type="submit" disabled={busy}>{l('add')}</Button></> : <>
       <div className="lp-form-grid">
         {(
           [
@@ -163,6 +168,7 @@ export function CurrencyConfiguration({ l, disabled, onPool }: Props): ReactElem
       <Button appearance="primary" type="submit" disabled={busy}>
         {l(discovery.isPending ? 'loading' : 'next')}
       </Button>
+      </>}
     </form>
   )
 }

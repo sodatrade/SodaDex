@@ -1,9 +1,10 @@
+import { compactMarketNumber } from '../../domain/compactDecimal'
 import { useId, useState, type ReactElement } from 'react'
 import { tradeMarketMessages } from '../../i18n/tradeMarket'
 import { usePreferences } from '../../preferences/context'
 import { plotGeometry, type PlotCandle } from './marketModel'
 export function formatPrice(value: number | undefined, locale: string): string {
-  return value === undefined ? '—' : new Intl.NumberFormat(locale, { maximumSignificantDigits: 8 }).format(value)
+  return value === undefined ? '—' : compactMarketNumber(value, locale, 8)
 }
 export function TradeChart({ candles, mode, unit }: { candles: PlotCandle[]; mode: 'line' | 'candles'; unit: string }): ReactElement {
   const { locale } = usePreferences(), m = tradeMarketMessages(locale), id = useId()

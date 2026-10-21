@@ -6,9 +6,26 @@ import { roundedContribution } from '../src/fragments/liquidityQuote'
 import { TransientNotice } from '../src/fragments/TransientNotice'
 import { messages } from '../src/fragments/messages'
 import type { ScreenProps } from '../src/fragments/types'
+import * as fragmentClient from '../src/fragments/client'
+import { decodeFunctionData } from 'viem'
+import { poolAbi } from '../src/fragments/abi'
+import { PoolForm } from '../src/fragments/PoolForm'
 const props = { m: messages('en'), snapshot: { okb: 1n, shares: 10n, lpBalance: 0n }, prepare: vi.fn() } as unknown as ScreenProps
 
 describe('pool list and transient feedback', () => {
+  it('prepares removal from fresh reserves rather than the prior trade snapshot', async () => {
+    const snapshot = { ...props.snapshot, lpSupply:100n, lpBalance:50n, preciseLiquidity:true }
+    const fresh = { ...snapshot, shares:2000n, okb:1000n }
+    vi.spyOn(fragmentClient,'readSnapshot').mockResolvedValue(fresh as fragmentClient.Snapshot)
+    const prepare = vi.fn()
+    const address = '0x2222222222222222222222222222222222222222'
+    render(<PoolForm {...props} snapshot={snapshot as fragmentClient.Snapshot} account="0x1111111111111111111111111111111111111111" deployment={{pool:address,vault:address,policy:address,chainId:196,fromBlock:0n,rpcUrl:'https://rpc.test'}} prepare={prepare}/>)
+    fireEvent.click(screen.getByRole('button',{name:'Remove liquidity'}))
+    fireEvent.change(screen.getByRole('textbox',{name:'LP amount'}),{target:{value:'0.00000000000000001'}})
+    fireEvent.click(screen.getByRole('button',{name:'Preview transaction'}))
+    const tx=await prepare.mock.calls[0][1]()
+    expect(decodeFunctionData({abi:poolAbi,data:tx.data}).args).toEqual([10n,199n,99n,expect.any(BigInt)])
+  })
   it('opens operations from a pool row and can return to the list', () => {
     render(<PreferencesProvider><PoolScreen {...props}/></PreferencesProvider>)
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()

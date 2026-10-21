@@ -1,6 +1,6 @@
 import './liquidity.css'
 import { useQuery } from '@tanstack/react-query'
-import { useEffect, useState, type ReactElement } from 'react'
+import { useEffect, useState, type ReactElement, type ReactNode } from 'react'
 import { Button, Icon } from '../../components/primitives'
 import { Pagination, usePagination } from '../../components/Pagination'
 import { CHAIN_ID } from '../../domain/assets'
@@ -24,11 +24,13 @@ interface Props {
   onConnect: () => void
   onBusyChange?: (busy: boolean) => void
   embedded?: boolean
+  specialPool?: { label: string; row: ReactNode; onChoose: () => void }
+  externalBusy?: boolean
 }
 type Editor =
   | { kind: 'mint'; pool?: LiquidityPool }
   | { kind: 'increase' | 'decrease' | 'collect' | 'transfer' | 'burn'; position: LiquidityPosition }
-export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded }: Props): ReactElement {
+export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded, specialPool, externalBusy }: Props): ReactElement {
   const [tab, setTab] = useState<'pools' | 'positions'>('pools')
   const [detail, setDetail] = useState<LiquidityPool>()
   const [editor, setEditor] = useState<Editor>()
@@ -53,7 +55,7 @@ export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded }: Pro
     retry: false,
     refetchInterval: 30_000,
   })
-  const busy = operation.preparing || operation.executing || !!operation.blocked
+  const busy = operation.preparing || operation.executing || !!operation.blocked || !!externalBusy
   const navigationBusy = busy || !!operation.review || !!editor || !!detail
   useEffect(() => { onBusyChange?.(navigationBusy) }, [navigationBusy, onBusyChange])
   const open = (value: Editor): void => {
@@ -122,6 +124,7 @@ export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded }: Pro
       {tab === 'pools' ? (
         <div className="lp-pool-section">
           <p className="lp-muted">{l('poolFilterNote')}</p>
+          {!pools.isSuccess && specialPool && <PoolList pools={[]} l={l} disabled={busy} onDetails={setDetail} onAdd={(pool) => open({ kind: 'mint', pool })} extraRows={[{id:'configured-miner-pool',content:specialPool.row}]} />}
           {pools.isPending ? (
             <p role="status">{l('loading')}</p>
           ) : pools.isError ? (
@@ -129,10 +132,10 @@ export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded }: Pro
               <p role="alert">{l('loadFailed')}</p>
               <Button onClick={() => void pools.refetch()}>{l('retry')}</Button>
             </div>
-          ) : pools.data.length === 0 ? (
+          ) : pools.data.length === 0 && !specialPool ? (
             <p className="lp-empty">{l('emptyPools')}</p>
           ) : (
-            <PoolList pools={pools.data} l={l} disabled={busy} onDetails={setDetail} onAdd={(pool) => open({ kind: 'mint', pool })} />
+            <PoolList pools={pools.data} l={l} disabled={busy} onDetails={setDetail} onAdd={(pool) => open({ kind: 'mint', pool })} extraRows={specialPool ? [{ id: 'configured-miner-pool', content: specialPool.row }] : undefined} />
           )}
         </div>
       ) : (
@@ -197,6 +200,7 @@ export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded }: Pro
           error={operation.error}
           onPreview={operation.prepare}
           onClose={closeEditor}
+          specialPool={specialPool ? { label: specialPool.label, onChoose: () => { closeEditor(); specialPool.onChoose() } } : undefined}
         />
       )}
       {editor && (editor.kind === 'decrease' || editor.kind === 'collect' || editor.kind === 'transfer' || editor.kind === 'burn') && (

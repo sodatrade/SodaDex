@@ -1,4 +1,6 @@
 import type { FragmentDeployment } from './config'
+import { formatEther } from 'viem'
+import { compactTinyDecimal, compactMarketNumber } from '../domain/compactDecimal'
 export interface Trade { id: string; transactionHash: string; timestamp: number; blockNumber: number; shareIn: boolean; input: string; output: string; platformFee: string; lpFee: string }
 export interface Market { pool: string; chainId: number; trades: Trade[]; chart: Trade[]; nextCursor: string | null; index: { syncing: boolean; lastError: string | null; indexedThrough: number; generation: number }; asOf: { timestamp: number } | null }
 const record = (x: unknown): x is Record<string, unknown> => !!x && typeof x === 'object'
@@ -25,9 +27,9 @@ export function tradePrice(t: Trade): number {
   const native = t.shareIn ? output + fees : input - fees, shares = t.shareIn ? input : output
   return shares > 0n && native >= 0n ? Number(native) / Number(shares) : 0
 }
-export function marketNumber(value: number): string { return value === 0 ? '0' : value.toLocaleString(undefined, { maximumSignificantDigits: 6 }) }
+export function marketNumber(value: number): string { return compactMarketNumber(value) }
 
 export function tradeAmount(raw: string): string {
-  const value = Number(raw) / 1e18
-  return value > 0 && value < 0.000001 ? value.toExponential(4) : marketNumber(value)
+  const decimal = formatEther(BigInt(raw))
+  return compactTinyDecimal(decimal) ?? marketNumber(Number(decimal))
 }

@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react'
+import type { ReactElement, ReactNode } from 'react'
 import { formatUnits } from 'viem'
 import { Button } from '../../components/primitives'
 import { Pagination, usePagination } from '../../components/Pagination'
@@ -6,14 +6,16 @@ import type { LiquidityText } from '../../i18n/liquidity'
 import type { LiquidityPool } from '../../liquidity/types'
 import { CurrencyLabel } from './CurrencyLabel'
 
-export function PoolList({ pools, l, disabled, onDetails, onAdd }: {
+export function PoolList({ pools, l, disabled, onDetails, onAdd, extraRows = [] }: {
   pools: LiquidityPool[]
   l: LiquidityText
   disabled: boolean
   onDetails: (pool: LiquidityPool) => void
   onAdd: (pool: LiquidityPool) => void
+  extraRows?: { id: string; content: ReactNode }[]
 }): ReactElement {
-  const pagination = usePagination(pools)
+  const rows: ({ id: string; pool: LiquidityPool } | { id: string; content: ReactNode })[] = [...extraRows, ...pools.map(pool => ({ id: `${pool.protocol}:${pool.id}`, pool }))]
+  const pagination = usePagination(rows)
   return <><div className="lp-pool-list" role="table" aria-label={l('pools')}>
     <div className="lp-pool-heading" role="row">
       <span role="columnheader">{l('pair')}</span>
@@ -21,7 +23,7 @@ export function PoolList({ pools, l, disabled, onDetails, onAdd }: {
       <span role="columnheader">{l('status')}</span>
       <span role="columnheader">{l('action')}</span>
     </div>
-    {pagination.items.map(pool => <div className="lp-pool" role="row" key={`${pool.protocol}:${pool.id}`}>
+    {pagination.items.map(row => { if ('content' in row) return <div key={row.id}>{row.content}</div>; const pool = row.pool; return <div className="lp-pool" role="row" key={row.id}>
       <div className="lp-pair" role="cell">
         <CurrencyLabel currency={pool.currency0} /><span>/</span><CurrencyLabel currency={pool.currency1} />
       </div>
@@ -31,6 +33,6 @@ export function PoolList({ pools, l, disabled, onDetails, onAdd }: {
         <Button onClick={() => onDetails(pool)}>{l('details')}</Button>
         <Button onClick={() => onAdd(pool)} disabled={disabled}>{l('add')}</Button>
       </div>
-    </div>)}
+    </div>})}
   </div><Pagination {...pagination} /></>
 }

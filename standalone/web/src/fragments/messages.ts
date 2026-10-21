@@ -2,7 +2,7 @@ import type { Locale } from '../preferences/model'
 const zh = {
   tradeSettings: '交易设置', allTokens: '选择代币', marketType: '交易市场', ordinaryPools: '普通代币池', poolType: '池子类型',
   lpUpdating: '添加流动性暂不可用，等待测试池更新。已有 LP 仍可移除。',
-  pair: '交易对', manage: '管理流动性', specialPool: '矿机专用池',
+  pair: '交易对', manage: '管理流动性', specialPool: '矿机碎片专用池',
   reserves: '池内储备', received: '实际收到', time: '时间', pageSize: '每页 10 条', chartHint: '最近 500 笔真实成交 · 每份 sFAB 的 OKB 成交价',
   indexReady: '成交已同步', indexSyncing: '正在同步新成交', indexDelayed: '同步暂缓，保留已收录成交', marketError: '行情暂时不可用，请重试', pageExpired: '记录已更新，请返回第一页',
   ignixScope: '矿机、金库及收益领取由 IGNIX 提供。这里仅展示钱包资产和 LP 本金份额。', dex: 'Swap', pool: 'Pool', mine: '我的', connect: '连接钱包', settings: '偏好设置', test: '独立测试合约 · 交易由你的钱包确认',
@@ -33,7 +33,7 @@ export type Messages = typeof zh
 const en: Messages = {
   tradeSettings: 'Trade settings', allTokens: 'Choose tokens', marketType: 'Swap market', ordinaryPools: 'Other token pools', poolType: 'Pool type',
   lpUpdating: 'Adding liquidity is paused until the test pool is updated. Existing LP can still be removed.',
-  pair: 'Pair', manage: 'Manage liquidity', specialPool: 'Miner pool',
+  pair: 'Pair', manage: 'Manage liquidity', specialPool: 'Miner share pool',
   reserves: 'Pool reserves', received: 'Received', time: 'Time', pageSize: '10 per page', chartHint: 'Latest 500 on-chain trades · OKB execution price per sFAB',
   indexReady: 'Trades synced', indexSyncing: 'Syncing trades', indexDelayed: 'Sync delayed · Showing saved trades', marketError: 'Market unavailable. Please retry.', pageExpired: 'History updated. Return to the first page.',
   ignixScope: 'IGNIX handles miners, vaults and reward claims. This page shows wallet assets and LP principal only.', dex: 'Swap', pool: 'Pool', mine: 'My', connect: 'Connect wallet', settings: 'Preferences', test: 'Independent test contracts · Confirm transactions in your wallet',
@@ -60,7 +60,7 @@ const en: Messages = {
   historyHint: 'On-chain trades from this test pool only. At most 10 per page.', noChart: 'Not enough trades to draw a chart yet',
   review: 'Review transaction', contract: 'Target contract', native: 'OKB payment (excluding gas)', explorer: 'View transaction',
 }
-const yue: Messages = { ...zh, tradeSettings: '交易設定', allTokens: '選擇代幣', marketType: '交易市場', ordinaryPools: '一般代幣池', poolType: '池類型', lpUpdating: '加入流動性暫未開放，等測試池更新。現有 LP 仍可移除。', pair: '交易對', manage: '管理流動性', specialPool: '礦機專用池', reserves: '池內儲備', received: '實際收到', time: '時間', pageSize: '每頁 10 條', chartHint: '最近 500 筆鏈上成交 · 每份 sFAB 嘅 OKB 成交價', indexReady: '成交已同步', indexSyncing: '同步新成交中', indexDelayed: '同步暫緩，顯示已儲存成交', marketError: '行情暫時未能讀取，請重試', pageExpired: '記錄已更新，請返第一頁', allLp: '全部 LP', ignixScope: '礦機、金庫同收益領取由 IGNIX 提供。呢度只顯示錢包資產同 LP 本金份額。', mine: '我嘅', connect: '連接錢包', settings: '偏好設定', swap: '兌換', pay: '支付', receive: '預計收到',
+const yue: Messages = { ...zh, tradeSettings: '交易設定', allTokens: '選擇代幣', marketType: '交易市場', ordinaryPools: '一般代幣池', poolType: '池類型', lpUpdating: '加入流動性暫未開放，等測試池更新。現有 LP 仍可移除。', pair: '交易對', manage: '管理流動性', specialPool: '礦機碎片專用池', reserves: '池內儲備', received: '實際收到', time: '時間', pageSize: '每頁 10 條', chartHint: '最近 500 筆鏈上成交 · 每份 sFAB 嘅 OKB 成交價', indexReady: '成交已同步', indexSyncing: '同步新成交中', indexDelayed: '同步暫緩，顯示已儲存成交', marketError: '行情暫時未能讀取，請重試', pageExpired: '記錄已更新，請返第一頁', allLp: '全部 LP', ignixScope: '礦機、金庫同收益領取由 IGNIX 提供。呢度只顯示錢包資產同 LP 本金份額。', mine: '我嘅', connect: '連接錢包', settings: '偏好設定', swap: '兌換', pay: '支付', receive: '預計收到',
   preview: '預覽交易', confirm: '確認並打開錢包', cancel: '取消', retry: '重新整理', add: '加入流動性', remove: '移除流動性',
   balances: '我嘅資產', rewards: '我嘅收益', deposit: '存入礦機', redeem: '贖回礦機', minerId: '礦機 NFT 編號', custody: '金庫礦機',
   harvest: '結算礦機收益', claim: '領取 FAB 分紅', claimLp: '領取 LP 收益', previous: '上一頁', next: '下一頁', empty: '暫時冇記錄',

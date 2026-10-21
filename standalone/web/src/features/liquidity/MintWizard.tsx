@@ -23,6 +23,7 @@ interface Props {
   error?: LiquidityErrorCode
   onPreview: (operation: LiquidityOperation) => void
   onClose: () => void
+  specialPool?: { label: string; onChoose: () => void }
 }
 export function MintWizard({
   pool: initialPool,
@@ -33,12 +34,13 @@ export function MintWizard({
   error,
   onPreview,
   onClose,
+  specialPool,
 }: Props): ReactElement {
   const [pool, setPool] = useState(initialPool ?? position?.pool)
   return (
     <Dialog title={l(position ? 'increase' : 'create')} description={l('test')} onClose={onClose}>
       {!pool ? (
-        <CurrencyConfiguration l={l} disabled={disabled} onPool={setPool} />
+        <CurrencyConfiguration l={l} disabled={disabled} onPool={setPool} specialPool={specialPool} />
       ) : (
         <AmountConfiguration
           pool={pool}

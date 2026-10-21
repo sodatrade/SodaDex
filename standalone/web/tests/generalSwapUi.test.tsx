@@ -49,6 +49,21 @@ async function amount(value = '0.000001'): Promise<void> {
   await waitFor(() => expect(screen.getByRole('button', { name: 'Review swap' })).toBeEnabled())
 }
 describe('main swap interactions', () => {
+  it('finds the configured share token in the normal picker and routes only its native pair to the extension', async () => {
+    const share = { ...custom, symbol: 'sFAB', name: 'Miner shares', decimals: 18 }
+    const renderPair = vi.fn(({ onSelect }: { onSelect: (side: 'to') => void }) => <button onClick={() => onSelect('to')}>Change share token</button>)
+    render(<QueryClientProvider client={new QueryClient({defaultOptions:{queries:{retry:false}}})}><PreferencesProvider><GeneralSwapCard wallet={wallet} balances={balances} balancesLoading={false} balancesError={false} onConnect={vi.fn()} pairExtension={{currencies:[share],matches:(a,b)=>a.native && b.address===share.address,render:renderPair}} /></PreferencesProvider></QueryClientProvider>)
+    await userEvent.click(screen.getByRole('button',{name:/Choose receive/}))
+    await userEvent.type(screen.getByRole('textbox',{name:'Search name, symbol or contract'}),'sFAB')
+    await userEvent.click(screen.getByRole('button',{name:/sFAB/}))
+    expect(await screen.findByRole('button',{name:'Change share token'})).toBeVisible()
+    expect(trades.getPoolTradeQuote).not.toHaveBeenCalled()
+    expect(trades.executePoolTrade).not.toHaveBeenCalled()
+    await userEvent.click(screen.getByRole('button',{name:'Change share token'}))
+    await userEvent.click(screen.getByRole('button',{name:/USD₮0/}))
+    expect(await screen.findByLabelText('You pay')).toBeVisible()
+    expect(screen.queryByRole('button',{name:'Change share token'})).not.toBeInTheDocument()
+  })
   it('shows pool fee/minimum and executes only after explicit confirmation', async () => {
     mount(); await amount(); expect(trades.executePoolTrade).not.toHaveBeenCalled()
     expect(screen.getByText('Minimum received')).toBeVisible()
