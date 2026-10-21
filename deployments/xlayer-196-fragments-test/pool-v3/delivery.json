@@ -1,0 +1,72 @@
+{
+  "requirement": "mining-products-1952 / independent 196 pool v3 repair",
+  "lifecycle": "active",
+  "owner": "current /root SodaDEX task",
+  "productionTouched": false,
+  "repositories": [
+    {
+      "repo": "sodatrade/SodaDex",
+      "worktree": "/Users/LevyHoo/Documents/SodaDex",
+      "branch": "codex/feat/mining-products-1952",
+      "expectedHead": "26132f12a2f42b204a3b05a38640981f81d9fb82",
+      "base": "codex/feat/sodadex-bootstrap",
+      "baseSha": "7506ce36138dfb6262ef11d1e3ca4828fec5ede3",
+      "pr": 2
+    },
+    {
+      "repo": "okasplaunchpad/contract",
+      "worktree": "/Users/LevyHoo/XTruthWorkspace/contract",
+      "branch": "codex/feat/mining-products-1952",
+      "expectedHead": "ec10161c136a437722e50d8e581a94511e0f34c3",
+      "base": "develop",
+      "baseSha": "1426a613b6386be26c6ac91e14612ec581ff9c4c",
+      "pr": 3
+    }
+  ],
+  "changes": [
+    "Pool v3 LP rounding preserves newly minted LP backing and refunds unused OKB",
+    "Stop after pending or failed receipt, preserve fee journal",
+    "Restore existing general-token V3/V4 entry points",
+    "Compact UI, 0.5% default slippage inside settings"
+  ],
+  "preserved": [
+    "All unrelated dirty files",
+    "Existing TEST vault/policy and old locked LP",
+    "Production contracts"
+  ],
+  "validation": {
+    "sodaContracts": {
+      "passed": 29,
+      "failed": 0
+    },
+    "fullContractSuite": "running; fork-only environment failures tracked separately",
+    "web": {
+      "passed": 498,
+      "skipped": 22,
+      "typecheck": "pass",
+      "lint": "pass",
+      "build": "pass"
+    },
+    "worker": {
+      "passed": 216,
+      "typecheck": "pass",
+      "lint": "pass"
+    },
+    "runner": {
+      "passed": 8,
+      "mode": "in-memory, no signing/broadcast"
+    }
+  },
+  "deploymentChecklist": {
+    "network": "196 independent TEST only",
+    "wallet": "encrypted local existing TEST owner, nonce 158 confirmed",
+    "parameters": "approval.json, plan rows and immutable TEST vault/policy bound",
+    "compile": "artifact and all compiler source hashes match rehearsal",
+    "localRehearsal": "10 successful transactions; fixed execution gas limits total <= approved caps",
+    "productionWallets": "not applicable: TEST only",
+    "proxyUpgradeMigration": "not applicable: new immutable pool and locker",
+    "awsOrIgnixBackend": "not applicable: no backend changes",
+    "oldLiquidity": "preserved, old locker unchanged",
+    "postDeployment": "runtime hashes, actual browser five operations, LP lock and indexed market must be checked before completion"
+  }
+}

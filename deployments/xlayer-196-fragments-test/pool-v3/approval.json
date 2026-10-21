@@ -1,0 +1,10 @@
+{
+  "approved": true,
+  "chainId": 196,
+  "production": false,
+  "totalCapWei": "370000000000000",
+  "gasCapWei": "366900000000000",
+  "nonGasCapWei": "330100000000",
+  "maxGasPriceWei": "30000000",
+  "authorization": "\u540c\u610f\uff0c\u6309 0.00037 OKB \u65b0\u589e\u4e0a\u9650\u7ee7\u7eed"
+}
