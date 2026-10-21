@@ -49,7 +49,8 @@
 .swap-token-picker { display: flex; flex-direction: column; min-height: 0; }
 .swap-token-picker .search-field { flex-shrink: 0; min-height: 48px; padding: 12px 14px; border-radius: 10px; margin: 12px 0; }
 .swap-token-picker .search-field input { font-size: 13px; }
-.swap-token-scroll { max-height: min(480px, calc(100svh - 250px)); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.swap-token-scroll { max-height: min(480px, calc(100svh - 250px)); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; -ms-overflow-style: none; }
+.swap-token-scroll::-webkit-scrollbar { display: none; }
 .swap-token-options { margin: 0; overflow: visible; }
 .swap-token-options .asset-option { padding: 12px 10px; gap: 12px; min-height: 70px; border-radius: 8px; }
 .swap-token-options .asset-option:hover { background: var(--soda-field); }
