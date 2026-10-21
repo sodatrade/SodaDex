@@ -1,6 +1,6 @@
 import { createPublicClient, http, encodeFunctionData, keccak256, toHex, zeroAddress, type Address, type Hex } from 'viem'
 import type { FragmentDeployment } from './config'
-import { poolAbi, lpRewardsAbi, tokenAbi } from './abi'
+import { poolAbi, lpRewardsAbi, tokenAbi, ignixIncomeAbi } from './abi'
 export type FragmentClient = ReturnType<typeof makeClient>
 export const makeClient = (config: FragmentDeployment) => createPublicClient({ transport: http(config.rpcUrl, { retryCount: 1 }) })
 export interface PreparedTransaction { to: Address; data: Hex; value: bigint; label: string; account: Address; chainId: number }
@@ -13,8 +13,21 @@ export async function verifyDeployment(c: FragmentClient, d: FragmentDeployment)
     c.readContract({ address: d.pool, abi: poolAbi, functionName: 'REWARDS' }),
   ])
   const same = (a: Address, b: Address): boolean => a.toLowerCase() === b.toLowerCase()
-  const preciseLiquidity = version === keccak256(toHex('SodaDEX.OKB.Fragments.v3'))
+  // Product revision v4 is still the special constant-product pool, not Uniswap V4.
+  const ignixIncome = version === keccak256(toHex('SodaDEX.OKB.Fragments.v4'))
+  const preciseLiquidity = ignixIncome || version === keccak256(toHex('SodaDEX.OKB.Fragments.v3'))
   if ((!preciseLiquidity && version !== keccak256(toHex('SodaDEX.OKB.Fragments.v2'))) || !same(shares, d.vault) || !same(policy, d.policy)) throw new Error('Unexpected contract version or bindings')
+  if (ignixIncome) {
+    if (!d.income || !d.ignixTreasury) throw new Error('Missing IGNIX income binding')
+    const [income, fab, incomePool, incomeFab, recipient] = await Promise.all([
+      c.readContract({ address: d.pool, abi: poolAbi, functionName: 'INCOME' }),
+      c.readContract({ address: d.pool, abi: poolAbi, functionName: 'FAB' }),
+      c.readContract({ address: d.income, abi: ignixIncomeAbi, functionName: 'POOL' }),
+      c.readContract({ address: d.income, abi: ignixIncomeAbi, functionName: 'FAB' }),
+      c.readContract({ address: d.income, abi: ignixIncomeAbi, functionName: 'RECIPIENT' }),
+    ])
+    if (!same(income, d.income) || !same(incomePool, d.pool) || !same(incomeFab, fab) || !same(recipient, d.ignixTreasury)) throw new Error('IGNIX income binding mismatch')
+  } else if (d.income || d.ignixTreasury) throw new Error('Income binding requires the IGNIX pool revision')
   const rp = await c.readContract({ address: rewards, abi: lpRewardsAbi, functionName: 'POOL' })
   if (!same(rp, d.pool)) throw new Error('LP reward pool mismatch')
   return { rewards, preciseLiquidity }

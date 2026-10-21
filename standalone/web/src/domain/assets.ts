@@ -33,8 +33,8 @@ export const ASSETS: readonly Asset[] = [
   { id: 'usdt0', symbol: 'USD₮0', name: 'USD₮0', decimals: 6, address: STABLE_ADDRESS, description: 'USD₮0 · ERC-20' },
 ]
 
-export type Protocol = 'auto' | 'v3' | 'v4'
-export const PROTOCOL_NAMES: Record<Protocol, string> = { auto: '自动', v3: 'V3', v4: 'V4' }
+export type Protocol = 'auto' | 'v2' | 'v3' | 'v4'
+export const PROTOCOL_NAMES: Record<Protocol, string> = { auto: '自动', v2: 'V2', v3: 'V3', v4: 'V4' }
 
 export function getAsset(id: AssetId): Asset {
   return ASSETS.find((asset) => asset.id === id) ?? ASSETS[0]

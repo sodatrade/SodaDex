@@ -25,7 +25,7 @@ export function TokenDetail({ address, wallet, onConnect, onBack }: {
     queryFn: async () => currency!.native ? hexQuantity(await rpc('eth_getBalance', [account, 'latest'])) :
       decodeFunctionResult({ abi: tokenAbi, functionName: 'balanceOf', data: await rpc('eth_call', [{ to: currency!.address,
         data: encodeFunctionData({ abi: tokenAbi, functionName: 'balanceOf', args: [account!] }) }, 'latest']) as Hex }) as bigint })
-  const pools = useQuery({ queryKey: ['liquidity', 'pools'], queryFn: () => listPools(), retry: false, staleTime: 30_000 })
+  const pools = useQuery({ queryKey: ['liquidity', 'concentrated-pools'], queryFn: () => listPools(), retry: false, staleTime: 30_000 })
   const matching = pools.data?.filter(p => [p.currency0, p.currency1].some(c => c.address.toLowerCase() === address.toLowerCase() || (address === zeroAddress && c.native))) ?? []
   const pagination = usePagination(matching, address.toLowerCase())
   return <div className="explore-detail">

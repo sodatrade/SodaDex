@@ -42,7 +42,7 @@ beforeEach(() => {
   wallet = { session: { ...identity, id: 'test', name: 'Test' }, getIdentity: () => identity,
     options: [], status: 'idle', error: undefined, connect: vi.fn(), disconnect: vi.fn(), switchChain: vi.fn() }
   vi.spyOn(policy, 'publicSwapsEnabled').mockReturnValue(true)
-  vi.spyOn(liquidity, 'listPools').mockResolvedValue([pool])
+  vi.spyOn(liquidity, 'listAllPools').mockResolvedValue([pool])
   vi.spyOn(receipts, 'waitReceipt').mockResolvedValue(undefined)
   vi.spyOn(rpcModule, 'rpc').mockImplementation(async (method, params) => {
     const tx = params?.[0] as { to?: string; data?: Hex } | undefined

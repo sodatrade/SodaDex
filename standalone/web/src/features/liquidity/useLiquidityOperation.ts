@@ -1,3 +1,4 @@
+import type { AnyPool } from '../../liquidity/v2Types'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
 import { rpc } from '../../lib/rpc'
@@ -66,8 +67,8 @@ export function useLiquidityOperation(wallet: WalletController): LiquidityOperat
       // Discard directory reads started before this confirmed operation. They
       // must not overwrite the newly observed liquidity with pre-transaction data.
       await queryClient.cancelQueries({ queryKey: ['liquidity', 'pools'], exact: true })
-      queryClient.setQueryData<LiquidityPool[]>(confirmedPoolsKey, previous => mergeConfirmedPools([pool], previous ?? []))
-      queryClient.setQueryData<LiquidityPool[]>(['liquidity', 'pools'], previous => mergeConfirmedPools([pool], previous ?? []))
+      queryClient.setQueryData<AnyPool[]>(confirmedPoolsKey, previous => mergeConfirmedPools([pool], previous ?? []))
+      queryClient.setQueryData<AnyPool[]>(['liquidity', 'pools'], previous => mergeConfirmedPools([pool], previous ?? []))
     } catch {
       // A read outage must not relabel an already confirmed transaction as failed.
     }

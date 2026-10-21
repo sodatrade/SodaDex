@@ -1,3 +1,4 @@
+import { encodeV2Trade } from './v2Trade'
 import { encodeAbiParameters, encodeFunctionData, encodePacked, isAddress, parseAbiParameters, toHex, zeroAddress, type Address, type Hex } from 'viem'
 import { poolKey } from '../liquidity/pools'
 import { routerAbi } from './abis'
@@ -23,6 +24,7 @@ export function buildPoolExactOutput(quote: PoolExactOutputQuote, owner: Address
     quote.tradeType !== 'exactOutput' || typeof quote.zeroForOne !== 'boolean' ||
     quote.amountOut <= 0n || quote.amountOut >= 2n ** 128n ||
     quote.maximumIn !== maximumInput(quote.amountIn, quote.slippageBps)) throw new TradeError('tradeQuoteChanged')
+  if (quote.pool.protocol === 'v2') return encodeV2Trade(quote, owner, deadline)
   const [input, output] = poolTradeCurrencies(quote)
   let commands: Hex, inputs: Hex[]
   if (quote.pool.protocol === 'v3') {

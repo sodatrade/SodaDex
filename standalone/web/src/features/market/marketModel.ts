@@ -1,11 +1,11 @@
 import { formatUnits, zeroAddress } from 'viem'
-import type { LiquidityPool } from '../../liquidity/types'
+import type { AnyPool } from '../../liquidity/v2Types'
 import type { ChartCandle, ChartResponse, DexPool } from './api'
 export interface PlotCandle { time: number; end: number; open: number; high: number; low: number; close: number; trades: number }
-export function chartPool(pool: LiquidityPool): DexPool {
+export function chartPool(pool: AnyPool): DexPool {
   return { protocol: pool.protocol, id: pool.id, address: pool.address ?? null, token0: pool.currency0.address, token1: pool.currency1.address,
-    fee: pool.fee, tickSpacing: pool.tickSpacing, hooks: zeroAddress, createdBlock: null, source: 'chain',
-    sqrtPriceX96: pool.sqrtPriceX96.toString(), tick: pool.tick, liquidity: pool.liquidity.toString(), stateError: null }
+    fee: pool.fee, tickSpacing: pool.protocol === 'v2' ? 0 : pool.tickSpacing, hooks: zeroAddress, createdBlock: null, source: 'chain',
+    sqrtPriceX96: pool.protocol === 'v2' ? null : pool.sqrtPriceX96.toString(), tick: pool.protocol === 'v2' ? null : pool.tick, liquidity: pool.protocol === 'v2' ? null : pool.liquidity.toString(), stateError: null }
 }
 /** Number conversion is restricted to chart display; execution amounts remain exact raw integers. */
 export function directionalPrice(price: string | null, reverse: boolean): number | undefined {

@@ -16,7 +16,7 @@ vi.mock('../src/liquidity', async (importOriginal) => {
   const original = await importOriginal<typeof import('../src/liquidity')>()
   return {
     ...original,
-    listPools: vi.fn(),
+    listAllPools: vi.fn(),
     listPositions: vi.fn(),
     discoverPool: vi.fn(),
     refreshPool: vi.fn(),
@@ -125,7 +125,7 @@ function mount(wallet = setupWallet().wallet): {
 }
 beforeEach(() => {
   vi.clearAllMocks()
-  vi.mocked(client.listPools).mockResolvedValue([pool])
+  vi.mocked(client.listAllPools).mockResolvedValue([pool])
   vi.mocked(client.listPositions).mockResolvedValue([position])
   vi.mocked(client.discoverPool).mockResolvedValue(pool)
   vi.mocked(client.refreshPool).mockResolvedValue(pool)
@@ -167,7 +167,7 @@ describe('self-service liquidity UI', () => {
   it('publishes a freshly verified pool once after confirmation while the directory is empty', async () => {
     const user = userEvent.setup(); mount()
     const review = await prepareMint(user)
-    vi.mocked(client.listPools).mockResolvedValue([])
+    vi.mocked(client.listAllPools).mockResolvedValue([])
     await user.click(within(review).getByRole('button', { name: '确认并打开钱包' }))
     await waitFor(() => expect(client.refreshPool).toHaveBeenCalledWith(pool, expect.any(Function)))
     await user.click(within(review).getByRole('button', { name: '关闭' }))

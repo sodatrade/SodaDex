@@ -22,7 +22,7 @@ beforeEach(() => {
   const identity = { address: marketOwner as `0x${string}`, chainId: 196, revision: 1, provider: { request: vi.fn(async () => undefined) } }
   wallet = { session: { ...identity, id: 'readonly', name: 'Read only' }, getIdentity: () => identity,
     status: 'idle', options: [], connect: vi.fn(), switchChain: vi.fn(), disconnect: vi.fn(), error: undefined }
-  vi.spyOn(liquidity, 'listPools').mockResolvedValue([marketV3, marketV4])
+  vi.spyOn(liquidity, 'listAllPools').mockResolvedValue([marketV3, marketV4])
   vi.spyOn(trades, 'getPoolTradeQuote').mockImplementation(async (pool, zeroForOne, amount, slippageBps = 50) => ({ pool, zeroForOne, amount, amountOut: pool.protocol === 'v4' ? 200n : 100n, minimumOut: 99n, slippageBps }))
   vi.spyOn(trades, 'executePoolTrade').mockRejectedValue(Error('Market test must never execute'))
   vi.spyOn(api, 'getChart').mockImplementation(async (pool, query) => chartFixture(pool.protocol === 'v3' ? marketV3 : marketV4, { interval: query.interval }))

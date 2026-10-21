@@ -1,3 +1,4 @@
+import { V2, V2_FACTORY } from '../../../v2-protocol'
 import { keccak256, parseAbi, stringToHex } from 'viem'
 import { networkProfile, type NetworkProfileId } from '../../../network-profile'
 import { MINING_PRODUCTS as DEFAULT_MINING_PRODUCTS, miningDeploymentForProfile } from '../../../mining-products'
@@ -38,9 +39,9 @@ const abiByRole: Record<string, ReturnType<typeof parseAbi>> = {
   minerBuyer: parseAbi(['event Purchased(address indexed buyer,uint256 indexed listingId,uint256 indexed minerId,uint256 price)']),
 }
 export function baseConfig(id: NetworkProfileId, env: IndexEnv = {}): IndexConfig {
-  if (id === '196-test') return { profile: networkProfile(id), version: `dex-${deployment.sourceCommit}-${keccak256(stringToHex(JSON.stringify([FIRST_BLOCK, deployment.contracts.v3Factory, deployment.contracts.v3PositionManager, deployment.contracts.v4PoolManager, deployment.contracts.v4PositionManager]))).slice(2, 18)}`, fromBlock: FIRST_BLOCK,
+  if (id === '196-test') return { profile: networkProfile(id), version: `dex-${deployment.sourceCommit}-${keccak256(stringToHex(JSON.stringify([FIRST_BLOCK, V2.factory, V2.router, deployment.contracts.v3Factory, deployment.contracts.v3PositionManager, deployment.contracts.v4PoolManager, deployment.contracts.v4PositionManager]))).slice(2, 18)}`, fromBlock: FIRST_BLOCK,
     sources: [source(deployment.contracts.v3Factory, 'v3', 'factory', EVENTS), source(deployment.contracts.v3PositionManager, 'v3', 'position', EVENTS),
-      source(deployment.contracts.v4PoolManager, 'v4', 'manager', EVENTS), source(deployment.contracts.v4PositionManager, 'v4', 'position', EVENTS),
+      source(deployment.contracts.v4PoolManager, 'v4', 'manager', EVENTS), source(deployment.contracts.v4PositionManager, 'v4', 'position', EVENTS), source(V2.factory, 'v2', 'factory', V2_FACTORY),
       ...knownPools().filter(p => p.address).map(p => source(p.address!, 'v3', 'pool', EVENTS))] }
   const MINING_PRODUCTS = miningDeploymentForProfile(id, id === '196-mining-test' && env.MINING_196_DEPLOYMENT ? JSON.parse(env.MINING_196_DEPLOYMENT) : undefined)
   if (MINING_PRODUCTS.state !== 'ready') throw Error('Mining deployment unavailable')

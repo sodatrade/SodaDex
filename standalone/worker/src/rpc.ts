@@ -1,3 +1,5 @@
+import { v2Request } from './v2-requests'
+import { registeredV2Pair, validV2Context } from './v2-context'
 // The user-selected node rejects browser Origin headers. Only this server
 // adapter knows the upstream; browsers always request the same-origin /api/rpc.
 import { call } from './upstream'
@@ -114,6 +116,11 @@ export async function proxyRpc(request: Request, upstreamFetch: typeof fetch = f
         return rpcError(rpc.id, -32000, 'RPC network mismatch', 502)
     }
     if (profile.dexEnabled && (rpc.method === 'eth_call' || rpc.method === 'eth_estimateGas') && isRecord(rpc.params[0])) {
+      const v2tx = rpc.params[0]
+      if (typeof v2tx.to === 'string' && typeof v2tx.data === 'string') {
+        const v2 = v2Request(v2tx.to, v2tx.data as `0x${string}`, typeof v2tx.from === 'string' ? v2tx.from : undefined, BigInt(String(v2tx.value ?? '0x0')))
+        if (v2 && !await validV2Context(v2, String(v2tx.from), String(rpc.params[1] ?? 'latest'), upstreamFetch)) return rpcError(rpc.id, -32600, 'V2 pool context does not match', 400)
+      }
       const tx = rpc.params[0]
       if (typeof tx.to === 'string' && same(tx.to, deployment.contracts.universalRouter) && typeof tx.data === 'string' && typeof tx.from === 'string') {
         const route = tradeRoute(tx.data as `0x${string}`, tx.from, BigInt(String(tx.value ?? '0x0')))
@@ -129,8 +136,13 @@ export async function proxyRpc(request: Request, upstreamFetch: typeof fetch = f
       if (typeof tx.from === 'string' && typeof tx.to === 'string' && typeof tx.data === 'string' && validLiquidityRequest(tx.to, tx.data as `0x${string}`, tx.from, BigInt(String(tx.value ?? '0x0'))) &&
         !await validLiquidityContext(tx.to, tx.data as `0x${string}`, tx.from, BigInt(String(tx.value ?? '0x0')), String(rpc.params[1] ?? 'latest'), upstreamFetch)) return rpcError(rpc.id, -32600, 'LP ownership or currencies do not match', 400)
     }
-    if (profile.dexEnabled && rpc.method === 'eth_call' && isRecord(rpc.params[0]) && typeof rpc.params[0].to === 'string' && typeof rpc.params[0].data === 'string' && contractReadKind(rpc.params[0].to, rpc.params[0].data as `0x${string}`) === 'pool') {
-      if (!same(rpc.params[0].to, pools.v3.address)) {
+    if (profile.dexEnabled && rpc.method === 'eth_call' && isRecord(rpc.params[0]) && typeof rpc.params[0].to === 'string' && typeof rpc.params[0].data === 'string' && ['pool', 'v2pool'].includes(contractReadKind(rpc.params[0].to, rpc.params[0].data as `0x${string}`) ?? '')) {
+      const readAddress = rpc.params[0].to
+      let v2Registered = false
+      const kind = contractReadKind(readAddress, rpc.params[0].data as `0x${string}`)
+      const shared = ['0xc45a0155', '0x0dfe1681', '0xd21220a7'].includes(rpc.params[0].data.slice(0, 10))
+      try { if (!same(readAddress, pools.v3.address) && (kind === 'v2pool' || shared)) v2Registered = await registeredV2Pair(readAddress, String(rpc.params[1]), upstreamFetch) } catch { /* V3 fallback still requires its own factory binding. */ }
+      if (!v2Registered && !same(readAddress, pools.v3.address)) {
         const [factory, token0, token1, fee] = await Promise.all(['factory', 'token0', 'token1', 'fee'].map((name) => call(V3_POOL_READ, String((rpc.params[0] as Record<string, unknown>).to), name, [], String(rpc.params[1]), upstreamFetch)))
         if (typeof factory !== 'string' || !same(factory, deployment.contracts.v3Factory)) return rpcError(rpc.id, -32600, 'Foreign pool', 400)
         const registered = await call(FACTORY_READ, deployment.contracts.v3Factory, 'getPool', [token0, token1, fee], String(rpc.params[1]), upstreamFetch)

@@ -1,3 +1,5 @@
+import { discoverV2 } from '../../liquidity/v2Pools'
+import type { AnyPool } from '../../liquidity/v2Types'
 import { useMutation } from '@tanstack/react-query'
 import { useId, useState, type ReactElement } from 'react'
 import { formatUnits, isAddress } from 'viem'
@@ -5,17 +7,17 @@ import { Button } from '../../components/primitives'
 import { STABLE_ADDRESS } from '../../domain/assets'
 import type { LiquidityText } from '../../i18n/liquidity'
 import { discoverPool, importCurrency, KNOWN_CURRENCIES, NATIVE_CURRENCY, liquidityError } from '../../liquidity'
-import { LiquidityError, type Currency, type LiquidityPool, type LiquidityProtocol } from '../../liquidity/types'
+import { LiquidityError, type Currency, type LiquidityProtocol } from '../../liquidity/types'
 import { decimalInput, integerInput, sameAddress } from './presentation'
 interface Props {
   l: LiquidityText
   disabled: boolean
-  onPool: (pool: LiquidityPool) => void
+  onPool: (pool: AnyPool) => void
   specialPool?: { label: string; onChoose: () => void }
 }
 export function CurrencyConfiguration({ l, disabled, onPool, specialPool }: Props): ReactElement {
   const id = useId()
-  const [protocol, setProtocol] = useState<LiquidityProtocol | 'miner'>('v3')
+  const [protocol, setProtocol] = useState<LiquidityProtocol | 'v2' | 'miner'>('v3')
   const [currencies, setCurrencies] = useState<readonly Currency[]>(KNOWN_CURRENCIES)
   const [currencyA, setA] = useState(NATIVE_CURRENCY)
   const [currencyB, setB] = useState(
@@ -27,6 +29,7 @@ export function CurrencyConfiguration({ l, disabled, onPool, specialPool }: Prop
   const discovery = useMutation({
     retry: false,
     mutationFn: async () => {
+      if (protocol === 'v2') return discoverV2(currencyA, currencyB)
       if (protocol === 'miner') throw new LiquidityError('invalidPool')
       const feeUnits = decimalInput(fee, 4)
       if (feeUnits > BigInt(Number.MAX_SAFE_INTEGER)) throw new LiquidityError('invalidPool')
@@ -72,7 +75,7 @@ export function CurrencyConfiguration({ l, disabled, onPool, specialPool }: Prop
     >
       <fieldset className="lp-protocols" disabled={busy}>
         <legend>{l('protocol')}</legend>
-        {(['v3', 'v4'] as const).map((value) => (
+        {(['v2', 'v3', 'v4'] as const).map((value) => (
           <label key={value}>
             <input
               type="radio"
@@ -80,7 +83,7 @@ export function CurrencyConfiguration({ l, disabled, onPool, specialPool }: Prop
               checked={protocol === value}
               onChange={() => {
                 setProtocol(value)
-                setFee(value === 'v3' ? '0.01' : '0')
+                setFee(value === 'v2' ? '0.3' : value === 'v3' ? '0.01' : '0')
               }}
             />
             {value.toUpperCase()}
@@ -145,7 +148,7 @@ export function CurrencyConfiguration({ l, disabled, onPool, specialPool }: Prop
       <div className="lp-form-grid">
         <label className="lp-field">
           {l('feePercent')}
-          <input inputMode="decimal" value={fee} onChange={(event) => setFee(event.target.value)} disabled={busy} />
+          <input inputMode="decimal" value={fee} onChange={(event) => setFee(event.target.value)} disabled={busy || protocol === 'v2'} />
         </label>
         {protocol === 'v4' && (
           <label className="lp-field">
@@ -159,7 +162,7 @@ export function CurrencyConfiguration({ l, disabled, onPool, specialPool }: Prop
           </label>
         )}
       </div>
-      <p className="lp-muted">{formatUnits(100n, 4)}% V3 · 0% V4</p>
+      <p className="lp-muted">0.3% V2 · {formatUnits(100n, 4)}% V3 · 0% V4</p>
       {discovery.error && (
         <p className="error-text" role="alert">
           {l(liquidityError(discovery.error))}

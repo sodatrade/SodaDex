@@ -1,9 +1,9 @@
-import type { LiquidityPool } from '../liquidity/types'
+import type { AnyPool } from '../liquidity/v2Types'
 
 /** Standard non-taxed, non-rebasing assets only. Amounts are exact raw token units. */
-export interface PoolExactOutputQuote {
+export interface PoolExactOutputQuote<P extends AnyPool = AnyPool> {
   tradeType: 'exactOutput'
-  pool: LiquidityPool
+  pool: P
   zeroForOne: boolean
   amountOut: bigint
   amountIn: bigint

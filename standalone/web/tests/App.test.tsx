@@ -31,7 +31,7 @@ beforeEach(() => {
   vi.spyOn(policy, 'publicSwapsEnabled').mockReturnValue(true)
   // Read-only navigation uses an explicitly empty registered-pool set.
   POOLS.ready = false
-  vi.spyOn(liquidity, 'listPools').mockResolvedValue([])
+  vi.spyOn(liquidity, 'listAllPools').mockResolvedValue([])
   vi.spyOn(liquidity, 'listPositions').mockResolvedValue([])
   methods.length = 0
   vi.stubGlobal(

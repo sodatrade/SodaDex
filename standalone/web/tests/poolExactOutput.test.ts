@@ -1,3 +1,4 @@
+import type { LiquidityPool } from '../src/liquidity/types'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { decodeAbiParameters, decodeFunctionData, encodeFunctionResult, parseAbiParameters, zeroAddress, type Hex } from 'viem'
 import { factoryAbi } from '../src/liquidity/abis'
@@ -10,10 +11,10 @@ import { hash, owner, selectedPool, tradeFixture } from './poolTradeFixture'
 const swap3 = parseAbiParameters('address,uint256,uint256,bytes,bool,uint256[]')
 const swap4 = parseAbiParameters('((address,address,uint24,int24,address),bool,uint128,uint128,uint256,bytes)')
 const pair = parseAbiParameters('address,uint256')
-const review = (protocol: 'v3' | 'v4', native = false, zeroForOne = true): PoolExactOutputQuote => ({
+const review = (protocol: 'v3' | 'v4', native = false, zeroForOne = true): PoolExactOutputQuote<LiquidityPool> => ({
   tradeType: 'exactOutput', pool: selectedPool(protocol, native), zeroForOne, amountOut: 500n, amountIn: 1000n, maximumIn: 1005n, slippageBps: 50,
 })
-const top = (q: PoolExactOutputQuote) => decodeFunctionData({ abi: routerAbi, data: buildPoolExactOutput(q, owner, 1600n).data }).args
+const top = (q: PoolExactOutputQuote<LiquidityPool>) => decodeFunctionData({ abi: routerAbi, data: buildPoolExactOutput(q, owner, 1600n).data }).args
 function quotedRead(f: ReturnType<typeof tradeFixture>, amounts: bigint[]): PublicRpc {
   let i = 0
   return async (method, params) => {

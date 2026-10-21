@@ -1,3 +1,5 @@
+import { V2, V2_FACTORY, V2_PAIR_EVENTS } from '../../v2-protocol'
+import { decodeV2, v2Created } from './v2-data'
 import { toEventSelector, type Hex } from 'viem'
 import { deployment, EVENTS, FIRST_BLOCK, MAX_EVENTS, PAGE_BLOCKS, pools, record, same } from './contracts'
 import { BadRequest, coverage, integer, type Block, type ChainLog, type Coverage, decodeLog, logs } from './dex-data'
@@ -5,11 +7,11 @@ import { blockAt, loadCursor, queryKey, RestartScan, verifyAnchor, type CursorSt
 import { rpc, RpcUnavailable } from './upstream'
 import { resolvePool } from './dex-market'
 export interface DexEvent {
-  id: string; protocol: 'v3' | 'v4'; address: string; event: string; blockNumber: number; blockHash: string; transactionHash: string; logIndex: number
+  id: string; protocol: 'v2' | 'v3' | 'v4'; address: string; event: string; blockNumber: number; blockHash: string; transactionHash: string; logIndex: number
   args: Record<string, string | number | boolean>; transactionFrom: string | null
 }
 interface EventCursor extends ScanCursor {
-  kind: 'events'; discoveryNextBlock: number; v3Pools: string[]; addresses: string[]; addressOffset: number
+  kind: 'events'; discoveryNextBlock: number; v3Pools: string[]; v2Pools?: string[]; addresses: string[]; addressOffset: number
   logs: ChainLog[]; offset: number; topics: (Hex | Hex[] | null)[]
 }
 const DISCOVERY_REQUESTS = 8
@@ -19,14 +21,17 @@ const MAX_BUFFERED_LOGS = 5000
 
 async function initial(url: URL, asOf: Block, range: Coverage, upstreamFetch: typeof fetch): Promise<EventCursor> {
   const selected = url.searchParams.has('pool') ? await resolvePool(url, asOf, upstreamFetch) : null
-  const topics: EventCursor['topics'] = selected?.protocol === 'v4' ? [[toEventSelector(EVENTS[1]), toEventSelector(EVENTS[3]), toEventSelector(EVENTS[8])], selected.id as Hex] : [EVENTS.map((event) => toEventSelector(event))]
+  const topics: EventCursor['topics'] = selected?.protocol === 'v2' ? [V2_PAIR_EVENTS.map(e => toEventSelector(e))] : selected?.protocol === 'v4' ? [[toEventSelector(EVENTS[1]), toEventSelector(EVENTS[3]), toEventSelector(EVENTS[8])], selected.id as Hex] : [[...EVENTS.map(event => toEventSelector(event)), ...V2_PAIR_EVENTS.map(event => toEventSelector(event)), toEventSelector(V2_FACTORY[4])]]
   const anchor = range.toBlock === asOf.number ? asOf : await blockAt(range.toBlock, upstreamFetch)
-  return { kind: 'events', query: queryKey(url), asOf, anchor, range, discoveryNextBlock: selected ? range.toBlock + 1 : FIRST_BLOCK, v3Pools: [pools.v3.address], addresses: selected ? [selected.address ?? deployment.contracts.v4PoolManager] : [], addressOffset: 0, logs: [], offset: 0, topics }
+  return { kind: 'events', query: queryKey(url), asOf, anchor, range, discoveryNextBlock: selected ? range.toBlock + 1 : FIRST_BLOCK, v3Pools: [pools.v3.address], v2Pools: selected?.protocol === 'v2' ? [selected.id] : [], addresses: selected ? [selected.address ?? deployment.contracts.v4PoolManager] : [], addressOffset: 0, logs: [], offset: 0, topics }
 }
 async function discoverPools(state: EventCursor, upstreamFetch: typeof fetch): Promise<void> {
   const known = new Set(state.v3Pools.map((address) => address.toLowerCase()))
   for (let count = 0; count < DISCOVERY_REQUESTS && state.discoveryNextBlock <= state.range.toBlock; count++) {
     const to = Math.min(state.range.toBlock, state.discoveryNextBlock + PAGE_BLOCKS - 1)
+    state.v2Pools ??= []
+    const createdV2 = await logs([V2.factory], state.discoveryNextBlock, to, [toEventSelector(V2_FACTORY[4])], upstreamFetch)
+    for (const log of createdV2) { const pair = v2Created(log).id; if (!state.v2Pools.includes(pair)) state.v2Pools.push(pair) }
     const created = await logs([deployment.contracts.v3Factory], state.discoveryNextBlock, to, [toEventSelector(EVENTS[0])], upstreamFetch)
     for (const log of created) {
       const { args } = decodeLog(log)
@@ -35,7 +40,7 @@ async function discoverPools(state: EventCursor, upstreamFetch: typeof fetch): P
     }
     state.discoveryNextBlock = to + 1
   }
-  if (state.discoveryNextBlock > state.range.toBlock && !state.addresses.length) state.addresses = [...new Map([deployment.contracts.v3Factory, deployment.contracts.v3PositionManager, deployment.contracts.v4PoolManager, deployment.contracts.v4PositionManager, ...state.v3Pools].map((address) => [address.toLowerCase(), address])).values()]
+  if (state.discoveryNextBlock > state.range.toBlock && !state.addresses.length) state.addresses = [...new Map([V2.factory, ...(state.v2Pools ?? []), deployment.contracts.v3Factory, deployment.contracts.v3PositionManager, deployment.contracts.v4PoolManager, deployment.contracts.v4PositionManager, ...state.v3Pools].map((address) => [address.toLowerCase(), address])).values()]
 }
 async function scanLogs(state: EventCursor, upstreamFetch: typeof fetch): Promise<void> {
   for (let count = 0; count < SCAN_REQUESTS && state.addressOffset < state.addresses.length; count++) {
@@ -63,12 +68,15 @@ async function pageEvents(source: ChainLog[], owner: string | null, state: Event
   const output: DexEvent[] = []
   for (const log of source) {
     let decoded: ReturnType<typeof decodeLog>
-    try { decoded = decodeLog(log) } catch { throw new RpcUnavailable('Unsupported event result') }
+    try {
+      if (same(log.address, V2.factory)) { const p = v2Created(log); decoded = { eventName: 'PairCreated', args: { token0: p.token0, token1: p.token1, pair: p.id } } }
+      else decoded = state.v2Pools?.some(a => same(a, log.address)) ? decodeV2(log) : decodeLog(log)
+    } catch { throw new RpcUnavailable('Unsupported event result') }
     const sender = senders.get(log.transactionHash) ?? null
     if (owner && !((sender && same(owner, sender)) || (decoded.eventName === 'Transfer' && [decoded.args.from, decoded.args.to].some((address) => typeof address === 'string' && same(owner, address))))) continue
     const args: DexEvent['args'] = {}
     for (const [key, value] of Object.entries(decoded.args)) if (typeof value === 'bigint') args[key] = String(value); else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') args[key] = value
-    output.push({ id: `${log.blockHash}:${Number(BigInt(log.logIndex))}`, protocol: [deployment.contracts.v4PoolManager, deployment.contracts.v4PositionManager].some((address) => same(address, log.address)) ? 'v4' : 'v3', address: log.address, event: decoded.eventName, blockNumber: Number(BigInt(log.blockNumber)), blockHash: log.blockHash, transactionHash: log.transactionHash, logIndex: Number(BigInt(log.logIndex)), args, transactionFrom: sender })
+    output.push({ id: `${log.blockHash}:${Number(BigInt(log.logIndex))}`, protocol: same(log.address, V2.factory) || state.v2Pools?.some(a => same(a, log.address)) ? 'v2' : [deployment.contracts.v4PoolManager, deployment.contracts.v4PositionManager].some((address) => same(address, log.address)) ? 'v4' : 'v3', address: log.address, event: decoded.eventName, blockNumber: Number(BigInt(log.blockNumber)), blockHash: log.blockHash, transactionHash: log.transactionHash, logIndex: Number(BigInt(log.logIndex)), args, transactionFrom: sender })
   }
   return output
 }

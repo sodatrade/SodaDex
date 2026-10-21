@@ -3,13 +3,13 @@ import { validIndexStatus, type ChainIndexStatus } from './indexStatus'
 export interface ChainBlock { number: number; hash: string; timestamp: number }
 export interface Coverage { fromBlock: number; toBlock: number; complete: boolean; nextFromBlock: number | null }
 export interface DexPool {
-  protocol: 'v3' | 'v4'; id: string; address: string | null; token0: string; token1: string
+  protocol: 'v2' | 'v3' | 'v4'; id: string; address: string | null; token0: string; token1: string
   fee: number; tickSpacing: number; hooks: string; createdBlock: number | null; source: 'manifest' | 'chain'
   sqrtPriceX96: string | null; tick: number | null; liquidity: string | null; stateError: string | null
 }
 export interface DexToken { address: string; symbol: string | null; name: string | null; decimals: number | null }
 export interface DexEvent {
-  id: string; protocol: 'v3' | 'v4'; address: string; event: string; blockNumber: number; blockHash: string
+  id: string; protocol: 'v2' | 'v3' | 'v4'; address: string; event: string; blockNumber: number; blockHash: string
   transactionHash: string; logIndex: number; args: Record<string, string | number | boolean>; transactionFrom: string | null
 }
 export interface PoolsResponse { schemaVersion: 1; chainId: 196; asOf: ChainBlock; coverage: Coverage; pools: DexPool[]; nextCursor?: string | null; index?: ChainIndexStatus }
@@ -38,7 +38,7 @@ function envelope(v: unknown): v is Record<string, unknown> {
     (v.coverage.nextFromBlock === null || integer(v.coverage.nextFromBlock))
 }
 function pool(v: unknown): boolean {
-  return record(v) && ['v3', 'v4'].includes(String(v.protocol)) && (hash(v.id) || address(v.id)) &&
+  return record(v) && ['v2', 'v3', 'v4'].includes(String(v.protocol)) && (hash(v.id) || address(v.id)) &&
     address(v.token0) && address(v.token1) && integer(v.fee) && integer(v.tickSpacing) &&
     (v.sqrtPriceX96 === null || raw(v.sqrtPriceX96)) && (v.liquidity === null || raw(v.liquidity))
 }

@@ -9,9 +9,9 @@ import { rememberToken } from '../../domain/tokenCatalog'
 import { tradeMessages } from '../../i18n/trade'
 import { hexQuantity, rpc } from '../../lib/rpc'
 import type { WalletController } from '../../lib/useWallet'
-import { KNOWN_CURRENCIES, listPools, NATIVE_CURRENCY } from '../../liquidity'
+import { KNOWN_CURRENCIES, listAllPools as listPools, NATIVE_CURRENCY } from '../../liquidity'
 import type { Currency } from '../../liquidity/types'
-import type { LiquidityPool } from '../../liquidity/types'
+import type { AnyPool } from '../../liquidity/v2Types'
 import { confirmedPoolsKey, mergeConfirmedPools } from '../liquidity/confirmedPools'
 import { usePreferences } from '../../preferences/context'
 import { publicSwapsEnabled } from '../../trading/config'
@@ -68,7 +68,7 @@ export function GeneralSwapCard({ wallet, balances, balancesLoading, balancesErr
     (parsed.kind === 'valid' && parsed.units >= 2n ** 128n ? { code: 'amountTooLarge' as const } : undefined)
   const direction = wrapDirection(from, to)
   const pools = useQuery({ queryKey: ['liquidity', 'pools'], queryFn: () => listPools(), retry: false, refetchInterval: 30_000 })
-  const confirmed = useQuery<LiquidityPool[]>({ queryKey: confirmedPoolsKey, queryFn: skipToken, initialData: [] })
+  const confirmed = useQuery<AnyPool[]>({ queryKey: confirmedPoolsKey, queryFn: skipToken, initialData: [] })
   const allPools = useMemo(() => mergeConfirmedPools(pools.data ?? [], confirmed.data ?? []), [pools.data, confirmed.data])
   const matches = matchingPools(allPools, from, to, protocol)
   const quote = useQuery<SwapPoolQuote>({ queryKey: ['swap', 'quote', currencyKey(from), currencyKey(to), protocol, bps, editedSide,

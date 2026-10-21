@@ -22,7 +22,9 @@
     "v4Quoter": "0x7a188D4C46C9FE045A5875FecaeF9Bf00e4521fF",
     "v4StateView": "0x7991D4a8493b9709365cD079DfFc75e790007874",
     "unsupportedProtocol": "0x68Eca93437dF07bE4b2C3A67956ACe2dC87d2F39",
-    "universalRouter": "0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA"
+    "universalRouter": "0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA",
+    "v2Factory": "0x03e033a2e064ebf028f4e2423395f7611bfda5c1",
+    "v2Router": "0xd3d11c7c9ce2b02210d0bf29abd68a9830e108bf"
   },
   "productionDeployment": "deferred",
   "sourceDeploymentRecord": "receipts.json",

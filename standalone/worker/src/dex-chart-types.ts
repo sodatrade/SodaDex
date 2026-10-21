@@ -3,6 +3,7 @@ export const CHART_INTERVALS = { '1m': 60, '5m': 300, '1h': 3600, '4h': 14400, '
 export type ChartInterval = keyof typeof CHART_INTERVALS
 export interface ChartToken { address: string; symbol: string | null; name: string | null; decimals: number | null }
 export interface ChartTrade {
+  priceSource?: 'v2-reserves'
   id: string; blockNumber: number; blockHash: string; transactionHash: string; logIndex: number; timestamp: number
   amount0Raw: string; amount1Raw: string; volume0Raw: string; volume1Raw: string
   sqrtPriceX96: string; priceToken1PerToken0: string | null; sender: string; recipient: string | null

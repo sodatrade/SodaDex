@@ -7,6 +7,8 @@ export interface FragmentDeployment {
   policy: Address
   fromBlock: bigint
   rpcUrl: string
+  income?: Address
+  ignixTreasury?: Address
 }
 /** Build-time public manifest. Never selects production contracts from URL/localStorage. */
 export function parseDeployment(raw: string | undefined): FragmentDeployment | undefined {
@@ -29,11 +31,13 @@ export function parseDeployment(raw: string | undefined): FragmentDeployment | u
     if (!local || !['127.0.0.1', 'localhost'].includes(u.hostname) || u.protocol !== 'http:') throw new Error('Local fixture RPC only')
     rpcUrl = u.href
   }
-  return { chainId: NETWORK.chainId, vault: address('vault'), pool: address('pool'), policy: address('policy'), fromBlock: BigInt(v.fromBlock), rpcUrl }
+  if ((v.income === undefined) !== (v.ignixTreasury === undefined)) throw new Error('Incomplete IGNIX income binding')
+  const income = v.income === undefined ? {} : { income: address('income'), ignixTreasury: address('ignixTreasury') }
+  return { chainId: NETWORK.chainId, vault: address('vault'), pool: address('pool'), policy: address('policy'), fromBlock: BigInt(v.fromBlock), rpcUrl, ...income }
 }
 export function deploymentState(): { deployment?: FragmentDeployment; error?: string } {
   try { return { deployment: parseDeployment(import.meta.env.VITE_SODADEX_FRAGMENTS_DEPLOYMENT) } }
   catch (e) { return { error: e instanceof Error ? e.message : 'Invalid deployment' } }
 }
 
-export function deploymentKey(d: FragmentDeployment | undefined): string { return d ? `${d.chainId}:${d.pool}:${d.vault}:${d.policy}:${d.rpcUrl}:${d.fromBlock.toString()}` : 'unconfigured' }
+export function deploymentKey(d: FragmentDeployment | undefined): string { return d ? `${d.chainId}:${d.pool}:${d.vault}:${d.policy}:${d.rpcUrl}:${d.fromBlock.toString()}:${d.income ?? ''}:${d.ignixTreasury ?? ''}` : 'unconfigured' }

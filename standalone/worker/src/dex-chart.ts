@@ -1,3 +1,4 @@
+import { V2_PAIR_EVENTS } from '../../v2-protocol'
 import { toEventSelector, type Hex } from 'viem'
 import { EVENTS, FIRST_BLOCK, PAGE_BLOCKS } from './contracts'
 import { BadRequest, type Block, type ChainLog, type Pool, integer, snapshot } from './dex-data'
@@ -37,7 +38,7 @@ async function initial(url: URL, asOf: Block, upstreamFetch: typeof fetch): Prom
 async function readPage(state: ChartCursor, upstreamFetch: typeof fetch): Promise<void> {
   if (state.pageToBlock !== null || state.nextBlock > state.targetBlock) return
   state.pageToBlock = Math.min(state.targetBlock, state.nextBlock + PAGE_BLOCKS - 1)
-  const topics: (Hex | Hex[] | null)[] = state.pool.protocol === 'v3' ? [toEventSelector(EVENTS[2])] : [toEventSelector(EVENTS[3]), state.pool.id as Hex]
+  const topics: (Hex | Hex[] | null)[] = state.pool.protocol === 'v2' ? [[toEventSelector(V2_PAIR_EVENTS[2]), toEventSelector(V2_PAIR_EVENTS[3])]] : state.pool.protocol === 'v3' ? [toEventSelector(EVENTS[2])] : [toEventSelector(EVENTS[3]), state.pool.id as Hex]
   state.pending = await chartLogs(state.pool, state.nextBlock, state.pageToBlock, topics, upstreamFetch)
 }
 async function processPage(state: ChartCursor, upstreamFetch: typeof fetch): Promise<void> {
@@ -45,10 +46,11 @@ async function processPage(state: ChartCursor, upstreamFetch: typeof fetch): Pro
   const headers = await Promise.all(blocks.map((number) => verifiedChartBlock(number, state.pending.filter((log) => Number(BigInt(log.blockNumber)) === number), state.asOf, state.fromBlock, upstreamFetch)))
   const byNumber = new Map(headers.map((header) => [header.number, header]))
   const ids = new Map(state.trades.map((trade) => [trade.id, trade]))
-  for (const log of state.pending) {
+  for (const [index, log] of state.pending.entries()) {
+    if (state.pool.protocol === 'v2' && log.topics[0].toLowerCase() !== toEventSelector(V2_PAIR_EVENTS[2])) continue
     const header = byNumber.get(Number(BigInt(log.blockNumber)))
     if (!header) continue
-    const trade = chartTrade(log, header, state.pool, state.token0, state.token1)
+    const trade = chartTrade(log, header, state.pool, state.token0, state.token1, state.pending[index - 1])
     const previous = state.trades.at(-1)
     if (previous && trade.timestamp < previous.timestamp) throw new RpcUnavailable('Nonmonotonic chart block timestamps')
     const duplicate = ids.get(trade.id)
@@ -74,8 +76,9 @@ export async function indexedChart(url: URL, upstreamFetch: typeof fetch, read: 
   interval(url)
   const source = await read(url)
   const state = await initial(url, source.asOf, upstreamFetch)
-  if (source.rows.length > MAX_CHART_TRADES) throw new ChartRangeTooLarge('Chart range exceeds 5000 trades; choose a narrower block range')
-  state.trades = source.rows.map(({ log, block }) => chartTrade(log, block, state.pool, state.token0, state.token1))
+  if (source.rows.length > MAX_CHART_TRADES * 2) throw new ChartRangeTooLarge('Chart range exceeds 5000 trades; choose a narrower block range')
+  state.trades = source.rows.flatMap(({ log, block }, index) => state.pool.protocol === 'v2' && log.topics[0].toLowerCase() !== toEventSelector(V2_PAIR_EVENTS[2]) ? [] : [chartTrade(log, block, state.pool, state.token0, state.token1, source.rows[index - 1]?.log)])
+  if (state.trades.length > MAX_CHART_TRADES) throw new ChartRangeTooLarge('Chart range exceeds 5000 trades; choose a narrower block range')
   await verifyAnchor(state, upstreamFetch)
   const price = chartPrice(state.pool.sqrtPriceX96!, state.token0.decimals, state.token1.decimals)
   return { schemaVersion: 1, chainId: 196, asOf: state.asOf, coverage: { fromBlock: state.fromBlock, toBlock: state.targetBlock, complete: state.fromBlock === FIRST_BLOCK && state.targetBlock === state.asOf.number, nextFromBlock: null }, pool: state.pool, token0: state.token0, token1: state.token1, interval: state.interval, query: { fromBlock: state.fromBlock, toBlock: state.targetBlock }, priceToken1PerToken0: price, priceUnavailableReason: price === null ? 'Token decimals unavailable' : null, candles: chartCandles(state.trades, state.interval), trades: state.trades, queryComplete: true, nextCursor: null }

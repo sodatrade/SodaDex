@@ -65,7 +65,7 @@ export class IndexStore {
   }
   chartRows(pool: string, from: number, to: number): { log: ChainLog; block: Block }[] {
     const filter = pool.length === 42 ? 'address=?' : "lower(json_extract(args,'$.id'))=?"
-    return this.query(`SELECT value,raw FROM index_events WHERE event='Swap' AND ${filter} AND block_number BETWEEN ? AND ? ORDER BY block_number,log_index LIMIT 5001`, pool.toLowerCase(), from, to).map(row => {
+    return this.query(`SELECT value,raw FROM index_events WHERE (event='Swap' OR (event='Sync' AND EXISTS (SELECT 1 FROM index_events AS swap WHERE swap.event='Swap' AND swap.address=index_events.address AND swap.block_number=index_events.block_number AND swap.log_index=index_events.log_index+1))) AND ${filter} AND block_number BETWEEN ? AND ? ORDER BY block_number,log_index LIMIT 10001`, pool.toLowerCase(), from, to).map(row => {
       const event = json<IndexedEvent>(row.value)
       return { log: json<ChainLog>(row.raw), block: { number: event.blockNumber, hash: event.blockHash, timestamp: event.timestamp } }
     })

@@ -1,3 +1,7 @@
+import { listV2Positions } from '../../liquidity/v2Pools'
+import { V2PositionRow } from './V2PositionRow'
+import type { AnyPool, V2Pool } from '../../liquidity/v2Types'
+import { V2LiquidityDialog } from './V2LiquidityDialog'
 import './liquidity.css'
 import { skipToken, useQueries, useQuery } from '@tanstack/react-query'
 import { useEffect, useState, type ReactElement, type ReactNode } from 'react'
@@ -6,7 +10,7 @@ import { Pagination, usePagination } from '../../components/Pagination'
 import { CHAIN_ID } from '../../domain/assets'
 import { liquidityText } from '../../i18n/liquidity'
 import type { WalletController } from '../../lib/useWallet'
-import { listPools, listPositions } from '../../liquidity'
+import { listAllPools as listPools, listPositions } from '../../liquidity'
 import type { LiquidityPool, LiquidityPosition } from '../../liquidity/types'
 import { usePreferences } from '../../preferences/context'
 import { LiquidityPreviewDialog } from './LiquidityPreviewDialog'
@@ -33,6 +37,8 @@ type Editor =
   | { kind: 'increase' | 'decrease' | 'collect' | 'transfer' | 'burn'; position: LiquidityPosition }
 export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded, specialPool, externalBusy }: Props): ReactElement {
   const [tab, setTab] = useState<'pools' | 'positions'>('pools')
+  const [v2Editor, setV2Editor] = useState<V2Pool>()
+  const [v2Busy, setV2Busy] = useState(false)
   const [detail, setDetail] = useState<LiquidityPool>()
   const [editor, setEditor] = useState<Editor>()
   const [lookup, setLookup] = useState<{ position: LiquidityPosition; account: string }>()
@@ -56,10 +62,13 @@ export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded, speci
     retry: false,
     refetchInterval: 30_000,
   })) })
-  const confirmed = useQuery<LiquidityPool[]>({ queryKey: confirmedPoolsKey, queryFn: skipToken, initialData: [] })
+  const confirmed = useQuery<AnyPool[]>({ queryKey: confirmedPoolsKey, queryFn: skipToken, initialData: [] })
   const visiblePools = mergeConfirmedPools(pools.data ?? [], confirmed.data ?? [])
-  const busy = operation.preparing || operation.executing || !!operation.blocked || !!externalBusy
-  const navigationBusy = busy || !!operation.review || !!editor || !!detail
+  const v2Positions = useQuery({ queryKey: ['liquidity', 'v2-positions', wallet.session?.address, visiblePools.map(p => `${p.protocol}:${p.id}`).join(',')],
+    queryFn: () => listV2Positions(visiblePools.filter((p): p is V2Pool => p.protocol === 'v2'), wallet.session!.address),
+    enabled: !!wallet.session && correctChain && (pools.isSuccess || visiblePools.some(p => p.protocol === 'v2')), retry: false, refetchInterval: 30_000 })
+  const busy = operation.preparing || operation.executing || !!operation.blocked || !!externalBusy || v2Busy
+  const navigationBusy = busy || !!operation.review || !!editor || !!detail || !!v2Editor
   useEffect(() => { onBusyChange?.(navigationBusy) }, [navigationBusy, onBusyChange])
   const open = (value: Editor): void => {
     if (!wallet.session) {
@@ -71,6 +80,13 @@ export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded, speci
       return
     }
     if (!busy) setEditor(value)
+  }
+  const openPool = (pool: AnyPool): void => {
+    if (pool.protocol === 'v2') {
+      if (!wallet.session) { onConnect(); return }
+      if (!correctChain) { void wallet.switchChain(); return }
+      setEditor(undefined); setV2Editor(pool)
+    } else setDetail(pool)
   }
   const closeEditor = (): void => {
     operation.cancel()
@@ -86,7 +102,8 @@ export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded, speci
   const accountKey = `${wallet.session?.chainId}:${wallet.session?.address.toLowerCase() ?? ''}`
   const found = lookup?.account === accountKey ? lookup.position : undefined
   const displayedPositions = found ? [found, ...visiblePositions.filter((position) => position.protocol !== found.protocol || position.tokenId !== found.tokenId)] : visiblePositions
-  const positionPagination = usePagination(displayedPositions, accountKey)
+  const positionRows = [...displayedPositions.map(position => ({ kind: 'nft' as const, position })), ...(v2Positions.data?.positions ?? []).map(position => ({ kind: 'v2' as const, position }))]
+  const positionPagination = usePagination(positionRows, accountKey)
   return (
     <section className={`content-page lp-page${embedded ? ' lp-embedded' : ''}`} aria-labelledby="lp-title">
       <div className="lp-page-heading">
@@ -128,7 +145,7 @@ export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded, speci
         <div className="lp-pool-section">
           <p className="lp-muted">{l('poolFilterNote')}</p>
           {pools.isError && visiblePools.length > 0 && <p role="alert">{l('loadFailed')} <Button onClick={() => void pools.refetch()}>{l('retry')}</Button></p>}
-          {!pools.isSuccess && !visiblePools.length && specialPool && <PoolList pools={[]} l={l} disabled={busy} onDetails={setDetail} extraRows={[{id:'configured-miner-pool',content:specialPool.row}]} />}
+          {!pools.isSuccess && !visiblePools.length && specialPool && <PoolList pools={[]} l={l} disabled={busy} onDetails={openPool} extraRows={[{id:'configured-miner-pool',content:specialPool.row}]} />}
           {pools.isPending && !visiblePools.length ? (
             <p role="status">{l('loading')}</p>
           ) : pools.isError && !visiblePools.length ? (
@@ -139,7 +156,7 @@ export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded, speci
           ) : visiblePools.length === 0 && !specialPool ? (
             <p className="lp-empty">{l('emptyPools')}</p>
           ) : (
-            <PoolList pools={visiblePools} l={l} disabled={busy} onDetails={setDetail} extraRows={specialPool ? [{ id: 'configured-miner-pool', content: specialPool.row }] : undefined} />
+            <PoolList pools={visiblePools} l={l} disabled={busy} onDetails={openPool} extraRows={specialPool ? [{ id: 'configured-miner-pool', content: specialPool.row }] : undefined} />
           )}
         </div>
       ) : (
@@ -154,11 +171,15 @@ export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded, speci
           ) : correctChain ? (
             <>
               {positions.map((query, index) => query.isPending ? <p key={index} role="status">{index === 0 ? 'V3' : 'V4'} · {l('loading')}</p> : query.isError ? <div key={index} className="lp-empty"><p role="alert">{index === 0 ? 'V3' : 'V4'} · {l('loadFailed')}</p><Button onClick={() => void query.refetch()}>{l('retry')}</Button></div> : null)}
-              {positions.every(query => query.isSuccess) && visiblePositions.length === 0 && !found ? (
+              {positions.every(query => query.isSuccess) && v2Positions.isSuccess && positionRows.length === 0 ? (
                 <p className="lp-empty">{l('emptyPositions')}</p>
               ) : null}
+              {(v2Positions.isError || !!v2Positions.data?.unavailable) && <p role="alert">V2 · {l('loadFailed')} <Button onClick={() => void v2Positions.refetch()}>{l('retry')}</Button></p>}
               <div className="lp-position-list">
-                {positionPagination.items.map((position) => (
+                {positionPagination.items.map((row) => {
+                  if (row.kind === 'v2') return <V2PositionRow key={`v2:${row.position.pool.id}`} position={row.position} l={l} disabled={busy} onManage={() => openPool(row.position.pool)} />
+                  const position = row.position
+                  return (
                   <div key={`${position.protocol}:${position.tokenId}`}>
                     <PositionCard
                       position={position}
@@ -168,7 +189,7 @@ export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded, speci
                     />
                     {!owned(position) && <p className="lp-muted">{l('notOwner')}</p>}
                   </div>
-                ))}
+                ) })}
               </div>
               <Pagination {...positionPagination} />
               <PositionLookup key={accountKey} l={l} onPosition={(position) => { setLookup({ position, account: accountKey }); positionPagination.setPage(0) }} />
@@ -190,6 +211,7 @@ export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded, speci
       )}
       {editor && (editor.kind === 'mint' || editor.kind === 'increase') && (
         <MintWizard
+          onV2Pool={openPool}
           pool={editor.kind === 'mint' ? editor.pool : undefined}
           position={editor.kind === 'increase' ? editor.position : undefined}
           l={l}
@@ -213,6 +235,7 @@ export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded, speci
           onClose={closeEditor}
         />
       )}
+      {v2Editor && <V2LiquidityDialog pool={v2Editor} wallet={wallet} onClose={() => { setV2Editor(undefined); setV2Busy(false) }} onBusyChange={setV2Busy} />}
       {operation.review && (
         <LiquidityPreviewDialog
           operation={operation}

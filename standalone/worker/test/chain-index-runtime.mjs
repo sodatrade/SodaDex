@@ -26,7 +26,7 @@ function sourceLogs(chain) {
 }
 const entry = resolve(folder, 'entry.ts'), bundle = resolve(folder, 'worker.mjs')
 await writeFile(entry, `import {indexedChartSource} from ${JSON.stringify(resolve(root, 'standalone/worker/src/chain-index/chart-source.ts'))};import {chainIndexApi} from ${JSON.stringify(resolve(root, 'standalone/worker/src/chain-index/durable.ts'))};export {SodaChainIndex} from ${JSON.stringify(resolve(root, 'standalone/worker/src/chain-index/durable.ts'))};export default {fetch(request,env){if(new URL(request.url).pathname==='/chart')return indexedChartSource(env)(new URL(request.url)).then(data=>Response.json(data));return chainIndexApi(request,env,new URL(request.url).pathname.startsWith('/mining/')?'1952-mining-test':'196-test')}}`)
-await build({ entryPoints: [entry], outfile: bundle, bundle: true, format: 'esm', platform: 'browser', target: 'es2022' })
+await build({ entryPoints: [entry], outfile: bundle, bundle: true, format: 'esm', platform: 'browser', target: 'es2022', nodePaths: [resolve(root, 'standalone/worker/node_modules')] })
 const options = () => ({ name: 'chain-index-fixture', script: readFileSync(bundle, 'utf8'), modules: true, compatibilityDate: '2026-10-18', port: 0, cf: false, log: new Log(LogLevel.NONE),
   durableObjects: { CHAIN_INDEX: { className: 'SodaChainIndex', useSQLite: true } }, resourcePersistencePath: resolve(folder, 'persist'), unsafeInspectDurableObjects: true, telemetry: { enabled: false },
   outboundService: async request => {

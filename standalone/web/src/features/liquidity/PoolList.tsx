@@ -2,18 +2,18 @@ import type { ReactElement, ReactNode } from 'react'
 import { formatUnits } from 'viem'
 import { Pagination, usePagination } from '../../components/Pagination'
 import type { LiquidityText } from '../../i18n/liquidity'
-import type { LiquidityPool } from '../../liquidity/types'
+import type { AnyPool } from '../../liquidity/v2Types'
 import { CurrencyLabel } from './CurrencyLabel'
 import { PoolManageButton } from './PoolManageButton'
 
 export function PoolList({ pools, l, disabled, onDetails, extraRows = [] }: {
-  pools: LiquidityPool[]
+  pools: AnyPool[]
   l: LiquidityText
   disabled: boolean
-  onDetails: (pool: LiquidityPool) => void
+  onDetails: (pool: AnyPool) => void
   extraRows?: { id: string; content: ReactNode }[]
 }): ReactElement {
-  const rows: ({ id: string; pool: LiquidityPool } | { id: string; content: ReactNode })[] = [...extraRows, ...pools.map(pool => ({ id: `${pool.protocol}:${pool.id}`, pool }))]
+  const rows: ({ id: string; pool: AnyPool } | { id: string; content: ReactNode })[] = [...extraRows, ...pools.map(pool => ({ id: `${pool.protocol}:${pool.id}`, pool }))]
   const pagination = usePagination(rows)
   return <><div className="lp-pool-list" role="table" aria-label={l('pools')}>
     <div className="lp-pool-heading" role="row">

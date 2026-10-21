@@ -33,7 +33,7 @@ export function LimitOrderPanel({ wallet, onConnect, onSwap, seed, onContextChan
   const [protocol, setProtocol] = useState<Protocol>('auto'), [poolId, setPoolId] = useState(''), [selector, setSelector] = useState<'from' | 'to'>()
   const [imported, setImported] = useState<Currency[]>([]), [review, setReview] = useState<LimitReview>()
   const catalog = useTokenCatalog()
-  const pools = useQuery({ queryKey: ['liquidity', 'pools'], queryFn: () => listPools(), retry: false, refetchInterval: 30_000 })
+  const pools = useQuery({ queryKey: ['liquidity', 'concentrated-pools'], queryFn: () => listPools(), retry: false, refetchInterval: 30_000 })
   const available = useMemo(() => orderPools(pools.data ?? [], from, to, protocol), [pools.data, from, to, protocol]), selected = available.find(p => p.id === poolId) ?? available[0]
   const context = useMemo(() => marketContext({ from, to, protocol, pools: selected ? [selected] : [], loading: pools.isPending, failed: pools.isError }), [from, to, protocol, selected, pools.isPending, pools.isError])
   useEffect(() => { onContextChange?.(context) }, [context, onContextChange])

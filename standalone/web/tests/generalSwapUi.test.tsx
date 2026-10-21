@@ -38,7 +38,7 @@ beforeEach(() => {
   wallet = { options: [], session: { ...identity, id: 'mock', name: 'Mock' }, status: 'idle', error: undefined, getIdentity: () => identity,
     connect: vi.fn(), switchChain: vi.fn(), disconnect: vi.fn() }
   vi.spyOn(policy, 'publicSwapsEnabled').mockReturnValue(true)
-  vi.spyOn(liquidity, 'listPools').mockResolvedValue([pool])
+  vi.spyOn(liquidity, 'listAllPools').mockResolvedValue([pool])
   vi.spyOn(liquidity, 'importCurrency').mockResolvedValue(custom)
   vi.spyOn(trades, 'getPoolTradeQuote').mockImplementation(async (p, dir, amount, slippageBps = 50) => ({ pool: p, zeroForOne: dir, amount, amountOut: 1000n, minimumOut: 995n, slippageBps }))
   vi.spyOn(trades, 'executePoolTrade').mockImplementation(async (_quote, c) => { c.onProgress({ stage: 'tradeConfirming', hash, to: CONTRACTS.router, kind: 'swap' }); c.onProgress({ stage: 'tradeSucceeded', hash, kind: 'swap' }); return hash })
@@ -50,8 +50,21 @@ async function amount(value = '0.000001'): Promise<void> {
   await waitFor(() => expect(screen.getByRole('button', { name: 'Review swap' })).toBeEnabled())
 }
 describe('main swap interactions', () => {
+  it('quotes a V2-only directory on a fresh Swap page without a Pool-page cache', async () => {
+    const v2 = { protocol: 'v2' as const, id: custom.address, address: custom.address,
+      currency0: stable, currency1: { ...native, address: KNOWN_CURRENCIES[1].address }, fee: 3000 as const,
+      reserve0: 1000000n, reserve1: 10n ** 18n, totalSupply: 10n ** 12n, kLast: 0n, feeOn: false, initialized: true }
+    vi.mocked(liquidity.listAllPools).mockResolvedValue([v2])
+    mount()
+    await userEvent.click(screen.getByRole('button', { name: 'Swap settings' }))
+    await userEvent.click(screen.getByRole('radio', { name: 'V2' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Close dialog' }))
+    await amount()
+    expect(trades.getPoolTradeQuote).toHaveBeenCalledWith(v2, false, 1000000000000n, 50)
+    expect(trades.executePoolTrade).not.toHaveBeenCalled()
+  })
   it('keeps directory failure and retry visible when the cached pool belongs to another pair', async () => {
-    vi.mocked(liquidity.listPools).mockRejectedValue(new Error('Directory unavailable'))
+    vi.mocked(liquidity.listAllPools).mockRejectedValue(new Error('Directory unavailable'))
     const { client } = mount()
     await act(async () => { client.setQueryData(confirmedPoolsKey, [{ ...pool, currency1: custom }]) })
     expect(await screen.findByRole('button', { name: 'Retry' })).toBeEnabled()
@@ -60,7 +73,7 @@ describe('main swap interactions', () => {
   })
 
   it('quotes a confirmed live pool while the persistent directory is still loading', async () => {
-    vi.mocked(liquidity.listPools).mockImplementation(() => new Promise(() => {}))
+    vi.mocked(liquidity.listAllPools).mockImplementation(() => new Promise(() => {}))
     const { client } = mount()
     await act(async () => { client.setQueryData(confirmedPoolsKey, [pool]) })
     await amount()
@@ -121,7 +134,7 @@ describe('main swap interactions', () => {
     expect(screen.getByLabelText('You receive')).toHaveValue('0.001')
   })
   it('selects a token from a newly created pool and quotes its actual fee', async () => {
-    vi.mocked(liquidity.listPools).mockResolvedValue([pool, { ...pool, currency1: custom, fee: 500 }])
+    vi.mocked(liquidity.listAllPools).mockResolvedValue([pool, { ...pool, currency1: custom, fee: 500 }])
     mount(); await userEvent.click(screen.getByRole('button', { name: /Choose receive/ }))
     await userEvent.type(screen.getByRole('textbox', { name: 'Search name, symbol or contract' }), custom.address)
     await userEvent.click(await screen.findByRole('button', { name: /NEW/ })); await amount()

@@ -1,5 +1,6 @@
+import type { AnyPool } from '../../liquidity/v2Types'
 import { WOKB_ADDRESS, type Protocol } from '../../domain/assets'
-import type { Currency, LiquidityPool } from '../../liquidity/types'
+import type { Currency } from '../../liquidity/types'
 import { getPoolTradeQuote, type PoolTradeQuote } from '../../trading/poolTrade'
 import { getPoolExactOutputQuote, type PoolExactOutputQuote } from '../../trading/poolExactOutput'
 export type SwapPoolQuote = PoolTradeQuote | PoolExactOutputQuote
@@ -8,14 +9,14 @@ export function quotedInput(quote: SwapPoolQuote): bigint { return isExactOutput
 export const currencyKey = (c: Currency): string => c.native ? 'native' : c.address.toLowerCase()
 export function sameCurrency(a: Currency, b: Currency): boolean { return currencyKey(a) === currencyKey(b) }
 function compatible(selected: Currency, pool: Currency, protocol: string): boolean {
-  if (selected.native) return pool.native || (protocol === 'v3' && pool.address.toLowerCase() === WOKB_ADDRESS.toLowerCase())
-  return selected.address.toLowerCase() === pool.address.toLowerCase() && (!pool.native || protocol === 'v3')
+  if (selected.native) return pool.native || ((protocol === 'v3' || protocol === 'v2') && pool.address.toLowerCase() === WOKB_ADDRESS.toLowerCase())
+  return selected.address.toLowerCase() === pool.address.toLowerCase() && (!pool.native || (protocol === 'v3' || protocol === 'v2'))
 }
 /** Preserve the user's native/erc20 payment intent while retaining the registered pool key. */
-export function matchingPools(pools: LiquidityPool[], from: Currency, to: Currency, protocol: Protocol): { pool: LiquidityPool; zeroForOne: boolean }[] {
+export function matchingPools(pools: AnyPool[], from: Currency, to: Currency, protocol: Protocol): { pool: AnyPool; zeroForOne: boolean }[] {
   if (sameCurrency(from, to)) return []
   return pools.flatMap((pool) => {
-    if (!pool.initialized || pool.liquidity === 0n || (protocol !== 'auto' && pool.protocol !== protocol)) return []
+    if (!pool.initialized || (pool.protocol === 'v2' ? pool.reserve0 === 0n || pool.reserve1 === 0n : pool.liquidity === 0n) || (protocol !== 'auto' && pool.protocol !== protocol)) return []
     const direct = compatible(from, pool.currency0, pool.protocol) && compatible(to, pool.currency1, pool.protocol)
     const reverse = compatible(from, pool.currency1, pool.protocol) && compatible(to, pool.currency0, pool.protocol)
     if (!direct && !reverse) return []
@@ -48,7 +49,7 @@ export function slippageValue(value: string): number | undefined {
   return Number.isInteger(bps) && bps > 0 && bps < 10000 ? bps : undefined
 }
 export function priceImpact(quote: SwapPoolQuote): string | undefined {
-  const squared = quote.pool.sqrtPriceX96 ** 2n, scale = 2n ** 192n
+  const squared = quote.pool.protocol === 'v2' ? quote.pool.reserve1 : quote.pool.sqrtPriceX96 ** 2n, scale = quote.pool.protocol === 'v2' ? quote.pool.reserve0 : 2n ** 192n
   if (!squared) return undefined
   const afterFee = quotedInput(quote) * BigInt(1000000 - quote.pool.fee)
   const spotOut = quote.zeroForOne ? afterFee * squared / (1000000n * scale) : afterFee * scale / (1000000n * squared)

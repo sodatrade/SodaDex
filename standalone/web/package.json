@@ -13,7 +13,7 @@
     "preview": "vite preview --host 127.0.0.1",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "lint": "cd .. && web/node_modules/.bin/oxlint --config web/.oxlintrc.json --deny-warnings web/src web/tests web/tooling web/vite.config.ts web/vitest.config.ts trading-policy.ts network-profile.ts mining-contracts.ts mining-products.ts mining-abi.ts mining-calls.ts mining-signed-calls.ts mining-discovery.ts mining-math.ts mining-market.ts",
+    "lint": "cd .. && web/node_modules/.bin/oxlint --config web/.oxlintrc.json --deny-warnings web/src web/tests web/tooling web/vite.config.ts web/vitest.config.ts trading-policy.ts v2-protocol.ts network-profile.ts mining-contracts.ts mining-products.ts mining-abi.ts mining-calls.ts mining-signed-calls.ts mining-discovery.ts mining-math.ts mining-market.ts",
     "build:mining-test": "VITE_SODADEX_NETWORK_PROFILE=1952-mining-test vite build --outDir dist-mining-1952"
   },
   "dependencies": {

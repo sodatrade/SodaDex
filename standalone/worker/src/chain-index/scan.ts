@@ -1,3 +1,5 @@
+import { V2_PAIR_EVENTS } from '../../../v2-protocol'
+import { v2Created } from '../v2-data'
 import { decodeEventLog, toEventSelector } from 'viem'
 import { EVENTS, record, same, ZERO } from '../contracts'
 import { head, hex, logs, type Block, type ChainLog, type Pool } from '../dex-data'
@@ -28,6 +30,7 @@ export function indexFetch(config: IndexConfig, upstream: typeof fetch = fetch):
   }
 }
 function poolFrom(log: ChainLog, decoded: { eventName: string; args: Record<string, unknown> }): Pool | null {
+  if (decoded.eventName === 'PairCreated') return v2Created(log)
   const a = decoded.args, v3 = decoded.eventName === 'PoolCreated'
   if (!v3 && decoded.eventName !== 'Initialize') return null
   return { protocol: v3 ? 'v3' : 'v4', id: String(v3 ? a.pool : a.id).toLowerCase(), address: v3 ? String(a.pool) : null,
@@ -55,7 +58,7 @@ export async function scanOnce(store: IndexStore, config: IndexConfig, upstream:
   if (state.indexedThrough >= latest.number) { store.save({ ...state, head: latest, syncing: false, lastError: null }); return }
   const sources = [...config.sources]
   if (config.profile.chainId === 196) for (const pool of store.pools(state.indexedThrough))
-    if (pool.address && !sources.some(s => same(s.address, pool.address!))) sources.push({ address: pool.address, abi: EVENTS, protocol: 'v3', role: 'pool' })
+    if (pool.address && !sources.some(s => same(s.address, pool.address!))) sources.push({ address: pool.address, abi: pool.protocol === 'v2' ? V2_PAIR_EVENTS : EVENTS, protocol: pool.protocol, role: 'pool' })
   const topics = [...new Set(sources.flatMap(s => s.abi.filter(item => item.type === 'event').map(item => toEventSelector(item))))]
   const from = state.indexedThrough + 1
   let to = Math.min(latest.number, from + 1999), result: ChainLog[] = [], derived: Pool[] = []
@@ -71,8 +74,11 @@ export async function scanOnce(store: IndexStore, config: IndexConfig, upstream:
     derived = config.profile.chainId === 196 ? result.flatMap(log => { const pool = poolFrom(log, decode(log, sources.find(s => same(s.address, log.address))!)); return pool ? [pool] : [] }) : []
     const added = derived.filter(p => p.address && !sources.some(s => same(s.address, p.address!)))
     if (added.length) {
-      result.push(...await logs(added.map(p => p.address!), from, to, [EVENTS.map(e => toEventSelector(e))], read))
-      for (const p of added) sources.push({ address: p.address!, abi: EVENTS, protocol: 'v3', role: 'pool' })
+      for (const protocol of ['v2', 'v3'] as const) {
+        const group = added.filter(p => p.protocol === protocol), abi = protocol === 'v2' ? V2_PAIR_EVENTS : EVENTS
+        if (group.length) result.push(...await logs(group.map(p => p.address!), from, to, [abi.map(e => toEventSelector(e))], read))
+        for (const p of group) sources.push({ address: p.address!, abi, protocol, role: 'pool' })
+      }
     }
     const eventBlocks = [...new Set(result.map(log => Number(BigInt(log.blockNumber))))]
     // oxlint-disable-next-line unicorn/no-array-sort -- Sort a newly allocated numeric block list.

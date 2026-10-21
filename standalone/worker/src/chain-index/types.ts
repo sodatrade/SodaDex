@@ -2,10 +2,10 @@ import type { Abi } from 'viem'
 import type { NetworkProfile } from '../../../network-profile'
 import type { Block, ChainLog, Pool } from '../dex-data'
 import type { MiningApiBinding } from '../mining-api'
-export interface IndexSource { address: string; abi: Abi; protocol: 'v3' | 'v4' | 'mining'; role: string }
+export interface IndexSource { address: string; abi: Abi; protocol: 'v2' | 'v3' | 'v4' | 'mining'; role: string }
 export interface IndexConfig { profile: NetworkProfile; version: string; fromBlock: number; sources: IndexSource[] }
 export interface IndexedEvent {
-  id: string; protocol: 'v3' | 'v4' | 'mining'; address: string; event: string; blockNumber: number; blockHash: string
+  id: string; protocol: 'v2' | 'v3' | 'v4' | 'mining'; address: string; event: string; blockNumber: number; blockHash: string
   transactionHash: string; logIndex: number; args: Record<string, string | number | boolean>; transactionFrom: string; timestamp: number
 }
 export interface IndexStatus {

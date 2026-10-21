@@ -5,7 +5,7 @@ import { createRequire } from 'node:module'
 import { mkdtemp, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { startLiquidityFork } from '../web/tests/liquidityForkFixture.ts'
 import { installFixtureMetadata } from './fixture-metadata.mjs'
 
@@ -38,6 +38,13 @@ async function stop() {
 try {
   fork = await startLiquidityFork({ fixturePath, stateViewCodePath })
   await installFixtureMetadata(fork.request)
+  if (process.env.SODADEX_V2_RUNTIMES) {
+    const fixtureModule = resolve(folder, 'v2-fixture.mjs')
+    await build({ entryPoints: [resolve(root, 'standalone/web/tests/v2ForkFixture.ts')], outfile: fixtureModule,
+      bundle: true, format: 'esm', platform: 'node', target: 'node22', nodePaths: [resolve(root, 'standalone/web/node_modules')] })
+    const { installV2Fixture } = await import(pathToFileURL(fixtureModule).href)
+    await installV2Fixture(fork.request, process.env.SODADEX_V2_RUNTIMES, config.owner)
+  }
   for (const address of [config.contracts.v3Quoter, config.contracts.v4Quoter]) {
     const code = runtimes.contracts.find(contract => contract.address.toLowerCase() === address.toLowerCase())?.code
     if (typeof code !== 'string' || !/^0x[0-9a-f]+$/i.test(code)) throw Error('Active quoter runtime missing')

@@ -1,0 +1,12 @@
+{
+  "approved": true,
+  "authorization": "允许按原哈希恢复，预算不变",
+  "chainId": 196,
+  "nonce": 198,
+  "hash": "0x2ba4bd0775e597ab9bf9887b890fedbd64331cd3e1f65bae9c25aeacce1a46f0",
+  "sameSignedTransactionOnly": true,
+  "totalCapWei": "200000000000000",
+  "originalJournalPreserved": true,
+  "ifFound": "reconcile original receipt without broadcast",
+  "approvedAt": "2026-10-21"
+}

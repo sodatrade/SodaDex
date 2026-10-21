@@ -1,14 +1,19 @@
 import { decodeFunctionData, encodeFunctionData, isAddress, type Abi, type Hex } from 'viem'
-import { poolAbi, tokenAbi, lpRewardsAbi } from '../../web/src/fragments/abi'
+import { poolAbi, tokenAbi, lpRewardsAbi, ignixIncomeAbi } from '../../web/src/fragments/abi'
 import { RPC_URL } from './upstream'
-type Manifest = { chainId: number; pool: string; vault: string; rewards: string }
+type Manifest = { chainId: number; pool: string; vault: string; rewards: string; income?: string; ignixTreasury?: string }
 const record = (x: unknown): x is Record<string, unknown> => typeof x === 'object' && x !== null && !Array.isArray(x)
 const block = (x: unknown): x is string => typeof x === 'string' && /^(latest|pending|safe|finalized|0x[0-9a-fA-F]+)$/.test(x)
 const hex = (x: unknown): x is Hex => typeof x === 'string' && /^0x(?:[0-9a-fA-F]{2})*$/.test(x)
 const same = (a: unknown, b: string): boolean => typeof a === 'string' && a.toLowerCase() === b.toLowerCase()
 export function fragmentManifest(raw?: string): Manifest | undefined {
   if (!raw) return undefined
-  try { const x: unknown = JSON.parse(raw); if (!record(x) || x.chainId !== 196 || ![x.pool,x.vault,x.rewards].every(a=>typeof a === 'string' && isAddress(a) && BigInt(a)!==0n)) return undefined; return x as Manifest } catch { return undefined }
+  try {
+    const x: unknown = JSON.parse(raw)
+    if (!record(x) || x.chainId !== 196 || ![x.pool,x.vault,x.rewards].every(a=>typeof a === 'string' && isAddress(a) && BigInt(a)!==0n)) return undefined
+    if ((x.income !== undefined || x.ignixTreasury !== undefined) && ![x.income,x.ignixTreasury].every(a=>typeof a === 'string' && isAddress(a) && BigInt(a)!==0n)) return undefined
+    return x as Manifest
+  } catch { return undefined }
 }
 export function validFragmentRpc(method: unknown, params: unknown, m: Manifest): boolean {
   if (!Array.isArray(params)) return false
@@ -27,7 +32,7 @@ export function validFragmentRpc(method: unknown, params: unknown, m: Manifest):
   if(!record(t)||!hex(t.data)||Object.keys(t).some(k=>!['from','to','data','value','gas','gasPrice','maxFeePerGas','maxPriorityFeePerGas'].includes(k))) return false
   if(t.from!==undefined&&(typeof t.from!=='string'||!isAddress(t.from))) return false
   if(['value','gas','gasPrice','maxFeePerGas','maxPriorityFeePerGas'].some(k=>t[k]!==undefined&&(typeof t[k]!=='string'||!/^0x[0-9a-fA-F]{1,64}$/.test(t[k] as string)))) return false
-  const abi: Abi = same(t.to,m.pool)?[...poolAbi,...tokenAbi]:same(t.to,m.vault)?tokenAbi:same(t.to,m.rewards)?lpRewardsAbi:[]
+  const abi: Abi = same(t.to,m.pool)?[...poolAbi,...tokenAbi]:same(t.to,m.vault)?tokenAbi:same(t.to,m.rewards)?lpRewardsAbi:m.income&&same(t.to,m.income)?ignixIncomeAbi:[]
   try {
     const decoded=decodeFunctionData({abi,data:t.data})
     if(encodeFunctionData({abi,functionName:decoded.functionName,args:decoded.args}).toLowerCase()!==t.data.toLowerCase())return false

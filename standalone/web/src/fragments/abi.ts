@@ -5,6 +5,7 @@ export const tokenAbi = parseAbi([
 ])
 export const poolAbi = parseAbi([
   'function PRODUCT_VERSION() view returns(bytes32)', 'function REWARDS() view returns(address)',
+  'function INCOME() view returns(address)', 'function FAB() view returns(address)',
   'function VAULT() view returns(address)', 'function POLICY() view returns(address)', 'function totalSupply() view returns(uint256)',
   'function reserveShares() view returns(uint256)', 'function reserveOkb() view returns(uint256)',
   'function quote(bool,uint256) view returns(uint256,uint256,uint256)',
@@ -16,3 +17,6 @@ export const poolAbi = parseAbi([
   'event LiquidityRemoved(address indexed account,uint256 shares,uint256 okb,uint256 liquidity)',
 ])
 export const lpRewardsAbi = parseAbi(['function POOL() view returns(address)', 'function claimFor(address) returns(uint256,uint256)', 'function claimable(address) view returns(uint256,uint256)'])
+export const ignixIncomeAbi = parseAbi([
+  'function POOL() view returns(address)', 'function FAB() view returns(address)', 'function RECIPIENT() view returns(address)',
+])

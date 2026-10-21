@@ -1,0 +1,30 @@
+{
+  "approved": true,
+  "chainId": 196,
+  "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+  "productionTouched": false,
+  "scope": "Canonical ordinary Uniswap V2 TEST token and pairs; no miner pool changes",
+  "totalCapWei": "200000000000000",
+  "gasCapWei": "199989900000000",
+  "nonGasCapWei": "10100000000",
+  "maxGasPriceWei": "30000000",
+  "maxTransactions": 27,
+  "maxTestFabRaw": "12100000000",
+  "maxTestV2Raw": "11100000000",
+  "expectedGasWei": "110374278000000",
+  "rehearsedGasLimitAtMaximumPriceWei": "182479290000000",
+  "rehearsalSha256": "e35475f5c9329515aba78699715fe930caf37918d6bf96ec5e19ba1a88e5cf04",
+  "completedPriorBudgetIsNotReused": true,
+  "actions": [
+    "deploy one plain TEST-V2 token",
+    "create TEST-FAB/TEST-V2 pair and initial liquidity",
+    "increase and bidirectional exact-input/exact-output trades",
+    "remove half and remaining newly created LP",
+    "add/trade/remove own newly added TEST-FAB/OKB liquidity; preserve pre-existing LP"
+  ],
+  "onNonceOrRuntimeChange": "stop and rehearse again",
+  "onPendingOrFailedTransaction": "stop and reconcile; never replay",
+  "onBudgetExceeded": "stop before signing",
+  "authorization": "User approved new total cap 0.0002 OKB on 2026-10-21; no production changes",
+  "approvedAt": "2026-10-21"
+}

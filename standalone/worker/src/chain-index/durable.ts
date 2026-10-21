@@ -1,3 +1,4 @@
+import { V2_FACTORY, V2_PAIR_EVENTS } from '../../../v2-protocol'
 import { fragmentIndexConfig, fragmentMarket } from './fragments'
 import { miningMarket } from './mining-market'
 import { EVENTS, record, same } from '../contracts'
@@ -48,7 +49,7 @@ export class SodaChainIndex {
           if (!record(filter) || typeof filter.fromBlock !== 'string' || typeof filter.toBlock !== 'string' || !/^0x[0-9a-f]+$/i.test(filter.fromBlock) || !/^0x[0-9a-f]+$/i.test(filter.toBlock) || !Array.isArray(filter.topics)) return Response.json({ logs: null })
           const from = Number(BigInt(filter.fromBlock)), to = Number(BigInt(filter.toBlock)), addresses = (Array.isArray(filter.address) ? filter.address : [filter.address]) as unknown[]
           const known = [...config.sources.map(s => s.address), ...store.pools(store.status().indexedThrough).flatMap(p => p.address ? [p.address] : [])]
-          const selectors = EVENTS.map(e => toEventSelector(e)), first = Array.isArray(filter.topics[0]) ? filter.topics[0] : [filter.topics[0]]
+          const selectors = [...EVENTS, ...V2_PAIR_EVENTS, ...V2_FACTORY.filter(e => e.type === 'event')].map(e => toEventSelector(e)), first = Array.isArray(filter.topics[0]) ? filter.topics[0] : [filter.topics[0]]
           if (!addresses.length || addresses.some(a => typeof a !== 'string' || !known.some(k => same(k, a))) || !first.length || first.some(t => typeof t !== 'string' || !selectors.some(k => same(k, t))) || from < config.fromBlock || to < from || to - from >= 2000 || to > store.status().indexedThrough) return Response.json({ logs: null })
           return Response.json({ logs: store.logs(addresses as string[], from, to).filter(log => matchesTopics(log.topics, filter.topics as unknown[])) })
         }

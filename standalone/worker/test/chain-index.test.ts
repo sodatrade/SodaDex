@@ -1,3 +1,4 @@
+import { V2_FACTORY, V2_PAIR_EVENTS } from '../../v2-protocol'
 import { describe, it, expect } from 'vitest'
 import { DatabaseSync } from 'node:sqlite'
 import { encodeAbiParameters, encodeEventTopics, parseAbiParameters, type Hex } from 'viem'
@@ -126,6 +127,30 @@ describe('persistent chain index', () => {
     await scanOnce(f.store, f.config, reader)
     expect(f.store.pools(110)[0].address?.toLowerCase()).toBe(pool)
     expect(f.store.query('SELECT event FROM index_events').map(row => row.event)).toEqual(['PoolCreated', 'Swap'])
+  })
+  it('indexes V2 creation, ERC20 LP Transfer and Sync/Swap in the first block', async () => {
+    const f = fixture(1), factory = f.config.sources.find(source => source.role === 'factory' && source.protocol === 'v2')!, pair = `0x${'33'.repeat(20)}` as Hex
+    const created = { ...f.raw[0], address: factory.address, topics: encodeEventTopics({ abi: V2_FACTORY, eventName: 'PairCreated', args: { token0: address as Hex, token1: other as Hex } }),
+      data: encodeAbiParameters(parseAbiParameters('address,uint256'), [pair, 1n]), logIndex: hex(0) }
+    const transfer = { ...f.raw[0], address: pair, topics: encodeEventTopics({ abi: V2_PAIR_EVENTS, eventName: 'Transfer', args: { from: address as Hex, to: other as Hex } }),
+      data: encodeAbiParameters(parseAbiParameters('uint256'), [1000n]), logIndex: hex(1) }
+    const sync = { ...f.raw[0], address: pair, topics: encodeEventTopics({ abi: V2_PAIR_EVENTS, eventName: 'Sync' }),
+      data: encodeAbiParameters(parseAbiParameters('uint112,uint112'), [10000n, 20000n]), logIndex: hex(2) }
+    const swap = { ...f.raw[0], address: pair, topics: encodeEventTopics({ abi: V2_PAIR_EVENTS, eventName: 'Swap', args: { sender: address as Hex, to: other as Hex } }),
+      data: encodeAbiParameters(parseAbiParameters('uint256,uint256,uint256,uint256'), [10n, 0n, 0n, 19n]), logIndex: hex(3) }
+    const reader: typeof fetch = async (input, options) => {
+      const body = JSON.parse(String(options?.body))
+      if (body.method === 'eth_getLogs') {
+        const requested = [body.params[0].address].flat().map((a: string) => a.toLowerCase())
+        return Response.json({ jsonrpc: '2.0', id: 1, result: [created, transfer, sync, swap].filter(log => requested.includes(log.address.toLowerCase())) })
+      }
+      return f.read(input, options)
+    }
+    await scanOnce(f.store, f.config, reader)
+    expect(f.store.pools(110)[0]).toMatchObject({ protocol: 'v2', id: pair, fee: 3000 })
+    const event = JSON.parse(String(f.store.query("SELECT value FROM index_events WHERE event='Transfer'")[0].value))
+    expect(event.protocol).toBe('v2'); expect(event.args.value).toBe('1000'); expect(event.args.tokenId).toBeUndefined()
+    expect(f.store.chartRows(pair, 100, 110).map(row => row.log.logIndex)).toEqual([hex(2), hex(3)])
   })
   it('separates 1952 ERC20 values from NFT token IDs by emitting source ABI', () => {
     const config = baseConfig('1952-mining-test'), erc20 = config.sources.find(s => s.role === 'fab')!, nft = config.sources.find(s => s.role === 'circuits')!

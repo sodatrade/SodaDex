@@ -1,10 +1,20 @@
 import { describe, expect, it, vi } from 'vitest'
-import { encodeFunctionData } from 'viem'
+import { encodeFunctionData, parseAbi } from 'viem'
 import { fragmentsRpc, fragmentManifest, validFragmentRpc } from '../src/fragments-rpc'
-import { poolAbi, tokenAbi } from '../../web/src/fragments/abi'
+import { poolAbi, tokenAbi, ignixIncomeAbi } from '../../web/src/fragments/abi'
 const pool='0x1111111111111111111111111111111111111111',vault='0x2222222222222222222222222222222222222222',rewards='0x3333333333333333333333333333333333333333',user='0x4444444444444444444444444444444444444444'
 const manifest={chainId:196,pool,vault,rewards}
 describe('fragment RPC deployment boundary',()=>{
+ it('only exposes reads for the manifest-bound IGNIX income account',()=>{
+  const income='0x5555555555555555555555555555555555555555', m={...manifest,income,ignixTreasury:user}
+  const data=encodeFunctionData({abi:ignixIncomeAbi,functionName:'RECIPIENT'})
+  expect(validFragmentRpc('eth_call',[{to:income,data},'latest'],m)).toBe(true)
+  expect(validFragmentRpc('eth_call',[{to:income,data},'latest'],manifest)).toBe(false)
+  expect(validFragmentRpc('eth_call',[{to:user,data},'latest'],m)).toBe(false)
+  const claim=encodeFunctionData({abi:parseAbi(['function claimLpFab() returns(uint256)']),functionName:'claimLpFab'})
+  expect(validFragmentRpc('eth_call',[{from:user,to:income,data:claim},'latest'],m)).toBe(false)
+  expect(fragmentManifest(JSON.stringify({...manifest,income}))).toBeUndefined()
+ })
  it('accepts quotes and pending simulation for this pool only',()=>{
   const data=encodeFunctionData({abi:poolAbi,functionName:'quote',args:[false,1n]})
   expect(validFragmentRpc('eth_call',[{to:pool,data},'latest'],manifest)).toBe(true)

@@ -20,6 +20,7 @@
     "mining-signed-calls.ts",
     "mining-discovery.ts",
     "mining-math.ts",
-    "mining-market.ts"
+    "mining-market.ts",
+    "v2-protocol.ts"
   ]
 }
