@@ -6,6 +6,7 @@ export interface ScreenProps {
   client: FragmentClient
   deployment: FragmentDeployment
   snapshot: Snapshot
+  busy?: boolean
   account?: Address
   m: Messages
   prepare: (label: string, build: () => Promise<{to: Address; data: Hex; value?: bigint; label?: string}>) => void

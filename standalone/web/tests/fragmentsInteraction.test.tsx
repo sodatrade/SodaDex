@@ -1,0 +1,39 @@
+import { act, render, screen, fireEvent } from '@testing-library/react'
+import { describe, it, expect, vi } from 'vitest'
+import { PreferencesProvider } from '../src/preferences/PreferencesProvider'
+import { PoolScreen } from '../src/fragments/PoolScreen'
+import { roundedContribution } from '../src/fragments/liquidityQuote'
+import { TransientNotice } from '../src/fragments/TransientNotice'
+import { messages } from '../src/fragments/messages'
+import type { ScreenProps } from '../src/fragments/types'
+const props = { m: messages('en'), snapshot: { okb: 1n, shares: 10n, lpBalance: 0n }, prepare: vi.fn() } as unknown as ScreenProps
+
+describe('pool list and transient feedback', () => {
+  it('opens operations from a pool row and can return to the list', () => {
+    render(<PreferencesProvider><PoolScreen {...props}/></PreferencesProvider>)
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', {name:'Manage liquidity OKB / sFAB'}))
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+    expect(screen.getByRole('button', {name:'Add liquidity'})).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', {name:'Remove liquidity'}))
+    expect(screen.getByRole('textbox', {name:'LP amount'})).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', {name:'关闭对话框'}))
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  })
+  it('dismisses at 1500ms and restarts duration for repeated messages', () => {
+    vi.useFakeTimers()
+    const dismiss=vi.fn()
+    const view=render(<TransientNotice message="Invalid amount" id={1} onDismiss={dismiss}/>)
+    act(()=>vi.advanceTimersByTime(1000))
+    view.rerender(<TransientNotice message="Invalid amount" id={2} onDismiss={dismiss}/>)
+    act(()=>vi.advanceTimersByTime(1499)); expect(dismiss).not.toHaveBeenCalled()
+    act(()=>vi.advanceTimersByTime(1)); expect(dismiss).toHaveBeenCalledOnce()
+    view.unmount();vi.useRealTimers()
+  })
+})
+
+it('matches LP rounding in the new pool and never quotes full input as actual spend', () => {
+  expect(roundedContribution(17000n * 10n ** 18n, 1n, 9000n * 10n ** 18n + 1n, 1n, 1n)).toEqual({shares:9000n * 10n ** 18n + 1n,okb:1n})
+  expect(roundedContribution(3n, 8n, 2n, 3n, 2n)).toEqual({shares:2n,okb:3n})
+  expect(() => roundedContribution(1n,1n,100n,100n,1n)).toThrow('too small')
+})

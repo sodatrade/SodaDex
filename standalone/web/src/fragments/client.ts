@@ -4,7 +4,7 @@ import { poolAbi, lpRewardsAbi, tokenAbi } from './abi'
 export type FragmentClient = ReturnType<typeof makeClient>
 export const makeClient = (config: FragmentDeployment) => createPublicClient({ transport: http(config.rpcUrl, { retryCount: 1 }) })
 export interface PreparedTransaction { to: Address; data: Hex; value: bigint; label: string; account: Address; chainId: number }
-export async function verifyDeployment(c: FragmentClient, d: FragmentDeployment): Promise<{ rewards: Address }> {
+export async function verifyDeployment(c: FragmentClient, d: FragmentDeployment): Promise<{ rewards: Address; preciseLiquidity: boolean }> {
   if (await c.getChainId() !== d.chainId) throw new Error('RPC chain mismatch')
   const [version, shares, policy, rewards] = await Promise.all([
     c.readContract({ address: d.pool, abi: poolAbi, functionName: 'PRODUCT_VERSION' }),
@@ -13,10 +13,11 @@ export async function verifyDeployment(c: FragmentClient, d: FragmentDeployment)
     c.readContract({ address: d.pool, abi: poolAbi, functionName: 'REWARDS' }),
   ])
   const same = (a: Address, b: Address): boolean => a.toLowerCase() === b.toLowerCase()
-  if (version !== keccak256(toHex('SodaDEX.OKB.Fragments.v2')) || !same(shares, d.vault) || !same(policy, d.policy)) throw new Error('Unexpected contract version or bindings')
+  const preciseLiquidity = version === keccak256(toHex('SodaDEX.OKB.Fragments.v3'))
+  if ((!preciseLiquidity && version !== keccak256(toHex('SodaDEX.OKB.Fragments.v2'))) || !same(shares, d.vault) || !same(policy, d.policy)) throw new Error('Unexpected contract version or bindings')
   const rp = await c.readContract({ address: rewards, abi: lpRewardsAbi, functionName: 'POOL' })
   if (!same(rp, d.pool)) throw new Error('LP reward pool mismatch')
-  return { rewards }
+  return { rewards, preciseLiquidity }
 }
 export async function readSnapshot(c: FragmentClient, d: FragmentDeployment, user?: Address) {
   const identity = await verifyDeployment(c, d)
