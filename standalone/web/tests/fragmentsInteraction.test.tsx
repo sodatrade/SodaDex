@@ -10,9 +10,24 @@ import * as fragmentClient from '../src/fragments/client'
 import { decodeFunctionData } from 'viem'
 import { poolAbi } from '../src/fragments/abi'
 import { PoolForm } from '../src/fragments/PoolForm'
+import { MineScreen } from '../src/fragments/MineScreen'
 const props = { m: messages('en'), snapshot: { okb: 1n, shares: 10n, lpBalance: 0n }, prepare: vi.fn() } as unknown as ScreenProps
 
 describe('pool list and transient feedback', () => {
+  it('shows asset and LP lists, with exact amounts and principal in read-only details', () => {
+    const address = '0x2222222222222222222222222222222222222222'
+    const account = '0x1111111111111111111111111111111111111111'
+    render(<PreferencesProvider><MineScreen {...props} account={account} deployment={{pool:address,vault:address,policy:address,chainId:196,fromBlock:0n,rpcUrl:'https://rpc.test'}} snapshot={{...props.snapshot,okbBalance:123n,shareBalance:456n,lpBalance:20n,lpSupply:100n,okb:1000n,shares:2000n} as fragmentClient.Snapshot} /></PreferencesProvider>)
+    expect(screen.getByRole('table',{name:'My assets'})).toBeVisible()
+    expect(screen.getByRole('table',{name:'LP positions'})).toBeVisible()
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button',{name:'View details OKB / sFAB'}))
+    const dialog = screen.getByRole('dialog')
+    expect(dialog).toHaveTextContent('0.00000000000000002 sLP')
+    expect(dialog).toHaveTextContent('0.0000000000000002 OKB')
+    expect(dialog).toHaveTextContent('0.0000000000000004 sFAB')
+    expect(props.prepare).not.toHaveBeenCalled()
+  })
   it('prepares removal from fresh reserves rather than the prior trade snapshot', async () => {
     const snapshot = { ...props.snapshot, lpSupply:100n, lpBalance:50n, preciseLiquidity:true }
     const fresh = { ...snapshot, shares:2000n, okb:1000n }

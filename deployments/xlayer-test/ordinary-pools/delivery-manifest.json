@@ -1,0 +1,82 @@
+{
+  "lifecycle": "active",
+  "requirement": "mining-products-1952 / chain-196 ordinary pool acceptance and unified UI",
+  "repository": "https://github.com/sodatrade/SodaDex",
+  "pr": 2,
+  "owner": "/root current SodaDex chat",
+  "ownerWorktree": "/Users/LevyHoo/Documents/SodaDex",
+  "base": {
+    "branch": "codex/feat/sodadex-bootstrap",
+    "sha": "7506ce36138dfb6262ef11d1e3ca4828fec5ede3"
+  },
+  "target": {
+    "branch": "codex/feat/mining-products-1952",
+    "expectedHead": "9d7f01e3862550c9d998d1c392b9811e84811466"
+  },
+  "mapping": [
+    {
+      "request": "unify pool actions, list-based My page, top-right TEST badge, remove duplicate refresh and heavy nav outline",
+      "files": "standalone/web/src and matching UI tests"
+    },
+    {
+      "request": "ordinary V3/V4 create, add, remove and swap acceptance",
+      "files": "confirmed pool session cache, protocol-isolated positions, local browser runner and evidence"
+    }
+  ],
+  "trackedFiles": [
+    "standalone/acceptance/fork-server.mjs",
+    "standalone/web/README.md",
+    "standalone/web/src/features/liquidity/LiquidityPage.tsx",
+    "standalone/web/src/features/liquidity/PoolDetailDialog.tsx",
+    "standalone/web/src/features/liquidity/PoolList.tsx",
+    "standalone/web/src/features/liquidity/liquidity.css",
+    "standalone/web/src/features/liquidity/useLiquidityOperation.ts",
+    "standalone/web/src/features/swap/GeneralSwapCard.tsx",
+    "standalone/web/src/fragments/FragmentApp.tsx",
+    "standalone/web/src/fragments/MineScreen.tsx",
+    "standalone/web/src/fragments/PoolScreen.tsx",
+    "standalone/web/src/fragments/fragments.css",
+    "standalone/web/src/fragments/messages.ts",
+    "standalone/web/src/i18n/liquidity.ts",
+    "standalone/web/src/liquidity/index.ts",
+    "standalone/web/src/liquidity/positions.ts",
+    "standalone/web/tests/browser/controls-visual.tsx",
+    "standalone/web/tests/fragmentsInteraction.test.tsx",
+    "standalone/web/tests/generalSwapUi.test.tsx",
+    "standalone/web/tests/liquidityUi.test.tsx"
+  ],
+  "newFiles": [
+    "standalone/web/src/features/liquidity/PoolManageButton.tsx",
+    "standalone/web/src/features/liquidity/confirmedPools.ts",
+    "standalone/acceptance/ordinary-pools.js",
+    "standalone/acceptance/ordinary-public-pools.js",
+    "standalone/acceptance/ordinary-intent.mjs",
+    "standalone/acceptance/ordinary-intent.test.mjs",
+    "standalone/acceptance/ordinary-public-wallet.mjs",
+    "standalone/acceptance/ordinary-wallet-server.mjs",
+    "standalone/acceptance/ordinary-rehearse.ts",
+    "deployments/xlayer-test/ordinary-pools/README.md",
+    "deployments/xlayer-test/ordinary-pools/browser-v3-rehearsal.json",
+    "deployments/xlayer-test/ordinary-pools/browser-v4-rehearsal.json",
+    "deployments/xlayer-test/ordinary-pools/delivery-manifest.json",
+    "deployments/xlayer-test/ordinary-pools/final-rehearsal.json",
+    "deployments/xlayer-test/ordinary-pools/public-approval.json",
+    "deployments/xlayer-test/ordinary-pools/public-budget-proposal.json",
+    "deployments/xlayer-test/ordinary-pools/public-preflight.json",
+    "deployments/xlayer-test/ordinary-pools/public-readiness.json",
+    "deployments/xlayer-test/ordinary-pools/validation.json"
+  ],
+  "unrelatedUntracked": "preserved and excluded from staging",
+  "validation": "validation.json",
+  "releaseTarget": "sodadex-preview Worker using wrangler.fragments-196-test.jsonc",
+  "migrations": "none added",
+  "productionTouched": false,
+  "publicChainWritesThisPhase": 0,
+  "publicChainBudget": {
+    "approved": true,
+    "totalCapWei": "320000000000000",
+    "approval": "public-approval.json",
+    "finalRehearsal": "final-rehearsal.json",
+    "preflight": "public-preflight.json"
+  }
+}

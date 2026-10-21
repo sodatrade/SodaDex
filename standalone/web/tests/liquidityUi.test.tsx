@@ -19,6 +19,7 @@ vi.mock('../src/liquidity', async (importOriginal) => {
     listPools: vi.fn(),
     listPositions: vi.fn(),
     discoverPool: vi.fn(),
+    refreshPool: vi.fn(),
     getPosition: vi.fn(),
     importCurrency: vi.fn(),
     prepareLiquidity: vi.fn(),
@@ -127,6 +128,7 @@ beforeEach(() => {
   vi.mocked(client.listPools).mockResolvedValue([pool])
   vi.mocked(client.listPositions).mockResolvedValue([position])
   vi.mocked(client.discoverPool).mockResolvedValue(pool)
+  vi.mocked(client.refreshPool).mockResolvedValue(pool)
   vi.mocked(client.getPosition).mockResolvedValue(position)
   vi.mocked(client.prepareLiquidity).mockImplementation(async (operation) => preview(operation))
   vi.mocked(client.executeLiquidity).mockImplementation(async (_preview, context) => {
@@ -150,7 +152,8 @@ it('chooses the miner pool from the shared create dialog without creating an ord
 })
 async function openAmounts(user: ReturnType<typeof userEvent.setup>): Promise<HTMLElement> {
   await screen.findByText('已初始化')
-  await user.click(screen.getByRole('button', { name: '添加流动性' }))
+  await user.click(screen.getByRole('button', { name: '管理流动性' }))
+  await user.click(within(screen.getByRole('dialog', { name: '管理流动性' })).getByRole('button', { name: '添加流动性' }))
   return screen.getByRole('dialog', { name: '创建池 / 新仓位' })
 }
 async function prepareMint(user: ReturnType<typeof userEvent.setup>): Promise<HTMLElement> {
@@ -161,6 +164,36 @@ async function prepareMint(user: ReturnType<typeof userEvent.setup>): Promise<HT
   return screen.findByRole('dialog', { name: '确认流动性操作' })
 }
 describe('self-service liquidity UI', () => {
+  it('publishes a freshly verified pool once after confirmation while the directory is empty', async () => {
+    const user = userEvent.setup(); mount()
+    const review = await prepareMint(user)
+    vi.mocked(client.listPools).mockResolvedValue([])
+    await user.click(within(review).getByRole('button', { name: '确认并打开钱包' }))
+    await waitFor(() => expect(client.refreshPool).toHaveBeenCalledWith(pool, expect.any(Function)))
+    await user.click(within(review).getByRole('button', { name: '关闭' }))
+    expect(await screen.findAllByRole('button', { name: '管理流动性' })).toHaveLength(1)
+    expect(client.executeLiquidity).toHaveBeenCalledOnce()
+  })
+  it('keeps a successful receipt successful if the post-confirmation pool read fails', async () => {
+    vi.mocked(client.refreshPool).mockRejectedValue(new Error('Read unavailable'))
+    const user = userEvent.setup(); mount()
+    const review = await prepareMint(user)
+    await user.click(within(review).getByRole('button', { name: '确认并打开钱包' }))
+    expect(await within(review).findByText('操作已确认，正在刷新仓位')).toBeVisible()
+    await waitFor(() => expect(JSON.parse(localStorage.getItem(LP_RECORD_KEY)!).status).toBe('success'))
+    expect(client.executeLiquidity).toHaveBeenCalledOnce()
+  })
+
+  it('shows verified V3 positions while V4 discovery is still pending', async () => {
+    const v3 = { ...position, protocol: 'v3' as const, pool: { ...pool, protocol: 'v3' as const } }
+    vi.mocked(client.listPositions).mockImplementation(async (_owner, _read, protocol) => protocol === 'v4' ? new Promise(() => {}) : [v3])
+    const user = userEvent.setup(); mount()
+    await user.click(screen.getByRole('button', { name: '我的仓位' }))
+    expect(await screen.findByText(`V3 · #${position.tokenId}`)).toBeVisible()
+    expect(screen.getByText(/V4 · 读取链上数据/)).toBeVisible()
+    expect(screen.getByRole('button', { name: '减少流动性' })).toBeEnabled()
+  })
+
   it('moves an explicitly looked-up NFT into the first page without exceeding ten or duplicating it', async () => {
     const positions = Array.from({ length: 11 }, (_, index) => ({ ...position, tokenId: BigInt(index + 1) }))
     vi.mocked(client.listPositions).mockResolvedValue(positions)
@@ -230,8 +263,8 @@ describe('self-service liquidity UI', () => {
       { onConnect } = mount(setupWallet(false).wallet)
     await screen.findByText('已初始化')
     expect(screen.queryByText(/TVL|APR/)).not.toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: '查看池子' }))
-    const dialog = screen.getByRole('dialog', { name: '查看池子' })
+    await user.click(screen.getByRole('button', { name: '管理流动性' }))
+    const dialog = screen.getByRole('dialog', { name: '管理流动性' })
     expect(within(dialog).getByText(hash)).toBeVisible()
     expect(within(dialog).getByText('0%')).toBeVisible()
     await user.click(within(dialog).getByRole('button', { name: '添加流动性' }))
@@ -432,7 +465,7 @@ describe('self-service liquidity UI', () => {
     const user = userEvent.setup()
     mount()
     await user.click(screen.getByRole('button', { name: '我的仓位' }))
-    await screen.findByText('读取未完成，请重试。')
+    await screen.findByText(/读取未完成，请重试。/)
     expect(screen.queryByText('这个钱包还没有仓位')).not.toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: '重试' }))
     await screen.findByText('这个钱包还没有仓位')

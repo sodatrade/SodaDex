@@ -1,5 +1,5 @@
 import './liquidity.css'
-import { useQuery } from '@tanstack/react-query'
+import { skipToken, useQueries, useQuery } from '@tanstack/react-query'
 import { useEffect, useState, type ReactElement, type ReactNode } from 'react'
 import { Button, Icon } from '../../components/primitives'
 import { Pagination, usePagination } from '../../components/Pagination'
@@ -19,6 +19,7 @@ import { PositionCard } from './PositionCard'
 import { PositionLookup } from './PositionLookup'
 import { sameAddress } from './presentation'
 import { useLiquidityOperation } from './useLiquidityOperation'
+import { confirmedPoolsKey, mergeConfirmedPools } from './confirmedPools'
 interface Props {
   wallet: WalletController
   onConnect: () => void
@@ -48,13 +49,15 @@ export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded, speci
     retry: false,
     refetchInterval: 30_000,
   })
-  const positions = useQuery({
-    queryKey: ['liquidity', 'positions', wallet.session?.address],
-    queryFn: () => listPositions(wallet.session?.address ?? '0x0000000000000000000000000000000000000000'),
+  const positions = useQueries({ queries: (['v3', 'v4'] as const).map(protocol => ({
+    queryKey: ['liquidity', 'positions', wallet.session?.address, protocol],
+    queryFn: async () => (await listPositions(wallet.session?.address ?? '0x0000000000000000000000000000000000000000', undefined, protocol)).filter(p => p.protocol === protocol),
     enabled: !!wallet.session && correctChain,
     retry: false,
     refetchInterval: 30_000,
-  })
+  })) })
+  const confirmed = useQuery<LiquidityPool[]>({ queryKey: confirmedPoolsKey, queryFn: skipToken, initialData: [] })
+  const visiblePools = mergeConfirmedPools(pools.data ?? [], confirmed.data ?? [])
   const busy = operation.preparing || operation.executing || !!operation.blocked || !!externalBusy
   const navigationBusy = busy || !!operation.review || !!editor || !!detail
   useEffect(() => { onBusyChange?.(navigationBusy) }, [navigationBusy, onBusyChange])
@@ -79,7 +82,7 @@ export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded, speci
   }
   const owned = (position: LiquidityPosition): boolean =>
     !!wallet.session && correctChain && sameAddress(position.owner, wallet.session.address)
-  const visiblePositions = positions.data ?? []
+  const visiblePositions = positions.flatMap(query => query.data ?? [])
   const accountKey = `${wallet.session?.chainId}:${wallet.session?.address.toLowerCase() ?? ''}`
   const found = lookup?.account === accountKey ? lookup.position : undefined
   const displayedPositions = found ? [found, ...visiblePositions.filter((position) => position.protocol !== found.protocol || position.tokenId !== found.tokenId)] : visiblePositions
@@ -107,7 +110,7 @@ export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded, speci
             {l('positions')}
           </button>
         </div>
-        <Button appearance="ghost" onClick={operation.refresh} disabled={pools.isFetching || positions.isFetching}>
+        <Button appearance="ghost" onClick={operation.refresh} disabled={pools.isFetching || positions.every(query => query.isFetching)}>
           <Icon name="refresh" size={15} />
           {l('refresh')}
         </Button>
@@ -124,18 +127,19 @@ export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded, speci
       {tab === 'pools' ? (
         <div className="lp-pool-section">
           <p className="lp-muted">{l('poolFilterNote')}</p>
-          {!pools.isSuccess && specialPool && <PoolList pools={[]} l={l} disabled={busy} onDetails={setDetail} onAdd={(pool) => open({ kind: 'mint', pool })} extraRows={[{id:'configured-miner-pool',content:specialPool.row}]} />}
-          {pools.isPending ? (
+          {pools.isError && visiblePools.length > 0 && <p role="alert">{l('loadFailed')} <Button onClick={() => void pools.refetch()}>{l('retry')}</Button></p>}
+          {!pools.isSuccess && !visiblePools.length && specialPool && <PoolList pools={[]} l={l} disabled={busy} onDetails={setDetail} extraRows={[{id:'configured-miner-pool',content:specialPool.row}]} />}
+          {pools.isPending && !visiblePools.length ? (
             <p role="status">{l('loading')}</p>
-          ) : pools.isError ? (
+          ) : pools.isError && !visiblePools.length ? (
             <div className="lp-empty">
               <p role="alert">{l('loadFailed')}</p>
               <Button onClick={() => void pools.refetch()}>{l('retry')}</Button>
             </div>
-          ) : pools.data.length === 0 && !specialPool ? (
+          ) : visiblePools.length === 0 && !specialPool ? (
             <p className="lp-empty">{l('emptyPools')}</p>
           ) : (
-            <PoolList pools={pools.data} l={l} disabled={busy} onDetails={setDetail} onAdd={(pool) => open({ kind: 'mint', pool })} extraRows={specialPool ? [{ id: 'configured-miner-pool', content: specialPool.row }] : undefined} />
+            <PoolList pools={visiblePools} l={l} disabled={busy} onDetails={setDetail} extraRows={specialPool ? [{ id: 'configured-miner-pool', content: specialPool.row }] : undefined} />
           )}
         </div>
       ) : (
@@ -149,14 +153,8 @@ export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded, speci
             </div>
           ) : correctChain ? (
             <>
-              {positions.isPending ? (
-                <p role="status">{l('loading')}</p>
-              ) : positions.isError ? (
-                <div className="lp-empty">
-                  <p role="alert">{l('loadFailed')}</p>
-                  <Button onClick={() => void positions.refetch()}>{l('retry')}</Button>
-                </div>
-              ) : visiblePositions.length === 0 && !found ? (
+              {positions.map((query, index) => query.isPending ? <p key={index} role="status">{index === 0 ? 'V3' : 'V4'} · {l('loading')}</p> : query.isError ? <div key={index} className="lp-empty"><p role="alert">{index === 0 ? 'V3' : 'V4'} · {l('loadFailed')}</p><Button onClick={() => void query.refetch()}>{l('retry')}</Button></div> : null)}
+              {positions.every(query => query.isSuccess) && visiblePositions.length === 0 && !found ? (
                 <p className="lp-empty">{l('emptyPositions')}</p>
               ) : null}
               <div className="lp-position-list">

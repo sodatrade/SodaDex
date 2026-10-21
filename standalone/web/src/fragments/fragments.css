@@ -31,3 +31,21 @@
 
 .fragment-input-row .button{white-space:nowrap;flex-shrink:0;border-radius:24px;background:var(--accent-soft);border-color:transparent;padding:8px 12px;font-size:14px}
 .fragment-shell .lp-pool .fragment-pool-reserves small{display:block;margin-top:5px;color:var(--muted)}
+
+/* Network identity belongs to the header, alongside wallet controls. */
+.fragment-test-badge{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;font-size:10px;font-weight:600;letter-spacing:.15px;color:var(--accent);padding:6px 9px;border-radius:6px;background:var(--accent-soft)}
+.fragment-test-dot{width:5px;height:5px;flex:none;border-radius:50%;background:currentColor}
+.fragment-header nav button:focus,.fragment-header nav button:focus-visible{outline:none;box-shadow:none}
+.fragment-header nav button:focus-visible{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:5px}
+.fragment-account-section h2{font-size:15px}
+.fragment-account-table{margin:0}
+.fragment-account-table table{table-layout:auto}
+.fragment-account-table td,.fragment-account-table th{padding:17px 12px}
+.fragment-account-table td:first-child,.fragment-account-table th:first-child{width:40%}
+.fragment-account-table th:last-child{width:150px}
+.fragment-account-table tbody tr:last-child td{border-bottom:0}
+.fragment-account-table strong{font-size:13px;font-weight:550}
+.fragment-account-table .button{min-height:34px;padding:7px 11px;font-size:11px;gap:8px}
+.fragment-account-table .button svg{transform:rotate(-90deg)}
+@media(max-width:760px){.fragment-header>.fragment-actions{width:100%;margin-left:0;justify-content:flex-end}.fragment-test-badge{margin-right:auto;font-size:9px;padding:6px 7px}.fragment-account-table td,.fragment-account-table th{padding:14px 6px}.fragment-account-table th:last-child{width:95px}.fragment-account-table td:first-child,.fragment-account-table th:first-child{width:auto}.fragment-account-table .button{min-height:36px;padding:7px 9px}}
+@media(max-width:760px){.fragment-header{display:grid;grid-template-columns:1fr auto}.fragment-header>.brand{grid-column:1;grid-row:1}.fragment-header>.fragment-actions{display:contents}.fragment-header .fragment-test-badge{grid-column:2;grid-row:1;margin:0;justify-self:end}.fragment-header .fragment-actions>.button{grid-row:2}.fragment-header .fragment-actions>.button:first-of-type{grid-column:1;justify-self:start}.fragment-header .fragment-actions>.button:last-of-type{grid-column:2;justify-self:end}.fragment-header nav{grid-column:1/-1;grid-row:3}}

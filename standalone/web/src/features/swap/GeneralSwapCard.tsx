@@ -1,5 +1,5 @@
 import './swap.css'
-import { useQuery } from '@tanstack/react-query'
+import { skipToken, useQuery } from '@tanstack/react-query'
 import { useEffect, useMemo, useState, type ReactElement } from 'react'
 import { formatUnits, type Address } from 'viem'
 import { Button, Icon, NetworkIcon, Surface } from '../../components/primitives'
@@ -11,6 +11,8 @@ import { hexQuantity, rpc } from '../../lib/rpc'
 import type { WalletController } from '../../lib/useWallet'
 import { KNOWN_CURRENCIES, listPools, NATIVE_CURRENCY } from '../../liquidity'
 import type { Currency } from '../../liquidity/types'
+import type { LiquidityPool } from '../../liquidity/types'
+import { confirmedPoolsKey, mergeConfirmedPools } from '../liquidity/confirmedPools'
 import { usePreferences } from '../../preferences/context'
 import { publicSwapsEnabled } from '../../trading/config'
 import type { TradeIdentity } from '../../trading/types'
@@ -66,7 +68,9 @@ export function GeneralSwapCard({ wallet, balances, balancesLoading, balancesErr
     (parsed.kind === 'valid' && parsed.units >= 2n ** 128n ? { code: 'amountTooLarge' as const } : undefined)
   const direction = wrapDirection(from, to)
   const pools = useQuery({ queryKey: ['liquidity', 'pools'], queryFn: () => listPools(), retry: false, refetchInterval: 30_000 })
-  const matches = matchingPools(pools.data ?? [], from, to, protocol)
+  const confirmed = useQuery<LiquidityPool[]>({ queryKey: confirmedPoolsKey, queryFn: skipToken, initialData: [] })
+  const allPools = useMemo(() => mergeConfirmedPools(pools.data ?? [], confirmed.data ?? []), [pools.data, confirmed.data])
+  const matches = matchingPools(allPools, from, to, protocol)
   const quote = useQuery<SwapPoolQuote>({ queryKey: ['swap', 'quote', currencyKey(from), currencyKey(to), protocol, bps, editedSide,
     matches.map((p) => p.pool.id).join(','), parsed.kind === 'valid' ? parsed.units.toString() : ''],
     queryFn: () => (editedSide === 'to' ? bestPoolExactOutputQuote : bestPoolQuote)(matches, parsed.kind === 'valid' ? parsed.units : 0n, bps ?? 50),
@@ -77,11 +81,11 @@ export function GeneralSwapCard({ wallet, balances, balancesLoading, balancesErr
     : validQuote && isExactOutput(validQuote) ? validQuote.maximumIn : undefined
   const error = entryError ?? (account && fromBalance !== undefined && requiredInput !== undefined && requiredInput > fromBalance
     ? { code: 'amountInsufficient' as const } : undefined)
-  const context = useMemo(() => marketContext({ from, to, protocol, pools: pools.data, loading: pools.isPending,
-    failed: pools.isError, quote: validQuote }),
-    [from, to, protocol, pools.data, pools.isPending, pools.isError, validQuote])
+  const context = useMemo(() => marketContext({ from, to, protocol, pools: allPools, loading: pools.isPending && !matches.length,
+    failed: pools.isError && !matches.length, quote: validQuote }),
+    [from, to, protocol, allPools, matches.length, pools.isPending, pools.isError, validQuote])
   useEffect(() => { onContextChange?.(context) }, [context, onContextChange])
-  const currencies = [...KNOWN_CURRENCIES, ...(pairExtension?.currencies ?? []), ...imported, ...catalog, ...(pools.data ?? []).flatMap((p) => [p.currency0, p.currency1])]
+  const currencies = [...KNOWN_CURRENCIES, ...(pairExtension?.currencies ?? []), ...imported, ...catalog, ...allPools.flatMap((p) => [p.currency0, p.currency1])]
     .filter((c, index, all) => all.findIndex((v) => currencyKey(v) === currencyKey(c)) === index)
   const changed = (): void => { operation.cancel(); operation.reset(); setReview(undefined) }
   const select = (currency: Currency): void => {
@@ -136,8 +140,8 @@ export function GeneralSwapCard({ wallet, balances, balancesLoading, balancesErr
         hint={direction ? m.wrapping : quote.isFetching ? m.quote : !enabled ? m.readonly : undefined} />
       {error && <p id="swap-amount-error" role="alert" className="amount-error">{error.code === 'amountPrecision' ? t(error.code, { decimals: error.decimals }) : t(error.code)}</p>}
       {!direction && bps === undefined && <p role="alert" className="error-text">{m.slippageError}</p>}
-      {!direction && pools.isPending && <p role="status" className="swap-notice">{m.loading}</p>}
-      {!direction && pools.isError && <p role="alert" className="error-text">{m.poolError} <button className="text-button" onClick={() => void pools.refetch()}>{m.reload}</button></p>}
+      {!direction && pools.isPending && !matches.length && <p role="status" className="swap-notice">{m.loading}</p>}
+      {!direction && pools.isError && !matches.length && <p role="alert" className="error-text">{m.poolError} <button className="text-button" onClick={() => void pools.refetch()}>{m.reload}</button></p>}
       {!direction && pools.isSuccess && !matches.length && <p className="swap-notice">{m.noPool}{onCreatePool && <> <button className="text-button" onClick={onCreatePool}>{m.createPool}</button></>}</p>}
       {!direction && quote.isError && !quote.isFetching && <p role="alert" className="error-text">{m.noQuote} <button className="text-button" onClick={() => void quote.refetch()}>{m.reload}</button></p>}
       <div className="route-summary"><span><NetworkIcon small />X Layer</span><button onClick={() => setSettings(true)} disabled={locked}>

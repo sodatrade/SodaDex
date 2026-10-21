@@ -3,6 +3,7 @@ import { act, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { zeroAddress, type Hex } from 'viem'
+import { confirmedPoolsKey } from '../src/features/liquidity/confirmedPools'
 import { GeneralSwapCard } from '../src/features/swap/GeneralSwapCard'
 import { KNOWN_CURRENCIES } from '../src/liquidity/config'
 import * as liquidity from '../src/liquidity'
@@ -49,6 +50,25 @@ async function amount(value = '0.000001'): Promise<void> {
   await waitFor(() => expect(screen.getByRole('button', { name: 'Review swap' })).toBeEnabled())
 }
 describe('main swap interactions', () => {
+  it('keeps directory failure and retry visible when the cached pool belongs to another pair', async () => {
+    vi.mocked(liquidity.listPools).mockRejectedValue(new Error('Directory unavailable'))
+    const { client } = mount()
+    await act(async () => { client.setQueryData(confirmedPoolsKey, [{ ...pool, currency1: custom }]) })
+    expect(await screen.findByRole('button', { name: 'Retry' })).toBeEnabled()
+    expect(screen.getByRole('alert')).toBeVisible()
+    expect(trades.executePoolTrade).not.toHaveBeenCalled()
+  })
+
+  it('quotes a confirmed live pool while the persistent directory is still loading', async () => {
+    vi.mocked(liquidity.listPools).mockImplementation(() => new Promise(() => {}))
+    const { client } = mount()
+    await act(async () => { client.setQueryData(confirmedPoolsKey, [pool]) })
+    await amount()
+    expect(trades.getPoolTradeQuote).toHaveBeenCalledWith(pool, true, 1000000000000n, 50)
+    expect(screen.getByRole('button', { name: 'Review swap' })).toBeEnabled()
+    expect(trades.executePoolTrade).not.toHaveBeenCalled()
+  })
+
   it('finds the configured share token in the normal picker and routes only its native pair to the extension', async () => {
     const share = { ...custom, symbol: 'sFAB', name: 'Miner shares', decimals: 18 }
     const renderPair = vi.fn(({ onSelect }: { onSelect: (side: 'to') => void }) => <button onClick={() => onSelect('to')}>Change share token</button>)

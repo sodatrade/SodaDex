@@ -35,7 +35,7 @@ function Fixture(): ReactElement {
   const tokens = pools.map((pool, index) => ({ currency: { ...pool.currency0, native: false, address: `0x${(index + 1).toString(16).padStart(40, '0')}` as const, name: `Test token ${index + 1}` }, balance: BigInt(index + 1) * 10n ** 18n }))
   return <div className="app-shell"><div className="test-notice">本地 UI 模拟 · 23 条虚构记录 · 不连接钱包或外部服务</div>
     {mode === 'pools' ? <main className="content-page lp-page"><h1>池子操作与分页</h1>
-      <PoolList pools={pools} l={liquidityText(locale)} disabled={false} onDetails={(pool) => setAction(`查看 ${pool.currency0.symbol}`)} onAdd={(pool) => setAction(`添加 ${pool.currency0.symbol}`)} />
+      <PoolList pools={pools} l={liquidityText(locale)} disabled={false} onDetails={(pool) => setAction(`查看 ${pool.currency0.symbol}`)} />
       {action && <p role="status">{action} · 仅模拟交互</p>}</main> : mode === 'portfolio' || mode === 'tokens' ? <main className="content-page portfolio-page"><h1>资产列表与选币分页</h1>
       <BalanceTable tokens={tokens} onSend={(token) => setAction(`选择 ${token.currency.symbol}`)} />
       {picker && <CurrencyPicker currencies={tokens.map((token) => token.currency)} selected={tokens[0].currency}

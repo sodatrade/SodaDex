@@ -1,0 +1,76 @@
+{
+  "at": "2026-10-21T05:03:17.856Z",
+  "scope": "standalone web and Worker; no production contract changes",
+  "web": {
+    "files": 58,
+    "passed": 530,
+    "skipped": 0,
+    "failed": 0,
+    "fixtureMode": "owned offline Anvil state",
+    "execution": "serial full suite; earlier parallel fixture startup timeouts resolved"
+  },
+  "worker": {
+    "files": 30,
+    "passed": 216,
+    "skipped": 0,
+    "failed": 0
+  },
+  "adapter": {
+    "passed": 17,
+    "failed": 0,
+    "skipped": 0
+  },
+  "typecheck": "passed",
+  "lint": "passed",
+  "build": "passed",
+  "browserUi": {
+    "readOnly": true,
+    "viewports": [
+      1440,
+      820,
+      390
+    ],
+    "poolManagementButtons": 3,
+    "poolRefreshButtons": 1,
+    "horizontalOverflow": false,
+    "navigationOutline": "none",
+    "keyboardFocus": "underline",
+    "mineDetailExactBalance": true,
+    "productionTouched": false
+  },
+  "ordinaryPublicChainAcceptance": {
+    "status": "approved; final signer preflight passed; not yet broadcast",
+    "transactions": 0,
+    "realOkbSpentWei": "0"
+  },
+  "browserBusiness": {
+    "mode": "owned-live-read-fork",
+    "publicChainWrites": 0,
+    "protocols": [
+      "v3",
+      "v4"
+    ],
+    "actionsPerProtocol": [
+      "create-and-first-add",
+      "increase",
+      "okb-to-token",
+      "token-to-okb",
+      "remove-half",
+      "remove-all"
+    ],
+    "successfulReceipts": {
+      "v3": 10,
+      "v4": 14
+    },
+    "finalLiquidity": {
+      "v3": "0",
+      "v4": "0"
+    },
+    "fixtureGuardNegativeIntents": 12
+  },
+  "acceptancePolicy": {
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "readAt": "2026-10-21T05:00:44.655Z",
+  "chainId": 196,
+  "block": "73789803",
+  "gasPriceWei": "21000000",
+  "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+  "nonce": 168,
+  "pending": 168,
+  "balanceWei": "15361299292281834",
+  "testFab": "0x842b7bf61f2cb4be8aacac6adece3244c2a6f6ab",
+  "decimals": 8,
+  "tokenBalanceRaw": "104685439748319",
+  "freshV3PoolAddress": "0x0000000000000000000000000000000000000000",
+  "publicChainWrites": 0
+}

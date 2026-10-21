@@ -1,17 +1,16 @@
 import type { ReactElement, ReactNode } from 'react'
 import { formatUnits } from 'viem'
-import { Button } from '../../components/primitives'
 import { Pagination, usePagination } from '../../components/Pagination'
 import type { LiquidityText } from '../../i18n/liquidity'
 import type { LiquidityPool } from '../../liquidity/types'
 import { CurrencyLabel } from './CurrencyLabel'
+import { PoolManageButton } from './PoolManageButton'
 
-export function PoolList({ pools, l, disabled, onDetails, onAdd, extraRows = [] }: {
+export function PoolList({ pools, l, disabled, onDetails, extraRows = [] }: {
   pools: LiquidityPool[]
   l: LiquidityText
   disabled: boolean
   onDetails: (pool: LiquidityPool) => void
-  onAdd: (pool: LiquidityPool) => void
   extraRows?: { id: string; content: ReactNode }[]
 }): ReactElement {
   const rows: ({ id: string; pool: LiquidityPool } | { id: string; content: ReactNode })[] = [...extraRows, ...pools.map(pool => ({ id: `${pool.protocol}:${pool.id}`, pool }))]
@@ -30,8 +29,7 @@ export function PoolList({ pools, l, disabled, onDetails, onAdd, extraRows = [] 
       <span className="lp-pool-protocol" role="cell">{pool.protocol.toUpperCase()} · {formatUnits(BigInt(pool.fee), 4)}%</span>
       <span className="lp-pool-status" role="cell">{l(pool.initialized ? 'initialized' : 'notInitialized')}</span>
       <div className="lp-actions" role="cell">
-        <Button onClick={() => onDetails(pool)}>{l('details')}</Button>
-        <Button onClick={() => onAdd(pool)} disabled={disabled}>{l('add')}</Button>
+        <PoolManageButton label={l('manage')} onClick={() => onDetails(pool)} disabled={disabled} />
       </div>
     </div>})}
   </div><Pagination {...pagination} /></>

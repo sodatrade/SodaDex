@@ -1,0 +1,52 @@
+{
+  "stage": "ordinary-v3-v4-public-acceptance",
+  "approved": false,
+  "chainId": 196,
+  "production": false,
+  "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+  "contracts": "../active.json",
+  "testToken": "0x842b7bf61f2cb4be8aacac6adece3244c2a6f6ab",
+  "testTokenDecimals": 8,
+  "protocols": [
+    "v3",
+    "v4"
+  ],
+  "pair": "TEST-FAB / OKB",
+  "feePips": 500,
+  "v4Hooks": "0x0000000000000000000000000000000000000000",
+  "v4TickSpacing": 10,
+  "actions": [
+    "create-and-first-add",
+    "increase",
+    "okb-to-token",
+    "token-to-okb",
+    "remove-half",
+    "remove-all"
+  ],
+  "maximumTransactions": 28,
+  "localRehearsalReceipts": 24,
+  "localGasUnits": "7796359",
+  "localRehearsalGasPriceWei": "21000000",
+  "estimatedGasAtObservedPriceWei": "163723539000000",
+  "estimatedGrossNativeInputWei": "1999752716318",
+  "totalCapWei": "320000000000000",
+  "gasCapWei": "317900000000000",
+  "nonGasCapWei": "2100000000000",
+  "maxTestTokenApprovalsRaw": "20000000000",
+  "maxGasPriceWei": "30000000",
+  "priorPhase": {
+    "path": "../../xlayer-196-fragments-test/pool-v3/public-journal.json",
+    "closed": true,
+    "reuseBudget": false
+  },
+  "preconditions": [
+    "Rehearse against final signer and current nonce before broadcasting",
+    "Verify runtime hashes and factory/manager/router bindings against test deployment receipts",
+    "No outstanding pending transaction; lock journal and persist signed hash before broadcast",
+    "Use finite approvals; only specified TEST contracts and token",
+    "Stop before a transaction that could exceed any cap; do not reset prior ledgers",
+    "Public site browser actions must confirm successful output and final NFT liquidity zero"
+  ],
+  "productionTouched": false,
+  "publicChainWrites": 0
+}

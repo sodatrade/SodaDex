@@ -19,6 +19,8 @@ const assets = resolve(process.env.SODADEX_FIXTURE_ASSETS ?? resolve(root, 'web/
 const originalFetch = globalThis.fetch
 let rpcId = 0
 const transactions = []
+const fixtureGasPrice = process.env.SODADEX_FIXTURE_GAS_PRICE_WEI
+if (fixtureGasPrice !== undefined && (!/^\d+$/.test(fixtureGasPrice) || BigInt(fixtureGasPrice) < 1n || BigInt(fixtureGasPrice) > 30_000_000n)) throw Error('Fixture gas price must be positive and at most 0.03 Gwei')
 function owned() {
   const listeners = execFileSync('lsof', ['-nP', `-iTCP@127.0.0.1:${forkPort}`, '-sTCP:LISTEN', '-t'], { encoding: 'utf8' }).trim().split('\n')
   if (listeners.length !== 1 || listeners[0] !== forkPid) throw new Error('Anvil listener ownership changed')
@@ -100,7 +102,7 @@ const server = createServer(async (incoming, outgoing) => {
         body: JSON.stringify({ jsonrpc: '2.0', id: 'fixture-check', method: 'eth_estimateGas', params: [simulation] }) }), env)
       const result = await checked.json()
       if (!checked.ok || result.error) throw new Error('Compiled Worker rejected fork intent')
-      const hash = await rpc('eth_sendTransaction', [tx])
+      const hash = await rpc('eth_sendTransaction', [{ ...tx, ...(fixtureGasPrice === undefined ? {} : { gasPrice: `0x${BigInt(fixtureGasPrice).toString(16)}` }) }])
       transactions.push({ hash, from: tx.from, to: tx.to, value: tx.value, selector: tx.data.slice(0, 10) })
       response = Response.json({ result: hash })
     } else {
