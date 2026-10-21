@@ -91,7 +91,6 @@ const zh = {
   removeHint: '移出的是这个仓位的流动性；最终双币最低接收会在预览中显示。',
   collectHint: '领取当前待领取资产（可能包含已减仓本金和手续费），保留剩余仓位流动性。',
   notOwner: '当前钱包不是此仓位持有人。',
-  findNft: '查找仓位 NFT',
   tokenId: 'NFT Token ID',
   find: '查找',
   recent: '最近提交',
@@ -219,7 +218,6 @@ const en: Messages = {
   collectHint:
     'Collect claimable assets, which may include withdrawn principal and fees, while keeping remaining position liquidity.',
   notOwner: 'The connected wallet does not own this position.',
-  findNft: 'Find position NFT',
   tokenId: 'NFT Token ID',
   find: 'Find',
   recent: 'Last submitted',
@@ -342,7 +340,6 @@ const yue: Messages = {
   removeHint: '移出嘅係呢個倉位嘅流動性；實際雙幣最低收取會喺預覽顯示。',
   collectHint: '領取而家待領取資產（可能包括已減倉本金同手續費），保留剩餘倉位流動性。',
   notOwner: '而家連接嘅錢包唔係呢個倉位持有人。',
-  findNft: '搵倉位 NFT',
   tokenId: 'NFT Token ID',
   find: '搵倉位',
   recent: '最近提交',

@@ -74,7 +74,6 @@
 .lp-code { word-break: break-all; font-size: 11px; }
 .lp-nft-link { font-size: 11px; color: var(--soda-muted); max-width: 100%; overflow-wrap: anywhere; }
 .lp-nft-link:hover { color: var(--soda-highlight); }
-.lp-lookup { display: grid; grid-template-columns: 100px minmax(0, 1fr) auto; gap: 12px; align-items: end; }
 .lp-section-title { font-size: 13px; margin: 20px 0 12px; }
 .lp-approvals { padding-left: 18px; font-size: 12px; }
 .lp-approvals li { margin-bottom: 12px; overflow-wrap: anywhere; }
@@ -106,7 +105,6 @@
   .lp-form-grid { grid-template-columns: 1fr; }
   .lp-review > div { gap: 14px; }
   .lp-review dt { flex-shrink: 1; max-width: 42%; }
-  .lp-lookup { grid-template-columns: 1fr; }
   .lp-toolbar { gap: 8px; }
   .lp-tabs { gap: 24px; }
   .lp-tabs button { font-size: 13px; }

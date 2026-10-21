@@ -20,7 +20,6 @@ import { MintWizard } from './MintWizard'
 import { PoolDetailDialog } from './PoolDetailDialog'
 import { PoolList } from './PoolList'
 import { PositionCard } from './PositionCard'
-import { PositionLookup } from './PositionLookup'
 import { sameAddress } from './presentation'
 import { useLiquidityOperation } from './useLiquidityOperation'
 import { confirmedPoolsKey, mergeConfirmedPools } from './confirmedPools'
@@ -41,13 +40,9 @@ export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded, speci
   const [v2Busy, setV2Busy] = useState(false)
   const [detail, setDetail] = useState<LiquidityPool>()
   const [editor, setEditor] = useState<Editor>()
-  const [lookup, setLookup] = useState<{ position: LiquidityPosition; account: string }>()
   const { locale } = usePreferences(),
     l = liquidityText(locale)
   const operation = useLiquidityOperation(wallet)
-  useEffect(() => {
-    if (operation.progress?.stage === 'success' || operation.receiptMessage === 'receiptConfirmed') setLookup(undefined)
-  }, [operation.progress?.stage, operation.receiptMessage])
   const correctChain = wallet.session?.chainId === CHAIN_ID
   const pools = useQuery({
     queryKey: ['liquidity', 'pools'],
@@ -100,9 +95,7 @@ export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded, speci
     !!wallet.session && correctChain && sameAddress(position.owner, wallet.session.address)
   const visiblePositions = positions.flatMap(query => query.data ?? [])
   const accountKey = `${wallet.session?.chainId}:${wallet.session?.address.toLowerCase() ?? ''}`
-  const found = lookup?.account === accountKey ? lookup.position : undefined
-  const displayedPositions = found ? [found, ...visiblePositions.filter((position) => position.protocol !== found.protocol || position.tokenId !== found.tokenId)] : visiblePositions
-  const positionRows = [...displayedPositions.map(position => ({ kind: 'nft' as const, position })), ...(v2Positions.data?.positions ?? []).map(position => ({ kind: 'v2' as const, position }))]
+  const positionRows = [...visiblePositions.map(position => ({ kind: 'nft' as const, position })), ...(v2Positions.data?.positions ?? []).map(position => ({ kind: 'v2' as const, position }))]
   const positionPagination = usePagination(positionRows, accountKey)
   return (
     <section className={`content-page lp-page${embedded ? ' lp-embedded' : ''}`} aria-labelledby="lp-title">
@@ -192,7 +185,6 @@ export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded, speci
                 ) })}
               </div>
               <Pagination {...positionPagination} />
-              <PositionLookup key={accountKey} l={l} onPosition={(position) => { setLookup({ position, account: accountKey }); positionPagination.setPage(0) }} />
             </>
           ) : null}
         </div>
