@@ -41,7 +41,7 @@ V4 追加时曾在成功授权后发生页面回读中断；通过页面“检�
 
 公链证据见 `browser-v3-public.json`、`browser-v4-public.json`、`public-journal.json` 和 `public-verification.json`。最后一次独立只读核验确认全部回执仍在有效区块内，目标、金额、Gas、TEST-FAB 转出及完整交易内容均符合批准计划。**本轮验收币对为 TEST-FAB / OKB、普通池费率 0.05%，并非所有代币行为都已测试。** 单独领取待领资产及精确输出兑换的实现由本地集成测试覆盖，本轮公链六步验收使用精确输入兑换及减仓时一并领取。
 
-测试站：https://sodadex-preview.jsmsdx2025.workers.dev/#pool 。发布版本及对应源码提交记录在 `publication.json`。
+测试站：https://sodadex-preview.jsmsdx2025.workers.dev/#pool 。V3/V4 上一阶段发布记录在 `publication.json`；本轮包含 V2 的发布记录在 `../ordinary-v2/publication.json`，真实行情与每页最多 10 条的接口验证见 `../ordinary-v2/published-api.json`。
 
 ## 仍然缺什么
 

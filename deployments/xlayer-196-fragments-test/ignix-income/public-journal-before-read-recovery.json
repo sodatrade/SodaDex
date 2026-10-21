@@ -1,0 +1,41 @@
+{
+  "chainId": 196,
+  "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+  "treasury": "0x6EFa1Fad18900B929Fe6782fd3eaBeac2563416A",
+  "productionTouched": false,
+  "publicDeployed": false,
+  "completed": false,
+  "startNonce": 220,
+  "planSha256": "77c5527133d8f3d969349e76e9fd3e148954140f6fd0fc8a5ef385e12f0df6bc",
+  "approvalSha256": "8aac728f9e39603421bd4f34314c2b60d132cd01aeef525fba9da5052364ded0",
+  "gasSpentWei": "58130079000000",
+  "grossNativeSpentWei": "0",
+  "rows": [
+    {
+      "index": 0,
+      "label": "deploy-new-special-pool",
+      "nonce": 220,
+      "hash": "0xff543dbe22fe544e9714fd52b296990a960292bc21d48f78e1dcf20e459f5ed4",
+      "to": null,
+      "value": "0",
+      "gas": "3321719",
+      "gasPrice": "21000000",
+      "dataHash": "0xcb76d2399bfacf2e3dea553fc97c416f27354041257644eb4c12364f50db88c8",
+      "status": "success",
+      "feeWei": "58130079000000",
+      "gasUsed": "2768099",
+      "blockNumber": "73802117",
+      "blockHash": "0x9ec232cc519d7b3b2a0c7ebd0ebcd32d5bbccbf20f5392343c4fe3151ae84033",
+      "createdAddress": "0x5d98189f79234d5f988ea5b94641c3b04b0a7866"
+    }
+  ],
+  "pending": null,
+  "pool": "0x5d98189f79234d5f988ea5b94641c3b04b0a7866",
+  "income": "0x2004FE0f7F023c24CB826F157235D5d3418B51c8",
+  "rewards": "0xd64904EDdF64D92178dfaB9e6d0E926D6b520Ca0",
+  "locker": "0x000ad39076dc89150c27c6e2bf2fe5bca5899f18",
+  "oldPool": "0x39fa6467abac258ee61acc18ff6c7910a52af92e",
+  "oldLpBefore": "0",
+  "results": {},
+  "contracts": {}
+}

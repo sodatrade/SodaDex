@@ -1,9 +1,11 @@
 {
   "chainId": 196,
-  "pool": "0x39fa6467abac258ee61acc18ff6c7910a52af92e",
+  "pool": "0x5d98189f79234d5f988ea5b94641c3b04b0a7866",
   "vault": "0xb97d23f0c874fc1380016fa31d975d7ccd13b94d",
   "policy": "0xb678a4b26ba091d6eeb3aaa85d6abd6afc794937",
-  "rewards": "0xA48BA81F035278AcAdEa10dD9C4Aa06EBFBAa82D",
-  "locker": "0xb5b0b5a1073f6c8fa84efd04b261a263cce894a2",
-  "fromBlock": "73784265"
+  "rewards": "0xd64904EDdF64D92178dfaB9e6d0E926D6b520Ca0",
+  "locker": "0x000ad39076dc89150c27c6e2bf2fe5bca5899f18",
+  "fromBlock": "73802117",
+  "income": "0x2004FE0f7F023c24CB826F157235D5d3418B51c8",
+  "ignixTreasury": "0x6EFa1Fad18900B929Fe6782fd3eaBeac2563416A"
 }

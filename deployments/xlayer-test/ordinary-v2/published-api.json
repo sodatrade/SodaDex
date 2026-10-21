@@ -1,0 +1,21 @@
+{
+  "time": "2026-10-21T08:32:14.606Z",
+  "indexSynced": true,
+  "indexError": null,
+  "eventPageSizes": [
+    10,
+    10,
+    3
+  ],
+  "duplicateEvents": 0,
+  "chart": {
+    "httpStatus": 200,
+    "requestMilliseconds": 2892,
+    "candles": 2,
+    "trades": 4,
+    "complete": true,
+    "nextCursor": null,
+    "price": "1"
+  },
+  "productionTouched": false
+}

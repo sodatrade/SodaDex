@@ -1,0 +1,27 @@
+{
+  "lifecycle": "active",
+  "requirement": "mining-products-1952 / IGNIX special LP treasury routing",
+  "owner": "/root",
+  "worktree": "/Users/LevyHoo/Documents/SodaDex",
+  "branch": "codex/feat/mining-products-1952",
+  "headBefore": "dfb36a74b73741f7ef47b0ca4fa3e9232f651e6a",
+  "baseBranch": "codex/feat/sodadex-bootstrap",
+  "baseSha": "7506ce36138dfb6262ef11d1e3ca4828fec5ede3",
+  "contractSource": "3961ad36804559509e155c4934fcb28a61f0c357",
+  "changes": "approved public TEST deployment evidence, exact income binding, generator and handoff; ordinary V2 publication evidence",
+  "approval": "approval.json",
+  "publicReceipts": "public-journal.json",
+  "canonicalReconciliation": "verification.json",
+  "validation": {
+    "localRehearsal": 14,
+    "publicSuccessfulTransactions": 14,
+    "contractTargetedTests": 37,
+    "frontendTests": 540,
+    "workerTests": 228
+  },
+  "target": "sodadex-preview.jsmsdx2025.workers.dev",
+  "migrationsAdded": [],
+  "productionTouched": false,
+  "excluded": "all unrelated pre-existing untracked and dirty files",
+  "prerequisites": "verified immutable treasury, runtime and final public journal; old LP retained"
+}
