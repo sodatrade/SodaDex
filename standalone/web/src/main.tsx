@@ -4,10 +4,8 @@ import { lazy, StrictMode, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
 import { NETWORK } from './network'
 
-// The 1952 entry must not execute imports containing 196 assets, deployments or signed-order types.
-const App = lazy(NETWORK.dexEnabled
-  ? async () => ({ default: (await import('./App')).App })
-  : async () => ({ default: (await import('./MiningNetworkApp')).MiningNetworkApp }))
+// All public entrypoints share the three-tab product; old hash routes are normalized.
+const App = lazy(async () => ({ default: (await import('./fragments/FragmentApp')).FragmentApp }))
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { refetchOnWindowFocus: false } } })
 const container = document.getElementById('root')

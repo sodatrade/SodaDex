@@ -1,0 +1,31 @@
+{
+  "lifecycle": "active",
+  "requirement": "SodaDEX OKB/sFAB history index and DEX UI",
+  "repository": "sodatrade/SodaDex",
+  "ownerWorktree": "/Users/LevyHoo/Documents/SodaDex",
+  "branch": "codex/feat/mining-products-1952",
+  "expectedHead": "383a6288cc3f407864d24e78609eee68bd5063d1",
+  "base": "codex/feat/sodadex-bootstrap",
+  "baseSha": "7506ce36138dfb6262ef11d1e3ca4828fec5ede3",
+  "pr": "https://github.com/sodatrade/SodaDex/pull/2",
+  "classification": "change request",
+  "authorized": [
+    "test site publication",
+    "commit",
+    "push existing requirement branch"
+  ],
+  "productionTouched": false,
+  "contractChanges": false,
+  "onChainWrites": false,
+  "migration": "None; existing SodaChainIndex class, new pool-specific actor",
+  "includedPriorWork": "Three-tab frontend and dedicated readonly RPC wiring required to reproduce currently deployed test site",
+  "excluded": "Mining service auto-payout work, deployment execution and wallet acceptance scripts, unrelated changes",
+  "validation": {
+    "webPass": 495,
+    "webSkip": 22,
+    "workerPass": 216,
+    "workerdSqlite": "10/10/3, persistence after restart, no RPC on page read",
+    "browser": "desktop 1440, tablet 900, mobile 390; actual 4 public trades; fixture pagination 10/10/3; readonly quote; Pool add/remove UI; My scope"
+  },
+  "owner": "current SodaDEX task"
+}

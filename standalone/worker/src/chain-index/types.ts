@@ -19,6 +19,7 @@ export interface Storage {
   getAlarm(): Promise<number | null>; setAlarm(timestamp: number): Promise<void>
 }
 export interface IndexEnv {
+  SODADEX_FRAGMENTS_DEPLOYMENT?: string
   CHAIN_INDEX?: { idFromName(name: string): unknown; get(id: unknown): { fetch(request: Request): Promise<Response> } }
   MINING_API?: MiningApiBinding
   MINING_API_196?: MiningApiBinding

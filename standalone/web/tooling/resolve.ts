@@ -8,6 +8,8 @@ export const resolveOptions = {
     { find: '@universe/mycelium/styled', replacement: local('../../packages/mycelium/src/styled/index.ts') },
     { find: '@universe/tailwind/types', replacement: local('../../packages/tailwind/src/types.ts') },
     { find: '@universe/tailwind', replacement: local('../../packages/tailwind/src/index.ts') },
+    { find: /^viem$/, replacement: local('./node_modules/viem/_esm/index.js') },
+    { find: /^viem\/(.*)$/, replacement: local('./node_modules/viem/_esm/$1/index.js') },
     { find: /^react$/, replacement: local('./node_modules/react/index.js') },
     { find: 'react/jsx-runtime', replacement: local('./node_modules/react/jsx-runtime.js') },
     { find: 'react/jsx-dev-runtime', replacement: local('./node_modules/react/jsx-dev-runtime.js') },

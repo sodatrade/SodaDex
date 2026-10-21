@@ -1,3 +1,4 @@
+import { fragmentIndexConfig, fragmentMarket } from './fragments'
 import { miningMarket } from './mining-market'
 import { EVENTS, record, same } from '../contracts'
 import { toEventSelector } from 'viem'
@@ -12,15 +13,23 @@ import type { IndexEnv, IndexSource, Storage } from './types'
 /** A separate read-only actor: it has no access to keeper state, budgets or signing keys. */
 export class SodaChainIndex {
   #tail: Promise<void> = Promise.resolve()
+  #alarmRunning = false
   constructor(readonly state: { storage: Storage }, readonly env: IndexEnv) {}
   #serial<T>(action: () => Promise<T>): Promise<T> {
     const result = this.#tail.then(action); this.#tail = result.then(() => {}, () => {}); return result
   }
   fetch(request: Request): Promise<Response> {
-    return this.#serial(async () => {
+    const action = async (): Promise<Response> => {
       const url = new URL(request.url), id = url.pathname.split('/')[1] as NetworkProfileId
       try {
-        const config = baseConfig(id, this.env), store = new IndexStore(this.state.storage, config)
+        const fragments = url.pathname.startsWith('/fragments/')
+        const config = fragments ? fragmentIndexConfig(this.env) : baseConfig(id, this.env), store = new IndexStore(this.state.storage, config)
+        if (fragments) {
+          if (request.method !== 'GET' || url.pathname !== '/fragments/market') throw new BadRequest('Unknown fragment endpoint')
+          const response = fragmentMarket(url, store, config)
+          if (await this.state.storage.getAlarm() === null && !this.#alarmRunning) await this.state.storage.setAlarm(Date.now() + 1000)
+          return Response.json(response)
+        }
         const read = indexFetch(config)
         if (!await verifyIndex(store, read)) throw new IndexRestart('Chain changed; index rebuilding')
         url.pathname = url.pathname.slice(id.length + 1)
@@ -31,7 +40,7 @@ export class SodaChainIndex {
           const from = integer(url.searchParams.get('fromBlock'), config.fromBlock)
           const to = Math.min(integer(url.searchParams.get('toBlock'), anchor.number), anchor.number)
           if (from < config.fromBlock || from > to) throw new BadRequest('Invalid block range')
-          if (await this.state.storage.getAlarm() === null) await this.state.storage.setAlarm(Date.now() + 1000)
+          if (await this.state.storage.getAlarm() === null && !this.#alarmRunning) await this.state.storage.setAlarm(Date.now() + 1000)
           return Response.json({ asOf: anchor, rows: store.chartRows(pool, from, to) })
         }
         if (url.pathname === '/logs' && request.method === 'POST' && id === '196-test') {
@@ -44,21 +53,24 @@ export class SodaChainIndex {
           return Response.json({ logs: store.logs(addresses as string[], from, to).filter(log => matchesTopics(log.topics, filter.topics as unknown[])) })
         }
         const response = url.pathname === '/market' ? miningMarket(url, store, config) : await indexPage(url, store, config, read, request.headers.get('X-Index-Legacy') === 'true')
-        if (await this.state.storage.getAlarm() === null) await this.state.storage.setAlarm(Date.now() + 1000)
+        if (await this.state.storage.getAlarm() === null && !this.#alarmRunning) await this.state.storage.setAlarm(Date.now() + 1000)
         return Response.json(response)
       } catch (error) {
-        if (error instanceof IndexRestart) { await this.state.storage.setAlarm(Date.now() + 1000); return Response.json({ error: error.message, code: 'CHAIN_REORGANIZED' }, { status: 409 }) }
+        if (error instanceof IndexRestart) { if (!this.#alarmRunning) await this.state.storage.setAlarm(Date.now() + 1000); return Response.json({ error: error.message, code: 'CHAIN_REORGANIZED' }, { status: 409 }) }
         return Response.json({ error: error instanceof BadRequest ? error.message : 'Chain index temporarily unavailable' }, { status: error instanceof BadRequest ? 400 : 502 })
       }
-    })
+    }
+    // Fragment pages only read atomically committed SQLite rows; do not queue them behind a network scan.
+    return new URL(request.url).pathname.startsWith('/fragments/') ? action() : this.#serial(action)
   }
   alarm(): Promise<void> {
     return this.#serial(async () => {
+      this.#alarmRunning = true
       const row = this.state.storage.sql.exec('SELECT value FROM index_meta WHERE id=1').toArray()[0]
       if (!row) return
       const saved = JSON.parse(String(row.value))
       const id = networkProfile(saved.profileId ?? (saved.chainId === 196 ? '196-test' : '1952-mining-test')).id
-      const config = await currentConfig(id, this.env), store = new IndexStore(this.state.storage, config)
+      const config = String(saved.deploymentVersion).startsWith('fragments-') ? fragmentIndexConfig(this.env) : await currentConfig(id, this.env), store = new IndexStore(this.state.storage, config)
       try {
         store.query('CREATE TABLE IF NOT EXISTS index_sources(id INTEGER PRIMARY KEY,value TEXT NOT NULL)')
         const old = store.query('SELECT value FROM index_sources WHERE id=1')[0]?.value
@@ -71,9 +83,9 @@ export class SodaChainIndex {
         if (old && added) store.restartSources()
         store.query('INSERT OR REPLACE INTO index_sources VALUES(1,?)', JSON.stringify(config.sources))
         await scanOnce(store, config)
-      } catch { store.fail() }
+      } catch (error) { console.warn('Chain index scan failed', error instanceof Error ? error.message : 'Unknown scan error'); store.fail() }
       finally { await this.state.storage.setAlarm(Date.now() + (store.status().lastError ? 30_000 : store.status().syncing ? 1000 : 30_000)) }
-    })
+    }).finally(() => { this.#alarmRunning = false })
   }
 }
 export async function chainIndexApi(request: Request, env: IndexEnv, profileId: NetworkProfileId, legacy = false): Promise<Response> {

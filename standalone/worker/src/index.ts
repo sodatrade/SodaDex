@@ -1,3 +1,5 @@
+import { fragmentsIndexApi } from './chain-index/fragments'
+import { fragmentsRpc } from './fragments-rpc'
 import { indexedChartSource } from './chain-index/chart-source'
 import { indexedDexFetch } from './chain-index/log-cache'
 import { chainIndexApi } from './chain-index/durable'
@@ -13,6 +15,7 @@ import { miningDeploymentForProfile } from '../../mining-products'
 import { miningApi, miningCatalog, type MiningApiBinding } from './mining-api'
 
 interface Env extends IndexEnv {
+  SODADEX_FRAGMENTS_DEPLOYMENT?: string
   ASSETS: { fetch(request: Request): Promise<Response> }
   ORDERS_API?: { fetch: typeof fetch }
   MINING_API?: MiningApiBinding
@@ -50,6 +53,8 @@ export default {
     try { mining = !profile.dexEnabled ? miningDeploymentForProfile(profile.id, profile.id === '196-mining-test' && env.MINING_196_DEPLOYMENT ? JSON.parse(env.MINING_196_DEPLOYMENT) : undefined) : undefined }
     catch { return Response.json({ error: 'Mining deployment unavailable' }, { status: 503 }) }
     const miningBinding = profile.id === '196-mining-test' ? env.MINING_API_196 : env.MINING_API
+    if (path === '/api/fragments/market') return fragmentsIndexApi(request, env)
+    if (path === '/api/fragments/rpc') return fragmentsRpc(request, env.SODADEX_FRAGMENTS_DEPLOYMENT)
     if (path === '/api/network') return request.method === 'GET'
       ? Response.json(publicNetworkProfile(profile), { headers: { 'Cache-Control': 'no-store' } })
       : Response.json({ error: 'GET required' }, { status: 405 })
