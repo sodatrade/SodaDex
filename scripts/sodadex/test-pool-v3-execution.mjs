@@ -25,7 +25,7 @@ function sandbox(state) {
     v, artifacts: { SodaPool: pool }, same: (a, b) => a.toLowerCase() === b.toLowerCase(),
     runtime: async () => plan.runtimeHashes.pool,
     p: { getBlock: async () => ({ timestamp: decoded.args.at(-1) - 60n }) },
-    read: fail, save: fail,
+    read: async(_address,_artifact,method)=>({totalSupply:1000000000000000000n,reserveShares:1000000000000000000000n,reserveOkb:300000000000n})[method]??fail(), save: fail,
     send: async () => { counters.sends++; return { transactionHash: 'MOCK_NO_BROADCAST' } }, request,
   })
   vm.runInContext(executeSource, context)

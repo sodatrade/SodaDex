@@ -81,7 +81,14 @@ async function execute(mode,request){
    if(args[1]!==expected.args[1])throw Error('Swap amount changed')
    const q=await read(plan.pool,'SodaPool','quote',[args[0],args[1]]);if(args[2]<=0n||args[2]<q[0]*995n/1000n)throw Error('Output floor invalid')
   }else if(decoded.functionName==='addLiquidity'){
-   if(args[1]<=0n||args[2]<=0n||args[1]<expected.args[1]||args[2]<expected.args[2])throw Error('Add minimum below rehearsal')
+   const supply=await read(plan.pool,'SodaPool','totalSupply'),rs=await read(plan.pool,'SodaPool','reserveShares'),ro=await read(plan.pool,'SodaPool','reserveOkb')
+   let shares=args[0],okb=BigInt(tx.value??0)
+   if(supply>0n){
+    const needed=shares*ro/rs;if(needed<=okb)okb=needed;else shares=okb*rs/ro
+    const a=shares*supply/rs,b=okb*supply/ro,lp=a<b?a:b
+    shares=(lp*rs+supply-1n)/supply;okb=(lp*ro+supply-1n)/supply
+   }
+   if(args[1]<=0n||args[2]<=0n||args[1]<shares*995n/1000n||args[2]<okb*995n/1000n)throw Error('Add minimum below rounded contribution policy')
   }else if(decoded.functionName==='removeLiquidity'){
    const supply=await read(plan.pool,'SodaPool','totalSupply'),rs=await read(plan.pool,'SodaPool','reserveShares'),ro=await read(plan.pool,'SodaPool','reserveOkb');if(args[1]<rs*args[0]/supply*995n/1000n||args[2]<ro*args[0]/supply*995n/1000n)throw Error('Remove minimum below policy')
   }
