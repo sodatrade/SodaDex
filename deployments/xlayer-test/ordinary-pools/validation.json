@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-21T05:03:17.856Z",
+  "at": "2026-10-21T05:57:22.979346+00:00",
   "scope": "standalone web and Worker; no production contract changes",
   "web": {
     "files": 58,
@@ -39,9 +39,38 @@
     "productionTouched": false
   },
   "ordinaryPublicChainAcceptance": {
-    "status": "approved; final signer preflight passed; not yet broadcast",
-    "transactions": 0,
-    "realOkbSpentWei": "0"
+    "status": "completed and independently verified",
+    "chainId": 196,
+    "transactions": 25,
+    "gasSpentWei": "164004981000000",
+    "grossNativeInputWei": "1999752716318",
+    "grossTotalWei": "166004733716318",
+    "testFabInputRaw": "19815052472",
+    "tokenIds": {
+      "v3": "2",
+      "v4": "2"
+    },
+    "finalLiquidity": {
+      "v3": "0",
+      "v4": "0"
+    },
+    "finalClaimable": {
+      "v3": [
+        "0",
+        "0"
+      ],
+      "v4": [
+        "0",
+        "0"
+      ]
+    },
+    "artifacts": [
+      "browser-v3-public.json",
+      "browser-v4-public.json",
+      "public-journal.json",
+      "public-verification.json"
+    ],
+    "productionTouched": false
   },
   "browserBusiness": {
     "mode": "owned-live-read-fork",
@@ -69,8 +98,9 @@
     "fixtureGuardNegativeIntents": 12
   },
   "acceptancePolicy": {
-    "passed": 8,
+    "passed": 14,
     "failed": 0,
     "skipped": 0
-  }
+  },
+  "validationScopeNote": "The deployed product source remains 741eace; later changes are acceptance tooling and evidence only. Full web/Worker tests, typecheck/lint/build apply to that same product source."
 }

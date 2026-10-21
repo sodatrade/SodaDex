@@ -12,7 +12,8 @@ import { prepareLiquidity } from '../web/src/liquidity/preview'
 import { executeLiquidity } from '../web/src/liquidity/execution'
 import { executePoolTrade, getPoolTradeQuote } from '../web/src/trading/poolTrade'
 import type { LiquidityOperation, PublicRpc } from '../web/src/liquidity/types'
-const [port, pid, file] = process.argv.slice(2)
+const [port, pid, file, continuation] = process.argv.slice(2)
+if (continuation && continuation !== 'continue-v4') throw Error('Unknown rehearsal mode')
 if (!/^\d+$/.test(port ?? '') || !/^\d+$/.test(pid ?? '') || !file) throw Error('Explicit owned fork and output required')
 const owner = config.owner as Address
 const fab = { address: '0x842b7bf61f2cb4be8aacac6adece3244c2a6f6ab' as Address, native:false, decimals:8, symbol:'TEST-FAB', name:'TEST-FAB' }
@@ -62,9 +63,11 @@ const liquidity=async(operation:LiquidityOperation):Promise<Hex>=>{
  return executeLiquidity(preview,context)
 }
 const results=[]
-for (const protocol of ['v3','v4'] as const) {
+for (const protocol of (continuation ? ['v4'] : ['v3','v4']) as ('v3'|'v4')[]) {
  const draft={protocol,currencyA:NATIVE_CURRENCY,currencyB:fab,fee:500,tickSpacing:10}
  const empty=await discoverPool(draft,read)
+ let tokenId=2n
+ if (!continuation) {
  if(empty.initialized)throw Error('Rehearsal requires a fresh TEST pair')
  label=protocol+':create-and-first-add'
  const hash=await liquidity({kind:'mint',pool:empty,initialPrice:protocol==='v3'?'0.00000001':'100000000',...fullRange(10),amount0:empty.currency0.native?900000000000n:9000000000n,amount1:empty.currency1.native?900000000000n:9000000000n})
@@ -72,7 +75,10 @@ for (const protocol of ['v3','v4'] as const) {
  const manager=config.contracts[protocol==='v3'?'v3PositionManager':'v4PositionManager']
  const minted=receipt.logs.find(l=>l.address.toLowerCase()===manager.toLowerCase()&&l.topics.length===4&&BigInt(l.topics[1])===0n)
  if(!minted)throw Error('Missing NFT mint')
- const tokenId=BigInt(minted.topics[3]);let position=await getPosition(protocol,tokenId,read)
+ tokenId=BigInt(minted.topics[3])
+ }
+ let position=await getPosition(protocol,tokenId,read)
+ if(position.owner.toLowerCase()!==owner.toLowerCase())throw Error('Continuation position owner changed')
  if(position.liquidity<=0n)throw Error('Empty mint')
  label=protocol+':increase'
  await liquidity({kind:'increase',position,amount0:empty.currency0.native?90000000000n:900000000n,amount1:empty.currency1.native?90000000000n:900000000n})

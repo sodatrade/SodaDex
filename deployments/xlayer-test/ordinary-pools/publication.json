@@ -1,0 +1,21 @@
+{
+  "url": "https://sodadex-preview.jsmsdx2025.workers.dev/",
+  "sourceCommit": "741eace17566ba015e940b25b7e03cef105e134c",
+  "workerVersion": "fa458726-b796-45e9-96ba-72d623daa9d9",
+  "target": "sodadex-preview",
+  "config": "standalone/worker/wrangler.fragments-196-test.jsonc",
+  "productionTouched": false,
+  "migrationsAdded": [],
+  "publicUi": {
+    "viewports": [
+      1440,
+      820,
+      390
+    ],
+    "poolRefreshCount": 1,
+    "testBadgeCount": 1,
+    "manageButtonsAtInitialPublicCheck": 4,
+    "horizontalOverflow": false
+  },
+  "publicChainAcceptance": "completed; 25 successful transactions; authoritative costs and receipts in public-journal.json and public-verification.json"
+}

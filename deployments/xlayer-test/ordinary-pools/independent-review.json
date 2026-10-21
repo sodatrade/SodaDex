@@ -1,0 +1,41 @@
+{
+  "scope": "Final public TEST ordinary V3/V4 acceptance",
+  "reviewer": "/root/ordinary_protocol_inventory",
+  "mode": "read-only independent agent verification",
+  "observedBlock": "73793113",
+  "successfulReceipts": 25,
+  "nonceRange": [
+    168,
+    192
+  ],
+  "latestNonce": 193,
+  "pendingNonce": 193,
+  "originalPlanAndApprovalUnchanged": true,
+  "continuationAndRetainedPrefixVerified": true,
+  "canonicalReceiptAndIntentDifferences": 0,
+  "gasSpentWei": "164004981000000",
+  "grossNativeInputWei": "1999752716318",
+  "testFabInputRaw": "19815052472",
+  "grossNativeTotalWei": "166004733716318",
+  "extraL1AndOperatorFeeWei": "0",
+  "positions": {
+    "v3": {
+      "tokenId": "2",
+      "ownerVerified": true,
+      "liquidity": "0",
+      "claimable0": "0",
+      "claimable1": "0"
+    },
+    "v4": {
+      "tokenId": "2",
+      "ownerVerified": true,
+      "liquidity": "0",
+      "claimable0": "0",
+      "claimable1": "0",
+      "claimableEvidence": "Independent StateView getPositionInfo plus getFeeGrowthInside calculation"
+    }
+  },
+  "productionTouched": false,
+  "signedOrBroadcastByReviewer": false,
+  "recordedAt": "2026-10-21T05:58:14.878330+00:00"
+}

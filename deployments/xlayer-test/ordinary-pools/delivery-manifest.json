@@ -11,7 +11,7 @@
   },
   "target": {
     "branch": "codex/feat/mining-products-1952",
-    "expectedHead": "9d7f01e3862550c9d998d1c392b9811e84811466"
+    "expectedHead": "741eace17566ba015e940b25b7e03cef105e134c"
   },
   "mapping": [
     {
@@ -71,12 +71,33 @@
   "releaseTarget": "sodadex-preview Worker using wrangler.fragments-196-test.jsonc",
   "migrations": "none added",
   "productionTouched": false,
-  "publicChainWritesThisPhase": 0,
+  "publicChainWritesThisPhase": 25,
   "publicChainBudget": {
     "approved": true,
     "totalCapWei": "320000000000000",
     "approval": "public-approval.json",
     "finalRehearsal": "final-rehearsal.json",
-    "preflight": "public-preflight.json"
+    "preflight": "public-preflight.json",
+    "actualGasWei": "164004981000000",
+    "actualGrossNativeWei": "1999752716318",
+    "actualTestFabRaw": "19815052472"
+  },
+  "sourceCommit": "741eace17566ba015e940b25b7e03cef105e134c",
+  "evidenceDelivery": {
+    "scope": "public V3/V4 browser acceptance, bounded Permit2 continuation, actual withdrawal balances and support/gap matrix",
+    "productionTouched": false,
+    "productSourceChangedAfterPublication": false,
+    "validation": "14 acceptance policy tests; source web 530/530 and Worker 216/216; typecheck/lint/build passed; 25 real TEST public receipts and independent read-only verification",
+    "unrelatedState": "unrelated untracked files preserved and excluded",
+    "files": [
+      "standalone/acceptance/ordinary-continuation.mjs",
+      "standalone/acceptance/ordinary-continuation.test.mjs",
+      "standalone/acceptance/ordinary-public-v4-continuation.js",
+      "standalone/acceptance/ordinary-verify-public.mjs",
+      "standalone/acceptance/ordinary-public-wallet.mjs",
+      "standalone/acceptance/ordinary-public-pools.js",
+      "standalone/acceptance/ordinary-rehearse.ts",
+      "deployments/xlayer-test/ordinary-pools/"
+    ]
   }
 }

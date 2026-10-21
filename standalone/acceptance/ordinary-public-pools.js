@@ -153,8 +153,12 @@ async page => {
     await card.getByRole('button',{name:'减少流动性',exact:true}).click()
     dialog=page.getByRole('dialog',{name:`减少流动性 · #${tokenId}`,exact:true})
     await dialog.getByRole('textbox',{name:'移出比例（%）',exact:true}).fill(percent)
-    const txStart=(await current()).length
-    await confirm();await receiptsAfter(txStart,percent==='50'?'remove-half':'remove-all')
+    const txStart=(await current()).length, beforeNative=await balance('native'), beforeFab=await balance(fab)
+    await confirm();const receipts=await receiptsAfter(txStart,percent==='50'?'remove-half':'remove-all')
+    const gas=receipts.reduce((sum,r)=>sum+BigInt(r.gasUsed)*BigInt(r.effectiveGasPrice),0n)
+    const returnedNative=await balance('native')+gas-beforeNative, returnedFab=await balance(fab)-beforeFab
+    if(returnedNative<0n||returnedFab<0n||returnedNative+returnedFab<=0n)throw Error('Removal did not return assets to the owner')
+    rows.at(-1).returned={nativeExcludingGas:String(returnedNative),testFabRaw:String(returnedFab)}
     const remaining=await lp(tokenId)
     if(percent==='50' ? remaining<=0n||remaining>=grown : remaining!==0n)throw Error('Removal invariant failed')
   }
