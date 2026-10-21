@@ -1,0 +1,39 @@
+{
+  "recordedAt": "2026-10-21T04:13:15.395767+00:00",
+  "environment": "X Layer 196 independent TEST only",
+  "productionTouched": false,
+  "url": "https://sodadex-preview.jsmsdx2025.workers.dev/",
+  "sourceCommit": "5cc18dcc6687af7d45def084c694bfa028476ccc",
+  "contractCommit": "007291a073b0e4b293a96fca82fa15ae2e33dc94",
+  "workerVersion": "19ff6165-c803-43b4-b433-2bfc8963831b",
+  "chainAcceptance": "acceptance.json",
+  "totalStageSpentWei": "173807110000000",
+  "approvedTotalCapWei": "370000000000000",
+  "publishedBrowserChecks": {
+    "sharedTokenPickerFindsConfiguredSFAB": true,
+    "indexedRealTradesAndChartVisible": true,
+    "tinyAmountsUseZeroCountSubscripts": true,
+    "minerPoolChoiceOpensAddLiquidity": true,
+    "defaultSlippagePercent": "0.5",
+    "desktopViewport": [
+      1440,
+      1000
+    ],
+    "mobileViewport": [
+      390,
+      844
+    ],
+    "mobileHorizontalOverflow": false,
+    "additionalWalletWrites": 0,
+    "scope": "Published UI navigation/read checks; actual five wallet operations are recorded separately in acceptance.json."
+  },
+  "validationLimits": [
+    "22 web tests skipped",
+    "Three full-contract fork tests remain environment-gated; see delivery.json."
+  ],
+  "github": {
+    "sodatrade/SodaDex": 2,
+    "okasplaunchpad/contract": 3,
+    "merged": false
+  }
+}

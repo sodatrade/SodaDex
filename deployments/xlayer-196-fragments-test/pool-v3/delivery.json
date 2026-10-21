@@ -8,7 +8,7 @@
       "repo": "sodatrade/SodaDex",
       "worktree": "/Users/LevyHoo/Documents/SodaDex",
       "branch": "codex/feat/mining-products-1952",
-      "expectedHead": "2a507b83253f213a74b877e37a4f587eda4def74",
+      "expectedHead": "5cc18dcc6687af7d45def084c694bfa028476ccc",
       "base": "codex/feat/sodadex-bootstrap",
       "baseSha": "7506ce36138dfb6262ef11d1e3ca4828fec5ede3",
       "pr": 2
@@ -79,11 +79,12 @@
     "proxyUpgradeMigration": "not applicable: new immutable pool and locker",
     "awsOrIgnixBackend": "not applicable: no backend changes",
     "oldLiquidity": "preserved, old locker unchanged",
-    "postDeployment": "runtime hashes, actual browser five operations, LP lock and indexed market must be checked before completion"
+    "postDeployment": "Verified runtime hashes, all 10 successful receipts, five actual wallet operations, 60-day LP lock, indexed trades and published UI."
   },
   "contractCommit": "007291a",
   "runnerCommit": "95544eb55",
   "deploymentStatus": "All 10 receipts successful; independent TEST pool active; remaining LP locked for 60 days",
   "acceptance": "acceptance.json",
-  "releasePrerequisites": "No further chain writes. Publish frontend bundle and push approved requirement branches; no merge."
+  "releasePrerequisites": "Completed: test frontend published and approved requirement branches pushed. No merge or production change.",
+  "publication": "publication.json"
 }
