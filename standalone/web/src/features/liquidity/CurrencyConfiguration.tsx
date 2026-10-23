@@ -1,3 +1,4 @@
+import { VISIBLE_POOL_PROTOCOLS } from '../../domain/visibleProtocols'
 import { discoverV2 } from '../../liquidity/v2Pools'
 import type { AnyPool } from '../../liquidity/v2Types'
 import { useMutation } from '@tanstack/react-query'
@@ -75,7 +76,7 @@ export function CurrencyConfiguration({ l, disabled, onPool, specialPool }: Prop
     >
       <fieldset className="lp-protocols" disabled={busy}>
         <legend>{l('protocol')}</legend>
-        {(['v2', 'v3', 'v4'] as const).map((value) => (
+        {VISIBLE_POOL_PROTOCOLS.map((value) => (
           <label key={value}>
             <input
               type="radio"
@@ -162,7 +163,7 @@ export function CurrencyConfiguration({ l, disabled, onPool, specialPool }: Prop
           </label>
         )}
       </div>
-      <p className="lp-muted">0.3% V2 · {formatUnits(100n, 4)}% V3 · 0% V4</p>
+      <p className="lp-muted">0.3% V2 · {formatUnits(100n, 4)}% V3</p>
       {discovery.error && (
         <p className="error-text" role="alert">
           {l(liquidityError(discovery.error))}

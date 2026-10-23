@@ -1,3 +1,4 @@
+import { isVisibleProtocol, VISIBLE_POSITION_PROTOCOLS } from '../../domain/visibleProtocols'
 import { listV2Positions } from '../../liquidity/v2Pools'
 import { V2PositionRow } from './V2PositionRow'
 import type { AnyPool, V2Pool } from '../../liquidity/v2Types'
@@ -50,7 +51,7 @@ export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded, speci
     retry: false,
     refetchInterval: 30_000,
   })
-  const positions = useQueries({ queries: (['v3', 'v4'] as const).map(protocol => ({
+  const positions = useQueries({ queries: VISIBLE_POSITION_PROTOCOLS.map(protocol => ({
     queryKey: ['liquidity', 'positions', wallet.session?.address, protocol],
     queryFn: async () => (await listPositions(wallet.session?.address ?? '0x0000000000000000000000000000000000000000', undefined, protocol)).filter(p => p.protocol === protocol),
     enabled: !!wallet.session && correctChain,
@@ -58,7 +59,7 @@ export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded, speci
     refetchInterval: 30_000,
   })) })
   const confirmed = useQuery<AnyPool[]>({ queryKey: confirmedPoolsKey, queryFn: skipToken, initialData: [] })
-  const visiblePools = mergeConfirmedPools(pools.data ?? [], confirmed.data ?? [])
+  const visiblePools = mergeConfirmedPools(pools.data ?? [], confirmed.data ?? []).filter(pool => isVisibleProtocol(pool.protocol))
   const v2Positions = useQuery({ queryKey: ['liquidity', 'v2-positions', wallet.session?.address, visiblePools.map(p => `${p.protocol}:${p.id}`).join(',')],
     queryFn: () => listV2Positions(visiblePools.filter((p): p is V2Pool => p.protocol === 'v2'), wallet.session!.address),
     enabled: !!wallet.session && correctChain && (pools.isSuccess || visiblePools.some(p => p.protocol === 'v2')), retry: false, refetchInterval: 30_000 })
@@ -163,7 +164,7 @@ export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded, speci
             </div>
           ) : correctChain ? (
             <>
-              {positions.map((query, index) => query.isPending ? <p key={index} role="status">{index === 0 ? 'V3' : 'V4'} · {l('loading')}</p> : query.isError ? <div key={index} className="lp-empty"><p role="alert">{index === 0 ? 'V3' : 'V4'} · {l('loadFailed')}</p><Button onClick={() => void query.refetch()}>{l('retry')}</Button></div> : null)}
+              {positions.map((query, index) => query.isPending ? <p key={index} role="status">{VISIBLE_POSITION_PROTOCOLS[index].toUpperCase()} · {l('loading')}</p> : query.isError ? <div key={index} className="lp-empty"><p role="alert">{VISIBLE_POSITION_PROTOCOLS[index].toUpperCase()} · {l('loadFailed')}</p><Button onClick={() => void query.refetch()}>{l('retry')}</Button></div> : null)}
               {positions.every(query => query.isSuccess) && v2Positions.isSuccess && positionRows.length === 0 ? (
                 <p className="lp-empty">{l('emptyPositions')}</p>
               ) : null}

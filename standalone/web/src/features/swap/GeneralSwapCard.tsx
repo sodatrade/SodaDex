@@ -1,3 +1,4 @@
+import { isVisibleProtocol } from '../../domain/visibleProtocols'
 import './swap.css'
 import { skipToken, useQuery } from '@tanstack/react-query'
 import { useEffect, useMemo, useState, type ReactElement } from 'react'
@@ -67,7 +68,7 @@ export function GeneralSwapCard({ wallet, balances, balancesLoading, balancesErr
   const direction = wrapDirection(from, to)
   const pools = useQuery({ queryKey: ['liquidity', 'pools'], queryFn: () => listPools(), retry: false, refetchInterval: 30_000 })
   const confirmed = useQuery<AnyPool[]>({ queryKey: confirmedPoolsKey, queryFn: skipToken, initialData: [] })
-  const allPools = useMemo(() => mergeConfirmedPools(pools.data ?? [], confirmed.data ?? []), [pools.data, confirmed.data])
+  const allPools = useMemo(() => mergeConfirmedPools(pools.data ?? [], confirmed.data ?? []).filter(pool => isVisibleProtocol(pool.protocol)), [pools.data, confirmed.data])
   const matches = matchingPools(allPools, from, to, protocol)
   const quote = useQuery<SwapPoolQuote>({ queryKey: ['swap', 'quote', currencyKey(from), currencyKey(to), protocol, bps, editedSide,
     matches.map((p) => p.pool.id).join(','), parsed.kind === 'valid' ? parsed.units.toString() : ''],

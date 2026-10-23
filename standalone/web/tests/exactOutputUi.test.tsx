@@ -1,3 +1,8 @@
+// Retained protocol integration coverage with all protocols enabled.
+vi.mock('../src/domain/visibleProtocols', () => ({
+  VISIBLE_POOL_PROTOCOLS: ['v2', 'v3', 'v4'], VISIBLE_POSITION_PROTOCOLS: ['v3', 'v4'],
+  isVisibleProtocol: () => true,
+}))
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
