@@ -46,8 +46,10 @@ contract IgnixLpRewards is ReentrancyGuard {
 
     /// @dev Called before LP mint/burn/transfer; existing income remains with the old holder.
     function move(address from, address to, uint256 amount) public virtual onlyPool nonReentrant {
-        _fab.move(from, to, amount);
-        _okb.move(from, to, amount);
+        uint256 fromBalance = from == address(0) ? 0 : balanceOf[from];
+        uint256 toBalance = to == address(0) ? 0 : balanceOf[to];
+        _fab.move(from, fromBalance, to, toBalance);
+        _okb.move(from, fromBalance, to, toBalance);
         if (from == address(0)) totalSupply += amount;
         else balanceOf[from] -= amount;
         if (to == address(0)) totalSupply -= amount;
