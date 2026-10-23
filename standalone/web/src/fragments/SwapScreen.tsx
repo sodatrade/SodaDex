@@ -1,4 +1,4 @@
-import { deploymentKey } from './config'
+import { deploymentKey, shareSymbol, shareToken } from './config'
 import { useState, type ReactElement } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { encodeFunctionData, formatEther } from 'viem'
@@ -21,7 +21,7 @@ export function SwapScreen({ client, deployment: d, snapshot: s, account, m, pre
   const fromBalance = shareIn ? s.shareBalance : s.okbBalance, toBalance = shareIn ? s.okbBalance : s.shareBalance
   const insufficient = !!account && input > fromBalance
   const error = insufficient ? t('amountInsufficient') : parsed.kind === 'invalid' ? t(parsed.error.code === 'amountPrecision' ? 'amountInvalid' : parsed.error.code) : undefined
-  const share = { address: d.vault, symbol: 'sFAB', name: 'Soda miner shares', decimals: 18, native: false }
+  const share = { address: shareToken(d), symbol: shareSymbol(d), name: 'Soda miner shares', decimals: 18, native: false }
   const from = selection?.from ?? (shareIn ? share : NATIVE_CURRENCY), to = selection?.to ?? (shareIn ? NATIVE_CURRENCY : share)
   const balance = (value: bigint): string => `${trade.balance} ${account ? formatBalance(value) : '—'}`
   const quote = useQuery({ queryKey: ['fragment-quote', deploymentKey(d), shareIn, amount], enabled: input > 0n && s.okb > 0n && !insufficient,
@@ -42,7 +42,7 @@ export function SwapScreen({ client, deployment: d, snapshot: s, account, m, pre
     <Button appearance="primary" disabled={busy || (!account && !onConnect) || (!!account && (!valid || quote.isFetching || s.tradingPaused))} onClick={() => { if (!account) { onConnect?.(); return }; prepare(m.swap, async () => {
       if (!account || !quote.data) throw new Error(m.walletRequired)
       if (s.tradingPaused) throw new Error(m.tradingPaused)
-      if (shareIn) { const approval = await approveIfNeeded(client, d.vault, account, d.pool, input); if (approval) return { ...approval, label: m.approval } }
+      if (shareIn) { const approval = await approveIfNeeded(client, shareToken(d), account, d.pool, input); if (approval) return { ...approval, label: m.approval } }
       return { to: d.pool, data: encodeFunctionData({ abi: poolAbi, functionName: 'swap', args: [shareIn, input, minimum(quote.data[0], bps), BigInt(Math.floor(Date.now() / 1000) + 1200)] }), value: shareIn ? 0n : input }
     }) }}>{account ? insufficient ? t('amountInsufficient') : m.preview : m.connect}</Button>
   </section>

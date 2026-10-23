@@ -9,7 +9,14 @@ export interface FragmentDeployment {
   rpcUrl: string
   income?: Address
   ignixTreasury?: Address
+  /** Standalone FABS share token (MirrorFabsPool). Absent: the vault itself is the share ERC20. */
+  fabs?: Address
+  rewards?: Address
+  locker?: Address
 }
+/** The ERC20 users hold, trade and approve: the standalone FABS when present, else the vault. */
+export const shareToken = (d: FragmentDeployment): Address => d.fabs ?? d.vault
+export const shareSymbol = (d: FragmentDeployment | undefined): string => d?.fabs ? 'FABS' : 'sFAB'
 /** Build-time public manifest. Never selects production contracts from URL/localStorage. */
 export function parseDeployment(raw: string | undefined): FragmentDeployment | undefined {
   if (!raw) return undefined
@@ -33,11 +40,12 @@ export function parseDeployment(raw: string | undefined): FragmentDeployment | u
   }
   if ((v.income === undefined) !== (v.ignixTreasury === undefined)) throw new Error('Incomplete IGNIX income binding')
   const income = v.income === undefined ? {} : { income: address('income'), ignixTreasury: address('ignixTreasury') }
-  return { chainId: NETWORK.chainId, vault: address('vault'), pool: address('pool'), policy: address('policy'), fromBlock: BigInt(v.fromBlock), rpcUrl, ...income }
+  const optional = Object.fromEntries((['fabs', 'rewards', 'locker'] as const).filter(k => v[k] !== undefined).map(k => [k, address(k)]))
+  return { chainId: NETWORK.chainId, vault: address('vault'), pool: address('pool'), policy: address('policy'), fromBlock: BigInt(v.fromBlock), rpcUrl, ...income, ...optional }
 }
 export function deploymentState(): { deployment?: FragmentDeployment; error?: string } {
   try { return { deployment: parseDeployment(import.meta.env.VITE_SODADEX_FRAGMENTS_DEPLOYMENT) } }
   catch (e) { return { error: e instanceof Error ? e.message : 'Invalid deployment' } }
 }
 
-export function deploymentKey(d: FragmentDeployment | undefined): string { return d ? `${d.chainId}:${d.pool}:${d.vault}:${d.policy}:${d.rpcUrl}:${d.fromBlock.toString()}:${d.income ?? ''}:${d.ignixTreasury ?? ''}` : 'unconfigured' }
+export function deploymentKey(d: FragmentDeployment | undefined): string { return d ? `${d.chainId}:${d.pool}:${d.vault}:${d.policy}:${d.rpcUrl}:${d.fromBlock.toString()}:${d.income ?? ''}:${d.ignixTreasury ?? ''}:${d.fabs ?? ''}` : 'unconfigured' }

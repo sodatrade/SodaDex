@@ -5,7 +5,7 @@ import type { WalletController } from '../lib/useWallet'
 import { NETWORK } from '../network'
 import { TradeWorkspace } from '../features/trade/TradeWorkspace'
 import '../workspace.css'
-import type { FragmentDeployment } from './config'
+import { shareSymbol, shareToken, type FragmentDeployment } from './config'
 import type { ScreenProps } from './types'
 import { SwapScreen } from './SwapScreen'
 import { MarketPanel } from './MarketPanel'
@@ -22,7 +22,7 @@ export function OrdinarySwap({ wallet, active, onConnect, onCreatePool, onBusyCh
   const address = wallet.session?.chainId === NETWORK.chainId ? wallet.session.address : undefined
   const balances = useQuery({ queryKey: ['balances', NETWORK.chainId, address], enabled: !!address,
     queryFn: () => getBalances(address ?? ''), retry: false, refetchInterval: 20000 })
-  const share: Currency | undefined = fragment ? { address: fragment.deployment.vault, symbol: 'sFAB', name: 'Soda miner shares', decimals: 18, native: false } : undefined
+  const share: Currency | undefined = fragment ? { address: shareToken(fragment.deployment), symbol: shareSymbol(fragment.deployment), name: 'Soda miner shares', decimals: 18, native: false } : undefined
   const matches = (from: Currency, to: Currency): boolean => !!share && ((from.native && !to.native && to.address.toLowerCase() === share.address.toLowerCase()) || (to.native && !from.native && from.address.toLowerCase() === share.address.toLowerCase()))
   return <TradeWorkspace wallet={wallet} active={active} balances={address ? balances.data : undefined}
     balancesLoading={balances.isFetching} balancesError={balances.isError} onConnect={onConnect}

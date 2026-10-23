@@ -1,7 +1,7 @@
 import { decodeFunctionData, encodeFunctionData, isAddress, type Abi, type Hex } from 'viem'
-import { poolAbi, tokenAbi, lpRewardsAbi, ignixIncomeAbi, mirrorVaultAbi } from '../../web/src/fragments/abi'
+import { poolAbi, tokenAbi, lpRewardsAbi, ignixIncomeAbi, mirrorVaultAbi, fabsTokenAbi } from '../../web/src/fragments/abi'
 import { RPC_URL } from './upstream'
-type Manifest = { chainId: number; pool: string; vault: string; rewards: string; income?: string; ignixTreasury?: string }
+type Manifest = { chainId: number; pool: string; vault: string; rewards: string; income?: string; ignixTreasury?: string; fabs?: string }
 const record = (x: unknown): x is Record<string, unknown> => typeof x === 'object' && x !== null && !Array.isArray(x)
 const block = (x: unknown): x is string => typeof x === 'string' && /^(latest|pending|safe|finalized|0x[0-9a-fA-F]+)$/.test(x)
 const hex = (x: unknown): x is Hex => typeof x === 'string' && /^0x(?:[0-9a-fA-F]{2})*$/.test(x)
@@ -12,6 +12,7 @@ export function fragmentManifest(raw?: string): Manifest | undefined {
     const x: unknown = JSON.parse(raw)
     if (!record(x) || x.chainId !== 196 || ![x.pool,x.vault,x.rewards].every(a=>typeof a === 'string' && isAddress(a) && BigInt(a)!==0n)) return undefined
     if ((x.income !== undefined || x.ignixTreasury !== undefined) && ![x.income,x.ignixTreasury].every(a=>typeof a === 'string' && isAddress(a) && BigInt(a)!==0n)) return undefined
+    if (x.fabs !== undefined && !(typeof x.fabs === 'string' && isAddress(x.fabs) && BigInt(x.fabs)!==0n)) return undefined
     return x as Manifest
   } catch { return undefined }
 }
@@ -32,7 +33,8 @@ export function validFragmentRpc(method: unknown, params: unknown, m: Manifest):
   if(!record(t)||!hex(t.data)||Object.keys(t).some(k=>!['from','to','data','value','gas','gasPrice','maxFeePerGas','maxPriorityFeePerGas'].includes(k))) return false
   if(t.from!==undefined&&(typeof t.from!=='string'||!isAddress(t.from))) return false
   if(['value','gas','gasPrice','maxFeePerGas','maxPriorityFeePerGas'].some(k=>t[k]!==undefined&&(typeof t[k]!=='string'||!/^0x[0-9a-fA-F]{1,64}$/.test(t[k] as string)))) return false
-  const abi: Abi = same(t.to,m.pool)?[...poolAbi,...tokenAbi]:same(t.to,m.vault)?[...tokenAbi,...mirrorVaultAbi]:same(t.to,m.rewards)?lpRewardsAbi:m.income&&same(t.to,m.income)?ignixIncomeAbi:[]
+  // With a standalone FABS the vault is not an ERC20: share reads and approvals go to FABS.
+  const abi: Abi = same(t.to,m.pool)?[...poolAbi,...tokenAbi]:m.fabs&&same(t.to,m.fabs)?[...tokenAbi,...fabsTokenAbi]:same(t.to,m.vault)?(m.fabs?mirrorVaultAbi:[...tokenAbi,...mirrorVaultAbi]):same(t.to,m.rewards)?lpRewardsAbi:m.income&&same(t.to,m.income)?ignixIncomeAbi:[]
   try {
     const decoded=decodeFunctionData({abi,data:t.data})
     if(encodeFunctionData({abi,functionName:decoded.functionName,args:decoded.args}).toLowerCase()!==t.data.toLowerCase())return false
@@ -40,7 +42,7 @@ export function validFragmentRpc(method: unknown, params: unknown, m: Manifest):
     if(!item||item.type!=='function')return false
     if(item.stateMutability==='view'||item.stateMutability==='pure')return BigInt(String(t.value??'0x0'))===0n
     if(!t.from)return false
-    if(decoded.functionName==='approve')return same(t.to,m.vault)&&same(decoded.args?.[0],m.pool)&&BigInt(String(t.value??'0x0'))===0n
+    if(decoded.functionName==='approve')return same(t.to,m.fabs??m.vault)&&same(decoded.args?.[0],m.pool)&&BigInt(String(t.value??'0x0'))===0n
     return same(t.to,m.pool)&&['swap','addLiquidity','removeLiquidity'].includes(decoded.functionName)
   } catch { return false }
 }
