@@ -10,8 +10,17 @@ const d:FragmentDeployment={chainId:196,pool:`0x${'11'.repeat(20)}`,vault:`0x${'
 const rows:Trade[]=Array.from({length:23},(_,i)=>({id:String(i),transactionHash:`0x${i.toString(16).padStart(64,'0')}`,timestamp:1700000000+i*60,blockNumber:100+i,shareIn:false,input:'100000000',output:'300000000000000000',platformFee:'150000',lpFee:'350000'}))
 const cursor='11111111-1111-1111-1111-111111111111',cursor2='22222222-2222-2222-2222-222222222222'
 function data(offset=0){return {chainId:196,pool:d.pool,trades:rows.slice(offset,offset+10),chart:rows,nextCursor:offset===0?cursor:offset===10?cursor2:null,index:{syncing:false,lastError:null,indexedThrough:5000,generation:0},asOf:{timestamp:1700000100}}}
-function mount(){render(<QueryClientProvider client={new QueryClient({defaultOptions:{queries:{retry:false}}})}><MarketPanel deployment={d} m={messages('en')}/></QueryClientProvider>)}
+function mount(deployment: FragmentDeployment = d){render(<QueryClientProvider client={new QueryClient({defaultOptions:{queries:{retry:false}}})}><MarketPanel deployment={deployment} m={messages('en')}/></QueryClientProvider>)}
 describe('persistent fragment market UI',()=>{
+  it('labels production history and prices with the deployed FABS symbol', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(Response.json(data()))
+    mount({ ...d, fabs: d.vault })
+    await screen.findByRole('img', { name: 'Pool price' })
+    expect(screen.getByText('OKB / FABS')).toBeVisible()
+    expect(screen.getByText(/price per FABS/)).toBeVisible()
+    expect(within(screen.getByRole('table')).getAllByText('FABS')).toHaveLength(10)
+    expect(document.body.textContent).not.toContain('sFAB')
+  })
   it('loads chart from indexed API and navigates 10/10/3 without log scanning',async()=>{
     const fetch=vi.spyOn(globalThis,'fetch').mockImplementation(async url=>Response.json(data(String(url).includes(cursor2)?20:String(url).includes(cursor)?10:0)))
     mount();await screen.findByRole('img',{name:'Pool price'})

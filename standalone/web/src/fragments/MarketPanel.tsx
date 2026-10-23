@@ -1,4 +1,4 @@
-import { deploymentKey, type FragmentDeployment } from './config'
+import { deploymentKey, shareSymbol, type FragmentDeployment } from './config'
 import { useState, type ReactElement } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { formatEther } from 'viem'
@@ -16,9 +16,9 @@ export function MarketPanel({ deployment: d, m }: { deployment: FragmentDeployme
   const path = points.map((v, i) => `${i ? 'L' : 'M'}${20 + (end > start ? (chart[i].timestamp - start) / (end - start) : i / Math.max(1, points.length - 1)) * 600},${180 - (v - lo) * 140 / range}`).join(' ')
   const reset = (): void => { setPage(0); setCursors([undefined]); void market.refetch() }
   return <section className="fragment-card fragment-market">
-    <div className="fragment-market-title"><h2>{m.price}</h2><span className="fragment-muted">OKB / sFAB</span></div>
+    <div className="fragment-market-title"><h2>{m.price}</h2><span className="fragment-muted">OKB / {shareSymbol(d)}</span></div>
     <div className="fragment-price-value">{points.length ? marketNumber(points.at(-1)!) : '—'} <small>OKB</small></div>
-    <p className="fragment-muted fragment-chart-caption">{m.chartHint}</p>
+    <p className="fragment-muted fragment-chart-caption">{m.chartHint.replace('{symbol}', shareSymbol(d))}</p>
     {market.isError && <div role="alert" className="fragment-market-status">{market.error instanceof ExpiredMarketPage ? m.pageExpired : m.marketError} <Button onClick={reset}>{m.retry}</Button></div>}
     {market.isPending && <div className="fragment-chart-empty" role="status">{m.loading}</div>}
     {!market.isPending && (points.length > 0 ? <>
@@ -32,8 +32,8 @@ export function MarketPanel({ deployment: d, m }: { deployment: FragmentDeployme
     {data && <p className="fragment-index-state" role="status">{data.index.lastError ? m.indexDelayed : data.index.syncing ? m.indexSyncing : m.indexReady}{data.asOf && <> · {new Date(data.asOf.timestamp * 1000).toLocaleTimeString()}</>}</p>}
     <div className="fragment-history-heading"><h2>{m.history}</h2><span className="fragment-muted">{m.pageSize}</span></div>
     <div className="fragment-table"><table><thead><tr><th>{m.pay}</th><th>{m.received}</th><th>Tx / {m.time}</th></tr></thead><tbody>{data?.trades.map(t => <tr key={t.id}>
-      <td title={formatEther(BigInt(t.input))}>{tradeAmount(t.input)} <small>{t.shareIn ? 'sFAB' : 'OKB'}</small></td>
-      <td title={formatEther(BigInt(t.output))}>{tradeAmount(t.output)} <small>{t.shareIn ? 'OKB' : 'sFAB'}</small></td>
+      <td title={formatEther(BigInt(t.input))}>{tradeAmount(t.input)} <small>{t.shareIn ? shareSymbol(d) : 'OKB'}</small></td>
+      <td title={formatEther(BigInt(t.output))}>{tradeAmount(t.output)} <small>{t.shareIn ? 'OKB' : shareSymbol(d)}</small></td>
       <td><a target="_blank" rel="noreferrer" aria-label={`${m.explorer} ${t.transactionHash}`} href={`${NETWORK.explorerUrl}/tx/${t.transactionHash}`}>{t.transactionHash.slice(0, 6)}… ↗</a><time className="fragment-trade-time" title={new Date(t.timestamp * 1000).toLocaleString()}>{new Date(t.timestamp * 1000).toLocaleTimeString()}</time></td>
     </tr>)}</tbody></table></div>
     {data?.trades.length === 0 && !data.index.syncing && <p>{m.empty}</p>}

@@ -28,7 +28,7 @@ export function SwapScreen({ client, deployment: d, snapshot: s, account, m, pre
     queryFn: () => client.readContract({ address: d.pool, abi: poolAbi, functionName: 'quote', args: [shareIn, input] }), refetchInterval: 12000, retry: false })
   const bps = Number(slippage) * 100
   const valid = input > 0n && !error && Number.isInteger(bps) && bps >= 0 && bps < 10000 && !!quote.data?.[0]
-  return <section className="fragment-card fragment-swap swap-card general-swap"><h1>{m.swap}</h1><p className="fragment-muted">OKB / sFAB</p>
+  return <section className="fragment-card fragment-swap swap-card general-swap"><h1>{m.swap}</h1><p className="fragment-muted">OKB / {share.symbol}</p>
     <AmountPanel currency={from} pay amount={amount} onAmount={setAmount} balance={balance(fromBalance)} balanceExact={account ? `${formatEther(fromBalance)} ${from.symbol}` : undefined}
       disabled={!!busy} error={!!error} hint={from.native ? trade.nativeMax : undefined} onSelect={selection ? () => selection.onSelect('from') : undefined}
       onMax={account && shareIn ? () => setAmount(formatEther(fromBalance)) : undefined} />
@@ -36,8 +36,8 @@ export function SwapScreen({ client, deployment: d, snapshot: s, account, m, pre
     <AmountPanel currency={to} amount={quote.isFetching ? '…' : quote.data ? formatEther(quote.data[0]) : ''} balance={balance(toBalance)}
       balanceExact={account ? `${formatEther(toBalance)} ${to.symbol}` : undefined} disabled={!!busy} readOnly estimated onSelect={selection ? () => selection.onSelect('to') : undefined} />
     {error && <p id="swap-amount-error" role="alert" className="amount-error">{error}</p>}
-    <p className="fragment-muted">{m.fee}</p><details className="fragment-trade-settings"><summary>{m.tradeSettings}<span>{slippage}%</span></summary><label className="fragment-field">{m.slippage}<input inputMode="decimal" value={slippage} onChange={e => setSlippage(e.target.value)} /></label></details>
-    {quote.data && valid && <p>{m.minOut}: {formatEther(minimum(quote.data[0], bps))} {shareIn ? 'OKB' : 'sFAB'}</p>}
+    <div className="fragment-fee-row"><span>{m.fee}</span><span>0.5%</span></div><details className="fragment-trade-settings"><summary>{m.tradeSettings}<span>{slippage}%</span></summary><label className="fragment-field">{m.slippage}<input inputMode="decimal" value={slippage} onChange={e => setSlippage(e.target.value)} /></label></details>
+    {quote.data && valid && <p>{m.minOut}: {formatEther(minimum(quote.data[0], bps))} {shareIn ? 'OKB' : share.symbol}</p>}
     {quote.isError && <p role="alert">{m.quoteError}</p>}{s.okb === 0n && <p>{m.noLiquidity}</p>}{s.tradingPaused && <p role="status">{m.tradingPaused}</p>}
     <Button appearance="primary" disabled={busy || (!account && !onConnect) || (!!account && (!valid || quote.isFetching || s.tradingPaused))} onClick={() => { if (!account) { onConnect?.(); return }; prepare(m.swap, async () => {
       if (!account || !quote.data) throw new Error(m.walletRequired)

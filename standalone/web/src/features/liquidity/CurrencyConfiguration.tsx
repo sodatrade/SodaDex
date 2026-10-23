@@ -92,7 +92,7 @@ export function CurrencyConfiguration({ l, disabled, onPool, specialPool }: Prop
         ))}
         {specialPool && <label><input type="radio" name={`${id}-protocol`} checked={protocol === 'miner'} onChange={() => setProtocol('miner')} />{specialPool.label}</label>}
       </fieldset>
-      {protocol === 'miner' ? <><div className="lp-pair"><strong>OKB / sFAB</strong><span className="lp-pill">0.5%</span></div><Button appearance="primary" type="submit" disabled={busy}>{l('add')}</Button></> : <>
+      {protocol === 'miner' ? <><div className="lp-pair"><strong>OKB / FABS</strong><span className="lp-pill">0.5%</span></div><Button appearance="primary" type="submit" disabled={busy}>{l('add')}</Button></> : <>
       <div className="lp-form-grid">
         {(
           [

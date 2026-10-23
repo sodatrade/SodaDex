@@ -26,6 +26,15 @@ function mount(account: ScreenProps['account'] = address) {
 beforeEach(() => localStorage.setItem(PREFERENCES_KEY, JSON.stringify({ locale: 'en', theme: 'light', currency: 'USD' })))
 
 describe('miner share swap balances', () => {
+  it('uses FABS throughout production quotes and shows only the total trading fee', async () => {
+    const view = mount()
+    view.rerender({ deployment: { ...view.props.deployment, fabs: address } })
+    fireEvent.change(screen.getByLabelText('You pay'), { target: { value: '0.1' } })
+    await screen.findByText(/Minimum receive: .* FABS/)
+    expect(screen.getByText('OKB / FABS')).toBeVisible()
+    expect(screen.getByText('Trading fee').parentElement).toHaveTextContent('0.5%')
+    expect(document.body.textContent).not.toMatch(/sFAB|Treasury|30%|70%/)
+  })
   it('shows both wallet balances before entry and swaps them with the currencies', () => {
     mount()
     const pay = screen.getByLabelText('You pay').closest('.amount-panel')!
