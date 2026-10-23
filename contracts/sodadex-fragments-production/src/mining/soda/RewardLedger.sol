@@ -16,6 +16,7 @@ library RewardLedger {
         uint256 parked;
         mapping(address => uint256) last;
         mapping(address => uint256) owed;
+        mapping(address => uint256) fraction; // sub-unit remainder × 2^128, kept across settles
     }
 
     function accrue(Book storage b, uint256 amount, uint256 supply) internal {
@@ -25,37 +26,46 @@ library RewardLedger {
     }
 
     /// @dev Settle both sides at their balances before the change; call before updating balances.
-    function move(
-        Book storage b,
-        address from,
-        uint256 fromBalance,
-        address to,
-        uint256 toBalance
-    ) internal {
+    function move(Book storage b, address from, uint256 fromBalance, address to, uint256 toBalance)
+        internal
+    {
         if (from != address(0)) settle(b, from, fromBalance);
         if (to != address(0)) settle(b, to, toBalance);
     }
 
     function settle(Book storage b, address account, uint256 balance) internal {
-        b.owed[account] = claimable(b, account, balance);
+        (b.owed[account], b.fraction[account]) = _pending(b, account, balance);
         b.last[account] = b.points;
     }
 
     function claimable(Book storage b, address account, uint256 balance)
         internal
         view
-        returns (uint256)
+        returns (uint256 amount)
     {
-        return b.owed[account] + Math.mulDiv(balance, b.points - b.last[account], SCALE);
+        (amount,) = _pending(b, account, balance);
     }
 
     function take(Book storage b, address account, uint256 balance)
         internal
         returns (uint256 amount)
     {
-        amount = claimable(b, account, balance);
+        (amount, b.fraction[account]) = _pending(b, account, balance);
         b.owed[account] = 0;
         b.last[account] = b.points;
         b.reserved -= amount;
+    }
+
+    /// @dev Whole units owed and the sub-unit remainder: frequent settles (anyone may trigger one)
+    ///      must not round an account's income away.
+    function _pending(Book storage b, address account, uint256 balance)
+        private
+        view
+        returns (uint256 owed, uint256 fraction)
+    {
+        uint256 delta = b.points - b.last[account];
+        fraction = b.fraction[account] + mulmod(balance, delta, SCALE);
+        owed = b.owed[account] + Math.mulDiv(balance, delta, SCALE) + fraction / SCALE;
+        fraction %= SCALE;
     }
 }

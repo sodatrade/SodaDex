@@ -15,7 +15,9 @@ contract LedgerHarness {
     }
 
     function move(address from, address to, uint256 amount) external {
-        book.move(from, from == address(0) ? 0 : balanceOf[from], to, to == address(0) ? 0 : balanceOf[to]);
+        book.move(
+            from, from == address(0) ? 0 : balanceOf[from], to, to == address(0) ? 0 : balanceOf[to]
+        );
         if (from == address(0)) totalSupply += amount;
         else balanceOf[from] -= amount;
         if (to == address(0)) totalSupply -= amount;
@@ -64,5 +66,19 @@ contract RewardLedgerTest is Test {
         ledger.accrue(fee2);
         ledger.move(lp, buyer, a / 2);
         assertLe(ledger.take(lp) + ledger.take(buyer), uint256(fee1) + fee2);
+    }
+
+    /// Review R5: settling every round must not round income away.
+    function test_frequentSettlesKeepTheRemainder() public {
+        address alice = makeAddr("alice");
+        address bob = makeAddr("bob");
+        ledger.move(address(0), alice, 1);
+        ledger.move(address(0), bob, 1);
+        uint256 taken;
+        for (uint256 i; i < 100; ++i) {
+            ledger.accrue(1);
+            taken += ledger.take(alice);
+        }
+        assertEq(taken, 50, "same as claiming once at the end");
     }
 }
