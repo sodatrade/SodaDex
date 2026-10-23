@@ -1,0 +1,26 @@
+{
+  "fullSuite": {
+    "suites": 95,
+    "passed": 1108,
+    "failed": 0,
+    "skipped": [
+      "test_deployedStockBuybackFullReplay",
+      "test_fundUsdt0WritesBalanceDirectly",
+      "test_exportLocalE2EFixture"
+    ]
+  },
+  "newVaultInvariantCalls": 128000,
+  "newVaultInvariantReverts": 0,
+  "changedSolidityFormat": true,
+  "buildAndSizes": true,
+  "lintHigh": true,
+  "diffCheck": true,
+  "chain196Transactions": 19,
+  "actualSplitsChecked": 4,
+  "dualRpcRuntimeAndReceipts": true,
+  "creationArtifactsMatchTransactions": true,
+  "githubPushed": false,
+  "frontendCutover": false,
+  "explorerSourceVerified": false,
+  "unrelatedChangesPreserved": true
+}

@@ -1,0 +1,258 @@
+{
+  "sampledAt": "2026-10-18T10:44:18.601Z",
+  "completedAt": "2026-10-18T10:44:38.848Z",
+  "counts": {
+    "base": 55,
+    "wallet": 41,
+    "keeper": 9
+  },
+  "bad": [],
+  "keeperBad": [],
+  "lastHash": "0xb3ad79577214a8b0e49ecf2593a859fabf3e060284faf540f92c550afbc52906",
+  "pending": null,
+  "ownerBudget": {
+    "baseFeesWei": "1545421185000000",
+    "gasWei": "642331767000000",
+    "nativeWei": "10000000000",
+    "keeperFundingWei": "80000000000000",
+    "outlayWei": "2267762952000000",
+    "remainingWei": "332237048000000",
+    "fabPrincipalRaw": "668409292095"
+  },
+  "keeperFeeWei": "76483932000000",
+  "states": {
+    "nft3": "0x589420bB6fcaf944De9ce9742395b5F3434c1F00",
+    "nft4": "0xaf660984D1096210c2580202A9Db385b32A1035C",
+    "nft5": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+    "ownerLp": "0",
+    "activeCredit": "1000000000000000000",
+    "creditCount": "1",
+    "credit": [
+      {
+        "account": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+        "expiresAt": "1792924764",
+        "amount": "1000000000000000000"
+      }
+    ],
+    "farmPending": "0",
+    "remainingProjectTax": "10000000000000000",
+    "unlocked": true,
+    "managerPair": "0x8e952b2A87943ab3b46097c3D1b36D0EF33C2EA3",
+    "creditExpiresUTC": "2026-10-25T10:39:24.000Z"
+  },
+  "events": {
+    "0x33081835e9fa3789fd7aaf088419c1dc666c5383cf791dd448a3384dcd3656e2": [
+      {
+        "address": "0x842b7bf61f2cb4be8aacac6adece3244c2a6f6ab",
+        "eventName": "Approval",
+        "args": {
+          "owner": "0x7d0296b03725cd3B861427d6482A2Cac3FD91b36",
+          "spender": "0x589420bB6fcaf944De9ce9742395b5F3434c1F00",
+          "value": "984"
+        }
+      },
+      {
+        "address": "0x842b7bf61f2cb4be8aacac6adece3244c2a6f6ab",
+        "eventName": "Transfer",
+        "args": {
+          "from": "0x0000000000000000000000000000000000000000",
+          "to": "0x589420bB6fcaf944De9ce9742395b5F3434c1F00",
+          "value": "222749992"
+        }
+      },
+      {
+        "address": "0x589420bb6fcaf944de9ce9742395b5f3434c1f00",
+        "eventName": "MiningCollected",
+        "args": {
+          "amount": "222749992",
+          "eligibleWeight": "6"
+        }
+      },
+      {
+        "address": "0x842b7bf61f2cb4be8aacac6adece3244c2a6f6ab",
+        "eventName": "Transfer",
+        "args": {
+          "from": "0x7d0296b03725cd3B861427d6482A2Cac3FD91b36",
+          "to": "0x589420bB6fcaf944De9ce9742395b5F3434c1F00",
+          "value": "984"
+        }
+      },
+      {
+        "address": "0x589420bb6fcaf944de9ce9742395b5f3434c1f00",
+        "eventName": "Contributed",
+        "args": {
+          "vault": "0x7d0296b03725cd3B861427d6482A2Cac3FD91b36",
+          "amount": "984",
+          "contribution": "5603876404"
+        }
+      },
+      {
+        "address": "0x842b7bf61f2cb4be8aacac6adece3244c2a6f6ab",
+        "eventName": "Approval",
+        "args": {
+          "owner": "0x7d0296b03725cd3B861427d6482A2Cac3FD91b36",
+          "spender": "0x589420bB6fcaf944De9ce9742395b5F3434c1F00",
+          "value": "0"
+        }
+      },
+      {
+        "address": "0x7d0296b03725cd3b861427d6482a2cac3fd91b36",
+        "eventName": "FarmFunded",
+        "args": {
+          "amount": "984"
+        }
+      }
+    ],
+    "0xb3ad79577214a8b0e49ecf2593a859fabf3e060284faf540f92c550afbc52906": [
+      {
+        "address": "0x842b7bf61f2cb4be8aacac6adece3244c2a6f6ab",
+        "eventName": "Transfer",
+        "args": {
+          "from": "0x0FFA1492C6888edeD55cE1C00084DA6d19e64238",
+          "to": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+          "value": "3060749878"
+        }
+      },
+      {
+        "address": "0x0ffa1492c6888eded55ce1c00084da6d19e64238",
+        "eventName": "RewardsPaid",
+        "args": {
+          "account": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+          "amount": "3060749878"
+        }
+      }
+    ]
+  },
+  "status": {
+    "schemaVersion": 1,
+    "profileId": "196-mining-test",
+    "chainId": 196,
+    "deploymentVersion": "test196-73544414",
+    "serviceBuild": "online-mining-20261018-v10-isolated196",
+    "admissionEnabled": true,
+    "executionEnabled": true,
+    "signer": "0x4736834CCC952Aec7a0dCbC74F3C2C3e3BAb1498",
+    "keeper": "0xcb55ea57074d3A383847F94dD287BAE4e4475e28",
+    "budget": {
+      "capWei": "80000000000000",
+      "spentWei": "76483932000000",
+      "reservedWei": "0"
+    },
+    "farm": {
+      "capacity": 4,
+      "minerCount": 1,
+      "procurementBudgetFab": "5593845310"
+    },
+    "jobs": [
+      {
+        "id": "farm:purchase",
+        "kind": "purchase",
+        "status": "waiting",
+        "reason": "no_approved_inventory",
+        "updatedAt": 1792320254000
+      },
+      {
+        "id": "project:0xc9e6cfefb3433b1b46d3fa61e096abb519ffe7e0",
+        "kind": "sync",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0xc9e6CFEFB3433B1b46d3FA61E096ABB519fFE7E0",
+        "hash": "0x7a3ef793803ab9e6aad01bd1b5368bbe22cf2dda6ee0192a6fe745f1af33d7e9",
+        "updatedAt": 1792319616000
+      },
+      {
+        "id": "execution:0x7a3ef793803ab9e6aad01bd1b5368bbe22cf2dda6ee0192a6fe745f1af33d7e9",
+        "kind": "sync",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0xc9e6CFEFB3433B1b46d3FA61E096ABB519fFE7E0",
+        "hash": "0x7a3ef793803ab9e6aad01bd1b5368bbe22cf2dda6ee0192a6fe745f1af33d7e9",
+        "updatedAt": 1792319616000
+      },
+      {
+        "id": "execution:0xb68a043d2ec6bbea7ee335db0882bf15cfa3dd99f2f42113777e27a093fb0ea3",
+        "kind": "conversion",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0xc9e6CFEFB3433B1b46d3FA61E096ABB519fFE7E0",
+        "hash": "0xb68a043d2ec6bbea7ee335db0882bf15cfa3dd99f2f42113777e27a093fb0ea3",
+        "updatedAt": 1792319581000
+      },
+      {
+        "id": "execution:0xe274c1b423db0d8e520264536f7901290e74d2af09d95fd580831dbefacec7e0",
+        "kind": "fund",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0xc9e6CFEFB3433B1b46d3FA61E096ABB519fFE7E0",
+        "hash": "0xe274c1b423db0d8e520264536f7901290e74d2af09d95fd580831dbefacec7e0",
+        "updatedAt": 1792318712000
+      },
+      {
+        "id": "execution:0x655b80fc9385026a017c9fab5f1a587fd4d907ac597579f0e84f861afb4fb3b4",
+        "kind": "sync",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0xc9e6CFEFB3433B1b46d3FA61E096ABB519fFE7E0",
+        "hash": "0x655b80fc9385026a017c9fab5f1a587fd4d907ac597579f0e84f861afb4fb3b4",
+        "updatedAt": 1792318664000
+      },
+      {
+        "id": "execution:0x57495be670241f4d8604862fe610950b7f1acec2ef9c79c794f500970042e96e",
+        "kind": "fund",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0xc9e6CFEFB3433B1b46d3FA61E096ABB519fFE7E0",
+        "hash": "0x57495be670241f4d8604862fe610950b7f1acec2ef9c79c794f500970042e96e",
+        "updatedAt": 1792318194000
+      },
+      {
+        "id": "execution:0x9e5e94fe30617018e627929c4dbead4bec1ab17f9d4e7196051b6f4318ed4608",
+        "kind": "sync",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0xc9e6CFEFB3433B1b46d3FA61E096ABB519fFE7E0",
+        "hash": "0x9e5e94fe30617018e627929c4dbead4bec1ab17f9d4e7196051b6f4318ed4608",
+        "updatedAt": 1792318142000
+      },
+      {
+        "id": "execution:0x63ffab7d2f468f48b961b1eb37e7ea741f244af1d175e2efa9c3996b3dfe6910",
+        "kind": "purchase",
+        "status": "confirmed",
+        "reason": "settled",
+        "hash": "0x63ffab7d2f468f48b961b1eb37e7ea741f244af1d175e2efa9c3996b3dfe6910",
+        "updatedAt": 1792318033000
+      },
+      {
+        "id": "execution:0x9e1bf19739cfb3b11913452cb0ecce83c171d9deee66547d7fb8a7bf2dea8118",
+        "kind": "fund",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0xc9e6CFEFB3433B1b46d3FA61E096ABB519fFE7E0",
+        "hash": "0x9e1bf19739cfb3b11913452cb0ecce83c171d9deee66547d7fb8a7bf2dea8118",
+        "updatedAt": 1792318008000
+      },
+      {
+        "id": "execution:0xe1fb6b5f00c37b50eda6a79e68253f33b450536deea4c93f3f5a3627e71e461c",
+        "kind": "sync",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0xc9e6CFEFB3433B1b46d3FA61E096ABB519fFE7E0",
+        "hash": "0xe1fb6b5f00c37b50eda6a79e68253f33b450536deea4c93f3f5a3627e71e461c",
+        "updatedAt": 1792317973000
+      }
+    ]
+  },
+  "conversion": {
+    "hash": "0xb68a043d2ec6bbea7ee335db0882bf15cfa3dd99f2f42113777e27a093fb0ea3",
+    "canonical": true,
+    "events": [
+      {
+        "eventName": "TaxConverted",
+        "args": {
+          "input": "398799920477700657",
+          "fabReceived": "994"
+        }
+      }
+    ]
+  }
+}

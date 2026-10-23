@@ -1,0 +1,1441 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-18T07:58:11.753Z",
+  "source": "/tmp/sodadex-browser196-evidence-final.json",
+  "localOnly": true,
+  "counts": {
+    "browserTransactions": 50,
+    "keeperTransactions": 2,
+    "receipts": 52,
+    "signatures": 3
+  },
+  "pass": true,
+  "cases": [
+    {
+      "id": "v3-exactInput-native-to-stable-ab5e1a73",
+      "name": "V3 exactInput OKB→USD₮0",
+      "status": "pass",
+      "hashes": [
+        "0xab5e1a7345389eed30a7abd806ed91093cbe29a98bf005c059711f667b297d7f"
+      ],
+      "result": {
+        "inputToken": "0x0000000000000000000000000000000000000000",
+        "outputToken": "0x779ded0c9e1022225f8e0630b35a9b54be713736",
+        "inputRaw": "100000000000",
+        "outputRaw": "11",
+        "reviewedInputRaw": "100000000000",
+        "minimumOutputRaw": "11",
+        "nativeRefundWei": "0",
+        "swapEvents": [
+          {
+            "address": "0x5c6825eff223ba53744c2a19a0aec27033a432bd",
+            "event": "Swap",
+            "args": {
+              "sender": "0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA",
+              "recipient": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+              "amount0": "-11",
+              "amount1": "100000000000",
+              "sqrtPriceX96": "7289599845098474518762276519883242",
+              "liquidity": "532651027",
+              "tick": 228603
+            },
+            "logIndex": "0x4"
+          }
+        ]
+      }
+    },
+    {
+      "id": "v3-exactInput-stable-to-native-b580f17c",
+      "name": "V3 exactInput USD₮0→OKB",
+      "status": "pass",
+      "hashes": [
+        "0xb580f17c80aa210502b44b24b019ec44584b9bfae02c5e31e87b1bd6293044ce"
+      ],
+      "result": {
+        "inputToken": "0x779ded0c9e1022225f8e0630b35a9b54be713736",
+        "outputToken": "0x0000000000000000000000000000000000000000",
+        "inputRaw": "10",
+        "outputRaw": "76070466862",
+        "reviewedInputRaw": "10",
+        "minimumOutputRaw": "75690114528",
+        "nativeRefundWei": "0",
+        "swapEvents": [
+          {
+            "address": "0x5c6825eff223ba53744c2a19a0aec27033a432bd",
+            "event": "Swap",
+            "args": {
+              "sender": "0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA",
+              "recipient": "0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA",
+              "amount0": "10",
+              "amount1": "-76070466862",
+              "sqrtPriceX96": "7278284888390193664417304302108526",
+              "liquidity": "532651027",
+              "tick": 228572
+            },
+            "logIndex": "0x3"
+          }
+        ]
+      }
+    },
+    {
+      "id": "v4-exactInput-stable-to-native-12a1a9d1",
+      "name": "V4 exactInput USD₮0→OKB",
+      "status": "pass",
+      "hashes": [
+        "0x12a1a9d1140b49f1565257f29e8fb3ab1184b769379eb491154e2977648a27c9"
+      ],
+      "result": {
+        "inputToken": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+        "outputToken": "0x0000000000000000000000000000000000000000",
+        "inputRaw": "10",
+        "outputRaw": "84085442346",
+        "reviewedInputRaw": "10",
+        "minimumOutputRaw": "83665015135",
+        "nativeRefundWei": "0",
+        "swapEvents": [
+          {
+            "address": "0x6b5c32ad97eb42230138e02a21b0e6d811fd713d",
+            "event": "Swap",
+            "args": {
+              "id": "0x326670fbdc54a57ec96182faebc60ce6f06e9073e0044e978805520be3c6983e",
+              "sender": "0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA",
+              "amount0": "84085442346",
+              "amount1": "-10",
+              "sqrtPriceX96": "864754847521563871614835",
+              "liquidity": "532651027",
+              "tick": -228520,
+              "fee": 0
+            },
+            "logIndex": "0x0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "v4-exactInput-native-to-stable-ea6eb909",
+      "name": "V4 exactInput OKB→USD₮0",
+      "status": "pass",
+      "hashes": [
+        "0xea6eb909a1c2d3fa0f8f8a9afc3935c918d969632bb554172695c969321d7eb3"
+      ],
+      "result": {
+        "inputToken": "0x0000000000000000000000000000000000000000",
+        "outputToken": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+        "inputRaw": "100000000000",
+        "outputRaw": "11",
+        "reviewedInputRaw": "100000000000",
+        "minimumOutputRaw": "11",
+        "nativeRefundWei": "0",
+        "swapEvents": [
+          {
+            "address": "0x6b5c32ad97eb42230138e02a21b0e6d811fd713d",
+            "event": "Swap",
+            "args": {
+              "id": "0x326670fbdc54a57ec96182faebc60ce6f06e9073e0044e978805520be3c6983e",
+              "sender": "0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA",
+              "amount0": "-100000000000",
+              "amount1": "11",
+              "sqrtPriceX96": "862986471406853346457027",
+              "liquidity": "532651027",
+              "tick": -228561,
+              "fee": 0
+            },
+            "logIndex": "0x0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "v4-exactOutput-native-to-stable-c70a3b3c",
+      "name": "V4 exactOutput OKB→USD₮0",
+      "status": "pass",
+      "hashes": [
+        "0xc70a3b3cb8abe2e181f3e8da1a510129df6ff90cb6ebc33c966848910f546748"
+      ],
+      "result": {
+        "inputToken": "0x0000000000000000000000000000000000000000",
+        "outputToken": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+        "inputRaw": "84430698429",
+        "outputRaw": "10",
+        "reviewedOutputRaw": "10",
+        "maximumInputRaw": "84852851922",
+        "nativeRefundWei": "422153493",
+        "swapEvents": [
+          {
+            "address": "0x6b5c32ad97eb42230138e02a21b0e6d811fd713d",
+            "event": "Swap",
+            "args": {
+              "id": "0x326670fbdc54a57ec96182faebc60ce6f06e9073e0044e978805520be3c6983e",
+              "sender": "0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA",
+              "amount0": "-84430698429",
+              "amount1": "10",
+              "sqrtPriceX96": "861499040453035541509970",
+              "liquidity": "532651027",
+              "tick": -228595,
+              "fee": 0
+            },
+            "logIndex": "0x0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "v3-exactOutput-native-to-stable-f76dbf1f",
+      "name": "V3 exactOutput OKB→USD₮0",
+      "status": "pass",
+      "hashes": [
+        "0xf76dbf1ffc17641f0cb122fe9130ce7596cd465be7ed73a99bd143adb6558b3b"
+      ],
+      "result": {
+        "inputToken": "0x0000000000000000000000000000000000000000",
+        "outputToken": "0x779ded0c9e1022225f8e0630b35a9b54be713736",
+        "inputRaw": "91956332457",
+        "outputRaw": "10",
+        "reviewedOutputRaw": "10",
+        "maximumInputRaw": "92416114120",
+        "nativeRefundWei": "459781663",
+        "swapEvents": [
+          {
+            "address": "0x5c6825eff223ba53744c2a19a0aec27033a432bd",
+            "event": "Swap",
+            "args": {
+              "sender": "0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA",
+              "recipient": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+              "amount0": "-10",
+              "amount1": "91956332457",
+              "sqrtPriceX96": "7291961390132663020416328169421026",
+              "liquidity": "532651027",
+              "tick": 228610
+            },
+            "logIndex": "0x4"
+          }
+        ]
+      }
+    },
+    {
+      "id": "v3-exactOutput-stable-to-native-be25bd5f",
+      "name": "V3 exactOutput USD₮0→OKB",
+      "status": "pass",
+      "hashes": [
+        "0xbe25bd5f34e28078f91eb14abaea0251fce09d71c4dbdab6215f47a1e3640902"
+      ],
+      "result": {
+        "inputToken": "0x779ded0c9e1022225f8e0630b35a9b54be713736",
+        "outputToken": "0x0000000000000000000000000000000000000000",
+        "inputRaw": "4",
+        "outputRaw": "10000000000",
+        "reviewedOutputRaw": "10000000000",
+        "maximumInputRaw": "5",
+        "nativeRefundWei": "0",
+        "swapEvents": [
+          {
+            "address": "0x5c6825eff223ba53744c2a19a0aec27033a432bd",
+            "event": "Swap",
+            "args": {
+              "sender": "0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA",
+              "recipient": "0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA",
+              "amount0": "4",
+              "amount1": "-10000000000",
+              "sqrtPriceX96": "7290473959178796547463339142539999",
+              "liquidity": "532651027",
+              "tick": 228606
+            },
+            "logIndex": "0x3"
+          }
+        ]
+      }
+    },
+    {
+      "id": "v4-exactOutput-stable-to-native-04b32bf8",
+      "name": "V4 exactOutput USD₮0→OKB",
+      "status": "pass",
+      "hashes": [
+        "0x04b32bf8c404e77995b49b065801aa3aa386c9778f8eba2dec2f6d938aa1945d"
+      ],
+      "result": {
+        "inputToken": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+        "outputToken": "0x0000000000000000000000000000000000000000",
+        "inputRaw": "2",
+        "outputRaw": "10000000000",
+        "reviewedOutputRaw": "10000000000",
+        "maximumInputRaw": "3",
+        "nativeRefundWei": "0",
+        "swapEvents": [
+          {
+            "address": "0x6b5c32ad97eb42230138e02a21b0e6d811fd713d",
+            "event": "Swap",
+            "args": {
+              "id": "0x326670fbdc54a57ec96182faebc60ce6f06e9073e0044e978805520be3c6983e",
+              "sender": "0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA",
+              "amount0": "10000000000",
+              "amount1": "-2",
+              "sqrtPriceX96": "861674944532094324099929",
+              "liquidity": "532651027",
+              "tick": -228591,
+              "fee": 0
+            },
+            "logIndex": "0x0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "v4-exactInput-stable-to-wrapped-8be70b32",
+      "name": "V4 exactInput USD₮0→WOKB",
+      "status": "pass",
+      "hashes": [
+        "0x8be70b32ff6788caa1772ffdedc70fa63e461a17a03dcc4c2ca103e2761438bf"
+      ],
+      "result": {
+        "inputToken": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+        "outputToken": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+        "inputRaw": "10",
+        "outputRaw": "35253640811",
+        "reviewedInputRaw": "10",
+        "minimumOutputRaw": "35077372607",
+        "nativeRefundWei": "0",
+        "swapEvents": [
+          {
+            "address": "0x6b5c32ad97eb42230138e02a21b0e6d811fd713d",
+            "event": "Swap",
+            "args": {
+              "id": "0xa016f9b205a58e08df6af30cf5e945af94b7d3ef9a462a2b1e735930bb603488",
+              "sender": "0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA",
+              "amount0": "-10",
+              "amount1": "35253640811",
+              "sqrtPriceX96": "6947205604227587749689167048744778",
+              "liquidity": "8890196",
+              "tick": 227641,
+              "fee": 100
+            },
+            "logIndex": "0x0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "v4-exactInput-stable-to-wrapped-f0084c35",
+      "name": "V4 exactInput USD₮0→WOKB",
+      "status": "pass",
+      "hashes": [
+        "0xf0084c3538e8ad3d239c3497dd81df91edfa3567629f37501329db3958510712"
+      ],
+      "result": {
+        "inputToken": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+        "outputToken": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+        "inputRaw": "10",
+        "outputRaw": "29086846429",
+        "reviewedInputRaw": "10",
+        "minimumOutputRaw": "28941412197",
+        "nativeRefundWei": "0",
+        "swapEvents": [
+          {
+            "address": "0x6b5c32ad97eb42230138e02a21b0e6d811fd713d",
+            "event": "Swap",
+            "args": {
+              "id": "0xa016f9b205a58e08df6af30cf5e945af94b7d3ef9a462a2b1e735930bb603488",
+              "sender": "0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA",
+              "amount0": "-10",
+              "amount1": "29086846429",
+              "sqrtPriceX96": "6687987765148343876296284911723511",
+              "liquidity": "8890196",
+              "tick": 226881,
+              "fee": 100
+            },
+            "logIndex": "0x0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "v3-mint",
+      "name": "V3 铸造仓位 NFT #2",
+      "status": "pass",
+      "hashes": [
+        "0x422d7d23a8123812de2ca32b54482c491cb997b91815eedf55808c021f681fe5"
+      ],
+      "result": {
+        "tokenId": "2",
+        "liquidityAdded": "9203749"
+      }
+    },
+    {
+      "id": "v3-increase",
+      "name": "V3 增加 NFT #2 流动性",
+      "status": "pass",
+      "hashes": [
+        "0x39560b518ac22d9ff617a69bbe142ee407311e3a05eb53ac75daeaa54d560bfb"
+      ],
+      "result": {
+        "tokenId": "2",
+        "liquidityAdded": "920374"
+      }
+    },
+    {
+      "id": "v3-withdraw-all",
+      "name": "V3 全额取回 NFT #2 流动性",
+      "status": "pass",
+      "hashes": [
+        "0x13bbc347309cba4d36de1c605ea4d5708a490d0bd1b912f467f5e57c285e5ffc"
+      ],
+      "result": {
+        "tokenId": "2",
+        "liquidityRemoved": "10124123",
+        "remainingLiquidityFromEvents": "0",
+        "returnedRaw": {
+          "USDt0": "109",
+          "native": "931798891734"
+        },
+        "changes": [
+          {
+            "hash": "0x422d7d23a8123812de2ca32b54482c491cb997b91815eedf55808c021f681fe5",
+            "delta": "9203749",
+            "event": "IncreaseLiquidity"
+          },
+          {
+            "hash": "0x39560b518ac22d9ff617a69bbe142ee407311e3a05eb53ac75daeaa54d560bfb",
+            "delta": "920374",
+            "event": "IncreaseLiquidity"
+          },
+          {
+            "hash": "0x13bbc347309cba4d36de1c605ea4d5708a490d0bd1b912f467f5e57c285e5ffc",
+            "delta": "-10124123",
+            "event": "DecreaseLiquidity"
+          }
+        ]
+      }
+    },
+    {
+      "id": "v3-burn",
+      "name": "V3 销毁空 NFT #2",
+      "status": "pass",
+      "hashes": [
+        "0x80596e4771b90c8495658b79177dfa1270a805f6e66d54a6f2c597d3e2ecc75d"
+      ],
+      "result": {
+        "tokenId": "2",
+        "ownerReadRevertExpected": true,
+        "final": {
+          "protocol": "v3",
+          "tokenId": "2",
+          "discoveredFrom": "0x422d7d23a8123812de2ca32b54482c491cb997b91815eedf55808c021f681fe5",
+          "movements": [
+            {
+              "hash": "0x422d7d23a8123812de2ca32b54482c491cb997b91815eedf55808c021f681fe5",
+              "blockNumber": "73369456",
+              "logIndex": "6",
+              "from": "0x0000000000000000000000000000000000000000",
+              "to": "0x6ecf746b078d46391f8c425b150153212f7c0545",
+              "kind": "mint",
+              "transactionSucceeded": true
+            },
+            {
+              "hash": "0x80596e4771b90c8495658b79177dfa1270a805f6e66d54a6f2c597d3e2ecc75d",
+              "blockNumber": "73369632",
+              "logIndex": "1",
+              "from": "0x6ecf746b078d46391f8c425b150153212f7c0545",
+              "to": "0x0000000000000000000000000000000000000000",
+              "kind": "burn",
+              "transactionSucceeded": true
+            }
+          ],
+          "manager": "0x2BeCd78E05FB33b0588e9cF61E65afeE9DC7428f",
+          "lifecycle": "burned",
+          "verification": "burn confirmed by successful receipt Transfer to zero; ownerOf reverting is expected",
+          "ownership": {
+            "available": false,
+            "reason": "eth_call: execution reverted: ERC721: owner query for nonexistent token"
+          },
+          "data": {
+            "available": false,
+            "reason": "eth_call: execution reverted: Invalid token ID"
+          },
+          "liquidity": "0",
+          "liquidityEvidence": "successful burn event"
+        }
+      }
+    },
+    {
+      "id": "v3-seed-retained",
+      "name": "V3 原测试仓位 #1 余额与本轮明确操作一致",
+      "status": "pass",
+      "hashes": [
+        "0x169abf9e61c96ea2b0a981bd0a440f45199ac474aa4f950c50bfee5b95926d43"
+      ],
+      "result": {
+        "owner": {
+          "available": true,
+          "value": "0x6ecf746b078d46391f8C425B150153212F7C0545"
+        },
+        "initialLiquidity": "532651027",
+        "explicitBrowserLiquidityChanges": [
+          {
+            "hash": "0x169abf9e61c96ea2b0a981bd0a440f45199ac474aa4f950c50bfee5b95926d43",
+            "success": true,
+            "delta": "-266325513",
+            "event": "DecreaseLiquidity"
+          }
+        ],
+        "expectedFinalLiquidity": "266325514",
+        "finalLiquidity": "266325514",
+        "pool": {
+          "protocol": "v3",
+          "id": "0x5c6825eff223ba53744c2a19a0aec27033a432bd",
+          "source": "seed manifest",
+          "slot": {
+            "available": true,
+            "value": [
+              "7290473959178796547463339142539999",
+              228606,
+              0,
+              1,
+              1,
+              0,
+              true
+            ]
+          },
+          "liquidity": {
+            "available": true,
+            "value": "266325514"
+          },
+          "factoryAddress": null
+        }
+      }
+    },
+    {
+      "id": "v3-create-pool",
+      "name": "V3 真正新建 0.05% 费率池",
+      "status": "pass",
+      "hashes": [
+        "0x58eb94acdc82029871d89252e3cdfa8430a9d1e7a8a601e0c24ecf11015c0b4b"
+      ],
+      "result": {
+        "protocol": "v3",
+        "id": "0x11dFDfF6F14B4B1BBfedf773312b1bECE7e7057B",
+        "source": "browser receipt",
+        "hash": "0x58eb94acdc82029871d89252e3cdfa8430a9d1e7a8a601e0c24ecf11015c0b4b",
+        "creation": {
+          "token0": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+          "token1": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+          "fee": 500,
+          "tickSpacing": 10,
+          "pool": "0x11dFDfF6F14B4B1BBfedf773312b1bECE7e7057B"
+        },
+        "initialization": {
+          "sqrtPriceX96": "7261381037877582582535565125844710",
+          "tick": 228526
+        },
+        "slot": {
+          "available": true,
+          "value": [
+            "7261381037877582582535565125844710",
+            228526,
+            0,
+            1,
+            1,
+            0,
+            true
+          ]
+        },
+        "liquidity": {
+          "available": true,
+          "value": "916515"
+        },
+        "factoryAddress": {
+          "available": true,
+          "value": "0x11dFDfF6F14B4B1BBfedf773312b1bECE7e7057B"
+        }
+      }
+    },
+    {
+      "id": "v4-mint",
+      "name": "V4 铸造仓位 NFT #2",
+      "status": "pass",
+      "hashes": [
+        "0xd9438609dd676f50f80aec2989fdf609a5d89e9833d7851c527c271d027b95ec"
+      ],
+      "result": {
+        "tokenId": "2",
+        "liquidityAdded": "1012632"
+      }
+    },
+    {
+      "id": "v4-increase",
+      "name": "V4 增加 NFT #2 流动性",
+      "status": "pass",
+      "hashes": [
+        "0x91646dfecd506ad7eed617ba9519c609ad1333929ea4639b982ee84665fe593a"
+      ],
+      "result": {
+        "tokenId": "2",
+        "liquidityAdded": "1012632"
+      }
+    },
+    {
+      "id": "v4-withdraw-all",
+      "name": "V4 全额取回 NFT #2 流动性",
+      "status": "pass",
+      "hashes": [
+        "0x31b41d5f9574b83ea6db7ffe392f3492828707186abcd0ea1fd1de04a45ba961"
+      ],
+      "result": {
+        "tokenId": "2",
+        "liquidityRemoved": "2025264",
+        "remainingLiquidityFromEvents": "0",
+        "returnedRaw": {
+          "USDt0": "21",
+          "native": "186440663294"
+        },
+        "changes": [
+          {
+            "hash": "0xd9438609dd676f50f80aec2989fdf609a5d89e9833d7851c527c271d027b95ec",
+            "delta": "1012632",
+            "event": "ModifyLiquidity"
+          },
+          {
+            "hash": "0x91646dfecd506ad7eed617ba9519c609ad1333929ea4639b982ee84665fe593a",
+            "delta": "1012632",
+            "event": "ModifyLiquidity"
+          },
+          {
+            "hash": "0x31b41d5f9574b83ea6db7ffe392f3492828707186abcd0ea1fd1de04a45ba961",
+            "delta": "-2025264",
+            "event": "ModifyLiquidity"
+          }
+        ]
+      }
+    },
+    {
+      "id": "v4-burn",
+      "name": "V4 销毁空 NFT #2",
+      "status": "pass",
+      "hashes": [
+        "0x341da06d8a8e207b5cbc339f8da470f01820fe936054ce63e6bb4513a11f2de6"
+      ],
+      "result": {
+        "tokenId": "2",
+        "ownerReadRevertExpected": true,
+        "final": {
+          "protocol": "v4",
+          "tokenId": "2",
+          "discoveredFrom": "0xd9438609dd676f50f80aec2989fdf609a5d89e9833d7851c527c271d027b95ec",
+          "movements": [
+            {
+              "hash": "0xd9438609dd676f50f80aec2989fdf609a5d89e9833d7851c527c271d027b95ec",
+              "blockNumber": "73369705",
+              "logIndex": "1",
+              "from": "0x0000000000000000000000000000000000000000",
+              "to": "0x6ecf746b078d46391f8c425b150153212f7c0545",
+              "kind": "mint",
+              "transactionSucceeded": true
+            },
+            {
+              "hash": "0x341da06d8a8e207b5cbc339f8da470f01820fe936054ce63e6bb4513a11f2de6",
+              "blockNumber": "73369826",
+              "logIndex": "0",
+              "from": "0x6ecf746b078d46391f8c425b150153212f7c0545",
+              "to": "0x0000000000000000000000000000000000000000",
+              "kind": "burn",
+              "transactionSucceeded": true
+            }
+          ],
+          "manager": "0x1f85377930011B701dd2940c526e32FD3aDaB730",
+          "lifecycle": "burned",
+          "verification": "burn confirmed by successful receipt Transfer to zero; ownerOf reverting is expected",
+          "ownership": {
+            "available": false,
+            "reason": "eth_call: execution reverted: NOT_MINTED"
+          },
+          "data": {
+            "available": true,
+            "value": "0"
+          },
+          "liquidity": "0",
+          "liquidityEvidence": "successful burn event"
+        }
+      }
+    },
+    {
+      "id": "v4-seed-retained",
+      "name": "V4 原测试仓位 #1 余额与本轮明确操作一致",
+      "status": "pass",
+      "hashes": [],
+      "result": {
+        "owner": {
+          "available": true,
+          "value": "0x6ecf746b078d46391f8C425B150153212F7C0545"
+        },
+        "initialLiquidity": "532651027",
+        "explicitBrowserLiquidityChanges": [],
+        "expectedFinalLiquidity": "532651027",
+        "finalLiquidity": "532651027",
+        "pool": {
+          "protocol": "v4",
+          "id": "0x326670fbdc54a57ec96182faebc60ce6f06e9073e0044e978805520be3c6983e",
+          "source": "seed manifest",
+          "slot": {
+            "available": true,
+            "value": [
+              "861674944532094324099929",
+              -228591,
+              0,
+              0
+            ]
+          },
+          "liquidity": {
+            "available": true,
+            "value": "532651027"
+          },
+          "factoryAddress": null
+        }
+      }
+    },
+    {
+      "id": "v4-create-pool",
+      "name": "V4 真正新建 0.01% 费率池",
+      "status": "pass",
+      "hashes": [
+        "0xd9438609dd676f50f80aec2989fdf609a5d89e9833d7851c527c271d027b95ec"
+      ],
+      "result": {
+        "protocol": "v4",
+        "id": "0xf4695085f9f3175ef6ae090e38e0c92e6584d74fbc2fb92ee2fc3a8b963383ae",
+        "source": "browser receipt",
+        "hash": "0xd9438609dd676f50f80aec2989fdf609a5d89e9833d7851c527c271d027b95ec",
+        "creation": {
+          "id": "0xf4695085f9f3175ef6ae090e38e0c92e6584d74fbc2fb92ee2fc3a8b963383ae",
+          "currency0": "0x0000000000000000000000000000000000000000",
+          "currency1": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+          "fee": 100,
+          "tickSpacing": 1,
+          "hooks": "0x0000000000000000000000000000000000000000",
+          "sqrtPriceX96": "860638138113590879538573",
+          "tick": -228615
+        },
+        "initialization": {
+          "id": "0xf4695085f9f3175ef6ae090e38e0c92e6584d74fbc2fb92ee2fc3a8b963383ae",
+          "currency0": "0x0000000000000000000000000000000000000000",
+          "currency1": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+          "fee": 100,
+          "tickSpacing": 1,
+          "hooks": "0x0000000000000000000000000000000000000000",
+          "sqrtPriceX96": "860638138113590879538573",
+          "tick": -228615
+        },
+        "slot": {
+          "available": true,
+          "value": [
+            "860638138113590879538573",
+            -228615,
+            0,
+            100
+          ]
+        },
+        "liquidity": {
+          "available": true,
+          "value": "0"
+        },
+        "factoryAddress": null
+      }
+    },
+    {
+      "id": "v3-claim-fees",
+      "name": "V3 #1 领取手续费",
+      "status": "pass",
+      "hashes": [
+        "0x365942f6293479badafb3c3d80ac33bfac3b43403125ca689515c744dc1f6c13"
+      ],
+      "result": {
+        "collectEvents": [
+          {
+            "address": "0x2becd78e05fb33b0588e9cf61e65afee9dc7428f",
+            "event": "Collect",
+            "args": {
+              "tokenId": "1",
+              "recipient": "0x2BeCd78E05FB33b0588e9cF61E65afeE9DC7428f",
+              "amount0": "3",
+              "amount1": "119195635"
+            },
+            "logIndex": "0x4"
+          }
+        ],
+        "receivedRaw": {
+          "USDt0": "3",
+          "native": "119195635"
+        }
+      }
+    },
+    {
+      "id": "v3-transfer-nft",
+      "name": "V3 #3 转移给指定测试收款地址",
+      "status": "pass",
+      "hashes": [
+        "0x628de23a5c71cad9c2e0a32d9031e7a17ffe24ba696710ed5e391cf6b05f386f"
+      ],
+      "result": {
+        "recipient": "0x5693a8608901fb542A8A68d65C3cf891E36D3d59",
+        "final": {
+          "protocol": "v3",
+          "tokenId": "3",
+          "discoveredFrom": "0x58eb94acdc82029871d89252e3cdfa8430a9d1e7a8a601e0c24ecf11015c0b4b",
+          "movements": [
+            {
+              "hash": "0x58eb94acdc82029871d89252e3cdfa8430a9d1e7a8a601e0c24ecf11015c0b4b",
+              "blockNumber": "73369670",
+              "logIndex": "8",
+              "from": "0x0000000000000000000000000000000000000000",
+              "to": "0x6ecf746b078d46391f8c425b150153212f7c0545",
+              "kind": "mint",
+              "transactionSucceeded": true
+            },
+            {
+              "hash": "0x628de23a5c71cad9c2e0a32d9031e7a17ffe24ba696710ed5e391cf6b05f386f",
+              "blockNumber": "73369857",
+              "logIndex": "1",
+              "from": "0x6ecf746b078d46391f8c425b150153212f7c0545",
+              "to": "0x5693a8608901fb542a8a68d65c3cf891e36d3d59",
+              "kind": "transfer",
+              "transactionSucceeded": true
+            }
+          ],
+          "manager": "0x2BeCd78E05FB33b0588e9cF61E65afeE9DC7428f",
+          "lifecycle": "transferred",
+          "verification": "current owner read from PositionManager",
+          "ownership": {
+            "available": true,
+            "value": "0x5693a8608901fb542A8A68d65C3cf891E36D3d59"
+          },
+          "data": {
+            "available": true,
+            "value": [
+              "0",
+              "0x0000000000000000000000000000000000000000",
+              "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+              "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+              500,
+              -887270,
+              887270,
+              "916515",
+              "0",
+              "0",
+              "0",
+              "0"
+            ]
+          },
+          "liquidity": "916515"
+        }
+      }
+    },
+    {
+      "id": "wrap",
+      "name": "原生 OKB 1:1 包装为 WOKB",
+      "status": "pass",
+      "hashes": [
+        "0xa11dd7e3b35091e3e6938c2c22e02896c8ba57a676745e0b5a163b2e93c0207d"
+      ],
+      "result": {
+        "amountRaw": "100000000000",
+        "balanceDelta": {
+          "native": "-49154000343378",
+          "WOKB": "100000000000",
+          "USDt0": "0"
+        },
+        "nativeDeltaExcludingGas": "-100000000000"
+      }
+    },
+    {
+      "id": "unwrap",
+      "name": "WOKB 1:1 解包为原生 OKB",
+      "status": "pass",
+      "hashes": [
+        "0x3d6b56fc3b6b14ec41ebe70f5becfcbe1c8cb3f3f23417e594c7481306dfc1b3"
+      ],
+      "result": {
+        "amountRaw": "100000000000",
+        "balanceDelta": {
+          "native": "-34329000241003",
+          "WOKB": "-100000000000",
+          "USDt0": "0"
+        },
+        "nativeDeltaExcludingGas": "100000000000"
+      }
+    },
+    {
+      "id": "native-send",
+      "name": "发送原生 OKB 并核对收款地址余额",
+      "status": "pass",
+      "hashes": [
+        "0xd37c44b0e12c2eaa48278a61ac0afa2e74f3b6ab00e8a1c88fe2fd60ec72050a"
+      ],
+      "result": {
+        "amountRaw": "10000000000",
+        "recipient": {
+          "before": {
+            "available": true,
+            "value": "0"
+          },
+          "after": {
+            "available": true,
+            "value": "10000000000"
+          },
+          "address": "0x5693a8608901fb542a8a68d65c3cf891e36d3d59"
+        }
+      }
+    },
+    {
+      "id": "erc20-send",
+      "name": "发送 USD₮0 并核对收款地址余额",
+      "status": "pass",
+      "hashes": [
+        "0xc18d80313b6b86f770bdbfb127e1c8532043b0f2440d7c1c68ba55ebc718e257"
+      ],
+      "result": {
+        "amountRaw": "1",
+        "recipient": {
+          "address": "0x5693a8608901fb542A8A68d65C3cf891E36D3d59",
+          "token": "0x779ded0c9e1022225f8e0630b35a9b54be713736",
+          "amount": "1",
+          "before": {
+            "available": true,
+            "value": "0"
+          },
+          "after": {
+            "available": true,
+            "value": "1"
+          },
+          "delta": "1"
+        }
+      }
+    },
+    {
+      "id": "router-zero-retained",
+      "name": "Router 无残留 OKB / WOKB / USD₮0",
+      "status": "pass",
+      "hashes": [],
+      "result": {
+        "address": "0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA",
+        "block": "0x45f8f4d",
+        "native": {
+          "available": true,
+          "value": "0",
+          "token": "0x0000000000000000000000000000000000000000",
+          "decimals": 18,
+          "formatted": "0"
+        },
+        "WOKB": {
+          "available": true,
+          "value": "0",
+          "token": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+          "decimals": 18,
+          "formatted": "0"
+        },
+        "USDt0": {
+          "available": true,
+          "value": "0",
+          "token": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+          "decimals": 6,
+          "formatted": "0"
+        }
+      }
+    },
+    {
+      "id": "v4-positive-fees-3",
+      "name": "V4 正手续费领取 NFT #3",
+      "status": "pass",
+      "hashes": [
+        "0xc0c39d801d43a6d8014526a319ac399d93b0b926b9cab79b4261d361060e5cb3"
+      ],
+      "result": {
+        "USDt0ReceivedRaw": "7",
+        "positionChange": {
+          "protocol": "v4",
+          "manager": "0x1f85377930011b701dd2940c526e32fd3adab730",
+          "tokenId": "3",
+          "before": {
+            "block": "0x45f8c92",
+            "owner": {
+              "available": true,
+              "value": "0x6ecf746b078d46391f8C425B150153212F7C0545"
+            },
+            "liquidity": {
+              "available": true,
+              "value": "8890196"
+            }
+          },
+          "after": {
+            "block": "0x45f8c93",
+            "owner": {
+              "available": true,
+              "value": "0x6ecf746b078d46391f8C425B150153212F7C0545"
+            },
+            "liquidity": {
+              "available": true,
+              "value": "8890196"
+            }
+          }
+        },
+        "modifyEvents": [
+          {
+            "address": "0x6b5c32ad97eb42230138e02a21b0e6d811fd713d",
+            "event": "ModifyLiquidity",
+            "args": {
+              "id": "0xa016f9b205a58e08df6af30cf5e945af94b7d3ef9a462a2b1e735930bb603488",
+              "sender": "0x1f85377930011B701dd2940c526e32FD3aDaB730",
+              "tickLower": -887272,
+              "tickUpper": 887272,
+              "liquidityDelta": "0",
+              "salt": "0x0000000000000000000000000000000000000000000000000000000000000003"
+            },
+            "logIndex": "0x0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "v4-partial-withdraw-3",
+      "name": "V4 50% 部分减仓 NFT #3",
+      "status": "pass",
+      "hashes": [
+        "0x5ffbea4048f947ee8ad8c894c861331f99559ca6f1c32e8db8e7b9438b611a90"
+      ],
+      "result": {
+        "liquidityBefore": "8890196",
+        "liquidityRemoved": "4445098",
+        "liquidityAfter": "4445098",
+        "remainingPositive": true,
+        "positionChange": {
+          "protocol": "v4",
+          "manager": "0x1f85377930011b701dd2940c526e32fd3adab730",
+          "tokenId": "3",
+          "before": {
+            "block": "0x45f8e63",
+            "owner": {
+              "available": true,
+              "value": "0x6ecf746b078d46391f8C425B150153212F7C0545"
+            },
+            "liquidity": {
+              "available": true,
+              "value": "8890196"
+            }
+          },
+          "after": {
+            "block": "0x45f8e64",
+            "owner": {
+              "available": true,
+              "value": "0x6ecf746b078d46391f8C425B150153212F7C0545"
+            },
+            "liquidity": {
+              "available": true,
+              "value": "4445098"
+            }
+          }
+        },
+        "returnedTokenNet": {
+          "0x779ded0c9e1022225f8e0630b35a9b54be713736": "52",
+          "0xe538905cf8410324e03a5a23c1c177a474d59b2b": "375229717507"
+        }
+      }
+    },
+    {
+      "id": "v4-transfer-nft-3",
+      "name": "V4 转移仍有流动性的 NFT #3",
+      "status": "pass",
+      "hashes": [
+        "0xd8b7a990d936cf39d3db3fcc396e0e5d406d3ef808c5b012f9c38133d0f233e4"
+      ],
+      "result": {
+        "recipient": "0x5693a8608901fb542A8A68d65C3cf891E36D3d59",
+        "positionChange": {
+          "protocol": "v4",
+          "manager": "0x1f85377930011b701dd2940c526e32fd3adab730",
+          "tokenId": "3",
+          "before": {
+            "block": "0x45f8eb5",
+            "owner": {
+              "available": true,
+              "value": "0x6ecf746b078d46391f8C425B150153212F7C0545"
+            },
+            "liquidity": {
+              "available": true,
+              "value": "4445098"
+            }
+          },
+          "after": {
+            "block": "0x45f8eb6",
+            "owner": {
+              "available": true,
+              "value": "0x5693a8608901fb542A8A68d65C3cf891E36D3d59"
+            },
+            "liquidity": {
+              "available": true,
+              "value": "4445098"
+            }
+          }
+        },
+        "final": {
+          "protocol": "v4",
+          "tokenId": "3",
+          "discoveredFrom": "0xef3b40734dd00f935ad3ad1afae7684e350e23b0ca143bcdb470533570bff8ff",
+          "movements": [
+            {
+              "hash": "0xef3b40734dd00f935ad3ad1afae7684e350e23b0ca143bcdb470533570bff8ff",
+              "blockNumber": "73370486",
+              "logIndex": "1",
+              "from": "0x0000000000000000000000000000000000000000",
+              "to": "0x6ecf746b078d46391f8c425b150153212f7c0545",
+              "kind": "mint",
+              "transactionSucceeded": true
+            },
+            {
+              "hash": "0xd8b7a990d936cf39d3db3fcc396e0e5d406d3ef808c5b012f9c38133d0f233e4",
+              "blockNumber": "73371318",
+              "logIndex": "0",
+              "from": "0x6ecf746b078d46391f8c425b150153212f7c0545",
+              "to": "0x5693a8608901fb542a8a68d65c3cf891e36d3d59",
+              "kind": "transfer",
+              "transactionSucceeded": true
+            }
+          ],
+          "manager": "0x1f85377930011B701dd2940c526e32FD3aDaB730",
+          "lifecycle": "transferred",
+          "verification": "current owner read from PositionManager",
+          "ownership": {
+            "available": true,
+            "value": "0x5693a8608901fb542A8A68d65C3cf891E36D3d59"
+          },
+          "data": {
+            "available": true,
+            "value": "4445098"
+          },
+          "liquidity": "4445098"
+        }
+      }
+    },
+    {
+      "id": "v3-partial-withdraw-1",
+      "name": "V3 50% 部分减仓 NFT #1",
+      "status": "pass",
+      "hashes": [
+        "0x169abf9e61c96ea2b0a981bd0a440f45199ac474aa4f950c50bfee5b95926d43"
+      ],
+      "result": {
+        "liquidityBefore": "532651027",
+        "liquidityRemoved": "266325513",
+        "liquidityAfter": "266325514",
+        "positionChange": {
+          "protocol": "v3",
+          "manager": "0x2becd78e05fb33b0588e9cf61e65afee9dc7428f",
+          "tokenId": "1",
+          "before": {
+            "block": "0x45f8f0e",
+            "owner": {
+              "available": true,
+              "value": "0x6ecf746b078d46391f8C425B150153212F7C0545"
+            },
+            "liquidity": {
+              "available": true,
+              "value": "532651027"
+            }
+          },
+          "after": {
+            "block": "0x45f8f0f",
+            "owner": {
+              "available": true,
+              "value": "0x6ecf746b078d46391f8C425B150153212F7C0545"
+            },
+            "liquidity": {
+              "available": true,
+              "value": "266325514"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "v4-create-wrapped-pool",
+      "name": "V4 新建 USD₮0/WOKB 收费池",
+      "status": "pass",
+      "hashes": [
+        "0xef3b40734dd00f935ad3ad1afae7684e350e23b0ca143bcdb470533570bff8ff"
+      ],
+      "result": {
+        "protocol": "v4",
+        "id": "0xa016f9b205a58e08df6af30cf5e945af94b7d3ef9a462a2b1e735930bb603488",
+        "source": "browser receipt",
+        "hash": "0xef3b40734dd00f935ad3ad1afae7684e350e23b0ca143bcdb470533570bff8ff",
+        "creation": {
+          "id": "0xa016f9b205a58e08df6af30cf5e945af94b7d3ef9a462a2b1e735930bb603488",
+          "currency0": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+          "currency1": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+          "fee": 100,
+          "tickSpacing": 1,
+          "hooks": "0x0000000000000000000000000000000000000000",
+          "sqrtPriceX96": "7261381037877582582535565125844710",
+          "tick": 228526
+        },
+        "initialization": {
+          "id": "0xa016f9b205a58e08df6af30cf5e945af94b7d3ef9a462a2b1e735930bb603488",
+          "currency0": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+          "currency1": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+          "fee": 100,
+          "tickSpacing": 1,
+          "hooks": "0x0000000000000000000000000000000000000000",
+          "sqrtPriceX96": "7261381037877582582535565125844710",
+          "tick": 228526
+        },
+        "slot": {
+          "available": true,
+          "value": [
+            "6687987765148343876296284911723511",
+            226881,
+            0,
+            100
+          ]
+        },
+        "liquidity": {
+          "available": true,
+          "value": "4445098"
+        },
+        "factoryAddress": null
+      }
+    }
+  ],
+  "orders": {
+    "source": "/tmp/sodadex-orders-final.json",
+    "checks": [
+      {
+        "name": "expected final orders",
+        "passed": true,
+        "details": [
+          {
+            "id": "0x3566755a2abbd09fa29672c96c98f5ac257fbb977b68ef28f3257716fb080077",
+            "status": "filled",
+            "reason": null,
+            "tx_hash": "0xd4760472effa8586e5627ae0b6c943ffeee74615d73bd375a4a41f938d8ede56"
+          },
+          {
+            "id": "0xf62140a7d39e1ee08bcbb51252797e5f78322e7b2c4e06d1654553aaa206cd7a",
+            "status": "cancelled",
+            "reason": null,
+            "tx_hash": null
+          },
+          {
+            "id": "0x6e9a2049a7e1260fe574e718dbdcc917d6131e532c25dda2f8c30bb32464e1bb",
+            "status": "filled",
+            "reason": null,
+            "tx_hash": "0x9a9f316cbda36feed4e14ed047e55e89885399ffe56808480eb37d8582ae7ee4"
+          }
+        ]
+      },
+      {
+        "name": "one signature per order",
+        "passed": true,
+        "details": {
+          "signatures": 3,
+          "unique": 3
+        }
+      },
+      {
+        "name": "wallet and keeper receipts successful",
+        "passed": true,
+        "details": {
+          "receipts": 7,
+          "wallet": 5,
+          "keeper": 2
+        }
+      },
+      {
+        "name": "settlement nonce 0x6e9a2049a7e1260fe574e718dbdcc917d6131e532c25dda2f8c30bb32464e1bb",
+        "passed": true,
+        "details": {
+          "orderId": "0x6e9a2049a7e1260fe574e718dbdcc917d6131e532c25dda2f8c30bb32464e1bb",
+          "nonce": "98857132102291598127841484303734345966599823086770470735713579656638051349710",
+          "nonceStatus": {
+            "available": true,
+            "value": 2
+          },
+          "permitNonceUsed": true
+        }
+      },
+      {
+        "name": "fill exact input and minimum 0x6e9a2049a7e1260fe574e718dbdcc917d6131e532c25dda2f8c30bb32464e1bb",
+        "passed": true,
+        "details": {
+          "hash": "0x9a9f316cbda36feed4e14ed047e55e89885399ffe56808480eb37d8582ae7ee4",
+          "event": {
+            "orderHash": "0x26c7e046a43890c1f9615bd4b9bde9d08f38f6dc5882ed4b94972ba1d6927f48",
+            "maker": "0x5693a8608901fb542A8A68d65C3cf891E36D3d59",
+            "nonce": "98857132102291598127841484303734345966599823086770470735713579656638051349710",
+            "keeper": "0xA14ad63c0a80D1E299B489D0ECeACf0F3eF225df",
+            "inputToken": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+            "outputToken": "0x0000000000000000000000000000000000000000",
+            "amountIn": "10",
+            "amountOut": "84085442346",
+            "receiver": "0x5693a8608901fb542A8A68d65C3cf891E36D3d59"
+          }
+        }
+      },
+      {
+        "name": "settlement nonce 0xf62140a7d39e1ee08bcbb51252797e5f78322e7b2c4e06d1654553aaa206cd7a",
+        "passed": true,
+        "details": {
+          "orderId": "0xf62140a7d39e1ee08bcbb51252797e5f78322e7b2c4e06d1654553aaa206cd7a",
+          "nonce": "38567528987586155780251194755718392749158352758112972955546479546164227466102",
+          "nonceStatus": {
+            "available": true,
+            "value": 1
+          },
+          "permitNonceUsed": false
+        }
+      },
+      {
+        "name": "cancellation receipt and event 0xf62140a7d39e1ee08bcbb51252797e5f78322e7b2c4e06d1654553aaa206cd7a",
+        "passed": true,
+        "details": {
+          "hash": "0x94d1fb3da4b400810a1d754713cabab48e3b0cbf6484db4da70ce91c808de557",
+          "event": {
+            "maker": "0x5693a8608901fb542A8A68d65C3cf891E36D3d59",
+            "nonce": "38567528987586155780251194755718392749158352758112972955546479546164227466102"
+          }
+        }
+      },
+      {
+        "name": "settlement nonce 0x3566755a2abbd09fa29672c96c98f5ac257fbb977b68ef28f3257716fb080077",
+        "passed": true,
+        "details": {
+          "orderId": "0x3566755a2abbd09fa29672c96c98f5ac257fbb977b68ef28f3257716fb080077",
+          "nonce": "78692647019956641290486214145170491578938234397185819014737685133666049405567",
+          "nonceStatus": {
+            "available": true,
+            "value": 2
+          },
+          "permitNonceUsed": true
+        }
+      },
+      {
+        "name": "fill exact input and minimum 0x3566755a2abbd09fa29672c96c98f5ac257fbb977b68ef28f3257716fb080077",
+        "passed": true,
+        "details": {
+          "hash": "0xd4760472effa8586e5627ae0b6c943ffeee74615d73bd375a4a41f938d8ede56",
+          "event": {
+            "orderHash": "0x7a33f42435e8920b6b05b91feed8e5b171c04e9d956631c2f67acec89c1349dc",
+            "maker": "0x5693a8608901fb542A8A68d65C3cf891E36D3d59",
+            "nonce": "78692647019956641290486214145170491578938234397185819014737685133666049405567",
+            "keeper": "0xA14ad63c0a80D1E299B489D0ECeACf0F3eF225df",
+            "inputToken": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+            "outputToken": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+            "amountIn": "100000000000",
+            "amountOut": "11",
+            "receiver": "0x5693a8608901fb542A8A68d65C3cf891E36D3d59"
+          }
+        }
+      },
+      {
+        "name": "no failed or unfinished keeper executions",
+        "passed": true,
+        "details": [
+          {
+            "id": 1,
+            "order_id": "0x3566755a2abbd09fa29672c96c98f5ac257fbb977b68ef28f3257716fb080077",
+            "hash": "0xd4760472effa8586e5627ae0b6c943ffeee74615d73bd375a4a41f938d8ede56",
+            "signer": "0xa14ad63c0a80d1e299b489d0eceacf0f3ef225df",
+            "nonce": 0,
+            "max_cost": "369205002584435",
+            "status": "confirmed",
+            "actual_cost": "293616002055312"
+          },
+          {
+            "id": 2,
+            "order_id": "0x6e9a2049a7e1260fe574e718dbdcc917d6131e532c25dda2f8c30bb32464e1bb",
+            "hash": "0x9a9f316cbda36feed4e14ed047e55e89885399ffe56808480eb37d8582ae7ee4",
+            "signer": "0xa14ad63c0a80d1e299b489d0eceacf0f3ef225df",
+            "nonce": 1,
+            "max_cost": "343349002403443",
+            "status": "confirmed",
+            "actual_cost": "276663001936641"
+          }
+        ]
+      },
+      {
+        "name": "keeper accounting matches receipts",
+        "passed": true,
+        "details": {
+          "ledgerCost": "570279003991953",
+          "budgetTotal": "570279003991953"
+        }
+      },
+      {
+        "name": "router has no retained assets",
+        "passed": true,
+        "details": {
+          "address": "0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA",
+          "block": "0x45f88f4",
+          "native": {
+            "available": true,
+            "value": "0",
+            "token": "0x0000000000000000000000000000000000000000",
+            "decimals": 18,
+            "formatted": "0"
+          },
+          "WOKB": {
+            "available": true,
+            "value": "0",
+            "token": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+            "decimals": 18,
+            "formatted": "0"
+          },
+          "USDt0": {
+            "available": true,
+            "value": "0",
+            "token": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+            "decimals": 6,
+            "formatted": "0"
+          }
+        }
+      },
+      {
+        "name": "settlement has no retained assets",
+        "passed": true,
+        "details": {
+          "address": "0x82d657104f17135ad7e5febf0c92840829e06ada",
+          "block": "0x45f88f4",
+          "native": {
+            "available": true,
+            "value": "0",
+            "token": "0x0000000000000000000000000000000000000000",
+            "decimals": 18,
+            "formatted": "0"
+          },
+          "WOKB": {
+            "available": true,
+            "value": "0",
+            "token": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+            "decimals": 18,
+            "formatted": "0"
+          },
+          "USDt0": {
+            "available": true,
+            "value": "0",
+            "token": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+            "decimals": 6,
+            "formatted": "0"
+          }
+        }
+      }
+    ],
+    "passed": true,
+    "scope": "owned local Anvil only; public chain and production untouched"
+  },
+  "notExercisedInThisBrowserRun": [],
+  "allEnumeratedBranchesCovered": true,
+  "evidenceLimits": [
+    "This is actual browser-adapter transaction evidence on owned local Anvil fixtures, not public chain evidence.",
+    "Case results use decoded intent, receipt events, and balances/ownership; receipt success alone is not used as the case outcome.",
+    "UI appearance, disconnect/reconnect and refresh behavior require separate CUA observations.",
+    "Each collected 4173 transaction is alone in its block, so gas-adjusted native balance deltas are attributable to that transaction."
+  ],
+  "evidenceStage": "final-after-completed-browser-transaction-run",
+  "finalForCurrentState": true,
+  "checkpoint": "/tmp/sodadex-browser196-business-checkpoint-35.json",
+  "feeRoundingProof": "/tmp/sodadex-v4-tiny-fee-proof.json"
+}

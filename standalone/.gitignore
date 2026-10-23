@@ -1,4 +1,5 @@
 web/dist/
+web/dist-mining-1952/
 web/test-results/
 web/playwright-report/
 worker/.wrangler/

@@ -1,0 +1,8 @@
+{
+  "stage": "test",
+  "ignix": {
+    "test": "https://dev.3.meme/create",
+    "production": "https://ignix.bot/create"
+  },
+  "source": "IGNIX frontend .github/workflows/deploy-web.yml SITE_URL and apps/web/src/app/create"
+}

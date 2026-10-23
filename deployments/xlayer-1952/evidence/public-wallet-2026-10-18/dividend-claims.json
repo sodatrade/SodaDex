@@ -1,0 +1,234 @@
+{
+  "startedAt": "2026-10-18T01:59:12.681Z",
+  "readOnly": true,
+  "chainId": 1952,
+  "wallet": "0xe57f88c05810a9ad2b27f216665260c2d9f2b2da",
+  "fab": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+  "publicActionsTriggered": 0,
+  "claims": [
+    {
+      "role": "fragmentVault",
+      "contract": "0xed377733590639e0a4ec7cd14df7509c7b2ca87d",
+      "hash": "0x819b509d322eaf3cd09a550ae5bb30e64b8c9bfe640866a182b26a18b278510d",
+      "expectedAmountRaw": "795406543",
+      "expectedAmountFab": "7.95406543",
+      "receipt": {
+        "status": "0x1",
+        "blockNumber": "0x29cca10",
+        "blockHash": "0x991635835c712aa440b9cb6f05d1e5e84cd925fe9eea4584eb2200bec4d87a35",
+        "previousBlockNumber": "0x29cca0f",
+        "previousBlockHash": "0xab7eeadeed4fe383404cf82858859f475d3f8364c292cad2b91342212bea2b65",
+        "from": "0xe57f88c05810a9ad2b27f216665260c2d9f2b2da",
+        "to": "0xed377733590639e0a4ec7cd14df7509c7b2ca87d",
+        "nonce": "139",
+        "chainId": "1952",
+        "selector": "0x4e71d92d",
+        "gasLimit": "121194",
+        "gasUsed": "75219",
+        "effectiveGasPriceWei": "20000002",
+        "feeWei": "1504380150438"
+      },
+      "before": {
+        "claimableRaw": "795406543",
+        "withdrawnRewardsRaw": "0",
+        "walletFabRaw": "167409477808"
+      },
+      "after": {
+        "claimableRaw": "0",
+        "withdrawnRewardsRaw": "795406543",
+        "walletFabRaw": "168204884351"
+      },
+      "deltas": {
+        "walletFabRaw": "795406543",
+        "withdrawnRewardsRaw": "795406543",
+        "rewardsPaidRaw": "795406543",
+        "contractToWalletFabRaw": "795406543"
+      },
+      "events": {
+        "rewardsPaid": [
+          {
+            "event": "RewardsPaid",
+            "account": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "amount": "795406543",
+            "logIndex": "0x1"
+          }
+        ],
+        "fabTransfers": [
+          {
+            "from": "0xeD377733590639E0a4ec7cd14dF7509c7B2Ca87D",
+            "to": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "value": "795406543",
+            "logIndex": "0x0"
+          }
+        ]
+      },
+      "checks": {
+        "canonical": true,
+        "successful": true,
+        "expectedWalletAndContract": true,
+        "chain1952": true,
+        "expectedNonce": true,
+        "positiveExpectedAmount": true,
+        "claimableBeforeMatches": true,
+        "claimableAfterZero": true,
+        "withdrawnIncreaseMatches": true,
+        "rewardsPaidMatches": true,
+        "fabTransferContractToWalletMatches": true,
+        "allIncomingFabMatches": true,
+        "blockWalletFabDeltaMatches": true
+      },
+      "allChecksPassed": true
+    },
+    {
+      "role": "fragmentPool",
+      "contract": "0x6f1666231685cf8fc45b355a9eba8afd9ba6d2fa",
+      "hash": "0xbd738b1f215f3756084121ab657aa7b8b5e6f21a5dfdca55a9070f7c7f3a6bf7",
+      "expectedAmountRaw": "14437",
+      "expectedAmountFab": "0.00014437",
+      "receipt": {
+        "status": "0x1",
+        "blockNumber": "0x29cca2f",
+        "blockHash": "0xb0873d29309846cd3329f2597b4384b4f8fb1386737a5c61582bc2ef67930fed",
+        "previousBlockNumber": "0x29cca2e",
+        "previousBlockHash": "0x9c6435fdcd795275f6b8e509f23d3f201c3b8db5d77b54843f752fb85ea7ff19",
+        "from": "0xe57f88c05810a9ad2b27f216665260c2d9f2b2da",
+        "to": "0x6f1666231685cf8fc45b355a9eba8afd9ba6d2fa",
+        "nonce": "140",
+        "chainId": "1952",
+        "selector": "0x4e71d92d",
+        "gasLimit": "121187",
+        "gasUsed": "75214",
+        "effectiveGasPriceWei": "20000002",
+        "feeWei": "1504280150428"
+      },
+      "before": {
+        "claimableRaw": "14437",
+        "withdrawnRewardsRaw": "0",
+        "walletFabRaw": "168204884351"
+      },
+      "after": {
+        "claimableRaw": "0",
+        "withdrawnRewardsRaw": "14437",
+        "walletFabRaw": "168204898788"
+      },
+      "deltas": {
+        "walletFabRaw": "14437",
+        "withdrawnRewardsRaw": "14437",
+        "rewardsPaidRaw": "14437",
+        "contractToWalletFabRaw": "14437"
+      },
+      "events": {
+        "rewardsPaid": [
+          {
+            "event": "RewardsPaid",
+            "account": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "amount": "14437",
+            "logIndex": "0x1"
+          }
+        ],
+        "fabTransfers": [
+          {
+            "from": "0x6F1666231685CF8fC45B355a9EBa8AfD9ba6D2fa",
+            "to": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "value": "14437",
+            "logIndex": "0x0"
+          }
+        ]
+      },
+      "checks": {
+        "canonical": true,
+        "successful": true,
+        "expectedWalletAndContract": true,
+        "chain1952": true,
+        "expectedNonce": true,
+        "positiveExpectedAmount": true,
+        "claimableBeforeMatches": true,
+        "claimableAfterZero": true,
+        "withdrawnIncreaseMatches": true,
+        "rewardsPaidMatches": true,
+        "fabTransferContractToWalletMatches": true,
+        "allIncomingFabMatches": true,
+        "blockWalletFabDeltaMatches": true
+      },
+      "allChecksPassed": true
+    },
+    {
+      "role": "holder",
+      "contract": "0x470713bf252C8008F7223C5f890Dd06Ee3450655",
+      "hash": "0x40127613b10d2096f2c113f3548dd60161521f920b13c9551f7e94109bf2177b",
+      "expectedAmountRaw": "147586254",
+      "expectedAmountFab": "1.47586254",
+      "receipt": {
+        "status": "0x1",
+        "blockNumber": "0x29cca4f",
+        "blockHash": "0x09484e8e64fd8de7525963045ef1a17303fe88f125f631c69325e9e834ae494b",
+        "previousBlockNumber": "0x29cca4e",
+        "previousBlockHash": "0x29c15fc8853911b489b48fe6336209d6a740d8d9341cb9731a277446d4c3056a",
+        "from": "0xe57f88c05810a9ad2b27f216665260c2d9f2b2da",
+        "to": "0x470713bf252c8008f7223c5f890dd06ee3450655",
+        "nonce": "141",
+        "chainId": "1952",
+        "selector": "0x4e71d92d",
+        "gasLimit": "132381",
+        "gasUsed": "78366",
+        "effectiveGasPriceWei": "20000002",
+        "feeWei": "1567320156732"
+      },
+      "before": {
+        "claimableRaw": "147586254",
+        "withdrawnRewardsRaw": "0",
+        "walletFabRaw": "168204898788"
+      },
+      "after": {
+        "claimableRaw": "0",
+        "withdrawnRewardsRaw": "147586254",
+        "walletFabRaw": "168352485042"
+      },
+      "deltas": {
+        "walletFabRaw": "147586254",
+        "withdrawnRewardsRaw": "147586254",
+        "rewardsPaidRaw": "147586254",
+        "contractToWalletFabRaw": "147586254"
+      },
+      "events": {
+        "rewardsPaid": [
+          {
+            "event": "RewardsPaid",
+            "account": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "amount": "147586254",
+            "logIndex": "0x1"
+          }
+        ],
+        "fabTransfers": [
+          {
+            "from": "0x470713bf252C8008F7223C5f890Dd06Ee3450655",
+            "to": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+            "value": "147586254",
+            "logIndex": "0x0"
+          }
+        ]
+      },
+      "checks": {
+        "canonical": true,
+        "successful": true,
+        "expectedWalletAndContract": true,
+        "chain1952": true,
+        "expectedNonce": true,
+        "positiveExpectedAmount": true,
+        "claimableBeforeMatches": true,
+        "claimableAfterZero": true,
+        "withdrawnIncreaseMatches": true,
+        "rewardsPaidMatches": true,
+        "fabTransferContractToWalletMatches": true,
+        "allIncomingFabMatches": true,
+        "blockWalletFabDeltaMatches": true
+      },
+      "allChecksPassed": true
+    }
+  ],
+  "completedAt": "2026-10-18T01:59:18.729Z",
+  "allClaimsVerified": true,
+  "totalClaimedFabRaw": "943007234",
+  "totalClaimedFab": "9.43007234",
+  "totalGasFeeWei": "4575980457598"
+}

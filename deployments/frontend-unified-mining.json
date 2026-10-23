@@ -1,0 +1,296 @@
+{
+  "schemaVersion": 1,
+  "status": "live-unified-mining",
+  "publishedOn": "2026-10-18",
+  "sourceCommit": "2ec695590adf0fc926d4dc8ab80b5cb9ebe9e0c2",
+  "scope": "Same-origin SodaDEX frontend integration of FAB mining products. The original frontend release validation and subsequent approved 1952 main-site wallet acceptance are recorded separately; production contracts are unchanged.",
+  "frontend": {
+    "worker": "sodadex-preview",
+    "versionId": "8d2cb7de-6fdd-4a3e-a570-c9a0a99adcf7",
+    "origin": "https://sodadex-preview.jsmsdx2025.workers.dev",
+    "fundraisingUrl": "https://sodadex-preview.jsmsdx2025.workers.dev/mining/#fundraising",
+    "fragmentsUrl": "https://sodadex-preview.jsmsdx2025.workers.dev/mining/#fragments"
+  },
+  "service": {
+    "worker": "sodadex-mining-api-test-1952",
+    "versionId": "539078bd-d4aa-476f-bf65-e3d075879d60",
+    "serviceBuild": "online-1952-20261018-v8-unified-retest",
+    "sourceCommit": "53e04c8cee8453b2535f652d4ff135691b309c73",
+    "storageMigration": false,
+    "secretsChanged": false,
+    "budgetChangedByApprovedPlan": "xlayer-1952/2026-10-18-main-wallet-retest-approved-plan.json",
+    "previous": {
+      "worker": "sodadex-mining-api-test-1952",
+      "versionId": "41ea4f73-f7b5-4766-94e1-a9c6fe0a2512",
+      "serviceBuild": "online-1952-20261018-v7-unified-origin",
+      "storageMigration": false,
+      "budgetUnchanged": true,
+      "secretsChanged": false
+    }
+  },
+  "routing": {
+    "dex": {
+      "buildBase": "/",
+      "apiPath": "/api/",
+      "chainId": 196
+    },
+    "mining": {
+      "buildBase": "/mining/",
+      "apiPath": "/mining/api/",
+      "chainId": 1952
+    },
+    "selection": "Build and server configuration; request headers cannot select another network."
+  },
+  "experience": {
+    "shared": [
+      "navigation",
+      "brand",
+      "theme",
+      "locale",
+      "wallet entry"
+    ],
+    "miningTabs": [
+      "fundraising",
+      "fragments",
+      "positions",
+      "history",
+      "launch",
+      "automation"
+    ],
+    "locales": [
+      "zh-CN",
+      "en",
+      "yue-HK"
+    ],
+    "defaultTheme": "light",
+    "walletRestore": "Read-only eth_accounts after prior user consent; chain switching requires explicit user action.",
+    "oldOriginHistory": "Existing old-domain browser history remains there; it was not automatically imported. On-chain assets and service project catalog are shared.",
+    "primaryMiningNavigation": {
+      "zh-CN": "矿机交易",
+      "en": "Miner trading",
+      "yue-HK": "礦機交易"
+    }
+  },
+  "validation": {
+    "web": {
+      "passed": 443,
+      "existingFixtureSkipped": 22,
+      "typecheckPassed": true,
+      "lintPassed": true
+    },
+    "worker": {
+      "passed": 184,
+      "skipped": 0,
+      "typecheckPassed": true,
+      "lintPassed": true
+    },
+    "miningService": {
+      "passed": 92,
+      "skipped": 0,
+      "typecheckPassed": true,
+      "lintPassed": true,
+      "cloudflareDryRunPassed": true
+    },
+    "unifiedBuildAndCspPassed": true,
+    "localAndPublicReadonlyBrowserPassed": true,
+    "browserWidths": [
+      1440,
+      1024,
+      390
+    ],
+    "horizontalOverflow": false,
+    "runtimeErrors": 0,
+    "sampledPublicAssetHashesMatched": 8,
+    "publicProjects": [
+      "TEST-A",
+      "TEST-ONLINE",
+      "TEST-WALLET"
+    ],
+    "newWalletSignatures": 0,
+    "newChainTransactions": 0,
+    "productionContractsModified": false,
+    "scopeLimit": "Initial integration release used an isolated read-only wallet fixture. The later mainSiteWalletAcceptance contains 34 new actual Chrome/OKX transactions; earlier 36 old-domain transactions remain separate."
+  },
+  "evidence": {
+    "local-browser": "xlayer-1952/evidence/unified-frontend-2026-10-18/local-browser.json",
+    "public-browser": "xlayer-1952/evidence/unified-frontend-2026-10-18/public-browser.json",
+    "public-catalog": "xlayer-1952/evidence/unified-frontend-2026-10-18/public-catalog.json",
+    "public-http": "xlayer-1952/evidence/unified-frontend-2026-10-18/public-http.json",
+    "service-continuity": "xlayer-1952/evidence/unified-frontend-2026-10-18/service-continuity.json"
+  },
+  "historicalRealWalletAcceptance": "xlayer-1952/2026-10-18-public-wallet-acceptance.json",
+  "mainSiteWalletAcceptance": {
+    "record": "xlayer-1952/2026-10-18-main-wallet-acceptance.json",
+    "chainId": 1952,
+    "walletTransactions": 34,
+    "supportingTransactions": 9,
+    "canonicalSucceeded": 43,
+    "historyAfterReloadAndReconnect": 34,
+    "productionContractsModified": false,
+    "chain196Writes": false
+  },
+  "previousFrontendRelease": {
+    "sourceCommit": "d05ee016201a46aaac6a6d4cfcfd5513a77e7a48",
+    "versionId": "0f582b7b-277d-4c35-ae4e-5e398a422973",
+    "validation": "validation and mainSiteWalletAcceptance retain their historical scope"
+  },
+  "uiPolishRelease": {
+    "record": "ui-polish-2026-10-18.json",
+    "sourceCommit": "e282c3d94be9934bea2529c162cdea70dad706e9",
+    "versionId": "d862e43b-d2dc-4dc0-86e4-11d1801545ea",
+    "sampledPublicAssetsMatched": 9,
+    "publicDexChainId": 196,
+    "publicMiningChainId": 1952,
+    "publicMiningVersionVerified": true,
+    "publicReadOnlyInteractionsPassed": true,
+    "publicMarketObserved": {
+      "poolPrice": "1 OKB = 119.18538 USD₮0",
+      "observedTrades": 2,
+      "historyScanComplete": false
+    },
+    "newChainTransactions": 0,
+    "newWalletSignatures": 0,
+    "knownLimitation": "Fresh DEX pool discovery scans historical creation events before resolving; observed initial market loading remains slow. No data-loading code changed in this UI release.",
+    "previousUIRelease": {
+      "sourceCommit": "7490243f681616c4efb0fb3f36181236c4dccc4d",
+      "versionId": "c12a7b73-bb66-45d3-980f-d1773aeb4568"
+    },
+    "consistencyRevisionPublished": true
+  },
+  "uiControlsRelease": {
+    "publishedOn": "2026-10-18",
+    "sourceCommit": "1e7cc65a768bc5dd2d04978a3f14b5705fbc5a4d",
+    "versionId": "18221784-7c42-449a-ad45-f462bdf98085",
+    "scope": [
+      "Single miner-trading main navigation; six inner tabs and old deep links preserved",
+      "Single thin amount-field focus border; subdued task selection",
+      "Editable launch fields separated visually from read-only rules and disabled inputs",
+      "Consistent outlined pool actions; redundant back-to-swap button removed",
+      "Ten loaded records per page for pools, positions, local mining history and recent background tasks",
+      "Explicit loading/error/empty pool selector; no market retry without a pool"
+    ],
+    "validation": {
+      "webPassed": 460,
+      "existingFixtureSkipped": 22,
+      "workerPassed": 184,
+      "typecheckPassed": true,
+      "lintPassed": true,
+      "unifiedBuildAndCspPassed": true,
+      "localBrowser": [
+        "light desktop launch inputs",
+        "dark mobile launch inputs",
+        "desktop/mobile pool action and last-page controls with 23 isolated fixture records",
+        "empty market selector disabled with readable status"
+      ],
+      "publicBrowser": [
+        "unified miner-trading entry active on launch",
+        "verified mining deployment",
+        "light launch inputs and focus"
+      ],
+      "sampledPublicAssets": [
+        {
+          "path": "assets/LiquidityPage-DNTauTQT.css",
+          "matched": true,
+          "sha256": "2258dc586af88944c18a64be1cb4a8c2ebc8291db29df3bde9e5531445c6cda1"
+        },
+        {
+          "path": "assets/index-CE-kXYvO.css",
+          "matched": true,
+          "sha256": "b9cbd60ca8b87357481ed74dbef29845b87f960ecb3141c75ac490cc0c27720f"
+        },
+        {
+          "path": "assets/index-o0McDtNo.js",
+          "matched": true,
+          "sha256": "de636e8fa1046bfa9829dda34d3399261453b0b4824aa29b862f0a89f712602a"
+        },
+        {
+          "path": "index.html",
+          "matched": true,
+          "sha256": "573597a13859b0cf2921f94e348d723d6eb553b70261dd34c14822b7b3989092"
+        },
+        {
+          "path": "mining/assets/MiningNetworkApp-DVGI8H6p.css",
+          "matched": true,
+          "sha256": "2fe486f7dd38bb98c366df2c69e3825346e5050afeb7f8faa5b8eca808f28e29"
+        },
+        {
+          "path": "mining/assets/index-BIq7R4K7.css",
+          "matched": true,
+          "sha256": "e292db35c7fe8b6ed4115078ef84a7fbbcd6882e691cd494473be5038cb1aedb"
+        },
+        {
+          "path": "mining/assets/index-ClRjMwcM.js",
+          "matched": true,
+          "sha256": "43ff62b2f8df1b34a713f74d55ef5914fcb8a1738a5fed755971c65330d4abfd"
+        },
+        {
+          "path": "mining/index.html",
+          "matched": true,
+          "sha256": "4c9c42435c29616b634d0d9b57e6ed5da46c8b1407d1816b0a3cef9eb661d483"
+        }
+      ],
+      "publicDexChainId": 196,
+      "publicMiningChainId": 1952
+    },
+    "newWalletSignatures": 0,
+    "newChainTransactions": 0,
+    "productionContractsModified": false,
+    "storageMigration": false,
+    "limits": [
+      "Pagination covers already loaded records; local mining journal retains at most 100 records and background status returns at most 50 recent jobs",
+      "No persistent chain-event index deployed; initial DEX discovery still scans historical logs and may load slowly",
+      "Browser screenshots use isolated fixtures where stated; they are not chain-transaction acceptance"
+    ],
+    "intermediateNavigationRelease": {
+      "sourceCommit": "8346da414a3b44cc3e148f4718034ba3ba631151",
+      "versionId": "37ac083d-9ec5-467a-873c-50da5aa3aa26"
+    }
+  },
+  "persistentIndexRelease": {
+    "publishedOn": "2026-10-18",
+    "sourceCommit": "f1c3047a4f7bcde5e1962aa5e87a23f25ae80f3d",
+    "versionId": "eecdf0fe-17e6-4593-b6ad-1e5eb90693e4",
+    "migration": "v1-chain-index-sqlite",
+    "scope": [
+      "Read-only SQLite chain indexes, isolated by chain and deployment",
+      "SodaDEX 196 pool discovery and historical logs reuse persistent records",
+      "1952 mining onchain history, with local submissions preserved separately",
+      "Visible business/search lists at most ten rows per page",
+      "Sync status, first-page refresh, frozen cursor pages and reorg recovery",
+      "Chinese, English and Cantonese event labels"
+    ],
+    "validation": {
+      "webPassed": 476,
+      "existingFixtureSkipped": 22,
+      "workerPassed": 194,
+      "typecheckPassed": true,
+      "lintPassed": true,
+      "unifiedBuildAndCspPassed": true,
+      "actualWorkerdSqliteRuntimePassed": true,
+      "runtimeRestartRetainedRows": true,
+      "reorgCursorInvalidationPassed": true,
+      "sameBlockPoolAndSwapPassed": true,
+      "publicVerification": "evidence/index-2026-10-18/public-verification.json",
+      "publicCaughtUp": {
+        "196": 73536214,
+        "1952": 43846387
+      }
+    },
+    "newChainTransactions": 0,
+    "newWalletSignatures": 0,
+    "productionContractsModified": false,
+    "secretsChanged": false,
+    "keeperBudgetChanged": false,
+    "limitations": [
+      "Only configured test contracts and service-verified mining projects are indexed, not all chain activity.",
+      "Each onchain history item is an event; one transaction may have several items.",
+      "More than 1000 logs in one block pauses indexing with an error instead of skipping records.",
+      "Local submission journal remains capped at100; background-task feed remains the recent50."
+    ]
+  },
+  "emeraldUIRelease": {
+    "record": "ui-green-2026-10-18.json",
+    "sourceCommit": "2ec695590adf0fc926d4dc8ab80b5cb9ebe9e0c2",
+    "versionId": "8d2cb7de-6fdd-4a3e-a570-c9a0a99adcf7"
+  }
+}

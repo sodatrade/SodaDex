@@ -4,7 +4,10 @@ async (page) => {
   if (origin !== 'http://127.0.0.1:4173') throw new Error('Owned local fixture required')
   const status = await (await page.request.get(origin + '/fixture-status')).json()
   if (status.mode !== 'owned-anvil-fork') throw new Error('Fork mode missing')
-  await page.context().addInitScript(({ owner, origin }) => {
+  await page.context().addInitScript(() => {
+    // Public localhost fixture constants; the CLI does not consistently forward init-script arguments.
+    const owner = '0x6ecf746b078d46391f8C425B150153212F7C0545'
+    const origin = 'http://127.0.0.1:4173'
     window.sodaForkWalletCalls = []
     window.ethereum = {
       isMetaMask: true,
@@ -23,9 +26,9 @@ async (page) => {
         return result.result
       },
     }
-  }, { owner: status.owner, origin })
+  })
   await page.reload()
-  await page.getByText('V3 / V4 测试池已开放', { exact: true }).waitFor()
+  await page.getByText('V3 / V4 测试池已部署', { exact: true }).waitFor()
   await page.getByRole('banner').getByRole('button', { name: '连接钱包', exact: true }).click()
   await page.getByRole('button', { name: /浏览器钱包|MetaMask/ }).click()
   await page.getByText('X Layer · 已连接', { exact: true }).waitFor()

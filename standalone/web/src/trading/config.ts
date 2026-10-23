@@ -1,6 +1,7 @@
 import { encodeAbiParameters, keccak256, zeroAddress, type Address } from 'viem'
 import plan from '../../../../deployments/xlayer-test/active.json'
 import { CHAIN_ID, STABLE_ADDRESS, WOKB_ADDRESS } from '../domain/assets'
+export { publicSwapsEnabled } from '../../../trading-policy'
 
 export const CONTRACTS = {
   router: plan.contracts.universalRouter as Address,

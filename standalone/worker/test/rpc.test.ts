@@ -26,16 +26,16 @@ describe('same-origin X Layer read proxy', () => {
     expect(upstream).not.toHaveBeenCalled()
   })
 
-  it('reads only verified WOKB metadata and balances', async () => {
+  it('reads canonical ERC20 metadata and balances without arbitrary selectors', async () => {
     const upstream = vi.fn<typeof fetch>().mockImplementation(async () => success())
     const to = '0xe538905cf8410324e03A5A23C1c177a474D59b2b'
     const address = '0x6ecf746b078d46391f8C425B150153212F7C0545'
     const data = '0x70a08231' + address.slice(2).padStart(64, '0')
     expect((await proxyRpc(request(rpc('eth_call', [{ to, data }, 'latest'])), upstream)).status).toBe(200)
     expect((await proxyRpc(request(rpc('eth_call', [{ to, data: '0xa9059cbb' }, 'latest'])), upstream)).status).toBe(400)
-    expect((await proxyRpc(request(rpc('eth_call', [{ to: address, data: '0x313ce567' }, 'latest'])), upstream)).status).toBe(400)
+    expect((await proxyRpc(request(rpc('eth_call', [{ to: address, data: '0x313ce567' }, 'latest'])), upstream)).status).toBe(200)
     expect((await proxyRpc(request(rpc('eth_call', [{ to, data, value: '0x1' }, 'latest'])), upstream)).status).toBe(400)
-    expect(upstream).toHaveBeenCalledOnce()
+    expect(upstream).toHaveBeenCalledTimes(2)
   })
 
   it.each([

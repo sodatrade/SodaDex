@@ -1,0 +1,47 @@
+{
+  "verifiedAt": "2026-10-21T04:02:35.683Z",
+  "chainId": 196,
+  "productionTouched": false,
+  "successfulReceipts": 10,
+  "gasWei": "173477010000000",
+  "grossInputWei": "330100000000",
+  "totalSpentOkb": "0.00017380711",
+  "approvedTotalOkb": "0.00037",
+  "browserWalletOperations": [
+    {
+      "label": "addLiquidity",
+      "hash": "0x67e67ee6a0d2dc43c7309415f2f80b22eb001acfce1e5ae72885304e48a0a650"
+    },
+    {
+      "label": "addLiquidity",
+      "hash": "0x0d1295e3ac699d51f6e5eb582aa5e68604792c9ef846a070b44b9b5d77d35331"
+    },
+    {
+      "label": "swap",
+      "hash": "0x1a39593d89836e7986e91c912bd4862f521b951ad926dbb185cb0672a5ea0ec5"
+    },
+    {
+      "label": "swap",
+      "hash": "0x25b5fd7cb858976c44d682d3270de10b4ad8f3bd69d1f2717fb9a0b22b0469c6"
+    },
+    {
+      "label": "removeLiquidity",
+      "hash": "0x97dd9c2ba33cd9955aced2eafb2f9f3221b744d2ba269ab4c779ac51ef5017be"
+    }
+  ],
+  "lpLock": {
+    "lockedLp": "9526279441628825",
+    "reserveShares": "549884216652857722057",
+    "reserveOkb": "165034742319",
+    "unlockAt": "1797738620",
+    "durationDays": 60
+  },
+  "index": {
+    "pool": "0x39fa6467abac258ee61acc18ff6c7910a52af92e",
+    "trades": 2,
+    "chart": 2,
+    "syncing": false,
+    "lastError": null
+  },
+  "feeSplitVerified": "Total 0.5% OKB; platform floor(30%), LP remainder"
+}

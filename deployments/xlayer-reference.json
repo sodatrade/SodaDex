@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "chainId": 196,
+  "source": "uniswap",
+  "readOnly": true,
+  "rpcUrl": "https://rpc.ignix.bot/rpc/196",
+  "wrappedNative": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+  "sources": {
+    "deploymentFeed": "https://developers.uniswap.org/deployments.json",
+    "deploymentContentSha256": "221f66d3f58524462f7e7f49173aee1bbebbaa97d3f6502d099bace3085b4070",
+    "deploymentSourceCommit": "a677c0d4b5fb6e3357cf6d0f0315bcb135a1e1ee",
+    "v2FeeMath": "https://github.com/Uniswap/v2-periphery/blob/master/contracts/libraries/UniswapV2Library.sol"
+  },
+  "contracts": {
+    "v2Factory": "0xDf38F24fE153761634Be942F9d859f3DBA857E95",
+    "v3Factory": "0x4B2ab38DBF28D31D467aA8993f6c2585981D6804",
+    "v3Quoter": "0xD1b797D92d87B688193A2B976eFc8D577D204343",
+    "v4PoolManager": "0x360E68faCcca8cA495c1B759Fd9EEe466db9FB32",
+    "v4StateView": "0x76Fd297e2D437cd7f76d50F01AfE6160f86e9990",
+    "v4Quoter": "0x8928074CA1b241D8Ec02815881c1Af11E8bC5219"
+  },
+  "verification": {
+    "verifiedAt": "2026-10-16T11:41:49.222Z",
+    "asOf": {
+      "number": 73381867,
+      "hash": "0x11ccc83aff05fcb60ddb273f592c8b029c827ce8ca0e3a6a6c19c8ffb710617b",
+      "timestamp": 1792150903
+    },
+    "contracts": {
+      "v2Factory": {
+        "address": "0xDf38F24fE153761634Be942F9d859f3DBA857E95",
+        "codeHash": "0xbab145d02e7005f0d84c6c1639d39b799b0ea16df99ebbdaf5a14d9da820b4e0",
+        "codeBytes": 13859,
+        "sourceRecord": "v2-uniswapv2factory-x-layer"
+      },
+      "v3Factory": {
+        "address": "0x4B2ab38DBF28D31D467aA8993f6c2585981D6804",
+        "codeHash": "0x98cde3564f540d7529feb2c697e2d79b85e3bc864d088ebe09fd5dcfc60a5c0e",
+        "codeBytes": 24535,
+        "sourceRecord": "v3-uniswapv3factory-x-layer"
+      },
+      "v3Quoter": {
+        "address": "0xD1b797D92d87B688193A2B976eFc8D577D204343",
+        "codeHash": "0xfd872b486699c79a91db9b977e6e271edfed3535fb624a6973bb05d6dac2a277",
+        "codeBytes": 8273,
+        "sourceRecord": "v3-quoterv2-x-layer"
+      },
+      "v4PoolManager": {
+        "address": "0x360E68faCcca8cA495c1B759Fd9EEe466db9FB32",
+        "codeHash": "0xe4b2759e456c9c4ef763e3b4e257c5105e1ba283d7de8b131dd321197de794a4",
+        "codeBytes": 24009,
+        "sourceRecord": "v4-poolmanager-x-layer"
+      },
+      "v4StateView": {
+        "address": "0x76Fd297e2D437cd7f76d50F01AfE6160f86e9990",
+        "codeHash": "0x4c0e823a0cd44b6b2d9485e774c421cf929db3996096d9b84ee6b23525184b9e",
+        "codeBytes": 3531,
+        "sourceRecord": "v4-stateview-x-layer"
+      },
+      "v4Quoter": {
+        "address": "0x8928074CA1b241D8Ec02815881c1Af11E8bC5219",
+        "codeHash": "0xdd1f782f9c7691a491917f19f786e88660fce880ebfc1a84a448632cc47251eb",
+        "codeBytes": 6118,
+        "sourceRecord": "v4-v4quoter-x-layer"
+      }
+    },
+    "bindings": {
+      "v3QuoterFactory": "0x4B2ab38DBF28D31D467aA8993f6c2585981D6804",
+      "v3QuoterWrappedNative": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+      "v4StateViewPoolManager": "0x360E68faCcca8cA495c1B759Fd9EEe466db9FB32",
+      "v4QuoterPoolManager": "0x360E68faCcca8cA495c1B759Fd9EEe466db9FB32"
+    }
+  }
+}

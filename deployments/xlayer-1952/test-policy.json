@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "chainId": 1952,
+  "scope": "FAB-only test implementation; never production defaults",
+  "feeProfile": "../fees/test-1952.json",
+  "burn": {
+    "admissionRule": "existingActiveCredits + 2 * burnAmount <= balanceBeforeBurn",
+    "creditDurationSeconds": 604800,
+    "graduatedOnly": true,
+    "transferDoesNotRevokeCredits": true,
+    "capCheckedAt": "burn admission"
+  },
+  "fragmentInvalidation": {
+    "shareBalancesUnchanged": true,
+    "lossAllocation": "shared by vault",
+    "valuation": "remaining eligible base weight",
+    "invalidNftRedeemable": false,
+    "zeroEligibleWeight": "block new deposits, redemptions and pool swaps; preserve historical dividend claims"
+  },
+  "zeroEligibleProjectHolders": {
+    "handling": "segregate rewards",
+    "laterBuyersReceiveHistory": false,
+    "platformReceivesHistory": false,
+    "finalDestination": "pending product decision"
+  },
+  "phaseBudget": {
+    "gasWei": "2500000000000000",
+    "nativePrincipalWei": "1000000000000000",
+    "fabPrincipalRaw": "1000000000000",
+    "fabDecimals": 8,
+    "lpRecipient": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+    "testEconomicParametersMayBeChosen": true
+  },
+  "authorization": "User explicitly approved 2026-10-17: current-phase gas up to 0.0025 TEST OKB, principal up to 0.001 TEST OKB and 10,000 TEST-FAB; commit/push current requirement branches and update Draft PRs #2/#3 without merge; deploy1952 test products and isolated frontend. No196 or production deployment authorized.",
+  "onChainExecutionStatus": "completed and verified: 102 successful public1952 transactions; see2026-10-17-products-deployment.json",
+  "postAdmissionPromotion": {
+    "backing": "base weight only; no loss from promotion",
+    "premiumRewards": "current vault beneficiaries",
+    "redemption": "base-weight shares",
+    "newAdmission": "still reject pre-existing premium or temporary boost"
+  },
+  "sourceEmergencyPause": {
+    "projectTokenTransfersAndTrades": "paused, including excluded system-account transfers",
+    "historicalBookedClaims": "remain available",
+    "decision": "User confirmed on 2026-10-17"
+  },
+  "supplyCapClipping": {
+    "allocationAcrossTimeSegments": "pro rata by gross earned entitlement",
+    "burnExpiryChanges": false,
+    "rounding": "difference of floor(actualPaid * grossPrefix / grossTotal); cuts telescope exactly to the actual payment",
+    "decision": "User confirmed 2026-10-17; no production policy implied"
+  }
+}

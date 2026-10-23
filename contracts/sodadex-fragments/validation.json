@@ -1,0 +1,74 @@
+{
+  "recordedUtc": "2026-10-23T02:35:27.377917+00:00",
+  "classification": "change request",
+  "requirement": "mining-products-1952/audit-source-cleanup",
+  "lifecycle": "active",
+  "repository": "sodatrade/SodaDex",
+  "branch": "codex/feat/mining-products-1952",
+  "pr": "https://github.com/sodatrade/SodaDex/pull/2",
+  "parentHead": "923ecab6a74eed81ed6d8823725df9941c233233",
+  "sourceReproduction": {
+    "sha256FilesChecked": 67,
+    "deployedSourceHashesChecked": 30,
+    "bytecodeAndAbiReproduced": [
+      "SodaPolicy",
+      "SodaIncentiveVault",
+      "SodaIgnixPool",
+      "IgnixLpRewards",
+      "IgnixTreasuryIncome",
+      "SodaLocker"
+    ],
+    "rpcCalls": 0,
+    "signedTransactions": 0
+  },
+  "foundry": {
+    "passed": 12,
+    "failed": 0,
+    "skipped": 0,
+    "invariantTests": 3,
+    "runsPerInvariant": 256,
+    "callsPerInvariant": 128000,
+    "reverts": 0,
+    "buildSizesPassed": true,
+    "sourceHighSeverityLintPassed": true,
+    "formatPassed": true,
+    "scope": "This isolated vendored snapshot; no RPC, signing, broadcasting or deployment."
+  },
+  "legacyPreparation": {
+    "passed": 9,
+    "failed": 0,
+    "entrypointsStoppedBeforeExecution": 5
+  },
+  "workingTreeChecks": {
+    "web": {
+      "passed": 518,
+      "skipped": 27,
+      "typecheck": true,
+      "lint": true
+    },
+    "worker": {
+      "passed": 222,
+      "skipped": 0,
+      "typecheck": true,
+      "lint": true
+    },
+    "limitation": "Executed with existing unrelated uncommitted service/UI changes preserved; not evidence for publishing those changes. Optional web fork fixtures were absent. Upstream monorepo suite was not run."
+  },
+  "logSha256": {
+    "sourceReproduction": "f9960448c682450ed38ddb8ab033f5b003c0d953ff14f3afd6c2135ecbda7a45",
+    "foundryTests": "cfa33279f34a66140a8b91d3044bfbc5d5e9038e02a679daa086dcd441edb6a7",
+    "buildSizes": "98737088d83b9e7a39c763ac32faa068f2d7bf412514a5f84f7f0abbd98ab2b9",
+    "sourceHighSeverityLint": "ebe83663236b4ed5f022b5a7ca1ab749d1980765e47d5347b77a686aa1f21c3c",
+    "format": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retiredPreparationTests": "c292873d94e57cc18365794a9f2237692f4cca136a7b9e835aa25a21a9778339"
+  },
+  "productionChanges": false,
+  "deploymentChanges": false,
+  "commitScope": "contracts/; root README audit link; legacy rehearsal guards and retirement test only. Existing service/UI/domain changes remain outside this delivery.",
+  "ownerLocator": "current SodaDEX integration chat",
+  "ownerWorktree": "/Users/LevyHoo/Documents/SodaDex",
+  "baseBranch": "codex/feat/sodadex-bootstrap",
+  "baseSha": "7506ce36138dfb6262ef11d1e3ca4828fec5ede3",
+  "changeMapping": "audit-source-cleanup: remove retired rehearsal contracts, freeze deployed-v5 audit inputs, guard retired CLI entrypoints",
+  "authorization": "User requested removing unused contracts from the SodaDEX GitHub repository for external audit. No production or deployment action."
+}

@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "chainId": 196,
+  "stage": "test",
+  "status": "ready",
+  "settlement": "0x7777777777777777777777777777777777777777",
+  "deploymentBlock": 1,
+  "apiOrigin": "https://orders.test",
+  "executionEnabled": true
+}

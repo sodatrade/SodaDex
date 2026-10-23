@@ -1,0 +1,181 @@
+{
+  "schemaVersion": 1,
+  "status": "not-deployed",
+  "testDeployment": true,
+  "settlementAddress": null,
+  "chainId": 196,
+  "domain": {
+    "name": "Permit2",
+    "chainId": 196,
+    "verifyingContract": "0x000000000022D473030F116dDEE9F6B43aC78BA3"
+  },
+  "primaryType": "PermitWitnessTransferFrom",
+  "types": {
+    "TokenPermissions": [
+      {
+        "name": "token",
+        "type": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "PoolKey": [
+      {
+        "name": "currency0",
+        "type": "address"
+      },
+      {
+        "name": "currency1",
+        "type": "address"
+      },
+      {
+        "name": "fee",
+        "type": "uint24"
+      },
+      {
+        "name": "tickSpacing",
+        "type": "int24"
+      },
+      {
+        "name": "hooks",
+        "type": "address"
+      }
+    ],
+    "SodaLimitOrder": [
+      {
+        "name": "chainId",
+        "type": "uint256"
+      },
+      {
+        "name": "settlement",
+        "type": "address"
+      },
+      {
+        "name": "maker",
+        "type": "address"
+      },
+      {
+        "name": "inputToken",
+        "type": "address"
+      },
+      {
+        "name": "outputToken",
+        "type": "address"
+      },
+      {
+        "name": "amountIn",
+        "type": "uint256"
+      },
+      {
+        "name": "minAmountOut",
+        "type": "uint256"
+      },
+      {
+        "name": "receiver",
+        "type": "address"
+      },
+      {
+        "name": "nonce",
+        "type": "uint256"
+      },
+      {
+        "name": "expiry",
+        "type": "uint256"
+      },
+      {
+        "name": "protocol",
+        "type": "uint8"
+      },
+      {
+        "name": "pool",
+        "type": "PoolKey"
+      }
+    ],
+    "PermitWitnessTransferFrom": [
+      {
+        "name": "permitted",
+        "type": "TokenPermissions"
+      },
+      {
+        "name": "spender",
+        "type": "address"
+      },
+      {
+        "name": "nonce",
+        "type": "uint256"
+      },
+      {
+        "name": "deadline",
+        "type": "uint256"
+      },
+      {
+        "name": "witness",
+        "type": "SodaLimitOrder"
+      }
+    ]
+  },
+  "nonceStatus": {
+    "open": 0,
+    "cancelled": 1,
+    "filled": 2
+  },
+  "protocols": {
+    "v3": 3,
+    "v4": 4
+  },
+  "expiry": {
+    "unit": "Unix seconds",
+    "default": null,
+    "boundary": "block.timestamp >= expiry is expired",
+    "maximum": "281474976710655"
+  },
+  "amounts": {
+    "minimum": "1",
+    "maximum": "340282366920938463463374607431768211455",
+    "partialFills": false
+  },
+  "input": {
+    "native": false,
+    "wrapping": "Native OKB must be explicitly wrapped into WOKB by the user before approving Permit2 and signing."
+  },
+  "output": {
+    "nativeAddress": "0x0000000000000000000000000000000000000000"
+  },
+  "fees": {
+    "platformBps": 0
+  },
+  "fixedContracts": {
+    "universalRouter": "0xda5Bc8bc981d9b2F5df2b0c7E5aeD044993709FA",
+    "v3Factory": "0xa6109B7F4237d2aC28B8009FbD21B88cff194cFe",
+    "v4PoolManager": "0x6B5C32aD97EB42230138e02a21B0E6d811FD713D",
+    "v4StateView": "0x7991D4a8493b9709365cD079DfFc75e790007874"
+  },
+  "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+  "wrappedNative": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+  "makerApproval": {
+    "spender": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+    "amount": "exact amountIn; not an approval to keeper or Router"
+  },
+  "keeperFunding": "gas only; no maker key or generic contract call authorization",
+  "witnessTypeString": "SodaLimitOrder witness)PoolKey(address currency0,address currency1,uint24 fee,int24 tickSpacing,address hooks)SodaLimitOrder(uint256 chainId,address settlement,address maker,address inputToken,address outputToken,uint256 amountIn,uint256 minAmountOut,address receiver,uint256 nonce,uint256 expiry,uint8 protocol,PoolKey pool)TokenPermissions(address token,uint256 amount)",
+  "identifiers": {
+    "eventOrderHash": "hashOrder(order): EIP-712 SodaLimitOrder struct hash",
+    "signatureDigest": "orderDigest(order): complete Permit2 EIP-712 digest"
+  },
+  "receiver": {
+    "nonZero": true,
+    "cannotEqual": [
+      "settlement",
+      "universalRouter",
+      "permit2",
+      "0x0000000000000000000000000000000000000001",
+      "0x0000000000000000000000000000000000000002"
+    ]
+  },
+  "sources": {
+    "permit2SourceCommit": "cc56ad0f3439c502c246fc5cfcc3db92bb8b7219",
+    "universalRouterSourceCommit": "802fe4c18f47300e0f183e2a42e9146ec2ea9fc3"
+  }
+}

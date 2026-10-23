@@ -1,0 +1,128 @@
+{
+  "status": "passed",
+  "sourceCommit": "f6346b2fe4715aa30d2c04e3be801907a5d59180",
+  "versionId": "7a50bf92-3fa3-4fd9-abf0-11ea62e026c8",
+  "origin": "https://sodadex-preview.jsmsdx2025.workers.dev",
+  "publicTrading": "enabled",
+  "chainId": 196,
+  "simulations": [
+    {
+      "name": "v3Forward",
+      "method": "eth_call",
+      "status": 200,
+      "result": "0x"
+    },
+    {
+      "name": "v3Forward",
+      "method": "eth_estimateGas",
+      "status": 200,
+      "result": "0x2884b"
+    },
+    {
+      "name": "v4Forward",
+      "method": "eth_call",
+      "status": 200,
+      "result": "0x"
+    },
+    {
+      "name": "v4Forward",
+      "method": "eth_estimateGas",
+      "status": 200,
+      "result": "0x1cd69"
+    },
+    {
+      "name": "approvePermit2",
+      "method": "eth_call",
+      "status": 200,
+      "result": "0x0000000000000000000000000000000000000000000000000000000000000001"
+    },
+    {
+      "name": "approvePermit2",
+      "method": "eth_estimateGas",
+      "status": 200,
+      "result": "0xd347"
+    },
+    {
+      "name": "permitRouter",
+      "method": "eth_call",
+      "status": 200,
+      "result": "0x"
+    },
+    {
+      "name": "permitRouter",
+      "method": "eth_estimateGas",
+      "status": 200,
+      "result": "0x7861"
+    }
+  ],
+  "noncanonicalRequestBlocked": true,
+  "assets": [
+    {
+      "path": "assets/Inter-Regular-Latin-BYtJb7jM.woff2",
+      "status": 200,
+      "sha256": "9ebb07cb3efc1bbb2b84342914fdaed9493e4c6b2282fd1e7e4de2f4965a0599"
+    },
+    {
+      "path": "assets/LiquidityPage-C6F_rClV.css",
+      "status": 200,
+      "sha256": "25d5a705f1f7f47474cb178aec868e3b5fdff59ca04376979207f1c95233f74b"
+    },
+    {
+      "path": "assets/LiquidityPage-DGXBezGk.js",
+      "status": 200,
+      "sha256": "8164c426abca5bff574f326abcad30e46da13a066471ecc93bad9384f25b79d7"
+    },
+    {
+      "path": "assets/SOURCES.md",
+      "status": 200,
+      "sha256": "a7e33e8850d71be0d33c3734487115221ee55ce71148df389283db945ffc4499"
+    },
+    {
+      "path": "assets/index-CFjjLoGp.css",
+      "status": 200,
+      "sha256": "a99d54b40128afa5b01d46a057c29305074612824d80431d3b909624f5405f90"
+    },
+    {
+      "path": "assets/index-DB7-9aQf.js",
+      "status": 200,
+      "sha256": "9f1bd7fef414a5a47e5569597cff756b75f91312757db8b488b1fae56f07eb71"
+    },
+    {
+      "path": "assets/okb.png",
+      "status": 200,
+      "sha256": "be310dd7ec1349c0b353c0a4d17b4c6905b5b51301787690631860eadefbc996"
+    },
+    {
+      "path": "assets/usdt0.png",
+      "status": 200,
+      "sha256": "df5238a34df0255a1356485cd6939c521c125e22a25d43fe6d3ca0c98eab0403"
+    },
+    {
+      "path": "assets/wokb.png",
+      "status": 200,
+      "sha256": "5ce174b09a097862e25741ca77eea51a26ad3e64621f8e61003c44ae080cf6fa"
+    },
+    {
+      "path": "assets/xlayer.svg",
+      "status": 200,
+      "sha256": "f837468b7de4079c832bcd8d410d0c4cb90002f9e8f331e32a2e2b72a399eb88"
+    },
+    {
+      "path": "brand.svg",
+      "status": 200,
+      "sha256": "eaf5e3579216252e91040013e6e78f5b10b02b3de34c32c544d63197aee2dab0"
+    },
+    {
+      "path": "index.html",
+      "status": 200,
+      "sha256": "4819355e81e60adb6ec91adc25488d43ddba97292ec5ba9c515cefa1620f0733"
+    },
+    {
+      "path": "preferences-script.json",
+      "status": 200,
+      "sha256": "8aabb800ae162745d485e03b7ad5424eac8030e13dcdb1e529102713816763be"
+    }
+  ],
+  "mainnetWrites": false,
+  "scope": "Actual published assets and mainnet read-only simulations; no signing or broadcast"
+}

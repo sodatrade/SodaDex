@@ -1,12 +1,5 @@
 {
-  "plugins": [
-    "typescript",
-    "unicorn"
-  ],
-  "categories": {
-    "correctness": "error"
-  },
-  "rules": {
-    "typescript/no-explicit-any": "error"
-  }
+  "plugins": ["typescript", "react", "unicorn"],
+  "categories": { "correctness": "error" },
+  "rules": { "typescript/no-explicit-any": "error" }
 }

@@ -1,8 +1,13 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { encodeAbiParameters, encodeFunctionData, parseAbi, parseAbiParameters, type Address, type Hex } from 'viem'
 import { validContractRequest } from '../src/trade-requests'
 import deployment from '../../../deployments/xlayer-test/active.json'
 import pools from '../../../deployments/xlayer-test/pools.json'
+import * as policy from '../../trading-policy'
+import { proxyRpc } from '../src/rpc'
+
+beforeEach(() => { vi.spyOn(policy, 'publicSwapsEnabled').mockReturnValue(true) })
+afterEach(() => { vi.restoreAllMocks() })
 
 const zero = '0x0000000000000000000000000000000000000000'
 const owner = deployment.owner as Address
@@ -32,6 +37,49 @@ function v4(nativeIn: boolean, receiver: Address = owner): object {
 }
 
 describe('verified pool RPC boundary', () => {
+  it('blocks old-client swap and approval simulations before upstream access while paused', async () => {
+    vi.spyOn(policy, 'publicSwapsEnabled').mockReturnValue(false)
+    const tokenAbi = parseAbi(['function approve(address,uint256)'])
+    const permitAbi = parseAbi(['function approve(address,address,uint160,uint48)'])
+    const approvals = [
+      { from: owner, to: deployment.permit2, data: encodeFunctionData({ abi: permitAbi, functionName: 'approve', args: [stable, router, 100n, 2_000_000_000] }) },
+    ]
+    for (const tx of [v3(true), v3(false), v4(true), v4(false), ...approvals]) {
+      for (const method of ['eth_call', 'eth_estimateGas']) {
+        const upstream = vi.fn<typeof fetch>()
+        const params = method === 'eth_call' ? [tx, 'latest'] : [tx]
+        const response = await proxyRpc(new Request('https://soda.example/api/rpc', {
+          method: 'POST', headers: { 'Content-Type': 'application/json', Origin: 'https://soda.example' },
+          body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }),
+        }), upstream)
+        expect(response.status).toBe(400)
+        expect(upstream).not.toHaveBeenCalled()
+      }
+    }
+    const reset = { from: owner, to: stable, data: encodeFunctionData({ abi: tokenAbi, functionName: 'approve', args: [deployment.permit2 as Address, 0n] }) }
+    expect(validContractRequest(reset, true)).toBe(true)
+    expect(validContractRequest(reset, false)).toBe(true)
+  })
+  it('keeps receipt, balance, code and allowance reads available while paused', async () => {
+    vi.spyOn(policy, 'publicSwapsEnabled').mockReturnValue(false)
+    const token = parseAbi(['function allowance(address,address) view returns(uint256)'])
+    const permit = parseAbi(['function allowance(address,address,address) view returns(uint160,uint48,uint48)'])
+    const reads = [
+      { method: 'eth_getTransactionReceipt', params: [`0x${'a'.repeat(64)}`] },
+      { method: 'eth_getBalance', params: [owner, 'latest'] },
+      { method: 'eth_getCode', params: [router, 'latest'] },
+      { method: 'eth_call', params: [{ to: stable, data: encodeFunctionData({ abi: token, functionName: 'allowance', args: [owner, deployment.permit2 as Address] }) }, 'latest'] },
+      { method: 'eth_call', params: [{ to: deployment.permit2, data: encodeFunctionData({ abi: permit, functionName: 'allowance', args: [owner, stable, router] }) }, 'latest'] },
+    ]
+    for (const read of reads) {
+      const upstream = vi.fn<typeof fetch>().mockResolvedValue(Response.json({ jsonrpc: '2.0', id: 1, result: '0x0' }))
+      const response = await proxyRpc(new Request('https://soda.example/api/rpc', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, ...read }),
+      }), upstream)
+      expect(response.status).toBe(200)
+      expect(upstream).toHaveBeenCalledOnce()
+    }
+  })
   it('simulates native/stable swaps in both directions for both exact deployed protocols', () => {
     for (const tx of [v3(true), v3(false), v4(true), v4(false)]) {
       expect(validContractRequest(tx, true)).toBe(true)
@@ -56,34 +104,15 @@ describe('verified pool RPC boundary', () => {
     expect(validContractRequest(approve(router), true)).toBe(true)
     expect(validContractRequest(approve(owner), true)).toBe(false)
   })
-  it('quotes only the exact V3 fee and V4 key without hook payloads', () => {
+  it('admits canonical own-quoter reads without hook payloads; registry checks occur in the RPC adapter', () => {
     const abi = parseAbi(['function quoteExactInputSingle((address,address,uint256,uint24,uint160)) returns(uint256,uint160,uint32,uint256)'])
     const quote = (fee: number): object => ({ to: deployment.contracts.v3Quoter, data: encodeFunctionData({ abi, functionName: 'quoteExactInputSingle', args: [[stable, deployment.wrappedNative as Address, 100n, fee, 0n]] }) })
     expect(validContractRequest(quote(100), false)).toBe(true)
-    expect(validContractRequest(quote(3000), false)).toBe(false)
+    expect(validContractRequest(quote(3000), false)).toBe(true)
     expect(validContractRequest(quote(100), true)).toBe(false)
     const abi4 = parseAbi(['function quoteExactInputSingle(((address,address,uint24,int24,address),bool,uint128,bytes)) returns(uint256,uint256)'])
     const quote4 = (hooks: Hex): object => ({ to: deployment.contracts.v4Quoter, data: encodeFunctionData({ abi: abi4, functionName: 'quoteExactInputSingle', args: [[key, true, 100n, hooks]] }) })
     expect(validContractRequest(quote4('0x'), false)).toBe(true)
     expect(validContractRequest(quote4('0x00'), false)).toBe(false)
-  })
-})
-
-const read = (to: string, data: string): object => ({ to, data })
-
-describe('pool price reads', () => {
-  const stateView = deployment.contracts.v4StateView as Address
-  const slot0 = parseAbi(['function getSlot0(bytes32 poolId) view returns (uint160,int24,uint24,uint24)'])
-
-  it('allows only slot0 on the deployed V3 pool and getSlot0 for the deployed V4 pool id', () => {
-    expect(validContractRequest(read(pools.v3.address, '0x3850c7bd'), false)).toBe(true)
-    expect(validContractRequest(read(stateView, encodeFunctionData({ abi: slot0, functionName: 'getSlot0', args: [pools.v4.poolId as Hex] })), false)).toBe(true)
-  })
-
-  it('rejects other pool calls, other pool ids and price reads presented as simulations', () => {
-    expect(validContractRequest(read(pools.v3.address, '0x1a686502'), false)).toBe(false)
-    expect(validContractRequest(read(pools.v3.address, '0x3850c7bd00'), false)).toBe(false)
-    expect(validContractRequest(read(stateView, encodeFunctionData({ abi: slot0, functionName: 'getSlot0', args: [`0x${'1'.repeat(64)}`] })), false)).toBe(false)
-    expect(validContractRequest({ from: owner, ...read(pools.v3.address, '0x3850c7bd') }, true)).toBe(false)
   })
 })

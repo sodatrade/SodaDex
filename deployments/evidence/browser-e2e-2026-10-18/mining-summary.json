@@ -1,0 +1,219 @@
+{
+  "proof": "/tmp/sodadex-mining-browser-proof.json",
+  "environment": {
+    "localOnly": true,
+    "publicChain1952": false,
+    "rpcUrl": "http://127.0.0.1:8954",
+    "serviceUrl": "http://127.0.0.1:8791",
+    "origin": "http://127.0.0.1:5173",
+    "chainId": 1952,
+    "client": "anvil/v1.7.1",
+    "deploymentVersion": "loopback-online-v2-bdef568d42b07036-run2",
+    "blockNumber": 2150,
+    "blockHash": "0xdbfbf610cec6dfc378b817a56f4a34dbadd3cd115c5c1c1ed3dc4217d2b12447"
+  },
+  "summary": {
+    "totalTransactions": 60,
+    "passed": 60,
+    "failed": 0,
+    "countByActor": {
+      "browserTestAlice": {
+        "total": 41,
+        "passed": 41,
+        "failed": 0
+      },
+      "runtimeKeeper": {
+        "total": 19,
+        "passed": 19,
+        "failed": 0
+      },
+      "fixtureKeeper": {
+        "total": 0,
+        "passed": 0,
+        "failed": 0
+      }
+    },
+    "functionCounts": {
+      "buyMiner": 1,
+      "createToken": 1,
+      "buy": 6,
+      "sync": 8,
+      "fundFarm": 8,
+      "approve": 17,
+      "sell": 1,
+      "claim": 3,
+      "swapExactTokensForTokensSupportingFeeOnTransferTokens": 2,
+      "convertTax": 2,
+      "addLiquidity": 2,
+      "removeLiquidity": 2,
+      "burnForBoost": 1,
+      "swapExactETHForTokens": 1,
+      "deposit": 1,
+      "swapExactIn": 2,
+      "harvest": 1,
+      "redeem": 1
+    },
+    "readErrors": 0,
+    "runtimeMismatches": 0,
+    "bindingMismatches": 0,
+    "observedBusinessActionCount": 20,
+    "receiptIdentityFailures": []
+  },
+  "coverage": {
+    "projectLaunch": {
+      "observedOnLocalChain": true,
+      "txHashes": [
+        "0x1cd1adcd47b819dd52be37d3c1c216fb0c9994a72d7b3776f16e932e38188b6b"
+      ]
+    },
+    "curveBuy": {
+      "observedOnLocalChain": true,
+      "txHashes": [
+        "0x736496250a12aa08fb57d9cab5fd805ece25cf6b88c6914181cd0491d4046a8f",
+        "0xe46259aaabe9387fa76f54c7eaa2634107c6ed79ec93d7a798f67af68c5383b9",
+        "0x24849a4221e18238a24208c5defc11020735711671f22e16de52907aaedbb2cb",
+        "0xf89437bad58ddc3ebd80b979b22ee3b9cc0f66cd6ea943ca3c094bae0508bd8a",
+        "0xe635e3fa529a37198cff9f5d5ff954b5ad3a346986178dbee4a0471d760c3027"
+      ]
+    },
+    "curveSell": {
+      "observedOnLocalChain": true,
+      "txHashes": [
+        "0x313012c789f369a58eb14a47f01fe4c0602835be5537248fddbc81ada5b1e00d"
+      ]
+    },
+    "projectGraduation": {
+      "observedOnLocalChain": true,
+      "txHashes": [
+        "0xe635e3fa529a37198cff9f5d5ff954b5ad3a346986178dbee4a0471d760c3027"
+      ]
+    },
+    "nativeFabSwap": {
+      "observedOnLocalChain": true,
+      "txHashes": [
+        "0x3c1c75f245989b598ce9c664a4636d0bac529500f405b922d487ed190fc4fa1e"
+      ]
+    },
+    "projectV2Buy": {
+      "observedOnLocalChain": true,
+      "txHashes": [
+        "0x5037c96e80963583919278e707ce6ae053ddbd6ef87f7d631f083c9d3f534fa1"
+      ]
+    },
+    "projectV2Sell": {
+      "observedOnLocalChain": true,
+      "txHashes": [
+        "0x668b66d983028089c1e3e07b6c3c67ae97eee0be70e0cff4542682307cd923b2"
+      ]
+    },
+    "projectAddLiquidity": {
+      "observedOnLocalChain": true,
+      "txHashes": [
+        "0x5408f18fca423f7056487297d8f66a2cec94c078093f35641096aa336f84ed34"
+      ]
+    },
+    "projectRemoveLiquidity": {
+      "observedOnLocalChain": true,
+      "txHashes": [
+        "0x00bc20882bd8b95a7209a29685ee4559a0ca1cd36f6699cc3464fbd53da4b170"
+      ]
+    },
+    "projectClaimRewards": {
+      "observedOnLocalChain": true,
+      "txHashes": [
+        "0x816dc8103ed88a36a7c2f10836391f76ba7de2b0dcb56fd75464ef8be1cb3cce"
+      ]
+    },
+    "projectBurnBoost": {
+      "observedOnLocalChain": true,
+      "txHashes": [
+        "0x1e387d80598b2be0424d0d2f5c67ab2c8f23914e8858857bb7c53761095520ed"
+      ]
+    },
+    "minerPurchase": {
+      "observedOnLocalChain": true,
+      "txHashes": [
+        "0x478f8c9b30ca2704b641dd7c422d8fc29430979dcc2668c6b52a589f505c2488"
+      ]
+    },
+    "fragmentDeposit": {
+      "observedOnLocalChain": true,
+      "txHashes": [
+        "0xe74b12e65a4a07e6bfece09db3c6b336e833fc9b9d5287424f43f9b2605c9245"
+      ]
+    },
+    "fragmentRedeem": {
+      "observedOnLocalChain": true,
+      "txHashes": [
+        "0xab206e751da5310d4a8d15bb6b56561d6d9027f2606a51fbebf3ade18424e1a6"
+      ]
+    },
+    "fragmentBuy": {
+      "observedOnLocalChain": true,
+      "txHashes": [
+        "0xa4ae6e8636d37d672730dd632daee31290af5436f8f624f04a81866f45ee8b0f"
+      ]
+    },
+    "fragmentSell": {
+      "observedOnLocalChain": true,
+      "txHashes": [
+        "0xb8d2982bf758b107d80c003f784915f18cf72970a33feb42d1b28af00c90482d"
+      ]
+    },
+    "fragmentAddLiquidity": {
+      "observedOnLocalChain": true,
+      "txHashes": [
+        "0x9e13b225e3b1d8b9522aa2e6132448f2b45325adf6470e94a1772009f2366965"
+      ]
+    },
+    "fragmentRemoveLiquidity": {
+      "observedOnLocalChain": true,
+      "txHashes": [
+        "0xa2858c90caef74bc047eef210fd4ed81d4001262a4f9d519f332abfe988570f6"
+      ]
+    },
+    "fragmentVaultClaimRewards": {
+      "observedOnLocalChain": true,
+      "txHashes": [
+        "0x389816348caac1f2a27e86c4d4835557a98ca45eed701f9de04c5f3192364022"
+      ]
+    },
+    "fragmentLpClaimRewards": {
+      "observedOnLocalChain": true,
+      "txHashes": [
+        "0xe144e6f48e7357224622f0d389434ffd5c387375b1357feda48f6b88bb12d4ef"
+      ]
+    }
+  },
+  "nft5And6": [
+    {
+      "id": "5",
+      "owner": "0x328809Bc894f92807417D2dAD6b7C998c1aFdac6",
+      "approved": "0x0000000000000000000000000000000000000000",
+      "containedInFragmentVault": false
+    },
+    {
+      "id": "6",
+      "owner": "0x328809Bc894f92807417D2dAD6b7C998c1aFdac6",
+      "approved": "0x0000000000000000000000000000000000000000",
+      "containedInFragmentVault": false
+    }
+  ],
+  "runtimeChecks": 32,
+  "projectBindingChecks": 28,
+  "proxyBindingChecks": 6,
+  "limitations": [
+    "Local Anvil 1952 actual contracts; no public1952 transactions",
+    "72 UI journal rows include previous local runs; current chain has60 receipts",
+    "Browser actions are root CUA evidence; this subagent only independently read chain and service"
+  ],
+  "rootReportedUiObservations": {
+    "source": "Root agent CUA observations, separate from this read-only chain collector",
+    "reloadAndReconnectCompleted": true,
+    "displayedHistoryRowsTotal": 72,
+    "firstPageDisplayedRows": 10,
+    "latestHash": "0x478f8c9b30ca2704b641dd7c422d8fc29430979dcc2668c6b52a589f505c2488",
+    "historyTotalIncludesPreviousLocalRuns": true,
+    "currentChainCountUsesReceiptsOnly": true
+  }
+}

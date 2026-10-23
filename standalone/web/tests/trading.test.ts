@@ -1,5 +1,6 @@
 import { decodeAbiParameters, decodeFunctionData, encodeFunctionResult, parseAbiParameters, type Hex } from 'viem'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import * as policy from '../../trading-policy'
 import { parseAmount } from '../src/domain/amount'
 import { STABLE_ADDRESS, WOKB_ADDRESS } from '../src/domain/assets'
 import { erc20Abi, permit2Abi, routerAbi, v3QuoterAbi, v4QuoterAbi } from '../src/trading/abis'
@@ -12,6 +13,9 @@ import { TradeError, type PublicRpc, type Quote, type TradeIdentity, type TradeP
 const owner = '0x1111111111111111111111111111111111111111' as const
 const other = '0x2222222222222222222222222222222222222222' as const
 const hash = `0x${'a'.repeat(64)}` as Hex
+beforeEach(() => {
+  vi.spyOn(policy, 'publicSwapsEnabled').mockReturnValue(true)
+})
 const base: Quote = {
   from: 'okb',
   to: 'usdt0',
@@ -92,6 +96,33 @@ function fixture() {
   }
 }
 describe('exact test-pool trading', () => {
+  it.each(['v3', 'v4'] as const)('rejects paused %s trades in both directions before any RPC or wallet request', async (protocol) => {
+    vi.spyOn(policy, 'publicSwapsEnabled').mockReturnValue(false)
+    for (const nativeIn of [true, false]) {
+      const f = fixture()
+      const review: Quote = { ...base, protocol, from: nativeIn ? 'okb' : 'usdt0', to: nativeIn ? 'usdt0' : 'okb' }
+      await expect(executeTrade(review, {
+        identity: f.identity, getIdentity: () => f.identity, isCurrentForm: () => true,
+        onProgress: (p) => f.events.push(p), read: f.read, wait: f.wait, ready: true,
+      })).rejects.toThrow('tradePaused')
+      expect(f.read).not.toHaveBeenCalled()
+      expect(f.identity.provider.request).not.toHaveBeenCalled()
+      const quote = await getQuote(review, protocol, f.read, true)
+      expect(quote.protocol).toBe(protocol)
+      expect(quote.amountOut).toBeGreaterThan(0n)
+      expect(f.identity.provider.request).not.toHaveBeenCalled()
+    }
+  })
+  it('retains a submitted approval hash and stops subsequent writes when trading pauses during confirmation', async () => {
+    const f = fixture()
+    f.wait.mockImplementationOnce(async () => { vi.spyOn(policy, 'publicSwapsEnabled').mockReturnValue(false) })
+    await expect(executeTrade({ ...base, from: 'usdt0', to: 'okb' }, {
+      identity: f.identity, getIdentity: () => f.identity, isCurrentForm: () => true,
+      onProgress: (p) => f.events.push(p), read: f.read, wait: f.wait, ready: true,
+    })).rejects.toThrow('tradePaused')
+    expect(f.submitted).toHaveLength(1)
+    expect(f.events.at(-1)).toMatchObject({ hash, kind: 'approval' })
+  })
   it('keeps six decimal input and rounds minimum upwards so a micro-unit cannot breach 0.5%', () => {
     expect(parseAmount('1.000001', 6)).toEqual({ kind: 'valid', units: 1000001n })
     expect(parseAmount('1.0000001', 6).kind).toBe('invalid')

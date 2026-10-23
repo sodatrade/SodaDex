@@ -1,0 +1,23 @@
+import type { ReactElement } from 'react'
+import type { Currency } from '../../liquidity/types'
+import { Icon } from '../../components/primitives'
+import { usePreferences } from '../../preferences/context'
+import { tradeMessages } from '../../i18n/trade'
+import { CurrencyIcon } from './CurrencyPicker'
+export function AmountPanel({ currency, pay, amount, balance, balanceExact, hint, disabled, error, estimated, readOnly, onAmount, onSelect, onMax }: {
+  currency: Currency; pay?: boolean; amount: string; balance: string; hint?: string; disabled: boolean; error?: boolean; estimated?: boolean;
+  onAmount?: (value: string) => void; onSelect?: () => void; onMax?: () => void; readOnly?: boolean
+  balanceExact?: string
+}): ReactElement {
+  const { t, locale } = usePreferences(), m = tradeMessages(locale)
+  const id = pay ? 'swap-sell-amount' : 'swap-receive-amount'
+  const token = <><CurrencyIcon currency={currency} /><strong>{currency.symbol}</strong>{onSelect && <Icon name="chevron" size={16} />}</>
+  return <div className={`amount-panel${pay ? '' : ' receive-panel'}${error ? ' has-error' : ''}`}>
+    <div className="amount-label"><span><label htmlFor={id}>{pay ? m.pay : m.receive}</label>{estimated && <span className="swap-estimate"> · {m.estimated}</span>}</span>
+      <span title={balanceExact}>{balance}{onMax && <button className="text-button swap-max" onClick={onMax} disabled={disabled}>{m.max}</button>}</span></div>
+    <div className="amount-row">{onSelect ? <button className="token-selector" onClick={onSelect} disabled={disabled} aria-label={t(pay ? 'choosePay' : 'chooseReceive', { symbol: currency.symbol })}>{token}</button> : <span className="token-selector">{token}</span>}
+      <input id={id} inputMode="decimal" autoComplete="off" placeholder="0" value={amount} readOnly={readOnly}
+        onChange={(e) => onAmount?.(e.target.value.slice(0, 100))} aria-invalid={error} aria-describedby={error ? 'swap-amount-error' : undefined} disabled={disabled} /></div>
+    {hint && <span className="amount-hint">{hint}</span>}
+  </div>
+}

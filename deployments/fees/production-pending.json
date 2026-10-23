@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "stage": "production",
+  "chainId": 196,
+  "fees": {
+    "setup": {
+      "cpuCreationWei": null,
+      "transistorUnitPriceWei": null,
+      "transistorMintProtocolWei": null,
+      "tapeoutWei": null,
+      "nftMarketBps": null
+    },
+    "mining": {
+      "listingFeeRaw": null,
+      "snipeStartBps": null,
+      "snipeMins": null,
+      "v2ProtocolEnabled": null,
+      "curveBuyPlatformBps": null,
+      "curveSellPlatformBps": null,
+      "graduationLpPlatformShareBps": null,
+      "buyTaxBps": null,
+      "sellTaxBps": null,
+      "protocolShareOfTaxBps": null,
+      "creatorShareOfNetTaxBps": null,
+      "outputPlatformBps": null,
+      "v2LpBps": null
+    },
+    "fragmentation": {
+      "tradeBps": null,
+      "platformShareOfFeeBps": null,
+      "outputServiceBps": null,
+      "depositBps": null,
+      "redeemBps": null
+    },
+    "dex": {
+      "v3LpPips": null,
+      "v3ProtocolDenominator": null,
+      "v4LpPips": null,
+      "v4ProtocolPips": null,
+      "interfaceBps": null,
+      "limitOrderCommissionBps": null
+    }
+  },
+  "recipients": {
+    "miningCurvePlatform": null,
+    "lockedLpPlatform": null,
+    "lockedLpCreator": null,
+    "v2Protocol": null,
+    "factoryProtocol": null,
+    "transistorCreator": null,
+    "tapeoutTreasury": null,
+    "marketProtocol": null,
+    "miningTaxPlatform": null,
+    "miningOutputPlatform": null,
+    "miningCreator": null,
+    "fragmentTradePlatform": null,
+    "fragmentServicePlatform": null,
+    "v3Protocol": null,
+    "v4Protocol": null,
+    "feeAdmin": null
+  },
+  "assetAllocation": {
+    "fabPremineBps": null,
+    "fabPremineRecipient": null
+  },
+  "launchRules": {
+    "graduationProtectionSeconds": null
+  },
+  "operations": {
+    "distributionGas": null,
+    "limitOrderGas": null,
+    "feeChanges": null
+  },
+  "approval": {
+    "state": "pending-product",
+    "approvedBy": null,
+    "decisionReference": null,
+    "configurationSha256": null
+  }
+}

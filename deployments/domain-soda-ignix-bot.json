@@ -1,0 +1,116 @@
+{
+  "recordedAt": "2026-10-22T04:21:07.541559+00:00",
+  "userDate": "2026-10-21",
+  "hostname": "soda.ignix.bot",
+  "url": "https://soda.ignix.bot",
+  "worker": "sodadex-preview",
+  "domain": {
+    "id": "18e915b6e84dee61e29609f47c68fefa49be8b4d",
+    "zone_id": "48a721ce775b16cd56d035acfade7e0e",
+    "zone_name": "ignix.bot",
+    "hostname": "soda.ignix.bot",
+    "service": "sodadex-preview",
+    "environment": "production",
+    "cert_id": "583061fb-dd62-467c-85fe-7323d8c0ccc0",
+    "previews_enabled": false,
+    "enabled": true
+  },
+  "existingWorkerVersionPreserved": [
+    {
+      "version_id": "e25bf3c3-8d80-4f6d-8caa-f1569454cb7a",
+      "percentage": 100
+    }
+  ],
+  "sourceCommit": "923ecab6a74eed81ed6d8823725df9941c233233",
+  "operation": "Added custom domain to existing deployment; no Worker code upload",
+  "contractEnvironment": "independent-test",
+  "contractWrites": 0,
+  "ownerOrTreasuryChanges": false,
+  "verification": {
+    "https": "200 with certificate validation enabled",
+    "indexMatchesExistingSite": true,
+    "assets": [
+      {
+        "path": "/assets/index-CVbZClOu.js",
+        "bytes": 192713,
+        "sha256": "3f3d18270cf4f27ae0a62031ce7eb3eb11c4d8777443a50c4eec860a003e0835",
+        "matchesExistingSite": true
+      },
+      {
+        "path": "/assets/network-j5ezF9J3.js",
+        "bytes": 26617,
+        "sha256": "f0c4233979a91f9b2a8d75bc34a66a2b4d722711463241453172850f89c786cf",
+        "matchesExistingSite": true
+      },
+      {
+        "path": "/assets/index-DFaoM8AG.css",
+        "bytes": 53673,
+        "sha256": "686f30a30abfc8c4e507f78d4eeea69749e1703ca94bcd83d1a803559926a846",
+        "matchesExistingSite": true
+      }
+    ],
+    "network": {
+      "id": "196-test",
+      "chainId": 196,
+      "chainHex": "0xc4",
+      "chainName": "X Layer",
+      "explorerUrl": "https://www.oklink.com/xlayer",
+      "nativeCurrency": {
+        "name": "OKB",
+        "symbol": "OKB",
+        "decimals": 18
+      },
+      "dexEnabled": true,
+      "ordersEnabled": true,
+      "referenceEnabled": true
+    },
+    "rpc": {
+      "/api/rpc": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": "0xc4"
+      },
+      "/api/fragments/rpc": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": "0xc4"
+      }
+    }
+  },
+  "validation": {
+    "webTypecheck": "passed",
+    "webLint": "passed",
+    "webTests": {
+      "passed": 524,
+      "skipped": 27,
+      "skippedReason": "Optional fork fixtures unavailable"
+    },
+    "workerTypecheck": "passed",
+    "workerLint": "passed",
+    "workerTests": {
+      "passed": 228,
+      "skipped": 0
+    },
+    "wranglerDryRun": "passed",
+    "browser": {
+      "origin": "https://soda.ignix.bot",
+      "swapPageRendered": true,
+      "poolPageRendered": true,
+      "dedicatedPoolAndV2V3V4Listed": true,
+      "walletWrites": 0
+    },
+    "logs": [
+      "/tmp/sodadex-domain-web-typecheck.log",
+      "/tmp/sodadex-domain-web-lint.log",
+      "/tmp/sodadex-domain-web-tests.log",
+      "/tmp/sodadex-domain-worker-check.log",
+      "/tmp/sodadex-domain-dryrun.log"
+    ]
+  },
+  "repositoryChanges": [
+    "standalone/worker/wrangler.jsonc",
+    "standalone/worker/wrangler.fragments-196-test.jsonc",
+    "standalone/README.md"
+  ],
+  "gitCommitOrPushPerformed": false
+}

@@ -1,0 +1,50 @@
+{
+  "lifecycle": "active",
+  "requirement": "mining-products-1952 / ordinary V2 and special LP treasury routing",
+  "owner": "/root",
+  "repositories": [
+    {
+      "repository": "sodatrade/SodaDex",
+      "worktree": "/Users/LevyHoo/Documents/SodaDex",
+      "branch": "codex/feat/mining-products-1952",
+      "headBefore": "b57c182e05d695ef397c65604420bbffb114ac14",
+      "base": "codex/feat/sodadex-bootstrap",
+      "baseSha": "7506ce36138dfb6262ef11d1e3ca4828fec5ede3",
+      "pr": 2,
+      "changes": "Ordinary V2 UI/RPC/indexing, tests and public evidence; optional new special pool binding; current deployed special pool retained",
+      "validation": {
+        "webTests": 540,
+        "workerTests": 228,
+        "typecheck": "passed",
+        "lint": "passed",
+        "build": "passed",
+        "publicV2Transactions": 27,
+        "localBrowserV2Transactions": 11
+      }
+    },
+    {
+      "repository": "okasplaunchpad/contract",
+      "worktree": "/Users/LevyHoo/XTruthWorkspace/contract",
+      "branch": "codex/feat/mining-products-1952",
+      "headBefore": "007291a073b0e4b293a96fca82fa15ae2e33dc94",
+      "base": "develop",
+      "baseSha": "1426a613b6386be26c6ac91e14612ec581ff9c4c",
+      "pr": 3,
+      "changes": "SodaPool internal accounting hooks, new SodaIgnixPool/Income, tests and handoff only",
+      "validation": {
+        "targetedTests": 37,
+        "fullPreviousRunPassed": 944,
+        "fullPreviousRunFailed": 3,
+        "fullFailureReason": "fork environment and old Hook configuration",
+        "buildSizes": "passed",
+        "slitherAndAderyn": "triaged, no confirmed new fund-drain finding"
+      }
+    }
+  ],
+  "publicationTarget": "sodadex-preview.jsmsdx2025.workers.dev",
+  "workerConfig": "standalone/worker/wrangler.fragments-196-test.jsonc",
+  "productionTouched": false,
+  "excluded": "All baseline unrelated untracked files and unrelated dirty mining contracts; no .lock or local raw scanner reports",
+  "newSpecialPool": "source implemented, public deployment requires new separately approved budget",
+  "mapping": "known taxed TEST-FAB196 excluded from standard V2; existing special contracts unchanged"
+}

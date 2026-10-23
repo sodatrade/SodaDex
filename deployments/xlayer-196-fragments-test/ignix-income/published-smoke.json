@@ -1,0 +1,19 @@
+{
+  "checkedAt": "2026-10-21T08:51:06.095Z",
+  "httpStatus": 200,
+  "pool": "0x5d98189f79234d5f988ea5b94641c3b04b0a7866",
+  "trades": 2,
+  "chartPoints": 2,
+  "pageLimit": 10,
+  "indexSynced": true,
+  "indexError": null,
+  "readOnlyBrowser": true,
+  "publicBrowserObservations": [
+    "Token picker includes sFAB and standard X Layer assets",
+    "Selecting sFAB renders real new-pool chart and the two confirmed swap hashes",
+    "Pool list includes ordinary V2 TEST-FAB/TEST-V2",
+    "V2 create fee fixed at 0.3%; default LP slippage 0.5%",
+    "Fresh page console reports zero errors"
+  ],
+  "productionTouched": false
+}

@@ -1,0 +1,75 @@
+{
+  "verifiedAt": "2026-10-21T08:37:00Z",
+  "method": "Independent read-only receipt, transaction, canonical block, historical fee parameter and balance verification",
+  "chainId": 196,
+  "snapshotBlock": 73802505,
+  "successfulTransactions": 14,
+  "nonceRange": [
+    220,
+    233
+  ],
+  "latestAndPendingNonce": 234,
+  "allTransactionHashesStillCanonical": true,
+  "originalJournalPreserved": true,
+  "canonicalReconciliation": [
+    {
+      "index": 4,
+      "transactionHash": "0x93bdbff9ae7a9b695a12bff1447b4ca6a16c98cf8d2d0dce862242e13dd1def3",
+      "blockNumber": 73802434,
+      "originalBlockHash": "0xe2c33cd46f12340a7b777d8fe18af9acd6a04eb8891de7ba6c410dfd6c371027",
+      "currentBlockHash": "0x7081fed13152679004e0605428daabff15ee6e4a3916cbac5d036714913135df",
+      "receiptTransactionAndCanonicalBlockAgree": true,
+      "statusAndFeeUnchanged": true,
+      "rebroadcast": false
+    }
+  ],
+  "gasSpentWei": "200408901000000",
+  "grossNativeSpentWei": "33010000000",
+  "totalSpentWei": "200441911000000",
+  "capWei": "390000000000000",
+  "l1AndOperatorFeesWei": "0",
+  "feeSplit": {
+    "buy": {
+      "total": "50000",
+      "platform": "15000",
+      "lp": "35000"
+    },
+    "sell": {
+      "total": "15007",
+      "platform": "4502",
+      "lp": "10505"
+    }
+  },
+  "income": {
+    "platformCumulativeWei": "19502",
+    "platformPaidWei": "19502",
+    "platformOwedWei": "0",
+    "fabCumulativeRaw": "1480046",
+    "fabPaidRaw": "1107294",
+    "fabOwedRaw": "372752"
+  },
+  "rewards": {
+    "balanceOkbWei": "45505",
+    "liabilitiesOkbWei": "45505",
+    "ownerClaimableOkbWei": "45504",
+    "lockerClaimableOkbWei": "0",
+    "fabBalanceAndLiabilitiesRaw": "0",
+    "roundingRemainderWei": "1"
+  },
+  "oldLocker": {
+    "lockedRaw": "9526279441628825",
+    "poolBalanceRaw": "9526279441628825",
+    "unchanged": true
+  },
+  "newLocker": {
+    "lockedRaw": "952627944162882",
+    "ownerLpRaw": "0",
+    "lockTime": "2026-10-21T08:32:21Z",
+    "unlockTime": "2026-12-20T08:32:21Z",
+    "durationSeconds": 5184000,
+    "poolFunderBeneficiaryVerified": true
+  },
+  "poolReservesEqualBalances": true,
+  "runtimeHashesMatchJournal": true,
+  "productionTouched": false
+}

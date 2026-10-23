@@ -1,0 +1,13 @@
+{
+  "approved": true,
+  "chainId": 196,
+  "production": false,
+  "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+  "treasury": "0xE5384c794cb59B3868D962641Df1943a95Cec7a4",
+  "lockerBeneficiary": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+  "totalCapWei": "500000000000000",
+  "gasCapWei": "490000000000000",
+  "nonGasCapWei": "10000000000000",
+  "maxGasPriceWei": "30000000",
+  "authorization": "同意，按 0.0005 OKB 总上限部署新版测试合约"
+}

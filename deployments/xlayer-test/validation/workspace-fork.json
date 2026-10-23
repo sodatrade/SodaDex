@@ -1,0 +1,20 @@
+{
+  "passed": 19,
+  "swaps": [
+    "0xd28ec761f31203dc2bbf19adfe48207a8f7c28963951ae5b14144a069f7f3828",
+    "0xb58314105ba62bdb8de765be7c9996d580701fc8c4eb1c37235219c676feebdb",
+    "0xde97e19cc9da6d1e47135793fae2b707683729aaab6047a35380d409ed73a02c",
+    "0xeb7e25ae63630d76237452391bda379dde6a3bb583f23556378404e1473bb2d0"
+  ],
+  "wrap": "0x686a1b1ea775cb9c5e8f327247e2e28c668049f13e1c6b5c06044deb849a0e0c",
+  "unwrap": "0x94a7f00ffdcbeb3a995cab806c58e31ae385f233041bda063abaf9375d9e106a",
+  "send": "0xfb20e9985fca45141c2cda88444abe0ccd22985b67f5a76784e2fe98a18b80de",
+  "assertions": [
+    "generic currency picker and V3/V4 pool discovery",
+    "V3 and V4 forward/reverse swaps: successful owned-Anvil router receipts",
+    "WOKB wrap/unwrap: exact 1:1 balance changes",
+    "portfolio Send: recipient balance and direct receipt target",
+    "wallet used fixture-safe EIP-1193 methods only"
+  ],
+  "evidence": "real browser + compiled Worker + owned local Anvil; no keystore or public-chain write"
+}

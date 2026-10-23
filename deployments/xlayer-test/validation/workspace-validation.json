@@ -1,0 +1,64 @@
+{
+  "status": "passed",
+  "validatedOn": "2026-10-16",
+  "scope": "SodaDEX test workspace on X Layer 196; official Uniswap pools read only",
+  "web": {
+    "tests": 210,
+    "files": 25,
+    "skipped": 0,
+    "typecheck": "passed",
+    "lint": "passed",
+    "build": "passed",
+    "ownedAnvilIntegrationTests": 15
+  },
+  "worker": {
+    "tests": 87,
+    "files": 13,
+    "typecheck": "passed",
+    "lint": "passed",
+    "buildDryRun": "passed"
+  },
+  "browser": {
+    "realReadOnlyLayout": 21,
+    "realOfficialReferenceReads": 7,
+    "ownedAnvilTrading": 19,
+    "ownedAnvilLiquidity": 48,
+    "widths": [
+      1440,
+      768,
+      390
+    ],
+    "runtimeErrorsInReadOnlyLayout": 0,
+    "nonBlockingLocalNetworkConsoleEvents": [
+      "ERR_NETWORK_CHANGED during Anvil progression; transaction and balance assertions passed"
+    ]
+  },
+  "mainnetWrites": false,
+  "productionContractsModified": false,
+  "evidence": [
+    "workspace-browser.json",
+    "workspace-reference.json",
+    "workspace-fork.json",
+    "workspace-liquidity.json",
+    "workspace-visual.json",
+    "workspace-live-browser.json",
+    "workspace-http.json"
+  ],
+  "limits": [
+    "Independent standalone validation; preserved upstream monorepo checks not run",
+    "New broadcasts only occurred on owned local Anvil",
+    "Exact-input single-hop SodaDEX V3/V4 trading; official pools read only",
+    "No external fiat pricing, whole-chain index, limit orders, onramp, token launch or auctions"
+  ],
+  "sourceCommit": "713d0db5591ed3d7765d5389ae8d713069332c01",
+  "publishedVersionId": "92aff647-7c0a-4c68-999b-2faa2c2c19a1",
+  "live": {
+    "browserChecks": 32,
+    "matchingAssets": 38,
+    "swapPreviews": 2,
+    "simulations": 8,
+    "officialReferenceReads": 3,
+    "officialRouterApprovalBlocked": true,
+    "mainnetWrites": false
+  }
+}

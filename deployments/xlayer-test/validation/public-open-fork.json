@@ -1,0 +1,110 @@
+{
+  "kind": "sodadex-public-open-owned-fixture-browser-acceptance",
+  "origin": "http://127.0.0.1:4173",
+  "fixture": "owned-anvil-fork chain 196; no keystore or public-chain transport",
+  "failedAttempts": [
+    {
+      "stage": "unmodified fork-swaps harness",
+      "reason": "stale visible-text expectation: expected V3 / V4 测试池已开放, current UI says V3 / V4 测试池已部署",
+      "fixtureTransactions": 0
+    },
+    {
+      "stage": "temporarily corrected harness before fixture repair",
+      "reason": "fixture had no runtime code at V3/V4 Quoter addresses; V3 eth_call selector 0xc6a5026a returned 0x and UI correctly withheld preview",
+      "fixtureTransactions": 0,
+      "classification": "fixture setup gap, not product quote defect"
+    }
+  ],
+  "temporaryHarnessOnlyChanges": [
+    "replace the stale pool text expectation with V3 / V4 测试池已部署",
+    "use fixed public owned-fixture address and localhost origin inside addInitScript because this CLI session does not reliably forward init-script arguments"
+  ],
+  "swapAcceptance": {
+    "passedSwaps": 4,
+    "checks": [
+      "successful router receipt",
+      "own-pool Swap event",
+      "actual owner balance delta",
+      "reviewed minimum received",
+      "no WOKB residue"
+    ],
+    "results": [
+      {
+        "protocol": "V3",
+        "direction": "OKB-to-USD₮0",
+        "hash": "0xc58a35985d75344eb7f424fe4f57cf2e6a4a22c4448c436e3a0dd661519c5b55",
+        "minimumRaw": "114",
+        "nativeDeltaExcludingGas": "-1000000000000",
+        "stableDeltaRaw": "114"
+      },
+      {
+        "protocol": "V3",
+        "direction": "USD₮0-to-OKB",
+        "hash": "0xf8b75b329a339d1a4674b082df413a2522e7c6ef7318b73e527afc4d896afdf0",
+        "minimumRaw": "838274287247",
+        "nativeDeltaExcludingGas": "842486720851",
+        "stableDeltaRaw": "-100"
+      },
+      {
+        "protocol": "V4",
+        "direction": "OKB-to-USD₮0",
+        "hash": "0xd750ed1054f1691aef39f39a941952de29a1e021ea1bada2e997f34531bd9b3c",
+        "minimumRaw": "115",
+        "nativeDeltaExcludingGas": "-1000000000000",
+        "stableDeltaRaw": "115"
+      },
+      {
+        "protocol": "V4",
+        "direction": "USD₮0-to-OKB",
+        "hash": "0xff3fdbd78ffe7d6bdbc153d6f7a825a38d055333a54390b6c6c81df9bb3336fb",
+        "minimumRaw": "855415338256",
+        "nativeDeltaExcludingGas": "859713907794",
+        "stableDeltaRaw": "-100"
+      }
+    ]
+  },
+  "enabledSmoke": {
+    "passedChecks": 50,
+    "publicTrading": "enabled",
+    "walletMethods": [
+      "eth_requestAccounts",
+      "eth_chainId",
+      "wallet_switchEthereumChain"
+    ],
+    "note": "two console errors were expected from the test's deliberate /api/rpc 502 failure-state assertion"
+  },
+  "liquidityAcceptance": {
+    "passedChecks": 48,
+    "v3": {
+      "tokenId": "2",
+      "liquidity": [
+        "108559",
+        "217118",
+        "0"
+      ],
+      "fullExit": "0xc125a92de47a99155700753fb98dc94a859b48220174bf5c07d69301131b934b"
+    },
+    "v4": {
+      "tokenId": "2",
+      "liquidity": [
+        "108593",
+        "217186",
+        "0"
+      ],
+      "fullExit": "0xcfce0c9752728e6af5e3ed7073b21dabc75fd579bd91b6bbacac6dd1a1c1c954"
+    },
+    "checks": [
+      "NFT owner and liquidity",
+      "increase",
+      "partial exit",
+      "immediate full exit",
+      "asset return",
+      "PositionManager residue",
+      "WOKB residue",
+      "desktop/mobile overflow"
+    ]
+  },
+  "rawFixtureTransactions": ".analysis/browser-acceptance/public-open-fixture-final.json",
+  "sourceCommit": "f6346b2fe4715aa30d2c04e3be801907a5d59180",
+  "mainnetWrites": false
+}

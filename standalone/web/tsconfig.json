@@ -4,16 +4,26 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
     "strict": true,
     "resolveJsonModule": true,
     "noEmit": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "verbatimModuleSyntax": true,
-    "isolatedModules": true,
-    "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom", "svelte"],
+    "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom"],
     "baseUrl": ".",
-    "paths": { "$lib": ["src/lib"], "$lib/*": ["src/lib/*"] }
+    "paths": {
+      "@universe/mycelium/styled": ["../../packages/mycelium/src/styled/index.ts"],
+      "@universe/tailwind/types": ["../../packages/tailwind/src/types.ts"],
+      "@universe/tailwind": ["../../packages/tailwind/src/index.ts"],
+      "react": ["node_modules/@types/react/index.d.ts"],
+      "react/*": ["node_modules/@types/react/*"],
+      "class-variance-authority": ["node_modules/class-variance-authority/dist/index.d.ts"],
+      "clsx": ["node_modules/clsx/clsx.d.ts"],
+      "tailwind-merge": ["node_modules/tailwind-merge/dist/types.d.ts"],
+      "viem": ["node_modules/viem/_types/index.d.ts"],
+      "viem/*": ["node_modules/viem/_types/*"]
+    }
   },
   "include": ["src", "tests", "tooling", "vite.config.ts", "vitest.config.ts"]
 }

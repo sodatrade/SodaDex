@@ -1,0 +1,21 @@
+{
+  "statusFile": "/tmp/sodadex-expired-recovery-final-status-captured.json",
+  "transactions": [
+    {
+      "role": "cancel",
+      "hash": "0x0e844ba7e59279d369462f5234aad6850df261e9d49e5a3743be984a3d6aaf9f"
+    },
+    {
+      "role": "conversion",
+      "hash": "0x78eb3877bea647937867ebd077f482f1487e8c3f68db93eac289bd54fd8b2d34"
+    },
+    {
+      "role": "sync",
+      "hash": "0x5a73b28b52f5f2e9596de8cd4a1cf4d9d3e27fc7d734c7bfdbed47892f24c4ad"
+    },
+    {
+      "role": "fund",
+      "hash": "0xb7cbf30602a1fbf8019d0e82b3a8a029a76d89369ec7774d9df72f2d1c373670"
+    }
+  ]
+}

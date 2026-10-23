@@ -16,9 +16,11 @@ const routerRecipient = '0x0000000000000000000000000000000000000002'
 const currencyAmount = parseAbiParameters('address,uint256')
 const sweep = (owner: Address): Hex =>
   encodeAbiParameters(parseAbiParameters('address,address,uint256'), [zeroAddress, owner, 0n])
-export function minimumOutput(amountOut: bigint): bigint {
+export function minimumOutput(amountOut: bigint, slippageBps = Number(SLIPPAGE_BPS)): bigint {
   if (amountOut <= 0n) throw new TradeError('tradeUnavailable')
-  return (amountOut * (10_000n - SLIPPAGE_BPS) + 9_999n) / 10_000n
+  if (!Number.isInteger(slippageBps) || slippageBps < 0 || slippageBps >= 10_000)
+    throw new TradeError('tradeUnavailable')
+  return (amountOut * (10_000n - BigInt(slippageBps)) + 9_999n) / 10_000n
 }
 export function assertPair(form: TradeForm): void {
   if (!((form.from === 'okb' && form.to === 'usdt0') || (form.from === 'usdt0' && form.to === 'okb')))

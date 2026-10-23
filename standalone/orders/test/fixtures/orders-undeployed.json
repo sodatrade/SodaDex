@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "chainId": 196,
+  "stage": "test",
+  "status": "awaiting-test-deployment",
+  "settlement": null,
+  "deploymentBlock": null,
+  "apiOrigin": null,
+  "executionEnabled": false
+}

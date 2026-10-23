@@ -1,0 +1,16 @@
+{
+  "chainId": 196,
+  "environment": "independent-test",
+  "owner": "0x6EFa1Fad18900B929Fe6782fd3eaBeac2563416A",
+  "treasury": "0x6EFa1Fad18900B929Fe6782fd3eaBeac2563416A",
+  "contracts": {
+    "SodaPolicy": "0x57d4Fb4F98fe8beD34dA997bE11dE6Dd25546085",
+    "SodaIncentiveVault": "0x77D94C4c34F1E67621aD94Aa20a697E3544aB726",
+    "SodaIgnixPool": "0x6DB7Bb086C285FBE3eB6005C30eaED8c77db4506",
+    "IgnixLpRewards": "0x7F2b9c85592E8C5d73d198565056Af79b22E49ef",
+    "IgnixTreasuryIncome": "0x1c9fff7466EAAE3702bdDe1cCF239946b7b434Fb",
+    "SodaLocker": "0xAe8A0C13921416E673b7c27Ea3E997043398811F"
+  },
+  "productionTouched": false,
+  "frontendCutover": false
+}

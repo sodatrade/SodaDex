@@ -1,0 +1,111 @@
+{
+  "stage": "web-redesign",
+  "sourceCommit": "bf85d8a76a40963c5e9e8c51158335005e294fef",
+  "versionId": "5f08d512-3faf-4f16-b4e9-003c1b07a342",
+  "publishedOn": "2026-10-17",
+  "site": "https://sodadex-preview.jsmsdx2025.workers.dev",
+  "scope": "Presentation redesign and quote retry feedback; no chain writes or production changes",
+  "tests": {
+    "web": {
+      "files": 35,
+      "passed": 349,
+      "skipped": 0,
+      "fixture": "owned localhost Anvil"
+    },
+    "worker": {
+      "files": 17,
+      "passed": 120
+    },
+    "orders": {
+      "files": 6,
+      "passed": 34
+    },
+    "finalRefinements": {
+      "passed": 88
+    },
+    "typecheck": true,
+    "lint": true,
+    "build": true
+  },
+  "browser": {
+    "viewports": [
+      1440,
+      768,
+      390
+    ],
+    "pages": [
+      {
+        "page": "trade",
+        "data": "actual X Layer read-only quote",
+        "viewports": [
+          1440,
+          768,
+          390
+        ]
+      },
+      {
+        "page": "explore",
+        "data": "actual token catalog",
+        "viewports": [
+          1440,
+          768,
+          390
+        ]
+      },
+      {
+        "page": "portfolio",
+        "data": "wallet disconnected empty state",
+        "viewports": [
+          1440,
+          768,
+          390
+        ]
+      },
+      {
+        "page": "liquidity",
+        "data": "owned isolated chain discovered pools",
+        "viewports": [
+          1440,
+          768,
+          390
+        ]
+      }
+    ],
+    "extraStates": [
+      "quote failure and retry",
+      "token picker single scroll",
+      "search empty and long results",
+      "swap settings",
+      "Escape restores trigger focus",
+      "zh-CN/en/yue-HK",
+      "light/dark",
+      "public limit service not ready"
+    ],
+    "liveDefault": {
+      "theme": "light",
+      "locale": "zh-CN"
+    },
+    "liveReadonlyQuoteObserved": true,
+    "liveRuntimeErrors": 0,
+    "connectedWalletBrowserRetestedThisRelease": false,
+    "screenshotsStoredLocally": true
+  },
+  "assets": {
+    "matched": 42,
+    "total": 42,
+    "record": "redesign-http.json"
+  },
+  "boundaries": {
+    "mainnetWrites": false,
+    "productionContractsModified": false,
+    "customDomain": null,
+    "deploymentCi": null,
+    "publicLimitOrdersReady": false,
+    "independentFiatPricing": false,
+    "persistentPoolIndex": false
+  },
+  "notes": [
+    "Historical wallet and chain execution evidence remains in earlier validation records. This visual review does not claim fresh browser wallet signing.",
+    "Pool discovery still scans historical logs; partial coverage is identified in the UI."
+  ]
+}

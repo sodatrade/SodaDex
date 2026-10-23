@@ -1,0 +1,154 @@
+{
+  "observedAt": "2026-10-18T06:34:22Z",
+  "results": [
+    {
+      "chainId": 196,
+      "status": {
+        "schemaVersion": 1,
+        "chainId": 196,
+        "deploymentVersion": "dex-f9b6f3a65915e925dbe2c7aaa8e899c1b538c334-9ca7b948dc86ba86",
+        "head": {
+          "number": 73536214,
+          "hash": "0x07016c1416f92add16d7f42b58a8ddb0cb19a120cd06256361c0f1aa37f406c6",
+          "timestamp": 1792305250
+        },
+        "indexedThrough": 73536214,
+        "fromBlock": 73361037,
+        "syncing": false,
+        "lastError": null,
+        "generation": 0
+      },
+      "pages": [
+        {
+          "count": 10,
+          "first": "0xc06471b7857be60a6e8fd3db053190bfab353dc217c05531f3813368f82b87c6:9",
+          "asOf": {
+            "number": 73536214,
+            "hash": "0x07016c1416f92add16d7f42b58a8ddb0cb19a120cd06256361c0f1aa37f406c6",
+            "timestamp": 1792305250
+          }
+        },
+        {
+          "count": 2,
+          "first": "0x8e1acd26ac18c9dd4e94a3158b2d9da26625ee3f54bae9720e86e35a6613fa22:19",
+          "asOf": {
+            "number": 73536214,
+            "hash": "0x07016c1416f92add16d7f42b58a8ddb0cb19a120cd06256361c0f1aa37f406c6",
+            "timestamp": 1792305250
+          }
+        }
+      ],
+      "noDuplicateRows": true,
+      "frozenAnchor": true
+    },
+    {
+      "chainId": 1952,
+      "status": {
+        "schemaVersion": 1,
+        "chainId": 1952,
+        "deploymentVersion": "phase2-9eb904673520-43780614",
+        "head": {
+          "number": 43846387,
+          "hash": "0x419f3022ab4baf774d850dbeffcb33574b13c77af1853733fe1f1a53f9d20284",
+          "timestamp": 1792305224
+        },
+        "indexedThrough": 43846387,
+        "fromBlock": 43777919,
+        "syncing": false,
+        "lastError": null,
+        "generation": 0
+      },
+      "pages": [
+        {
+          "count": 10,
+          "first": "0x3beaa18426b132edc202bbaa533b18c019523f71787fd8871cb051c2daefd609:2",
+          "asOf": {
+            "number": 43846387,
+            "hash": "0x419f3022ab4baf774d850dbeffcb33574b13c77af1853733fe1f1a53f9d20284",
+            "timestamp": 1792305224
+          }
+        },
+        {
+          "count": 10,
+          "first": "0xc494af23159bd560ac64a3d3a4cca065d42d7724281129a6ff23302a8187d504:13",
+          "asOf": {
+            "number": 43846387,
+            "hash": "0x419f3022ab4baf774d850dbeffcb33574b13c77af1853733fe1f1a53f9d20284",
+            "timestamp": 1792305224
+          }
+        },
+        {
+          "count": 10,
+          "first": "0xc494af23159bd560ac64a3d3a4cca065d42d7724281129a6ff23302a8187d504:3",
+          "asOf": {
+            "number": 43846387,
+            "hash": "0x419f3022ab4baf774d850dbeffcb33574b13c77af1853733fe1f1a53f9d20284",
+            "timestamp": 1792305224
+          }
+        }
+      ],
+      "noDuplicateRows": true,
+      "frozenAnchor": true
+    },
+    {
+      "prefix": "",
+      "matchedAssets": [
+        "/assets/index-_UFG_bgF.js",
+        "/assets/index-CE-kXYvO.css"
+      ],
+      "network": {
+        "id": "196-test",
+        "chainId": 196,
+        "chainHex": "0xc4",
+        "chainName": "X Layer",
+        "explorerUrl": "https://www.oklink.com/xlayer",
+        "nativeCurrency": {
+          "name": "OKB",
+          "symbol": "OKB",
+          "decimals": 18
+        },
+        "dexEnabled": true,
+        "ordersEnabled": true,
+        "referenceEnabled": true
+      }
+    },
+    {
+      "prefix": "/mining",
+      "matchedAssets": [
+        "/mining/assets/index-CDSwVKSq.js",
+        "/mining/assets/index-BIq7R4K7.css"
+      ],
+      "network": {
+        "id": "1952-mining-test",
+        "chainId": 1952,
+        "chainHex": "0x7a0",
+        "chainName": "X Layer Testnet",
+        "explorerUrl": "https://www.okx.com/web3/explorer/xlayer-test",
+        "nativeCurrency": {
+          "name": "OKB",
+          "symbol": "OKB",
+          "decimals": 18
+        },
+        "dexEnabled": false,
+        "ordersEnabled": false,
+        "referenceEnabled": false
+      }
+    }
+  ],
+  "browser": {
+    "publicMiningHistory": true,
+    "publicNextPage": true,
+    "visibleRowsPerPage": 10,
+    "reloadRetainedOnchainRecords": true,
+    "localizedEventLabels": true,
+    "publicV3V4MarketSelector": true,
+    "localFixturePages": [
+      10,
+      10,
+      3
+    ],
+    "mobileWidth": 390,
+    "newWalletSignatures": 0,
+    "newChainTransactions": 0
+  }
+}

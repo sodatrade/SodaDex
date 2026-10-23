@@ -1,8 +1,9 @@
 {
   "status": "passed",
+  "versionId": "8548f2c6-ab0b-46a7-b971-a47888081aa1",
+  "sourceCommit": "5b97994a6d0713f7f7b078a27ec64af547a42e83",
   "origin": "https://sodadex-preview.jsmsdx2025.workers.dev",
-  "versionId": "364935b1-58d1-4f13-be7b-25fb58e5f4f8",
-  "sourceCommit": "a566c7a4bda6384c0c826e8358ec731ac4880f36",
+  "publicTrading": "paused",
   "assets": [
     {
       "path": "assets/Inter-Regular-Latin-BYtJb7jM.woff2",
@@ -10,19 +11,29 @@
       "sha256": "9ebb07cb3efc1bbb2b84342914fdaed9493e4c6b2282fd1e7e4de2f4965a0599"
     },
     {
+      "path": "assets/LiquidityPage-C6F_rClV.css",
+      "status": 200,
+      "sha256": "25d5a705f1f7f47474cb178aec868e3b5fdff59ca04376979207f1c95233f74b"
+    },
+    {
+      "path": "assets/LiquidityPage-a9C5p-4X.js",
+      "status": 200,
+      "sha256": "3aef921b334ba4ae8af8446540de2ae07abe58fe5a868aaaf8fdb1d5aee3de2c"
+    },
+    {
       "path": "assets/SOURCES.md",
       "status": 200,
       "sha256": "a7e33e8850d71be0d33c3734487115221ee55ce71148df389283db945ffc4499"
     },
     {
-      "path": "assets/index-BOCwzmQd.css",
+      "path": "assets/index-8SBERxst.js",
       "status": 200,
-      "sha256": "0111cc681168f228a41d09696f54f7e0a9c5855cb221ad84991e30e57d7a3ea2"
+      "sha256": "0036c4ed35fcd5aa44897097f7edddbcc26685444d7ddc57bb2ea045d28bb289"
     },
     {
-      "path": "assets/index-DxilXUZv.js",
+      "path": "assets/index-CFjjLoGp.css",
       "status": 200,
-      "sha256": "d9a4aa77c8d0a400a046ba451991ee33d451ecaa8a52a1b2f4f66e0915c57d9b"
+      "sha256": "a99d54b40128afa5b01d46a057c29305074612824d80431d3b909624f5405f90"
     },
     {
       "path": "assets/okb.png",
@@ -52,7 +63,7 @@
     {
       "path": "index.html",
       "status": 200,
-      "sha256": "34c500d7850344c47827d04c76cebbf09f27480b3a0be20ac226ff29efe028e6",
+      "sha256": "fc2351f0232bb3271faccfbcb3df242843ffacfb3907ae17427cd4fee8fb84f9",
       "contentSecurityPolicy": "default-src 'self'; script-src 'self' 'sha256-u6rB6SDwiZ9fC315V9ivK/Js5YdlIlZZKXBdNySlmYk='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'"
     },
     {
@@ -61,6 +72,92 @@
       "sha256": "8aabb800ae162745d485e03b7ad5424eac8030e13dcdb1e529102713816763be"
     }
   ],
-  "rpcChainId": "0xc4",
+  "blockedOldClientSimulations": [
+    {
+      "name": "v3Forward",
+      "method": "eth_call",
+      "status": 400,
+      "errorCode": -32600
+    },
+    {
+      "name": "v3Forward",
+      "method": "eth_estimateGas",
+      "status": 400,
+      "errorCode": -32600
+    },
+    {
+      "name": "v3Reverse",
+      "method": "eth_call",
+      "status": 400,
+      "errorCode": -32600
+    },
+    {
+      "name": "v3Reverse",
+      "method": "eth_estimateGas",
+      "status": 400,
+      "errorCode": -32600
+    },
+    {
+      "name": "v4Forward",
+      "method": "eth_call",
+      "status": 400,
+      "errorCode": -32600
+    },
+    {
+      "name": "v4Forward",
+      "method": "eth_estimateGas",
+      "status": 400,
+      "errorCode": -32600
+    },
+    {
+      "name": "v4Reverse",
+      "method": "eth_call",
+      "status": 400,
+      "errorCode": -32600
+    },
+    {
+      "name": "v4Reverse",
+      "method": "eth_estimateGas",
+      "status": 400,
+      "errorCode": -32600
+    },
+    {
+      "name": "permitRouter",
+      "method": "eth_call",
+      "status": 400,
+      "errorCode": -32600
+    },
+    {
+      "name": "permitRouter",
+      "method": "eth_estimateGas",
+      "status": 400,
+      "errorCode": -32600
+    }
+  ],
+  "reads": [
+    {
+      "method": "eth_chainId",
+      "status": 200,
+      "result": "0xc4"
+    },
+    {
+      "method": "eth_getTransactionReceipt",
+      "status": 200,
+      "result": {
+        "hash": "0xf10f9bfbfedb4435153e3cd02eb22cb555071b908852d5891902f2f2e82b513b",
+        "status": "0x1"
+      }
+    },
+    {
+      "method": "eth_getBalance",
+      "status": 200,
+      "result": "0x4107339857ed20"
+    },
+    {
+      "method": "eth_call",
+      "action": "ERC20 approve(0) simulation",
+      "status": 200
+    }
+  ],
   "mainnetWrites": false
 }

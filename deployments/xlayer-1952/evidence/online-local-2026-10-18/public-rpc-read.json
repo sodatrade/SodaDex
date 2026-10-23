@@ -1,0 +1,13 @@
+{
+  "capturedAt": "2026-10-17T23:58:38.081Z",
+  "sourceHead": "2767d224f",
+  "readOnly": true,
+  "chainId": 1952,
+  "block": "0x29cae4d",
+  "blockHash": "0xfbcbe03411ff21ec1a583d23ddf1db1a32c34e5b5fe2800df048e16018912fe0",
+  "symbol": "TEST-A",
+  "batchLimit": 10,
+  "logicalReads": 92,
+  "fetches": 22,
+  "elapsedMs": 9952
+}

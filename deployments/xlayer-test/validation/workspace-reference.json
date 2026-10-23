@@ -1,0 +1,26 @@
+{
+  "status": "passed",
+  "checks": [
+    "official candidate pools loaded from real RPC",
+    "V2 official candidates present",
+    "V3 official candidates present",
+    "V4 official candidates present",
+    "actual official V4 read-only quote",
+    "official reference has no approval or execution control",
+    "official browsing never asks wallet to sign"
+  ],
+  "poolCount": 8,
+  "protocols": [
+    "V2 \u00b7 0.3%",
+    "V3 \u00b7 0.01%",
+    "V3 \u00b7 0.05%",
+    "V3 \u00b7 0.3%",
+    "V4 \u00b7 0.01%",
+    "V4 \u00b7 0.05%",
+    "V4 \u00b7 0.3%",
+    "V4 \u00b7 1%"
+  ],
+  "quote": "0.000114 USD\u20ae0",
+  "walletMethods": [],
+  "mainnetWrites": false
+}

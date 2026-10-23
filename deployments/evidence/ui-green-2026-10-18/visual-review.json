@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "reviewType": "read_only_screenshot_visual_review",
+  "reviewer": "/root/ui_precision",
+  "scope": "绿色品牌、层级、控件一致性、页面密度与1440/390布局的静态视觉验收",
+  "releaseReportedByRoot": {
+    "sourceCommit": "2ec695590",
+    "cloudflareVersion": "8d2cb7de-6fdd-4a3e-a570-c9a0a99adcf7",
+    "defaultTheme": "light",
+    "resourceHashVerification": "pending_at_review_request"
+  },
+  "decision": {
+    "visualStatus": "pass_with_nonblocking_followups",
+    "blockingVisualFindings": 0,
+    "allBusinessE2EComplete": false,
+    "publicChainWriteVerifiedByThisReview": false
+  },
+  "evidence": [
+    {
+      "file": "/tmp/sodadex-ui-precision-proof/green-fundraising-desktop.png",
+      "sha256": "2c467949c3ecbd1cf05208c89d75d9cc1ffedb8b8c06bff9e82401ab144f2e48",
+      "viewportPixels": {
+        "width": 1440,
+        "height": 900
+      },
+      "source": "local_mock",
+      "theme": "light",
+      "note": "1952 模拟募资界面；UI FIXTURE 标记明确，截图不证明真实钱包或链上交易"
+    },
+    {
+      "file": "/tmp/sodadex-ui-precision-proof/green-fundraising-mobile.png",
+      "sha256": "3a9c733e8e5d535e678688c2e9c9200591214f1abc09f1cc9aec0f9f3f100599",
+      "viewportPixels": {
+        "width": 390,
+        "height": 844
+      },
+      "source": "local_mock",
+      "theme": "light",
+      "note": "1952 模拟募资界面；此图拍摄于隐藏主导航滚动条之前，不代表最终导航样式"
+    },
+    {
+      "file": "/tmp/sodadex-ui-precision-proof/green-dark-mobile.png",
+      "sha256": "c0d99eed4cae3c58e272286f83c089c4720735fb26ca36a797c0b0d09fec0213",
+      "viewportPixels": {
+        "width": 390,
+        "height": 844
+      },
+      "source": "local_mock",
+      "theme": "dark",
+      "note": "1952 模拟募资界面；最终暗色及导航样式"
+    },
+    {
+      "file": "/tmp/sodadex-ui-precision-proof/green-public-swap.png",
+      "sha256": "bd2bf450e241668b875275c9aaf62b460b3032fec22d82524686d7ae0d7993cd",
+      "viewportPixels": {
+        "width": 1440,
+        "height": 900
+      },
+      "source": "public_site",
+      "theme": "light",
+      "note": "真实公网196测试站的只读兑换界面；有链上行情展示，不证明本次执行过钱包交易"
+    }
+  ],
+  "rubric": [
+    {
+      "category": "task_clarity",
+      "score": 4,
+      "evidence": "桌面募资主按钮完整可见；公网兑换的输入、输出与连接钱包操作层级清楚。"
+    },
+    {
+      "category": "composition_alignment",
+      "score": 4,
+      "evidence": "桌面双栏顶底对齐；手机任务按钮变为等宽2×2，金额与操作面板边缘一致。"
+    },
+    {
+      "category": "typography",
+      "score": 4,
+      "evidence": "标题、价格和金额突出，链号、余额与时间使用次级文字，不争夺主操作。"
+    },
+    {
+      "category": "density_rhythm",
+      "score": 3,
+      "evidence": "募资手机输入起点仍接近首屏底部；公网仅有少量成交时图表面积显得偏空。"
+    },
+    {
+      "category": "color_surfaces",
+      "score": 4,
+      "evidence": "Logo、实心主按钮、导航选中、浅色选中面统一为绿色；暗色有独立深色表面，没有被白色输入漂白。"
+    },
+    {
+      "category": "components_states",
+      "score": 4,
+      "evidence": "可点击的次操作有细边与图标，选中用轻色填充；浅色聚焦输入为单层细绿边，未见粗环或发光。仅评价截图中可见状态。"
+    },
+    {
+      "category": "responsive_layout",
+      "score": 4,
+      "evidence": "390px截图内操作卡和输入没有水平裁切；最终暗色图没有此前粗灰色导航滚动条。"
+    },
+    {
+      "category": "restraint",
+      "score": 4,
+      "evidence": "绿色集中在品牌及交互状态，没有新增装饰渐变、图案或多余营销内容。"
+    }
+  ],
+  "followups": [
+    {
+      "id": "sparse_chart_density",
+      "priority": "low",
+      "evidenceFile": "green-public-swap.png",
+      "observation": "公网图表仅显示一个明显点，底部显示已观察成交2条，较大绘图区留白明显。",
+      "suggestion": "后续为稀少成交加入清楚的数据量提示，并适度缩短图表高度；保留真实数据，不生成虚假连续行情。",
+      "classification": "visual_improvement_not_confirmed_data_defect"
+    },
+    {
+      "id": "mobile_operation_depth",
+      "priority": "low",
+      "evidenceFile": "green-dark-mobile.png",
+      "observation": "手机端项目上下文和2×2任务选择排在交易卡之前，金额输入到约783px才出现，主提交操作需要继续滚动。",
+      "suggestion": "可继续压缩重复上下文的纵向间距，保留四项任务可发现性与点击尺寸；这是密度改进，不是流程阻断。",
+      "classification": "visual_improvement"
+    }
+  ],
+  "notFindings": [
+    "浅色手机截图中的灰色横向滚动条早于最终样式；不能作为已发布最终版本的缺陷。",
+    "公网行情稀疏与可见的少量成交相符，截图不足以推断图表取数错误。"
+  ],
+  "validationReportedByRoot": {
+    "testsPassed": 498,
+    "testsSkipped": 0,
+    "typecheck": "passed",
+    "lint": "passed",
+    "unifiedBuildAndCsp": "passed",
+    "provenance": "由/root提供；本次只读审图未重复执行"
+  },
+  "limitations": [
+    "矿机三张图均为本地mock，不是1952真实业务交易验收。",
+    "公网图只证明当时兑换页面可见样式和只读数据；未验证授权、签名、交易回执或全部业务E2E。",
+    "本次未操作浏览器，没有重新测试hover、键盘路径、弹窗、错误、加载和钱包已连接状态。",
+    "本次未独立核验公网资源哈希与提交对应关系；由root继续核验。"
+  ]
+}

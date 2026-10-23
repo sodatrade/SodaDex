@@ -1,0 +1,22 @@
+{
+  "status": "DEPLOYED_AND_ACCEPTED",
+  "chainId": 196,
+  "productionTouched": false,
+  "site": "https://sodadex-preview.jsmsdx2025.workers.dev",
+  "cloudflareVersion": "ec763909-ab45-4bfe-a1b9-290a11f4b856",
+  "successfulDeploymentAndAcceptanceTransactions": 21,
+  "successfulPublishedBrowserTransactions": 2,
+  "gasSpentWei": "345091950000000",
+  "nonGasGrossOutlayWei": "8000200000000",
+  "totalSpentWei": "353092150000000",
+  "totalSpentOKB": "0.000353092150",
+  "budgetCapWei": "500000000000000",
+  "browserEvidence": "public-browser-journal.json",
+  "browserCoverage": "Published UI: wallet connection, buy, sell, Pool form, My assets. Local browser: add/remove liquidity. Public contract execution: complete 21-step flow.",
+  "limitations": [
+    "IGNIX frontend deferred by user",
+    "New pool persistent history index not connected; chart reads recent 2000 blocks",
+    "Full contract suite has 3 pre-existing fork configuration failures; focused contracts passed"
+  ],
+  "gitPushed": false
+}

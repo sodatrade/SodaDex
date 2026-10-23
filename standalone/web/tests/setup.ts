@@ -1,25 +1,26 @@
 import '@testing-library/jest-dom/vitest'
-import { beforeEach } from 'vitest'
-
+import { cleanup } from '@testing-library/react'
+import { afterEach, beforeEach } from 'vitest'
 beforeEach(() => {
   localStorage.clear()
-  // Pages live in the URL now; every test starts on the swap page.
-  history.replaceState(null, '', '/')
+  sessionStorage.clear()
+  window.history.replaceState(null, '', '/')
 })
 
-// jsdom lacks the layout and pointer APIs that bits-ui focus and dismiss handling call.
-window.scrollTo = () => {}
-Element.prototype.scrollIntoView ??= function scrollIntoView(): void {}
-Element.prototype.hasPointerCapture ??= () => false
-Element.prototype.releasePointerCapture ??= function releasePointerCapture(): void {}
-window.matchMedia ??= (query: string): MediaQueryList =>
-  ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addEventListener: () => {},
-    removeEventListener: () => {},
-    addListener: () => {},
-    removeListener: () => {},
-    dispatchEvent: () => false,
-  }) as MediaQueryList
+Object.defineProperty(HTMLDialogElement.prototype, 'showModal', {
+  value: function showModal(this: HTMLDialogElement): void {
+    this.setAttribute('open', '')
+  },
+})
+Object.defineProperty(HTMLDialogElement.prototype, 'close', {
+  value: function close(this: HTMLDialogElement): void {
+    if (!this.open) {
+      return
+    }
+    this.removeAttribute('open')
+    queueMicrotask(() => this.dispatchEvent(new Event('close')))
+  },
+})
+afterEach(() => {
+  cleanup()
+})

@@ -1,0 +1,109 @@
+{
+  "status": "awaiting-user-approval",
+  "scope": "196 isolated test contracts only; production unchanged",
+  "chainId": 196,
+  "sourceCommit": "3961ad36804559509e155c4934fcb28a61f0c357",
+  "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+  "treasury": "0x6EFa1Fad18900B929Fe6782fd3eaBeac2563416A",
+  "existingVault": "0xb97d23f0c874fc1380016fa31d975d7ccd13b94d",
+  "testFab": "0x842b7bf61f2cb4be8aacac6adece3244c2a6f6ab",
+  "lockerBeneficiary": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+  "maxTransactions": 14,
+  "expectedStartNonce": 220,
+  "ceilingOkb": "0.00039",
+  "totalCeilingWei": "390000000000000",
+  "gasCeilingWei": "389966990000000",
+  "nativeInputCeilingWei": "33010000000",
+  "maxGasPriceWei": "30000000",
+  "testShareInputRaw": "110010000000000000000",
+  "testFabInputRaw": "10000",
+  "rehearsalGasLimitCostWei": "387221910000000",
+  "estimatedCostAtObservedGasPriceWei": "200441911000000",
+  "observedGasPriceWei": "21000000",
+  "originalRehearsalSha256": "e73a5c70d17eced1ad87bf73a17e8337f4189e345fc874960644d481561cee9e",
+  "addressesInRehearsalArePredictionsOnly": true,
+  "steps": [
+    {
+      "label": "deploy-new-special-pool",
+      "maxGas": "3321719",
+      "nativeWei": "0"
+    },
+    {
+      "label": "deploy-new-locker",
+      "maxGas": "860930",
+      "nativeWei": "0"
+    },
+    {
+      "label": "approve-shares",
+      "maxGas": "55222",
+      "nativeWei": "0"
+    },
+    {
+      "label": "first-liquidity",
+      "maxGas": "1217133",
+      "nativeWei": "30000000000"
+    },
+    {
+      "label": "increase-liquidity",
+      "maxGas": "1200000",
+      "nativeWei": "3000000000"
+    },
+    {
+      "label": "buy-shares",
+      "maxGas": "1200000",
+      "nativeWei": "10000000"
+    },
+    {
+      "label": "sell-shares",
+      "maxGas": "1200000",
+      "nativeWei": "0"
+    },
+    {
+      "label": "remove-half",
+      "maxGas": "1200000",
+      "nativeWei": "0"
+    },
+    {
+      "label": "donate-test-fab-to-pool",
+      "maxGas": "61593",
+      "nativeWei": "0"
+    },
+    {
+      "label": "record-pool-fab",
+      "maxGas": "1200000",
+      "nativeWei": "0"
+    },
+    {
+      "label": "pay-platform-okb",
+      "maxGas": "53861",
+      "nativeWei": "0"
+    },
+    {
+      "label": "pay-lp-fab",
+      "maxGas": "81758",
+      "nativeWei": "0"
+    },
+    {
+      "label": "approve-locker",
+      "maxGas": "55181",
+      "nativeWei": "0"
+    },
+    {
+      "label": "lock-remaining-lp",
+      "maxGas": "1200000",
+      "nativeWei": "0"
+    }
+  ],
+  "executionRules": [
+    "Recheck final nonce, balance, chain, bytecode hash and immutable treasury before signing.",
+    "Rehearse against final signer/nonce before public deployment.",
+    "Count every gas and gross asset input; never reset old stage ledgers or subtract returned capital.",
+    "Stop on failed, uncertain or over-budget transaction; no automatic replay.",
+    "Publish new address and update test manifest only after verified deployment and acceptance."
+  ],
+  "separateFromClosedStages": [
+    "ordinary-v2 0.0002 OKB",
+    "ordinary-v3/v4 0.00032 OKB",
+    "old miner pool 0.00037 OKB"
+  ]
+}

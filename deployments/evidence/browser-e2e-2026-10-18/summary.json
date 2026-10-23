@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "scope": "Owned local Anvil browser acceptance; not public-chain deployment acceptance",
+  "dex": {
+    "receipts": 52,
+    "browserTransactions": 50,
+    "keeperTransactions": 2,
+    "businessAssertionsPassed": 34,
+    "orderAssertionsPassed": 13,
+    "receiptFailures": 0,
+    "enumeratedBranchesRemaining": []
+  },
+  "mining": {
+    "receipts": 60,
+    "browserTransactions": 41,
+    "keeperTransactions": 19,
+    "observedBusinessActions": 20,
+    "receiptFailures": 0
+  },
+  "frontend": {
+    "testsPassed": 503,
+    "testsSkipped": 0,
+    "typecheck": "pass",
+    "lint": "pass",
+    "unifiedBuildAndCsp": "pass",
+    "visualFeeDisclosure": "fee-disclosure.png"
+  },
+  "defect": {
+    "classification": "confirmed defect",
+    "file": "standalone/web/src/features/swap/TradeDetails.tsx",
+    "evidence": "v4-fee-rounding.json",
+    "before": "Single floor(input * fee / 1000000) displayed zero despite actual step-wise fee rounding.",
+    "after": "Shows pool fee rate and explicitly states fees are included in quote and settled with chain rounding; zero-fee pools retain explicit zero.",
+    "executionChanged": false
+  },
+  "limits": [
+    "No new public 1952/196 transaction in this acceptance run.",
+    "Local fixtures lack public index API; public index acceptance remains separately recorded.",
+    "A local rebuild invalidated an already-loaded lazy asset once; reload resolved it.",
+    "Existing evidence does not prove unimplemented 196 mining profile or new deployments are ready."
+  ]
+}

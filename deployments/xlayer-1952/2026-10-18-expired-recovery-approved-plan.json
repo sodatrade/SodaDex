@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "proposalOnly": false,
+  "requirement": "mining-products-1952",
+  "chainId": 1952,
+  "classification": "change request for previously accepted fail-closed behavior",
+  "originalHash": "0x0fb7c2a1a0a532e8531744e408a31422b2e0c43a93ed8847e7eec3a46707c3a5",
+  "keeper": "0x553D8C2e637fe67C5c7AdE3810E8Bc02799D41D4",
+  "originalNonce": "Must validate internal persisted raw before cancellation; public23 remains an inference only",
+  "recovery": "One exact-hash configured recovery: verify expired authorization against canonical chain timestamp and deployed runtime; same-nonce zero-value self-transfer cancellation, preserve both hashes; canonical winner settlement with reorg accounting before fresh replan. No expired raw replay, no ledger reset, no arbitrary call endpoint.",
+  "cancelPolicy": {
+    "maximumTransactions": 1,
+    "valueWei": "0",
+    "recipient": "keeper itself only, with empty code and calldata",
+    "gasPriceStrategy": "Use existing approved maximum30000000wei for this bounded cancellation; do not raise it or perform adaptive price retries; stop if it cannot replace the original.",
+    "receiptPolicy": "Reuse existing canonical receipt/ancestor and reorg accounting policy; no invented confirmation count."
+  },
+  "totalPhaseGasCapWei": "1300000000000000",
+  "allocationBeforeWei": {
+    "preparation": "80000000000000",
+    "frontendWallet": "1000000000000000",
+    "keeperAdditional": "220000000000000"
+  },
+  "proposedAllocationWei": {
+    "preparation": "40000000000000",
+    "frontendWallet": "990000000000000",
+    "keeperAdditional": "270000000000000"
+  },
+  "actualKnownWei": {
+    "preparation": "36535281826764",
+    "frontendWallet": "957639569204524",
+    "keeperAdditional": "205502330275116"
+  },
+  "originalKeeperSpentBaselineWei": "186372669318633",
+  "proposedKeeperCumulativeCapWei": "456372669318633",
+  "gasPerTransactionCap": "3000000",
+  "gasPriceCapWei": "30000000",
+  "principalChanged": false,
+  "productionTouched": false,
+  "limitations": "Implement and validate only if user approves new recovery rule. At execution refresh estimates; insufficient per-component budget, uncertain raw/nonce/state, failed simulation or unknown winner stops execution. Current expired authorization and reserve remain intact until canonical settlement.",
+  "approvalReference": "call_d6cd88a195094a95bfc66046694b5b22: 同意恢复并调配，保持总预算",
+  "frozenApprovalPlan": true,
+  "implementationAndLiveExecution": "not yet deployed or executed at approval capture",
+  "workerWaveBase": "ba1a83468bace2f145efe640a06b780585507b15"
+}

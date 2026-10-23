@@ -1,0 +1,422 @@
+{
+  "schemaVersion": 1,
+  "publishedAt": "2026-10-22T05:21:07.332551+00:00",
+  "request": "Retire old SodaDEX mining execution service and public entrypoints, keep historical ledgers and LP/vault/dividend interfaces; fix C2 and publish TEST",
+  "authorization": "User: 按此退役，并修复 C2 发测试",
+  "status": "published and verified",
+  "url": "https://soda.ignix.bot",
+  "repository": "/Users/LevyHoo/Documents/SodaDex",
+  "lifecycle": "active",
+  "requirement": "mining-products-1952",
+  "owner": "current SodaDEX chat",
+  "branch": "codex/feat/mining-products-1952",
+  "head": "923ecab6a74eed81ed6d8823725df9941c233233",
+  "baseBranch": "codex/feat/sodadex-bootstrap",
+  "baseSha": "7506ce36138dfb6262ef11d1e3ca4828fec5ede3",
+  "gitDelivery": "Approved working tree deployed; no commits or pushes; unrelated changes preserved",
+  "sourceHashes": {
+    "scripts/sodadex/build-dex-test-web.mjs": "df7a71d50f6e6518428d4e939fbf49dca5a50f71f1b614100be5fe8b97675767",
+    "scripts/sodadex/check-dex-web-build.mjs": "6cb5c0e6f4813b44f530ca0f143258044dd24ac9b0d4abac3e74eac5afd6ed2e",
+    "standalone/README.md": "598cd04d1d03fca8cb5146d6f7ba53b405cf74b80887316c1e0dcca77e7dcddd",
+    "standalone/mining-service/README.md": "0a7065ea050a4c78d2f7e0f4e05f9872002505d95c1c9160e97185899ee92d0c",
+    "standalone/mining-service/cloudflare/config.ts": "94b344c776fef6363e49b283d0dcf29bef7ee6198b7a2113618e14d03f25da4d",
+    "standalone/mining-service/cloudflare/index.ts": "3c8ca9880f5e5dfd50f09faa04dbb29f20cf841c432103615b4cb0217e0aa385",
+    "standalone/mining-service/cloudflare/runtime.ts": "c3af8f77cd574cbad62541af81492cc314cadc7a843f9cdfade7c6c794bf3c16",
+    "standalone/mining-service/cloudflare/wrangler.196-test.jsonc": "dac36141533d01412f6210d65070a2799eaf60decd17e350f0d4e927d3cab957",
+    "standalone/mining-service/cloudflare/wrangler.test.jsonc": "f377a7a99cdf7f43810c0aef27fb0bd0eeded5c41c9352de24bcef12d5991a36",
+    "standalone/mining-service/package.json": "d71270c0399371596e368c8f9be6f917a66c32b3fec9cf07ece514494a489a8d",
+    "standalone/mining-service/test/http-config.test.ts": "2ab2850f5324962443516433b40bf2cfcc03f3d413df2e48042039b9781e6b52",
+    "standalone/mining-service/test/retirement-runtime.mjs": "5dee42d61e1a881564761ffe733b9e837e8dce875733287b0c6b363a148198fe",
+    "standalone/orders/CLOUDFLARE.md": "bf517009bc48d437e64acd26e1840bf0255920633045304863e032a77581982b",
+    "standalone/orders/cloudflare/config.ts": "2b48d0fa57ddb25ce6334f256fa16d48a2864a3049b1e5b5a1ae2084e9f494ca",
+    "standalone/orders/cloudflare/index.ts": "03e4dda34b29a04f7daa1325f4e9f3754de200b52ba5de1c45a419850400cdb1",
+    "standalone/orders/cloudflare/runtime.ts": "adfba64173977b60f3f15a08a8a76097da780e3d8990fbb4e46f4420f1826eb1",
+    "standalone/orders/cloudflare/wrangler.test.jsonc": "c20b2c800711dd4fc8eb2d6e33151c33e018f21f1a499b88d02555dd0b39ab98",
+    "standalone/orders/src/config.ts": "f24282e0a558917a1b28d9a2b2779015d4eac155cf80af4eab7ac2b993ff229e",
+    "standalone/orders/src/http.ts": "80ec939917d1837c7487d448399cd4eee060978464fa3e20514c851ae21dbfdd",
+    "standalone/orders/test/cloud-config.test.ts": "6af15cd6ef0092bf904f096a43ed070b2770727ab286600446ef89ee97505970",
+    "standalone/orders/test/cloudflare-runtime.mjs": "6e6698ac0a0477e8d4fd5099ca5398a9a043a58a6cc1fff0e9b340d028440b99",
+    "standalone/orders/test/http-body.test.ts": "763905fd7409a2facbb8ddca7a47e47e553b46321914a4ad28b4339afc392c64",
+    "standalone/web/package.json": "9e22de0baf0ea0a980dc424f736f32eb08562f1443781c6f13aa24701d4975a7",
+    "standalone/web/src/components/Header.tsx": "f4cfb4c658f1b4ce3e90801ae4f79cef23b40f851cf04d3a26746c7b123f1fa5",
+    "standalone/web/tests/unifiedNavigation.test.tsx": "b9de715fffb08fbe4a61243c4ede6e1bf101f9cd37f638db1fbb607bb6069d77",
+    "standalone/worker/package.json": "37ace27e988f1d5e24f4e6fbe9a3178470b847b738f1c616d4902be16e5b8615",
+    "standalone/worker/src/index.ts": "ad7af126e1eef3a8209c79f80a35d8bb4fe6a3c9dd1fc64c785f9c5fe300faa8",
+    "standalone/worker/test/mining196-profile.test.ts": "ebb5506c4ed140e313412f88b594bb66e3c712c48be414c478fe734d4dd952bf",
+    "standalone/worker/test/network-profile.test.ts": "407e070b6249cc31ada460f537be731cf2b511b1057480529ba6b4ba26df0c78",
+    "standalone/worker/test/unified-mount.test.ts": "a420c953dd8a4f257001d11333665f092d6e8f9e3d19082ae1a22587007a6c4d",
+    "standalone/worker/wrangler.1952-test.jsonc": "51f53dcb44cf7233e6d44a8fc144a0cc84baa3f55fc62855020c52880cf13c07",
+    "standalone/worker/wrangler.196-mining-test.jsonc": "2783d9dc7bba17c45418e6daff5aaa6f6b701df54eaf73512742cdd46ccdc08e",
+    "standalone/worker/wrangler.fragments-196-test.jsonc": "60da3c395ceccdd2ff390cf4855faf90778930e417201cb36f855bd87913c47b",
+    "standalone/worker/wrangler.jsonc": "0662644269f00e1caeb9e58a8a5565708c5c594d69e7d93cba9f0838b6ba40a9",
+    "standalone/worker/wrangler.unified-196-test.jsonc": "3b9c409e38e573be416d46493221aa8a86a9f1fc0e3d6aa14694b203e8092f3d"
+  },
+  "buildFiles": {
+    "assets/FragmentApp-ChWKLwjH.js": "871ae8c1cbbf0195cfb1e2a9f765ff2004259697bdbee1a26da48590d8a0c0c6",
+    "assets/FragmentApp-DyjRtYsv.css": "a07287fdf0395e39c9df5b8a5a6c2c5b6daf9eea280a362db98dea4b35ac73ca",
+    "assets/Inter-normal.var-BsKWvCjH.ttf": "c3b7c80beacfc5c4c486826ed9ace8cbfd074aabb9fdb4638967fa3e29554e91",
+    "assets/LiquidityPage-BqMmJZib.js": "06c9560ad12976ae6ed6c77ddba9b2bbe3d24961fb7607ee05e0ae0e32061dbc",
+    "assets/LiquidityPage-ZJb7rca9.css": "256d490eaa1e2565a5d1ded1d77bbcc15ccf330bb103ebcff8a8e18cc7ca3dd4",
+    "assets/MarketPanel-25EBohRp.css": "a9a752b738ca36aa04431ff84bb7c566b6304c1a8a1de117c361c1a83d5a226a",
+    "assets/MarketPanel-B0QIedme.js": "262806f21b4bcb49d86177d2b4f8c89e2e9ea85146975a2a1adc2cc2b6cac4c5",
+    "assets/OrdinarySwap-CAzHICI4.js": "f64dbf019f63817ca57c55324368f8661d68365c7c8a31517bb129bbdacd699a",
+    "assets/OrdinarySwap-USiSBSAF.css": "42f23d88efc8af3ef5e75699c11254613e5e7f3829de209449f19c6305e3fa0d",
+    "assets/PoolManageButton-wmFp8_0A.js": "4a8b62eb9f1b77fe8a48bde5c11ecd0c2c610b4200ff5351ce355bc475276551",
+    "assets/SOURCES.md": "b23d977b3272d8385ef3466ddf186792b6b5432e4599ef014f6b1bc3804273ff",
+    "assets/TokenIcon-1lgUg49f.js": "78dad1047da12c2107861d32946ea75ea7de2a78f826ef1ed8eb7ab530aa2c52",
+    "assets/TokenIcon-CTFKn9t5.css": "0620b46f6be6b7eb0fdec1618e800672e350aad70540b5f9dddf6b276e07c236",
+    "assets/ccip-CqoWfwjF.js": "4a37f660f3b19da709222d17060fed57007eba9df528910cd5b1045b6534f1ba",
+    "assets/confirmedPools-Cqw8ysNp.js": "cc168ddb656a10bbf5942ec11350ee90bc5c92510bdf2c5b9fbaafb0c1f79712",
+    "assets/encodeFunctionData-ChccIhIj.js": "7578aef19c4418fe7818ddec8642f08251be14af534661c5a70b8b3fb56d7188",
+    "assets/index-CVbZClOu.js": "3f3d18270cf4f27ae0a62031ce7eb3eb11c4d8777443a50c4eec860a003e0835",
+    "assets/index-DFaoM8AG.css": "686f30a30abfc8c4e507f78d4eeea69749e1703ca94bcd83d1a803559926a846",
+    "assets/localBatchGatewayRequest-CdOZIA-j.js": "4eca7a03d6a3e257d0a2d44209b348bbacd220533d24a30688abdb3f9ed5e066",
+    "assets/network-j5ezF9J3.js": "f0c4233979a91f9b2a8d75bc34a66a2b4d722711463241453172850f89c786cf",
+    "assets/okb.png": "be310dd7ec1349c0b353c0a4d17b4c6905b5b51301787690631860eadefbc996",
+    "assets/secp256k1-D87FU2RB.js": "0d312b07c8a8fb201c53b84fee5a25ecf3ad3e9f4ad850d14cdd0d291276126c",
+    "assets/tokens/0x14a686103854dab7b8801e31979caa595835b25d.png": "74e4b655a3b66f4efcfe3012f813c1f9ddc7c8a81e08329e07a89f13e64fe1c7",
+    "assets/tokens/0x4ae46a509f6b1d9056937ba4500cb143933d2dc8.png": "15a525a24b41ddf569ec4d8b583d91968fb4c4e60b961d3c550d9db35a412da8",
+    "assets/tokens/0x505000008de8748dbd4422ff4687a4fc9beba15b.png": "254681b94fff81cb3ea2a7590f5160598545a613297a6eeb21e455d127739d96",
+    "assets/tokens/0x74b7f16337b8972027f6196a17a631ac6de26d22.png": "32aa99cbdc067c7e8609c1b016b6a9d91e41e59ead9692f25278dcc08701b467",
+    "assets/tokens/0xafeab3b85b6a56cf5f02317f0f7a23340eb983d7.png": "d84678fdea64c2c3a0e62adc5f9f6304b9f3352b62f21335feb2a04f907c8ae3",
+    "assets/tokens/0xb7c00000bcdeef966b20b3d884b98e64d2b06b4f.png": "8c70c36d640cc15675744749b858e50dd9a3d801be450c98dce01db3fbdc008e",
+    "assets/tokens/0xc5015b9d9161dca7e18e32f6f25c4ad850731fd4.png": "6e48057801b656fc2658e7b12c7893e7b8ace26dc0b8f246f376b8cf955b3129",
+    "assets/tokens/0xe7b000003a45145decf8a28fc755ad5ec5ea025a.png": "70172b0352cf49d468d670543841a8d73ad1b1ff0f2ff678c8bff0d69b219808",
+    "assets/usdt0.png": "df5238a34df0255a1356485cd6939c521c125e22a25d43fe6d3ca0c98eab0403",
+    "assets/utils-Bpv4vmSW.js": "5114638bb111b647e478a947be5beed5558487685dc8284144566df3fc03d851",
+    "assets/wokb.png": "5ce174b09a097862e25741ca77eea51a26ad3e64621f8e61003c44ae080cf6fa",
+    "assets/xlayer.svg": "f837468b7de4079c832bcd8d410d0c4cb90002f9e8f331e32a2e2b72a399eb88",
+    "brand.svg": "e3004535ba2549bdd5083d84714dba8eba43d635505269d4b089e55adb58a5da",
+    "fragment-build.json": "3c1063badb4466f897959dbcfc5d4ecca90498a5c817c3c1922cbc40243ebbbc",
+    "index.html": "4539cc30f8e661d5a02a929c3061bbc2f5e450c9576479bbf966cc967946ebeb",
+    "network-build.json": "08517151a7c3348585281de58e06ce483e07bf5cc91369d91258a04d8acd9133",
+    "preferences-script.json": "8aabb800ae162745d485e03b7ad5424eac8030e13dcdb1e529102713816763be"
+  },
+  "before": {
+    "sodadex-preview": {
+      "versions": [
+        {
+          "version_id": "e25bf3c3-8d80-4f6d-8caa-f1569454cb7a",
+          "percentage": 100
+        }
+      ],
+      "namespaces": {
+        "CHAIN_INDEX": "c8f447a2d6a9421d85a5d9444ce77c9f"
+      },
+      "services": {
+        "MINING_API": "sodadex-mining-api-test-1952",
+        "ORDERS_API": "sodadex-orders-test"
+      },
+      "settings": {},
+      "fragmentManifestSha256": "5f89ef9dcadcae3f7cc8ae3dc9bcdb9dc9b26e51ae0fa75e7e36217f2356e24f"
+    },
+    "sodadex-orders-test": {
+      "versions": [
+        {
+          "version_id": "3b5c4d49-cbb7-4ecb-b215-95831de83af4",
+          "percentage": 100
+        }
+      ],
+      "namespaces": {
+        "ORDERS": "3611185df0694c66be680e59149c63ee"
+      },
+      "services": {},
+      "settings": {
+        "ORDERS_EXECUTION_ENABLED": "true",
+        "ORDERS_GAS_BUDGET_WEI": "100000000000000",
+        "ORDERS_PUBLIC_ORIGIN": "https://sodadex-preview.jsmsdx2025.workers.dev"
+      },
+      "fragmentManifestSha256": null
+    },
+    "sodadex-mining-api-test-1952": {
+      "versions": [
+        {
+          "version_id": "539078bd-d4aa-476f-bf65-e3d075879d60",
+          "percentage": 100
+        }
+      ],
+      "namespaces": {
+        "MINING_1952": "8de612fdf1394e798636b03e3dffa2a1"
+      },
+      "services": {},
+      "settings": {
+        "MINING_ADDITIONAL_PUBLIC_ORIGINS": "[\"https://sodadex-preview.jsmsdx2025.workers.dev\"]",
+        "MINING_ADMISSION_ENABLED": "true",
+        "MINING_EXECUTION_ENABLED": "true",
+        "MINING_GAS_CAP_WEI": "690714882004243",
+        "MINING_PUBLIC_ORIGIN": "https://sodadex-mining-test-1952.jsmsdx2025.workers.dev"
+      },
+      "fragmentManifestSha256": null
+    },
+    "sodadex-mining-api-test-196": {
+      "versions": [
+        {
+          "version_id": "c9caf615-ffd8-42f3-89db-799a3177e92e",
+          "percentage": 100
+        }
+      ],
+      "namespaces": {
+        "MINING_196": "6c42f9642da0498b8977b2fc58c7e81d"
+      },
+      "services": {},
+      "settings": {
+        "MINING_ADMISSION_ENABLED": "false",
+        "MINING_EXECUTION_ENABLED": "false",
+        "MINING_GAS_CAP_WEI": "80000000000000",
+        "MINING_PUBLIC_ORIGIN": "https://sodadex-preview.jsmsdx2025.workers.dev"
+      },
+      "fragmentManifestSha256": null
+    },
+    "sodadex-mining-test-1952": {
+      "versions": [
+        {
+          "version_id": "6a2c8262-c7d9-4635-a36a-492260bab3c6",
+          "percentage": 100
+        }
+      ],
+      "namespaces": {},
+      "services": {
+        "MINING_API": "sodadex-mining-api-test-1952"
+      },
+      "settings": {},
+      "fragmentManifestSha256": null
+    }
+  },
+  "after": {
+    "sodadex-preview": {
+      "versions": [
+        {
+          "version_id": "59a79dee-8c3b-4bad-8d63-672cd7302b5d",
+          "percentage": 100
+        }
+      ],
+      "namespaces": {
+        "CHAIN_INDEX": "c8f447a2d6a9421d85a5d9444ce77c9f"
+      },
+      "services": {
+        "ORDERS_API": "sodadex-orders-test"
+      },
+      "settings": {},
+      "fragmentManifestSha256": "5f89ef9dcadcae3f7cc8ae3dc9bcdb9dc9b26e51ae0fa75e7e36217f2356e24f"
+    },
+    "sodadex-orders-test": {
+      "versions": [
+        {
+          "version_id": "e63a359a-d340-4751-908f-2ed5c82a3594",
+          "percentage": 100
+        }
+      ],
+      "namespaces": {
+        "ORDERS": "3611185df0694c66be680e59149c63ee"
+      },
+      "services": {},
+      "settings": {
+        "ORDERS_ADDITIONAL_PUBLIC_ORIGINS": "[\"https://soda.ignix.bot\"]",
+        "ORDERS_EXECUTION_ENABLED": "true",
+        "ORDERS_GAS_BUDGET_WEI": "100000000000000",
+        "ORDERS_PUBLIC_ORIGIN": "https://sodadex-preview.jsmsdx2025.workers.dev"
+      },
+      "fragmentManifestSha256": null
+    },
+    "sodadex-mining-api-test-1952": {
+      "versions": [
+        {
+          "version_id": "a8f708ca-c4fa-46c1-b0b8-b0176fc1dfc7",
+          "percentage": 100
+        }
+      ],
+      "namespaces": {
+        "MINING_1952": "8de612fdf1394e798636b03e3dffa2a1"
+      },
+      "services": {},
+      "settings": {
+        "MINING_ADDITIONAL_PUBLIC_ORIGINS": "[\"https://sodadex-preview.jsmsdx2025.workers.dev\"]",
+        "MINING_ADMISSION_ENABLED": "false",
+        "MINING_EXECUTION_ENABLED": "false",
+        "MINING_GAS_CAP_WEI": "690714882004243",
+        "MINING_PUBLIC_ORIGIN": "https://sodadex-mining-test-1952.jsmsdx2025.workers.dev",
+        "MINING_SERVICE_RETIRED": "true"
+      },
+      "fragmentManifestSha256": null
+    },
+    "sodadex-mining-api-test-196": {
+      "versions": [
+        {
+          "version_id": "9eb95228-d350-452f-b183-0539c537318d",
+          "percentage": 100
+        }
+      ],
+      "namespaces": {
+        "MINING_196": "6c42f9642da0498b8977b2fc58c7e81d"
+      },
+      "services": {},
+      "settings": {
+        "MINING_ADMISSION_ENABLED": "false",
+        "MINING_EXECUTION_ENABLED": "false",
+        "MINING_GAS_CAP_WEI": "80000000000000",
+        "MINING_PUBLIC_ORIGIN": "https://sodadex-preview.jsmsdx2025.workers.dev",
+        "MINING_SERVICE_RETIRED": "true"
+      },
+      "fragmentManifestSha256": null
+    },
+    "sodadex-mining-test-1952": {
+      "versions": [
+        {
+          "version_id": "eaa559ba-1e55-4899-8a22-117ababd3d01",
+          "percentage": 100
+        }
+      ],
+      "namespaces": {},
+      "services": {},
+      "settings": {},
+      "fragmentManifestSha256": null
+    }
+  },
+  "validation": {
+    "web": {
+      "passed": 518,
+      "skipped": 27,
+      "typecheck": "passed",
+      "lint": "passed",
+      "build": "passed with explicit existing TEST fragment manifest"
+    },
+    "orders": {
+      "passed": 74,
+      "typecheck": "passed",
+      "lint": "passed"
+    },
+    "miningService": {
+      "passed": 102,
+      "typecheck": "passed",
+      "lint": "passed"
+    },
+    "gateway": {
+      "passed": 222,
+      "typecheck": "passed",
+      "lint": "passed"
+    },
+    "C2ActualWorkerd": {
+      "oldCodeFailsIntendedConcurrencyAssertion": true,
+      "newCodeIncompleteBodyDoesNotBlockStatus": true,
+      "newCodeIncompleteBodyDoesNotBlockAlarm": true
+    },
+    "retirementActualWorkerd": {
+      "historicalSqlRowUnchanged": true,
+      "alarmCleared": true,
+      "signerCredentialsUnused": true,
+      "outboundRequests": 0
+    },
+    "browser": {
+      "url": "https://soda.ignix.bot/#pool",
+      "oldMiningNavigationAbsent": true,
+      "dedicatedPoolVisible": true,
+      "ordinaryV2V3V4Visible": true,
+      "screenshot": "pools.png",
+      "walletConnected": false,
+      "transactionsSigned": 0
+    },
+    "http": {
+      "root": {
+        "status": 200,
+        "sha256": "4539cc30f8e661d5a02a929c3061bbc2f5e450c9576479bbf966cc967946ebeb",
+        "bytes": 1292
+      },
+      "network": {
+        "status": 200,
+        "sha256": "fd5abe0c367d5601ebd16df6af98708fe45f83b6bc2d52c31b024f8bbd825945",
+        "bytes": 241
+      },
+      "ordersNew": {
+        "status": 200,
+        "sha256": "13224cb21e9cb6131fd739bcc454a51284584df9daa0892c7b7d4d2d6e9a2fb0",
+        "bytes": 317
+      },
+      "ordersOld": {
+        "status": 200,
+        "sha256": "13224cb21e9cb6131fd739bcc454a51284584df9daa0892c7b7d4d2d6e9a2fb0",
+        "bytes": 317
+      },
+      "oldMount": {
+        "status": 410,
+        "sha256": "065cc3a1028b8fd9b1803241425d1e5bd75239d0beb3662bea27459a1d532f69",
+        "bytes": 85
+      },
+      "oldApi": {
+        "status": 410,
+        "sha256": "065cc3a1028b8fd9b1803241425d1e5bd75239d0beb3662bea27459a1d532f69",
+        "bytes": 85
+      },
+      "legacyRoot": {
+        "status": 410,
+        "sha256": "7372fb9ad8e8ca9980aaa988e150b999600722e89faac011f2c1fcdd6d3cdcec",
+        "bytes": 86
+      },
+      "legacyApi": {
+        "status": 410,
+        "sha256": "7372fb9ad8e8ca9980aaa988e150b999600722e89faac011f2c1fcdd6d3cdcec",
+        "bytes": 86
+      },
+      "rpc": {
+        "status": 200,
+        "sha256": "5fd1e51e0cf5a4b8e59b707cf7074d999915ad0291de36dffa0352ce708dde26",
+        "bytes": 40
+      },
+      "pool": {
+        "status": 200,
+        "sha256": "15401662c19081b38735cdb94c86f5bfe489d2000900a49659d85592e5fe1032",
+        "bytes": 107
+      },
+      "vault": {
+        "status": 200,
+        "sha256": "945ebf55e4f819ec7b9041a765870ab1e6fd88562f7f9ff0a0a1f80dbc41a968",
+        "bytes": 108
+      },
+      "rewards": {
+        "status": 200,
+        "sha256": "b24dc79cc2622585b22366f390c7b3448b6a117d97989eee1ec9d4374370c9ca",
+        "bytes": 110
+      },
+      "income": {
+        "status": 200,
+        "sha256": "ed38ca97f3ee42359e49594221d5e9cc6bbe1a2c2351320fc7e13905ef68ff33",
+        "bytes": 109
+      },
+      "forbiddenOrigin": {
+        "status": 403,
+        "sha256": "df6b1681b094b976e138b458d3fa3e11a8abc91b446e8d808fd061386ef99a53",
+        "bytes": 56
+      }
+    },
+    "runtimePreservation": {
+      "namespacesUnchanged": true,
+      "secretNamesUnchanged": true,
+      "budgetsAndManifestsUnchanged": true,
+      "mining1952BudgetBefore": {
+        "capWei": "690714882004243",
+        "spentWei": "533809946658996",
+        "reservedWei": "0"
+      },
+      "mining1952BudgetRetired": {
+        "capWei": "690714882004243",
+        "spentWei": "533809946658996",
+        "reservedWei": "0"
+      },
+      "historicalExecutionHashesRetained": 34
+    },
+    "limits": [
+      "27 optional web fixture cases skipped; no new chain transactions or full order-settlement integration in this scope",
+      "196 retired backend is private: deployed code, flags, preserved namespace/config are remote evidence; unchanged SQL-row behavior tested in local workerd",
+      "Dedicated LP contract audit findings remain separate; this service release does not fix contracts"
+    ]
+  },
+  "buildCorrection": "Initial generic web build omitted the public fragment manifest. Replaced with build:dex-test derived from the existing TEST gateway config; preflight now checks fragment-build.json against it. Final 14 HTTP checks and browser evidence refer to the corrected final deployment.",
+  "noChanges": [
+    "Production contracts",
+    "Owner",
+    "Treasury",
+    "Deployed LP/vault/reward/income contracts",
+    "Historical raw/hash and ledgers",
+    "Existing cumulative gas budgets"
+  ],
+  "rollback": "Keep retirement guards and old namespaces. Do not restore an enabled mining runtime; forward-fix. No schema migration introduced. Orders actor/settlement unchanged."
+}

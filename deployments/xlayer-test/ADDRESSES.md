@@ -2,6 +2,8 @@
 
 网络：**X Layer 主网 196**。RPC：`https://rpc.ignix.bot/rpc/196`。以下均为已完成回执和代码核验的实际测试部署，生产部署留待后续。
 
+**公开测试站已开放自有测试池兑换、仓位操作和限价单；每次用户操作均需钱包确认，官方池保持只读。**
+
 Owner：`0x6ecf746b078d46391f8C425B150153212F7C0545`。本轮品牌更新、建池和兑换总 gas **0.000619773462 OKB**（包含此前三笔），上限 0.0007 OKB；总本金按累计发送额计算不超过 0.0002 OKB。
 
 | 合约 | 当前地址 | 来源 | 部署交易 |
@@ -40,3 +42,9 @@ V4：**原生 OKB / USD₮0，0%**，tickSpacing=1、hooks=0，全范围。PoolM
 当前配置：[active.json](active.json)；池配置：[pools.json](pools.json)；本轮完整回执及核验：[branding-receipts.json](branding-receipts.json)；构建指纹：[branding-build.json](branding-build.json)。
 
 原始基础部署的 plan.json / receipts.json 保留为历史记录。原 NFT 管理器和路由已由本表地址取代；原 V3 管理器授权已清零。区块浏览器源码验证尚未提交。
+
+## 测试限价单结算
+
+SodaLimitSettlement：[0xE713AfD6133207df18662080e2B0F7e456AeEBA5](https://www.oklink.com/xlayer/address/0xE713AfD6133207df18662080e2B0F7e456AeEBA5)，部署区块 `73438869`，[部署交易](https://www.oklink.com/xlayer/tx/0x2144f86f7ce985ce9f1ac6b0e5aff56bb799645dd99c256e0f8ba58dd9d2f459)。专用 gas keeper：`0x7c8998946896d1dFF8F70f00ba1392938Fb5b3a2`。平台费为 0，生产合约未变更。
+
+本阶段独立总 gas 上限为 **0.0002 OKB**（owner 操作与 keeper 累计各最多 0.0001）。专用 keeper 初始资金为 0.0001 OKB，不将转账本金重复记为已消耗 gas。完整台账、微量成交与撤单证明见 [orders-receipts.json](orders-receipts.json)。

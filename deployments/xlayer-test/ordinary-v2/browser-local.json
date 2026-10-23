@@ -1,0 +1,141 @@
+{
+  "mode": "owned-offline-browser",
+  "protocol": "v2",
+  "publicChainWrites": 0,
+  "pair": "0x579bca2a43a7f3e6b9a850bb56dd03f8b7aa6601",
+  "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+  "firstLp": "3161277",
+  "finalUserLp": "0",
+  "minimumLockedLp": "1000",
+  "rows": [
+    {
+      "action": "create-and-first-add",
+      "receipts": [
+        {
+          "hash": "0x2f890125586849320a8cb51e547780e2facbe8ec2b23e537f13892163fc57e29",
+          "from": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+          "to": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+          "value": "0x0",
+          "selector": "0x095ea7b3",
+          "gasUsed": "0xd05d",
+          "effectiveGasPrice": "0x3b9aca07"
+        },
+        {
+          "hash": "0xa8b95b103f4509e3ce40cd1df60948a6b7eaf6d92d7f5a32d35174658be25788",
+          "from": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+          "to": "0xd3d11c7c9ce2b02210d0bf29abd68a9830e108bf",
+          "value": "0x174876e800",
+          "selector": "0xf305d719",
+          "gasUsed": "0x29af75",
+          "effectiveGasPrice": "0x3b9aca07"
+        }
+      ]
+    },
+    {
+      "action": "proportional-add-and-refund",
+      "receipts": [
+        {
+          "hash": "0x687d339bb718808008e126ba5febfc887c8f0cdf19c8b2e5cf4333cee47bf9dc",
+          "from": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+          "to": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+          "value": "0x0",
+          "selector": "0x095ea7b3",
+          "gasUsed": "0xd05d",
+          "effectiveGasPrice": "0x3b9aca07"
+        },
+        {
+          "hash": "0x72d20576a3b4a640d9f5091847be321466e593eb752e3312cc9077e5a21383f5",
+          "from": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+          "to": "0xd3d11c7c9ce2b02210d0bf29abd68a9830e108bf",
+          "value": "0x2e90edd000",
+          "selector": "0xf305d719",
+          "gasUsed": "0x2c393",
+          "effectiveGasPrice": "0x3b9aca07"
+        }
+      ]
+    },
+    {
+      "action": "okb-to-token",
+      "receipts": [
+        {
+          "hash": "0xc97d9fc42cc6c1d9784f356d43dc8264894e2ca649ba16d7af51e966497706c2",
+          "from": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+          "to": "0xd3d11c7c9ce2b02210d0bf29abd68a9830e108bf",
+          "value": "0x2540be400",
+          "selector": "0x7ff36ab5",
+          "gasUsed": "0x1c431",
+          "effectiveGasPrice": "0x3b9aca07"
+        }
+      ]
+    },
+    {
+      "action": "token-to-okb",
+      "receipts": [
+        {
+          "hash": "0xaf726610e88a8e34e860f69005fd8e4078c9490f799c314b7d86dd4f888dd919",
+          "from": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+          "to": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+          "value": "0x0",
+          "selector": "0x095ea7b3",
+          "gasUsed": "0xd05d",
+          "effectiveGasPrice": "0x3b9aca07"
+        },
+        {
+          "hash": "0xa60976890187d5b9a9176411c3812b20ec854683c82a3c9bbc80d3c60d4bc32c",
+          "from": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+          "to": "0xd3d11c7c9ce2b02210d0bf29abd68a9830e108bf",
+          "value": "0x0",
+          "selector": "0x18cbafe5",
+          "gasUsed": "0x1f875",
+          "effectiveGasPrice": "0x3b9aca07"
+        }
+      ]
+    },
+    {
+      "action": "remove-half",
+      "receipts": [
+        {
+          "hash": "0xbfb95c193c71040436046922d51291c0c524f25cb95674dc7ec0af9e05bbd07d",
+          "from": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+          "to": "0x579bCA2a43A7F3e6B9A850bb56Dd03f8B7aa6601",
+          "value": "0x0",
+          "selector": "0x095ea7b3",
+          "gasUsed": "0xb3d6",
+          "effectiveGasPrice": "0x3b9aca07"
+        },
+        {
+          "hash": "0x2878a518fcee48d337515fc97e4d1d624e284f7f2f65029e8fc2d489afc42915",
+          "from": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+          "to": "0xd3d11c7c9ce2b02210d0bf29abd68a9830e108bf",
+          "value": "0x0",
+          "selector": "0x02751cec",
+          "gasUsed": "0x2bbe0",
+          "effectiveGasPrice": "0x3b9aca07"
+        }
+      ]
+    },
+    {
+      "action": "remove-all",
+      "receipts": [
+        {
+          "hash": "0x42a9d278cce1e93fb7e15a8a6f2211131090dac5e9c686d615f91b8460d28572",
+          "from": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+          "to": "0x579bCA2a43A7F3e6B9A850bb56Dd03f8B7aa6601",
+          "value": "0x0",
+          "selector": "0x095ea7b3",
+          "gasUsed": "0xb3d6",
+          "effectiveGasPrice": "0x3b9aca07"
+        },
+        {
+          "hash": "0xadccd2fce87efb72a2be0f23eba0d817fdbf895cd4334d6e330aea83119d87d2",
+          "from": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+          "to": "0xd3d11c7c9ce2b02210d0bf29abd68a9830e108bf",
+          "value": "0x0",
+          "selector": "0x02751cec",
+          "gasUsed": "0x2bbe0",
+          "effectiveGasPrice": "0x3b9aca07"
+        }
+      ]
+    }
+  ]
+}

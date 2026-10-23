@@ -11,6 +11,7 @@ export interface Preferences {
 }
 export const DEFAULT_PREFERENCES: Preferences = { locale: 'zh-CN', theme: 'light', currency: 'CNY' }
 export const PREFERENCES_KEY = 'sodadex.preferences.v1'
+export const CURRENCY_SYMBOLS: Record<Currency, string> = { CNY: '¥', USD: '$', HKD: 'HK$' }
 
 export function readPreferences(): Preferences {
   try {

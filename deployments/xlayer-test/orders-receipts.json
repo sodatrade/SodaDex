@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "stage": "test",
+  "chainId": 196,
+  "rpcUrl": "https://rpc.ignix.bot/rpc/196",
+  "status": "deployed-and-live-acceptance-passed",
+  "settlement": "0xE713AfD6133207df18662080e2B0F7e456AeEBA5",
+  "deploymentTransaction": "0x2144f86f7ce985ce9f1ac6b0e5aff56bb799645dd99c256e0f8ba58dd9d2f459",
+  "deploymentBlock": 73438869,
+  "creationCodeKeccak": "0x0d16085b29eea86fb71834f72572c42761812846b38bcbf0769b3aad817cca67",
+  "runtimeCodeKeccak": "0x5ebe2b7b905fa36f8be8aedc9e10b098fb58d766f164952e7bab089f783ecb34",
+  "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+  "keeper": "0x7c8998946896d1dFF8F70f00ba1392938Fb5b3a2",
+  "keeperFundingWei": "100000000000000",
+  "gasBudget": {
+    "stageCapWei": "200000000000000",
+    "ownerAllocatedCapWei": "100000000000000",
+    "keeperCumulativeCapWei": "100000000000000",
+    "ownerActualGasWei": "49154931000000",
+    "keeperActualGasWei": "12160869000000",
+    "actualTotalGasWei": "61315800000000",
+    "actualTotalGasOKB": "0.0000613158",
+    "keeperRemainingAllocatedGasWei": "87839131000000",
+    "maximumTotalIncludingRemainingKeeperWei": "149154931000000",
+    "withinApprovedStageCap": true,
+    "keeperFundingIsTransferNotGas": true
+  },
+  "backend": {
+    "worker": "sodadex-orders-test",
+    "url": "https://sodadex-orders-test.jsmsdx2025.workers.dev",
+    "storage": "SQLite Durable Object",
+    "actor": "sodadex-orders:196:0xe713afd6133207df18662080e2b0f7e456aeeba5",
+    "versionId": "3b5c4d49-cbb7-4ecb-b215-95831de83af4",
+    "sourceCommit": "19c0f3d3e340e63f874c3341c1eaba6278be17af",
+    "executionEnabled": true,
+    "secret": "ORDERS_KEEPER_PRIVATE_KEY",
+    "ownerKeyRemainedLocal": true
+  },
+  "ownerTransactions": [
+    {
+      "name": "deploy",
+      "hash": "0x2144f86f7ce985ce9f1ac6b0e5aff56bb799645dd99c256e0f8ba58dd9d2f459",
+      "blockNumber": 73438869,
+      "blockHash": "0x2620cbac97d497eecbe600b6f1d3ce2b45264dbcc86cffe1eaab9697cceab128",
+      "gasUsed": "2180603",
+      "effectiveGasPriceWei": "21000000",
+      "gasCostWei": "45792663000000",
+      "contractAddress": "0xe713afd6133207df18662080e2b0f7e456aeeba5"
+    },
+    {
+      "name": "fund",
+      "hash": "0xeeb4670ef47ed8f5a711522c44bedb56b003b60bfb57c69415a2af0c25afcaf2",
+      "blockNumber": 73439066,
+      "blockHash": "0x0dc3296d6d0cfa6bdc576a117a038b3af175e0bdaaca9de496c92a57a4b47e99",
+      "gasUsed": "21000",
+      "effectiveGasPriceWei": "21000000",
+      "gasCostWei": "441000000000",
+      "contractAddress": null
+    },
+    {
+      "name": "approve",
+      "hash": "0xbcfda993d358d21d08070b43f33e8b3e5865bc886b518e3e492d721e6c7df792",
+      "blockNumber": 73439131,
+      "blockHash": "0x1edf4c736e4da187104f3b9f8c5c12a5ab3fe18e20317502eb79d5b442ae82d1",
+      "gasUsed": "53281",
+      "effectiveGasPriceWei": "21000000",
+      "gasCostWei": "1118901000000",
+      "contractAddress": null
+    },
+    {
+      "name": "cancel",
+      "hash": "0x86fb9ede9499aa2674686f81713abc6aac326c40a1805d193e7bd788a3ced419",
+      "blockNumber": 73439620,
+      "blockHash": "0x4890634a0e982b881d047ccf1645c8ff094a70627703acdb9433a7e4ebe22dc1",
+      "gasUsed": "54458",
+      "effectiveGasPriceWei": "21000000",
+      "gasCostWei": "1143618000000",
+      "contractAddress": null
+    },
+    {
+      "name": "revoke",
+      "hash": "0x7f21d71044218062b6334f60de6731b9c5f0edaa76c987bf60547140d1bd3f40",
+      "blockNumber": 73439705,
+      "blockHash": "0xb842791d40f02da9db59c92d052f6642fdf25e58e006fbaf88ccdc24997f74a2",
+      "gasUsed": "31369",
+      "effectiveGasPriceWei": "21000000",
+      "gasCostWei": "658749000000",
+      "contractAddress": null
+    }
+  ],
+  "productionContractsModified": false,
+  "verifiedAtUnix": 1792208886,
+  "verifiedBlock": 73439843,
+  "keeperTransactions": [
+    {
+      "protocol": 3,
+      "orderId": "0xb0794cb06510b2026c56ae67bf4bc6672253b1f3dbba2dcfbb2546e2b6f782f4",
+      "hash": "0x1708e2e320bc6bc04c89ecbbe8953ff3540b128c06cc6d1a9393c1312e7f5332",
+      "nonce": 0,
+      "blockNumber": 73439432,
+      "blockHash": "0x45ac8df142296fcddecfe1634a4b4b5d445145af5ad00df1f1721958d803f4f4",
+      "gasUsed": "314822",
+      "effectiveGasPriceWei": "21000000",
+      "gasCostWei": "6611262000000"
+    },
+    {
+      "protocol": 4,
+      "orderId": "0x0723262840db37b8fca348ee13906f984afab373a837d99290589e878687714e",
+      "hash": "0xaa687c80c19939f1c6987061fbb6ca580079af154b869fa6741f53bdadff996c",
+      "nonce": 1,
+      "blockNumber": 73439488,
+      "blockHash": "0xc06471b7857be60a6e8fd3db053190bfab353dc217c05531f3813368f82b87c6",
+      "gasUsed": "264267",
+      "effectiveGasPriceWei": "21000000",
+      "gasCostWei": "5549607000000"
+    }
+  ],
+  "ownerStableAllowanceToPermit2Raw": "0",
+  "ownerStableAfterRaw": "211",
+  "keeperBalanceWei": "87839131000000",
+  "ownerPendingTransactions": 0,
+  "keeperPendingTransactions": 0,
+  "acceptanceRecord": "validation/orders-live-acceptance.json",
+  "oracle": {
+    "address": "0x4f1db3c6abd250ba86e0928471a8f7db3afd88f1",
+    "codeSha256": "7e49db5c1d54bab9a75a387dc972d4fb1c3c78f3fbf31336a9d8413d6d125cc3",
+    "proxyCodeSha256": "30ccc4ce49c00fae11d7118fc244f29a13788fb32cd4022ee69acc2f15c0e2f5"
+  }
+}

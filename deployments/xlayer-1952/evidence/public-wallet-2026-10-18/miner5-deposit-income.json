@@ -1,0 +1,130 @@
+{
+  "capturedAt": "2026-10-18T01:49:08.135Z",
+  "readOnly": true,
+  "chainId": 1952,
+  "receipt": {
+    "hash": "0x76edb54ddda081006014c65dd80b23caf602114f6fcdc8cf3d5a0469b2ef1639",
+    "status": "0x1",
+    "canonical": true,
+    "blockNumber": "0x29cc6cf",
+    "blockHash": "0xe51bf683f0798f126f3bdc38afabd417df12fb82efd2db931421523a64b2ef2b",
+    "from": "0xe57f88c05810a9ad2b27f216665260c2d9f2b2da",
+    "to": "0xed377733590639e0a4ec7cd14df7509c7b2ca87d",
+    "nonce": "131",
+    "selector": "0xe2bbb158",
+    "gasUsed": "1248036",
+    "effectiveGasPriceWei": "20000002",
+    "feeWei": "24960722496072"
+  },
+  "nft5Key": "0x66f2e5a963f5a28c56631a79d94647777e58538ed7d7bd612d76ff99d5637d86",
+  "states": {
+    "before": {
+      "block": "0x29cc6ce",
+      "walletFab": "89695907796",
+      "paidToWallet": "0",
+      "paidToVault": "28049999",
+      "nft5Owner": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+      "walletFragmentShares": "0"
+    },
+    "after": {
+      "block": "0x29cc6cf",
+      "walletFab": "167509531472",
+      "paidToWallet": "77813623676",
+      "paidToVault": "28049999",
+      "nft5Owner": "0xeD377733590639E0a4ec7cd14dF7509c7B2Ca87D",
+      "walletFragmentShares": "6000000000000000000000"
+    }
+  },
+  "fabTransfers": [
+    {
+      "from": "0x0000000000000000000000000000000000000000",
+      "to": "0xeD377733590639E0a4ec7cd14dF7509c7B2Ca87D",
+      "value": "77264173697",
+      "formatted": "772.64173697",
+      "logIndex": "0x0"
+    },
+    {
+      "from": "0x0000000000000000000000000000000000000000",
+      "to": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+      "value": "77813623676",
+      "formatted": "778.13623676",
+      "logIndex": "0x5"
+    }
+  ],
+  "miningClaims": [
+    {
+      "key": "0x29fdcd4d6d0a78cba173464a052dbec2557cdf863f32a9c29ead0d09129bb3c8",
+      "to": "0xeD377733590639E0a4ec7cd14dF7509c7B2Ca87D",
+      "amount": "77264173697",
+      "formatted": "772.64173697",
+      "keyMatchesNft5": false,
+      "logIndex": "0x1"
+    },
+    {
+      "key": "0x66f2e5a963f5a28c56631a79d94647777e58538ed7d7bd612d76ff99d5637d86",
+      "to": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+      "amount": "77813623676",
+      "formatted": "778.13623676",
+      "keyMatchesNft5": true,
+      "logIndex": "0x6"
+    }
+  ],
+  "vaultEvents": [
+    {
+      "event": "MiningCollected",
+      "received": "77264173697",
+      "weight": "6",
+      "logIndex": "0x3"
+    },
+    {
+      "event": "MinerAdmitted",
+      "id": "5",
+      "weight": "6",
+      "logIndex": "0xa"
+    },
+    {
+      "event": "MiningCollected",
+      "received": "0",
+      "weight": "12",
+      "logIndex": "0xd"
+    },
+    {
+      "event": "Deposited",
+      "account": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+      "id": "5",
+      "weight": "6",
+      "shares": "6000000000000000000000",
+      "logIndex": "0xf"
+    }
+  ],
+  "nftTransfers": [
+    {
+      "from": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+      "to": "0xeD377733590639E0a4ec7cd14dF7509c7B2Ca87D",
+      "tokenId": "5",
+      "logIndex": "0x8"
+    }
+  ],
+  "checks": {
+    "walletFabDeltaRaw": "77813623676",
+    "walletFabDelta": "778.13623676",
+    "fabMintedToWalletRaw": "77813623676",
+    "nft5ClaimedToWalletRaw": "77813623676",
+    "nft5PaidCounterDeltaRaw": "77813623676",
+    "allFourAmountsMatch": true,
+    "nft5TransferredWalletToVault": true
+  },
+  "sourceEvidence": [
+    {
+      "file": "/Users/LevyHoo/XTruthWorkspace/contract/src/mining/FabxMinerCustody.sol",
+      "lines": "135-157",
+      "behavior": "MINING.claim settles the NFT old-owner rewards before custody transfer, then claim reweighs under new owner and records new baseline."
+    },
+    {
+      "file": ".analysis/mining-1952/fabx-history-v2/1cb8e9c16d9425b357aea5eaa33be697ccbd8b3839126b963fa7cd97f25552b1/src/pod/lib/DewebRewardAccounting.sol",
+      "lines": "166-185",
+      "behavior": "prepareHarvest resolves current NFT owner, increments paidTo for that recipient and records harvest."
+    }
+  ],
+  "interpretation": "The observed wallet FAB increase is minted mining income from NFT5 settled while wallet still owned it. No conclusion about unverified product-policy defects is inferred."
+}

@@ -1,8 +1,8 @@
 name: "Tag and release"
+# Merging SodaDEX source must not publish the inherited Uniswap VERSION/RELEASE.
+# The owner explicitly starts a release after preparing SodaDEX release metadata.
 on:
-  push:
-    branches:
-      - 'main'
+  workflow_dispatch:
 
 jobs:
   tag-and-release:

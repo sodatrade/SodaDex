@@ -1,0 +1,90 @@
+{
+  "requirement": "mining-products-1952 / independent 196 pool v3 repair",
+  "lifecycle": "active",
+  "owner": "current /root SodaDEX task",
+  "productionTouched": false,
+  "repositories": [
+    {
+      "repo": "sodatrade/SodaDex",
+      "worktree": "/Users/LevyHoo/Documents/SodaDex",
+      "branch": "codex/feat/mining-products-1952",
+      "expectedHead": "5cc18dcc6687af7d45def084c694bfa028476ccc",
+      "base": "codex/feat/sodadex-bootstrap",
+      "baseSha": "7506ce36138dfb6262ef11d1e3ca4828fec5ede3",
+      "pr": 2
+    },
+    {
+      "repo": "okasplaunchpad/contract",
+      "worktree": "/Users/LevyHoo/XTruthWorkspace/contract",
+      "branch": "codex/feat/mining-products-1952",
+      "expectedHead": "007291a",
+      "base": "develop",
+      "baseSha": "1426a613b6386be26c6ac91e14612ec581ff9c4c",
+      "pr": 3
+    }
+  ],
+  "changes": [
+    "Pool v3 LP rounding preserves newly minted LP backing and refunds unused OKB",
+    "Stop after pending or failed receipt, preserve fee journal",
+    "Restore existing general-token V3/V4 entry points",
+    "Compact UI, 0.5% default slippage inside settings",
+    "Unified token picker and pool list; configured miner pool selected inside create dialog",
+    "Subscript zero-count display for small balances and market amounts; exact inputs preserved",
+    "Refresh pool reserves when preparing liquidity preview"
+  ],
+  "preserved": [
+    "All unrelated dirty files",
+    "Existing TEST vault/policy and old locked LP",
+    "Production contracts"
+  ],
+  "validation": {
+    "sodaContracts": {
+      "passed": 29,
+      "failed": 0
+    },
+    "fullContractSuite": {
+      "passed": 938,
+      "failed": 3,
+      "failureScope": "Environment-gated EarlyAuthorizeFork (missing XLAYER_RPC_URL), PoolGuardFork and TaxGuardFork (hook address flags not configured)"
+    },
+    "web": {
+      "passed": 502,
+      "skipped": 22,
+      "typecheck": "pass",
+      "lint": "pass",
+      "build": "pass"
+    },
+    "worker": {
+      "passed": 216,
+      "typecheck": "pass",
+      "lint": "pass"
+    },
+    "runner": {
+      "passed": 8,
+      "mode": "in-memory, no signing/broadcast"
+    },
+    "browser": {
+      "publicWalletOperations": 5,
+      "successfulStageReceipts": 10,
+      "unifiedUi": "1440x1000 and 390x844; shared picker, create option, add dialog, indexed chart, exact-value tooltips"
+    }
+  },
+  "deploymentChecklist": {
+    "network": "196 independent TEST only",
+    "wallet": "encrypted local existing TEST owner, nonce 158 confirmed",
+    "parameters": "approval.json, plan rows and immutable TEST vault/policy bound",
+    "compile": "artifact and all compiler source hashes match rehearsal",
+    "localRehearsal": "10 successful transactions; fixed execution gas limits total <= approved caps",
+    "productionWallets": "not applicable: TEST only",
+    "proxyUpgradeMigration": "not applicable: new immutable pool and locker",
+    "awsOrIgnixBackend": "not applicable: no backend changes",
+    "oldLiquidity": "preserved, old locker unchanged",
+    "postDeployment": "Verified runtime hashes, all 10 successful receipts, five actual wallet operations, 60-day LP lock, indexed trades and published UI."
+  },
+  "contractCommit": "007291a",
+  "runnerCommit": "95544eb55",
+  "deploymentStatus": "All 10 receipts successful; independent TEST pool active; remaining LP locked for 60 days",
+  "acceptance": "acceptance.json",
+  "releasePrerequisites": "Completed: test frontend published and approved requirement branches pushed. No merge or production change.",
+  "publication": "publication.json"
+}

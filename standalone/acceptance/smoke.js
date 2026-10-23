@@ -5,6 +5,7 @@
 async (page) => {
   const target = new URL(page.url()).origin
   const checks = []
+  const rpcCalls = []
   const check = (condition, name) => {
     if (!condition) throw new Error(name)
     checks.push(name)
@@ -29,6 +30,7 @@ async (page) => {
   })
   await page.route('**/api/rpc', async (route) => {
     const body = route.request().postDataJSON()
+    rpcCalls.push(body)
     const word = (value) => BigInt(value).toString(16).padStart(64, '0')
     let result = '0x0'
     if (body.method === 'eth_chainId') result = '0xc4'
@@ -50,7 +52,8 @@ async (page) => {
   await page.getByText('X Layer 已连接', { exact: true }).waitFor()
   check(await page.locator('html').getAttribute('data-theme') === 'light', 'new visitors default to day theme even when their system is dark')
   check(await page.getByText(/^X Layer 主网 196 ·/).isVisible(), 'mainnet test notice remains visible')
-  const poolsReady = await page.getByText('V3 / V4 测试池已开放', { exact: true }).count() === 1
+  const poolsReady = await page.getByText('V3 / V4 测试池已部署', { exact: true }).count() === 1
+  const tradingPaused = await page.getByRole('button', { name: '公开兑换已暂停', exact: true }).count() === 1
   await page.waitForFunction(() => [...document.querySelectorAll('.asset-icon img, .network-icon')].every((img) => img.complete && img.naturalWidth > 0))
   check(await page.getByRole('button', { name: '选择支付资产，当前 OKB', exact: true }).locator('img').getAttribute('src') === '/assets/okb.png', 'native OKB uses its locally served official icon')
   check(await page.getByRole('button', { name: '选择接收资产，当前 USD₮0', exact: true }).locator('img').getAttribute('src') === '/assets/usdt0.png', 'USD₮0 uses the official X Layer token-list icon')
@@ -116,7 +119,7 @@ async (page) => {
   await page.getByText('X Layer · 已连接', { exact: true }).waitFor()
   await page.getByRole('button', { name: '关闭对话框' }).click()
   await page.getByText('余额 1', { exact: true }).first().waitFor()
-  const unavailable = page.getByRole('button', { name: poolsReady ? '输入数量' : '测试池准备中', exact: true })
+  const unavailable = page.getByRole('button', { name: tradingPaused ? '公开兑换已暂停' : poolsReady ? '输入数量' : '测试池准备中', exact: true })
   check(await unavailable.isDisabled(), 'empty amount or a pending pool cannot start a swap')
   await page.getByLabel('支付', { exact: true }).fill('2')
   await page.locator('#sell-amount[aria-invalid="true"]').waitFor()
@@ -125,7 +128,14 @@ async (page) => {
   check(await page.getByLabel('支付', { exact: true }).getAttribute('aria-invalid') === 'true', 'one wei above balance is rejected without floating point rounding')
   const amount = '0.123456789012345678'
   await page.getByLabel('支付', { exact: true }).fill(amount)
-  if (poolsReady) {
+  if (tradingPaused) {
+    check(await unavailable.isDisabled(), 'paused public trading cannot start a review with valid input and a connected wallet')
+    check(await page.getByRole('button', { name: '预览兑换', exact: true }).count() === 0, 'paused trading exposes no new review action')
+    await page.getByLabel('预计接收数量', { exact: true }).filter({ hasText: '1' }).waitFor()
+    check(await page.getByLabel('预计接收数量', { exact: true }).textContent() === '1', 'paused trading still displays the read-only expected output')
+    check(await page.getByText('测试池参考报价 · 公开兑换已暂停', { exact: true }).isVisible(), 'paused quotes are explicitly labelled as reference only')
+    check(rpcCalls.some((call) => call.method === 'eth_call' && /^0x(c6a5026a|aa9d21cb)/.test(call.params[0].data)), 'reference quotes use the actual quote read path')
+  } else if (poolsReady) {
     await page.getByRole('button', { name: '预览兑换', exact: true }).click()
     await page.getByRole('dialog', { name: '预览兑换' }).waitFor()
     check(await page.getByText('0.995 USD₮0', { exact: true }).isVisible(), 'review renders the six-decimal quote minimum at 0.5% slippage')
@@ -188,5 +198,5 @@ async (page) => {
   await page.getByText('节点暂不可用', { exact: true }).waitFor()
   check(await page.getByRole('button', { name: '重试', exact: true }).isVisible(), 'RPC failure exposes retry without fake online state')
   await page.unroute('**/api/rpc')
-  return { passed: checks.length, checks, walletCalls: calls, poolState: poolsReady ? 'ready' : 'pending', evidence: 'mock-wallet and mock-RPC browser acceptance; no signing or blockchain writes' }
+  return { passed: checks.length, checks, walletCalls: calls, poolState: poolsReady ? 'ready' : 'pending', publicTrading: tradingPaused ? 'paused' : 'enabled', evidence: 'mock-wallet and mock-RPC browser acceptance; no signing or blockchain writes' }
 }
