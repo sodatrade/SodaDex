@@ -1,6 +1,6 @@
 import { createPublicClient, http, encodeFunctionData, keccak256, toHex, zeroAddress, type Address, type Hex } from 'viem'
-import type { FragmentDeployment } from './config'
-import { poolAbi, lpRewardsAbi, tokenAbi, ignixIncomeAbi, mirrorVaultAbi } from './abi'
+import { shareToken, type FragmentDeployment } from './config'
+import { poolAbi, lpRewardsAbi, tokenAbi, ignixIncomeAbi, mirrorVaultAbi, fabsTokenAbi } from './abi'
 export type FragmentClient = ReturnType<typeof makeClient>
 export const makeClient = (config: FragmentDeployment) => createPublicClient({ transport: http(config.rpcUrl, { retryCount: 1 }) })
 export interface PreparedTransaction { to: Address; data: Hex; value: bigint; label: string; account: Address; chainId: number }
@@ -15,7 +15,10 @@ export async function verifyDeployment(c: FragmentClient, d: FragmentDeployment)
   const same = (a: Address, b: Address): boolean => a.toLowerCase() === b.toLowerCase()
   // Product revision v4 is still the special constant-product pool, not Uniswap V4.
   // The epoch pool binds IGNIX MirrorVault; it keeps the v4 income contract and precise liquidity.
-  const mirrorVault = version === keccak256(toHex('SodaDEX.OKB.MirrorEpochPool.v1'))
+  // MirrorFabsPool is the epoch pool whose shares are a standalone FABS token driven by the vault.
+  const fabsPool = version === keccak256(toHex('SodaDEX.OKB.MirrorFabsPool.v1'))
+  const mirrorVault = fabsPool || version === keccak256(toHex('SodaDEX.OKB.MirrorEpochPool.v1'))
+  if (fabsPool !== (d.fabs !== undefined)) throw new Error('FABS binding requires the MirrorFabsPool revision')
   const ignixIncome = mirrorVault || version === keccak256(toHex('SodaDEX.OKB.Fragments.v4'))
   const preciseLiquidity = ignixIncome || version === keccak256(toHex('SodaDEX.OKB.Fragments.v3'))
   if ((!preciseLiquidity && version !== keccak256(toHex('SodaDEX.OKB.Fragments.v2'))) || !same(shares, d.vault) || !same(policy, d.policy)) throw new Error('Unexpected contract version or bindings')
@@ -40,6 +43,15 @@ export async function verifyDeployment(c: FragmentClient, d: FragmentDeployment)
     ])
     if (!same(lpPool, d.pool) || rewardsVersion !== keccak256(toHex('SodaDEX.MirrorEpochRewards.v1')) || !same(vaultPolicy, d.policy)) throw new Error('MirrorVault binding mismatch')
   }
+  if (fabsPool && d.fabs) {
+    const [poolShares, vaultFabs, fabsVault, incentiveSource] = await Promise.all([
+      c.readContract({ address: d.pool, abi: poolAbi, functionName: 'SHARES' }),
+      c.readContract({ address: d.vault, abi: mirrorVaultAbi, functionName: 'FABS' }),
+      c.readContract({ address: d.fabs, abi: fabsTokenAbi, functionName: 'vault' }),
+      c.readContract({ address: rewards, abi: lpRewardsAbi, functionName: 'INCENTIVE_SOURCE' }),
+    ])
+    if (!same(poolShares, d.fabs) || !same(vaultFabs, d.fabs) || !same(fabsVault, d.vault) || !same(incentiveSource, d.vault)) throw new Error('FABS binding mismatch')
+  }
   return { rewards, preciseLiquidity, mirrorVault }
 }
 export async function readSnapshot(c: FragmentClient, d: FragmentDeployment, user?: Address) {
@@ -49,7 +61,7 @@ export async function readSnapshot(c: FragmentClient, d: FragmentDeployment, use
     c.readContract({ address: d.pool, abi: poolAbi, functionName: 'reserveShares' }),
     c.readContract({ address: d.pool, abi: poolAbi, functionName: 'reserveOkb' }),
     c.readContract({ address: d.pool, abi: poolAbi, functionName: 'totalSupply' }),
-    c.readContract({ address: d.vault, abi: tokenAbi, functionName: 'balanceOf', args: [account] }),
+    c.readContract({ address: shareToken(d), abi: tokenAbi, functionName: 'balanceOf', args: [account] }),
     c.readContract({ address: d.pool, abi: tokenAbi, functionName: 'balanceOf', args: [account] }),
     c.getBalance({ address: account }),
   ])

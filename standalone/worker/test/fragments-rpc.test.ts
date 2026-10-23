@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { encodeFunctionData, parseAbi } from 'viem'
 import { fragmentsRpc, fragmentManifest, validFragmentRpc } from '../src/fragments-rpc'
-import { poolAbi, tokenAbi, ignixIncomeAbi, mirrorVaultAbi } from '../../web/src/fragments/abi'
+import { poolAbi, tokenAbi, ignixIncomeAbi, mirrorVaultAbi, fabsTokenAbi } from '../../web/src/fragments/abi'
 const pool='0x1111111111111111111111111111111111111111',vault='0x2222222222222222222222222222222222222222',rewards='0x3333333333333333333333333333333333333333',user='0x4444444444444444444444444444444444444444'
 const manifest={chainId:196,pool,vault,rewards}
 describe('fragment RPC deployment boundary',()=>{
@@ -35,6 +35,18 @@ describe('fragment RPC deployment boundary',()=>{
   expect(validFragmentRpc('eth_call',[{to:user,data:read},'latest'],manifest)).toBe(false)
   const write=encodeFunctionData({abi:parseAbi(['function finalizeRedeem(uint256) returns(uint256)']),functionName:'finalizeRedeem',args:[1n]})
   expect(validFragmentRpc('eth_call',[{from:user,to:vault,data:write},'latest'],manifest)).toBe(false)
+ })
+ it('with a standalone FABS, share reads and approvals go to FABS, never the vault',()=>{
+  const fabs='0x5555555555555555555555555555555555555555', m={...manifest,fabs}
+  const balance=encodeFunctionData({abi:tokenAbi,functionName:'balanceOf',args:[user]})
+  expect(validFragmentRpc('eth_call',[{to:fabs,data:balance},'latest'],m)).toBe(true)
+  expect(validFragmentRpc('eth_call',[{to:fabs,data:encodeFunctionData({abi:fabsTokenAbi,functionName:'vault'})},'latest'],m)).toBe(true)
+  expect(validFragmentRpc('eth_call',[{to:vault,data:balance},'latest'],m)).toBe(false)
+  expect(validFragmentRpc('eth_call',[{to:vault,data:encodeFunctionData({abi:mirrorVaultAbi,functionName:'FABS'})},'latest'],m)).toBe(true)
+  const approve=encodeFunctionData({abi:tokenAbi,functionName:'approve',args:[pool,1n]})
+  expect(validFragmentRpc('eth_estimateGas',[{from:user,to:fabs,data:approve}],m)).toBe(true)
+  expect(validFragmentRpc('eth_estimateGas',[{from:user,to:vault,data:approve}],m)).toBe(false)
+  expect(fragmentManifest(JSON.stringify({...m,fabs:'0x0'}))).toBeUndefined()
  })
  it('bounds history and prevents state override',()=>{
   expect(validFragmentRpc('eth_getLogs',[{address:pool,fromBlock:'0x0',toBlock:'0x7d0',topics:[]}],manifest)).toBe(true)

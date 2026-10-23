@@ -1,0 +1,49 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "sodadex-preview",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-16",
+  "workers_dev": true,
+  "preview_urls": false,
+  "routes": [
+    {
+      "pattern": "soda.ignix.bot",
+      "custom_domain": true,
+      "zone_name": "ignix.bot"
+    }
+  ],
+  "vars": {
+    "SODADEX_FRAGMENTS_DEPLOYMENT": "{\"chainId\":196,\"pool\":\"0xb9fB01906F781Bb589B6d8b9DD629c41c847bF6A\",\"vault\":\"0x448C0eA1dBF537365703D1A2343dC053b59467CB\",\"fabs\":\"0x6D77071dF87CF1838CF52effDFf0A4E9a25098F0\",\"policy\":\"0xAfB9084151ddc17Aff2c375d2c447B67641b2653\",\"rewards\":\"0x458714928C66a7F784505c7ad15534eEb94D1D34\",\"locker\":\"0x0dce5091B05257195AF3670c3fb71B1FbbE71D59\",\"fromBlock\":\"73980985\",\"income\":\"0x48671fBFaFF93C3cC3b7D7718AB95764fEfF5847\",\"ignixTreasury\":\"0x6EFa1Fad18900B929Fe6782fd3eaBeac2563416A\"}"
+  },
+  "services": [
+    {
+      "binding": "ORDERS_API",
+      "service": "sodadex-orders-test"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "CHAIN_INDEX",
+        "class_name": "SodaChainIndex"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1-chain-index-sqlite",
+      "new_sqlite_classes": [
+        "SodaChainIndex"
+      ]
+    }
+  ],
+  "assets": {
+    "directory": "../web/dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": true
+  },
+  "alias": {
+    "viem": "./node_modules/viem/_esm/index.js"
+  }
+}

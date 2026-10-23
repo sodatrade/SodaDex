@@ -3,12 +3,14 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { spawnSync } from 'node:child_process'
 
-// The web and gateway must publish the same existing TEST fragment contracts.
+// The web and gateway must publish the same fragment contracts: the gateway config named by
+// SODADEX_FRAGMENTS_WRANGLER (default: the TEST stack; production: wrangler.fragments-196-production.jsonc).
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
-const config = JSON.parse(fs.readFileSync(path.join(root, 'standalone/worker/wrangler.fragments-196-test.jsonc'), 'utf8'))
+const wranglerFile = process.env.SODADEX_FRAGMENTS_WRANGLER || 'wrangler.fragments-196-test.jsonc'
+const config = JSON.parse(fs.readFileSync(path.join(root, 'standalone/worker', wranglerFile), 'utf8'))
 const raw = config.vars?.SODADEX_FRAGMENTS_DEPLOYMENT
 const deployment = JSON.parse(raw)
-if (deployment.chainId !== 196 || !deployment.pool || !deployment.vault || !deployment.policy) throw Error('Existing 196 TEST fragment deployment required')
+if (deployment.chainId !== 196 || !deployment.pool || !deployment.vault || !deployment.policy) throw Error('Existing 196 fragment deployment required')
 const result = spawnSync(process.execPath, ['node_modules/vite/bin/vite.js', 'build'], {
   cwd: path.join(root, 'standalone/web'), stdio: 'inherit',
   env: { ...process.env, VITE_SODADEX_NETWORK_PROFILE: '196-test', VITE_SODADEX_FRAGMENTS_DEPLOYMENT: raw },

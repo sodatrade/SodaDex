@@ -8,10 +8,11 @@ export function checkDexWebBuild(root) {
   const network = JSON.parse(fs.readFileSync(path.join(root, 'network-build.json'), 'utf8'))
   if (network.id !== '196-test' || network.chainId !== 196 || network.mount !== '/') throw Error('DEX build must target the existing 196 test deployment')
   if (fs.existsSync(path.join(root, 'mining'))) throw Error('Retired mining assets must not be published')
-  const configPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../standalone/worker/wrangler.fragments-196-test.jsonc')
+  const wranglerFile = process.env.SODADEX_FRAGMENTS_WRANGLER || 'wrangler.fragments-196-test.jsonc'
+  const configPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../standalone/worker', wranglerFile)
   const expected = JSON.parse(JSON.parse(fs.readFileSync(configPath, 'utf8')).vars.SODADEX_FRAGMENTS_DEPLOYMENT)
   const fragments = JSON.parse(fs.readFileSync(path.join(root, 'fragment-build.json'), 'utf8'))
-  if (JSON.stringify(fragments) !== JSON.stringify(expected)) throw Error('Web fragment deployment must match the TEST gateway')
+  if (JSON.stringify(fragments) !== JSON.stringify(expected)) throw Error(`Web fragment deployment must match the gateway in ${wranglerFile}`)
   const preferences = JSON.parse(fs.readFileSync(path.join(root, 'preferences-script.json'), 'utf8'))
   if (typeof preferences.hash !== 'string' || !preferences.hash.startsWith('sha256-')) throw Error('Missing preference CSP hash')
   const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8')

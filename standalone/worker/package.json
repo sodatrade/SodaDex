@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "cd .. && worker/node_modules/.bin/oxlint --config worker/.oxlintrc.json --deny-warnings worker/src worker/test trading-policy.ts v2-protocol.ts network-profile.ts mining-contracts.ts mining-products.ts mining-abi.ts mining-calls.ts mining-signed-calls.ts mining-discovery.ts mining-math.ts mining-market.ts",
     "test": "vitest run",
+    "deploy:production": "SODADEX_FRAGMENTS_WRANGLER=wrangler.fragments-196-production.jsonc node ../../scripts/sodadex/check-dex-web-build.mjs && wrangler deploy --keep-vars --durable-objects-code-update-mode immediate --config wrangler.fragments-196-production.jsonc",
     "deploy:test": "node ../../scripts/sodadex/check-dex-web-build.mjs && wrangler deploy --keep-vars --durable-objects-code-update-mode immediate --config wrangler.fragments-196-test.jsonc",
     "test:index-runtime": "node test/chain-index-runtime.mjs"
   },

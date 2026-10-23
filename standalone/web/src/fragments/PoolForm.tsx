@@ -5,6 +5,7 @@ import { roundedContribution } from './liquidityQuote'
 import { poolAbi } from './abi'
 import { approveIfNeeded, minimum, readSnapshot } from './client'
 import type { ScreenProps } from './types'
+import { shareToken } from './config'
 export function PoolForm({ client, deployment: d, snapshot: s, account, m, prepare }: ScreenProps): ReactElement {
   const [mode, setMode] = useState<'add' | 'remove'>('add'), [shares, setShares] = useState(''), [okb, setOkb] = useState(''), [lp, setLp] = useState(''), [slip, setSlip] = useState('0.5')
   return <section className="fragment-card"><h1>{m.liquidity}</h1><p className="fragment-muted">{m.principal}</p>
@@ -27,7 +28,7 @@ export function PoolForm({ client, deployment: d, snapshot: s, account, m, prepa
       if (current.tradingPaused) throw new Error(m.tradingPaused)
       const desiredShares = parseEther(shares), value = parseEther(okb)
       if (desiredShares <= 0n || value <= 0n) throw new Error(m.amountError)
-      const approval = await approveIfNeeded(client, d.vault, account, d.pool, desiredShares)
+      const approval = await approveIfNeeded(client, shareToken(d), account, d.pool, desiredShares)
       if (approval) return { ...approval, label: m.approval }
       const { shares: actualShares, okb: actualOkb } = roundedContribution(desiredShares, value, current.shares, current.okb, current.lpSupply)
       return { to: d.pool, data: encodeFunctionData({ abi: poolAbi, functionName: 'addLiquidity', args: [desiredShares, minimum(actualShares, bps), minimum(actualOkb, bps), deadline] }), value }
