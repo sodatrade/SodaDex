@@ -1,5 +1,7 @@
 # 正式 FABX 适配候选：矿机碎片专用池
 
+**独立 FABS 新部署入口：**参见 [Owner 部署及 IGNIX 接入说明](docs/fabs-owner-handoff.md)。独立币使用 `FabsToken`，池子使用 `MirrorFabsPool`；下文旧一体式金库与其容量参数不能直接作为这套新部署配置。
+
 本目录是新部署候选源码，版本标识为 `SodaDEX.OKB.Fragments.Formal.v1`。**尚未部署，没有正式 SodaDEX Pool／Vault／REWARDS 地址，也没有切换网站。** 正式部署由 Owner 签名执行，Owner／国库仍为 `0x6EFa1Fad18900B929Fe6782fd3eaBeac2563416A`。
 
 `../sodadex-fragments/` 保留已部署 TEST v5 的冻结源码。本目录从该版本派生，单独维护；编译共用其 `vendor/` 内已固定的 OpenZeppelin 5.4.0 和 forge-std 依赖，不修改外部 FABX、旧合约、普通 V2/V3/V4 或前端。

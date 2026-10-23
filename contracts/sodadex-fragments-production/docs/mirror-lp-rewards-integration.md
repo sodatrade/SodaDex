@@ -6,7 +6,7 @@
 
 SodaDEX 新增 MirrorSodaPool、MirrorLpRewards、EpochRewardLedger。已验证 LP 退出、转让和空池时段不会按到账时的持有人重分历史收益。旧池子和旧账本保持原实现；新池必须绑定实现下述协议的新金库。
 
-**部署已交由 owner 执行；本次只交付源码和接入说明。尚未部署 FABS，也没有可交付的新链上地址。** f0ca687 的 MirrorVault 仍硬编码 `ERC20("Open Miner Shares", "sFAB")`，且只有旧 `notifyIncentive(uint256)` 调用，不能直接接入新奖励合约。FABS 应是新矿机金库的 ERC20 份额，由存入矿机铸造、赎回销毁；不要另外部署一个任意增发的同名币。正式部署时将金库 symbol 设为 FABS；池子按合约地址和接口绑定，不按 symbol 识别。
+**部署已交由 owner 执行；本次只交付源码和接入说明。尚未部署 FABS，也没有可交付的新链上地址。** f0ca687 的 MirrorVault 仍硬编码 `ERC20("Open Miner Shares", "sFAB")`，且只有旧 `notifyIncentive(uint256)` 调用，不能直接接入新奖励合约。FABS 表示新矿机金库的 ERC20 份额，由金库在存入矿机时铸造、赎回时销毁；独立代币没有 owner 任意增发入口。若使用独立币方案，部署 FabsToken 后将金库 ERC20 份额拆分为对该币的调用；使用 MirrorFabsPool。池子按地址和接口绑定，不按 symbol 识别。
 
 ## 已确定的收益归属
 
@@ -90,4 +90,4 @@ function activeSeconds(uint64 epoch) external view returns (uint256);
 
 ## 独立 FABS 的额外适配边界
 
-本次 MirrorSodaPool 仍沿用“金库本身就是 ERC20 份额币”的接口，尚未实现独立 FABS 合约，也未拆分池子的金库地址与份额币地址。若 owner 要先部署独立 FABS，请先完成 [独立代币接入要求](fabs-owner-handoff.md)，不能只把本次池子 VAULT 参数换成普通 ERC20 地址。一次性绑定权限仍是建议方案，尚未获得明确确认。
+本次 MirrorSodaPool 仍沿用“金库本身就是 ERC20 份额币”的接口，新增独立 FabsToken 和 MirrorFabsPool 已完成代码实现，MirrorFabsPool 通过 SHARES() 使用独立币；原 MirrorSodaPool 继续服务一体式金库。若 owner 要先部署独立 FABS，请先完成 [独立代币接入要求](fabs-owner-handoff.md)，不能只把本次池子 VAULT 参数换成普通 ERC20 地址。本轮独立币代码采用 owner 一次性绑定金库；部署由 owner 执行，实际绑定前须完成真实金库适配。

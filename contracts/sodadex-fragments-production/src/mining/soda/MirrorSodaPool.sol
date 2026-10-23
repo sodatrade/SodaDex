@@ -26,7 +26,7 @@ contract MirrorSodaPool is SodaIgnixPool {
         VAULT.harvest();
     }
 
-    function PRODUCT_VERSION() public pure override returns (bytes32) {
+    function PRODUCT_VERSION() public pure virtual override returns (bytes32) {
         return keccak256("SodaDEX.OKB.MirrorEpochPool.v1");
     }
 }

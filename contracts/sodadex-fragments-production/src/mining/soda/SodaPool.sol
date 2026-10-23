@@ -14,6 +14,7 @@ contract SodaPool is ERC20, ReentrancyGuard {
     using SafeERC20 for IERC20;
     IgnixLpRewards public immutable REWARDS;
     IERC20 public immutable FAB;
+    IERC20 public immutable SHARES;
 
     function PRODUCT_VERSION() public pure virtual returns (bytes32) {
         return keccak256("SodaDEX.OKB.Fragments.v3");
@@ -41,7 +42,12 @@ contract SodaPool is ERC20, ReentrancyGuard {
         VAULT = vault;
         POLICY = vault.POLICY();
         FAB = vault.FAB();
+        SHARES = _shareToken(vault);
         REWARDS = _newRewards(vault);
+    }
+
+    function _shareToken(SodaVault vault) internal virtual returns (IERC20) {
+        return IERC20(address(vault));
     }
 
     function _newRewards(SodaVault vault) internal virtual returns (IgnixLpRewards) {
@@ -128,7 +134,7 @@ contract SodaPool is ERC20, ReentrancyGuard {
         _burn(msg.sender, liquidity);
         reserveShares -= shares;
         reserveOkb -= okb;
-        IERC20(address(VAULT)).safeTransfer(msg.sender, shares);
+        SHARES.safeTransfer(msg.sender, shares);
         _sendNative(msg.sender, okb);
         emit LiquidityRemoved(msg.sender, shares, okb, liquidity);
     }
@@ -160,7 +166,7 @@ contract SodaPool is ERC20, ReentrancyGuard {
         if (lp != 0) REWARDS.recordOkb{ value: lp }();
         if (platform != 0) _recordPlatform(platform);
         if (shareIn) _sendNative(msg.sender, output);
-        else IERC20(address(VAULT)).safeTransfer(msg.sender, output);
+        else SHARES.safeTransfer(msg.sender, output);
         emit Swapped(msg.sender, shareIn, input, output, platform, lp);
     }
 
@@ -210,9 +216,9 @@ contract SodaPool is ERC20, ReentrancyGuard {
     }
 
     function _pull(uint256 amount) private {
-        uint256 before_ = VAULT.balanceOf(address(this));
-        IERC20(address(VAULT)).safeTransferFrom(msg.sender, address(this), amount);
-        if (VAULT.balanceOf(address(this)) - before_ != amount) revert InvalidTransfer();
+        uint256 before_ = SHARES.balanceOf(address(this));
+        SHARES.safeTransferFrom(msg.sender, address(this), amount);
+        if (SHARES.balanceOf(address(this)) - before_ != amount) revert InvalidTransfer();
     }
 
     function _deadline(uint256 deadline) private view {
