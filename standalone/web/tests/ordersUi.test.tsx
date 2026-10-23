@@ -45,7 +45,7 @@ describe('limit order wallet and publication flow', () => {
   it('does not sign, approve, or POST when deployment is absent', async () => {
     mount(false); await draft()
     expect(screen.getByRole('button', { name: 'Review limit order' })).toBeDisabled()
-    expect(screen.getAllByText(/await a ready test deployment/).length).toBeGreaterThan(0)
+    expect(screen.getAllByText(/await a ready deployment/).length).toBeGreaterThan(0)
     expect(f.methods).toEqual([]); expect(posts()).toEqual([])
   })
   it('does not authorize when the service does not match an execution-ready deployment', async () => {

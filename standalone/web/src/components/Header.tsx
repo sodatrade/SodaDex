@@ -40,7 +40,6 @@ export function Header({ page, onPageChange, wallet, onWallet, onSearch, onPrefe
         <span>
           Soda<span className="brand-dex">DEX</span>
         </span>
-        <span className="test-tag">TEST</span>
       </button>
       <nav aria-label={t('mainNavigation')} className="main-nav">
         {pages.map((item) => (
