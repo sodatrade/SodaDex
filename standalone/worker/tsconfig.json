@@ -8,7 +8,12 @@
     "strict": true,
     "noEmit": true,
     "skipLibCheck": true,
-    "types": ["vitest/globals"]
+    "types": ["vitest/globals"],
+    "baseUrl": ".",
+    "paths": {
+      "viem": ["node_modules/viem/_types/index.d.ts"],
+      "viem/*": ["node_modules/viem/_types/*"]
+    }
   },
   "include": ["src", "test"]
 }

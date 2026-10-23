@@ -1,11 +1,11 @@
-import type { ReactElement } from 'react'
+import { useId, type ReactElement } from 'react'
 import { dataMessages } from '../../i18n/data'
 import { usePreferences } from '../../preferences/context'
 import type { MarketResponse } from './api'
 
 /** Each point is an observed Swap price. Gaps are block gaps, not fabricated candles. */
 export function PriceChart({ market }: { market: MarketResponse }): ReactElement {
-  const { locale } = usePreferences()
+  const { locale } = usePreferences(), id = useId()
   const m = dataMessages(locale)
   const d0 = market.token0.decimals, d1 = market.token1.decimals
   const points = d0 === null || d1 === null ? [] : market.priceHistory.map((p) => ({
@@ -19,8 +19,11 @@ export function PriceChart({ market }: { market: MarketResponse }): ReactElement
   return <figure className="price-chart">
     <figcaption>{m.priceHistory} · {market.token1.symbol} / {market.token0.symbol}</figcaption>
     <svg viewBox="0 0 1000 230" role="img" aria-label={`${m.priceHistory}: ${label(min)} – ${label(max)}`}>
-      <path d="M40 30V190H960" stroke="var(--soda-line)" fill="none" />
-      <polyline points={line} stroke="var(--soda-highlight)" strokeWidth="3" fill="none" />
+      <defs><linearGradient id={`${id}-area`} x2="0" y2="1"><stop stopColor="var(--soda-highlight)" stopOpacity=".24" /><stop offset="1" stopColor="var(--soda-highlight)" stopOpacity="0" /></linearGradient>
+        <pattern id={`${id}-grid`} width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="14" cy="14" r="1" fill="var(--soda-muted)" opacity=".22" /></pattern></defs>
+      <rect x="40" y="30" width="920" height="160" fill={`url(#${id}-grid)`} />
+      <polygon points={`${line.split(' ')[0].split(',')[0]},190 ${line} ${line.split(' ').at(-1)!.split(',')[0]},190`} fill={`url(#${id}-area)`} />
+      <polyline points={line} stroke="var(--soda-highlight)" strokeWidth="3" strokeLinejoin="round" strokeLinecap="round" fill="none" />
       {points.length === 1 && <circle cx={line.split(',')[0]} cy="110" r="5" fill="var(--soda-highlight)" />}
       <text x="40" y="20">{label(max)}</text><text x="40" y="180">{label(min)}</text>
       <text x="40" y="220">#{from}</text><text x="960" y="220" textAnchor="end">#{to}</text>

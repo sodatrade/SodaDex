@@ -1,0 +1,11 @@
+{
+  "capturedAt": "2026-10-18T02:32:13.468Z",
+  "origin": "https://sodadex-mining-test-1952.jsmsdx2025.workers.dev",
+  "chainId": 1952,
+  "version": "6a2c8262-c7d9-4635-a36a-492260bab3c6",
+  "commit": "a65d3224df2a3ee22f280379829ae323cf11ef1b",
+  "asset": "assets/MiningNetworkApp-D_V1qt03.js",
+  "sha256": "36a305aee8bdb34be5467ffcaa8dde7a9bcc5c513dc99a2d8e92d87b2efda1fa",
+  "matchesBuiltAsset": true,
+  "productionTouched": false
+}

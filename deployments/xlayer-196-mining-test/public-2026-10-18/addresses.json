@@ -1,0 +1,29 @@
+{
+  "chainId": 196,
+  "profile": "196-mining-test",
+  "production": false,
+  "contracts": {
+    "fab": "0x842b7bf61f2cb4be8aacac6adece3244c2a6f6ab",
+    "mining": "0x3d1b48686f97fecc8f0c964e165c04ffc5f8d52b",
+    "circuits": "0xB8C4Ea1483dbeFAaD2F35B480D950316819AED57",
+    "circuitMarket": "0xbbf30321a7049242474ac6831c843b687a160e68",
+    "nftFactory": "0xed377733590639e0a4ec7cd14df7509c7b2ca87d",
+    "manager": "0xe9e184c1d686ebf8481383d702d0318a20cc1f6c",
+    "launchFactory": "0xd40e8e98e1e5acb0655045b5ca25611363f2afc3",
+    "registry": "0x4f4832ebf549a5e29ff0d81e314ebc138e7573bd",
+    "miningFactory": "0x4225c7486ca455a6a95a4d2796484255e342e1c9",
+    "farm": "0x589420bb6fcaf944de9ce9742395b5f3434c1f00",
+    "router": "0xd3d11c7c9ce2b02210d0bf29abd68a9830e108bf",
+    "v2Factory": "0x03e033a2e064ebf028f4e2423395f7611bfda5c1",
+    "wrappedNative": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+    "v2Locker": "0xda021d0d5bff2fe04945bc0bdb65c61bac9be93b",
+    "liquidityHelper": "0x336ee94a2e9650ae632dcd29499db05d60bb583c",
+    "fragmentVault": "0xaf660984d1096210c2580202a9db385b32a1035c",
+    "fragmentPool": "0x775a205e23fa0c24be08eab580973082ca73d9d8",
+    "minerBuyer": "0x36a99d122014063286cfb9c470ccaaf1d833e0d3",
+    "projectToken": "0xc9e6CFEFB3433B1b46d3FA61E096ABB519fFE7E0",
+    "projectVault": "0x7d0296b03725cd3B861427d6482A2Cac3FD91b36",
+    "projectHolder": "0x0FFA1492C6888edeD55cE1C00084DA6d19e64238",
+    "projectPair": "0x8e952b2A87943ab3b46097c3D1b36D0EF33C2EA3"
+  }
+}

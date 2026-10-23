@@ -2,11 +2,13 @@
 
 SodaDEX is a fork of [Uniswap/interface](https://github.com/Uniswap/interface), maintained in [sodatrade/SodaDex](https://github.com/sodatrade/SodaDex).
 
+Contract auditors: start with the [contract scope and v5 special-pool snapshot](contracts/README.md). The snapshot includes the pool, miner-backed share vault, LP rewards, treasury income, required dependencies, reproducible build inputs and chain-196 TEST deployment evidence. Retired mining rehearsal contracts have been removed; their history remains in Git.
+
 The application is labelled **SodaDEX Test**, for personal learning and noncommercial testing. Its independent interface in [`standalone/web`](standalone/README.md) uses a same-origin read/simulation proxy for `https://rpc.ignix.bot/rpc/196`. SodaDEX-branded NFT contracts and two funded v3/v4 test pools are deployed on **X Layer mainnet (chain ID 196)**. Both pools passed real micro swaps in both directions. Current addresses and receipts are in the [deployment address table](deployments/xlayer-test/ADDRESSES.md); the frontend and Worker share [`active.json`](deployments/xlayer-test/active.json) and verified `pools.json`. The preserved upstream application in `apps/web` still uses Uniswap APIs and contract mappings.
 
 The source baseline is `web/5.166.0`, commit `6f54d9a474a6036e7043ed52f2a9359003c96c9c`. Preserve upstream licences, notices, protocol identifiers, and SDK package names.
 
-Test preview: [sodadex-preview.jsmsdx2025.workers.dev](https://sodadex-preview.jsmsdx2025.workers.dev). The standalone interface supports wallet-confirmed swaps in SodaDEX V3/V4 test pools, token imports, wrapping, transfers, pool/position creation, LP management, fees, onchain markets and paginated history. Official Uniswap X Layer V2/V3/V4 pools are read-only references. The test site uses real mainnet assets; each write needs the connected wallet's confirmation. Hosting is manual without a custom domain or deployment CI. See the [interface scope](standalone/web/README.md), [runbook](standalone/README.md) and [hosting receipt](deployments/frontend-test.json).
+Current site: [soda.ignix.bot](https://soda.ignix.bot); the [workers.dev preview](https://sodadex-preview.jsmsdx2025.workers.dev) remains available. The accepted standalone interface uses React and supports wallet-confirmed swaps and liquidity management in SodaDEX V2/V3 and hookless V4 test pools, plus the miner-fragment special pool. Official Uniswap pools remain read-only references. These are independent TEST deployments on chain 196, with real OKB gas; the domain does not make them production contracts. Hosting is manual. See the [runbook](standalone/README.md), [domain binding record](deployments/domain-soda-ignix-bot.json), and [Owner production-deployment handoff](deployments/xlayer-production/README.md). The old mining execution service is retired; its namespace and historical ledgers are preserved.
 
 ```bash
 git clone https://github.com/sodatrade/SodaDex.git

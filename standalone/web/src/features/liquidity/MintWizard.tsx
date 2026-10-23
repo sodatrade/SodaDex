@@ -1,3 +1,4 @@
+import type { V2Pool } from '../../liquidity/v2Types'
 import { useEffect, useId, useRef, useState, type ReactElement } from 'react'
 import { formatUnits } from 'viem'
 import { Dialog } from '../../components/Dialog'
@@ -16,6 +17,7 @@ import { CurrencyLabel } from './CurrencyLabel'
 import { decimalInput, integerInput } from './presentation'
 interface Props {
   pool?: LiquidityPool
+  onV2Pool?: (pool: V2Pool) => void
   position?: LiquidityPosition
   l: LiquidityText
   disabled: boolean
@@ -23,6 +25,7 @@ interface Props {
   error?: LiquidityErrorCode
   onPreview: (operation: LiquidityOperation) => void
   onClose: () => void
+  specialPool?: { label: string; onChoose: () => void }
 }
 export function MintWizard({
   pool: initialPool,
@@ -33,12 +36,14 @@ export function MintWizard({
   error,
   onPreview,
   onClose,
+  specialPool,
+  onV2Pool,
 }: Props): ReactElement {
   const [pool, setPool] = useState(initialPool ?? position?.pool)
   return (
     <Dialog title={l(position ? 'increase' : 'create')} description={l('test')} onClose={onClose}>
       {!pool ? (
-        <CurrencyConfiguration l={l} disabled={disabled} onPool={setPool} />
+        <CurrencyConfiguration l={l} disabled={disabled} onPool={value => value.protocol === 'v2' ? onV2Pool?.(value) : setPool(value)} specialPool={specialPool} />
       ) : (
         <AmountConfiguration
           pool={pool}

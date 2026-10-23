@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react'
 import { formatUnits } from 'viem'
 import { Icon } from '../../components/primitives'
+import { Pagination, usePagination } from '../../components/Pagination'
 import { EXPLORER_URL, shortenAddress } from '../../domain/assets'
 import { tradeMarketMessages } from '../../i18n/tradeMarket'
 import { usePreferences } from '../../preferences/context'
@@ -11,8 +12,9 @@ import { formatPrice } from './TradeChart'
 export function TradeMarketTrades({ data, context }: { data: ChartResponse; context: TradeMarketContext }): ReactElement {
   const { locale } = usePreferences(), m = tradeMarketMessages(locale), reverse = context.zeroForOne === false
   const fromDecimals = reverse ? data.token1.decimals : data.token0.decimals, toDecimals = reverse ? data.token0.decimals : data.token1.decimals
-  const rows = data.trades.slice(-20).reverse()
-  return <section className="trade-market-activity" aria-label={m.recent}><div className="trade-market-section-heading"><h3>{m.recent}</h3><span>{rows.length} / {data.trades.length}</span></div>
+  const pagination = usePagination([...data.trades].reverse(), `${data.pool.protocol}:${data.pool.id}:${data.query.fromBlock}:${data.query.toBlock}`)
+  const rows = pagination.items
+  return <section className="trade-market-activity" aria-label={m.recent}><div className="trade-market-section-heading"><h3>{m.recent}</h3><span>{pagination.start}–{pagination.end} / {pagination.total}</span></div>
     {!rows.length ? <p className="trade-market-muted">{m.noTrades}</p> : <div className="trade-market-table-scroll"><table><thead><tr><th>{m.time}</th><th>{m.price} · {context.to.symbol}/{context.from.symbol}</th>
       <th>{context.from.symbol}</th><th>{context.to.symbol}</th><th>{m.transaction}</th></tr></thead><tbody>{rows.map((trade) => {
         const from = reverse ? trade.volume1Raw : trade.volume0Raw, to = reverse ? trade.volume0Raw : trade.volume1Raw
@@ -22,5 +24,6 @@ export function TradeMarketTrades({ data, context }: { data: ChartResponse; cont
           <td title={toDecimals === null ? to : formatUnits(BigInt(to), toDecimals)}>{toDecimals === null ? '—' : formatUnits(BigInt(to), toDecimals)}</td>
           <td><a href={`${EXPLORER_URL}/tx/${trade.transactionHash}`} target="_blank" rel="noreferrer">{shortenAddress(trade.transactionHash)}<Icon name="external" size={12} /></a></td></tr>
       })}</tbody></table></div>}
+    <Pagination {...pagination} />
   </section>
 }

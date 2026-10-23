@@ -1,0 +1,104 @@
+{
+  "lifecycle": "active",
+  "requirement": "mining-products-1952 / DEX UI feedback",
+  "owner": "/root",
+  "repository": "sodatrade/SodaDex",
+  "worktree": "/Users/LevyHoo/Documents/SodaDex",
+  "targetBranch": "codex/feat/mining-products-1952",
+  "headBefore": "50271d3587a931a4d2d5d8ed98bd2ee99778a2d4",
+  "baseBranch": "codex/feat/sodadex-bootstrap",
+  "baseSha": "7506ce36138dfb6262ef11d1e3ca4828fec5ede3",
+  "pr": 2,
+  "target": "sodadex-preview.jsmsdx2025.workers.dev",
+  "productionTouched": false,
+  "chainWrites": 0,
+  "contractsChanged": false,
+  "migrationsAdded": [],
+  "changes": [
+    "Swap picker derives assets from funded SodaDEX pools, excluding unrelated reference/saved tokens; LP creation retains address imports",
+    "Chinese/English navigation: 兑换/Swap, 流动性池/Liquidity Pools, 我的/Portfolio",
+    "Miner pair uses shared token icons with initials fallback",
+    "Redundant visible View details headers removed; row actions retained",
+    "RPC/insufficient-funds failures translated; uncertain receipts retain check-only recovery"
+  ],
+  "classification": [
+    {
+      "item": "Swap catalog scope",
+      "category": "change request",
+      "source": "User explicitly limits Swap to SodaDEX LP assets"
+    },
+    {
+      "item": "Token initials",
+      "category": "change request",
+      "source": "User screenshot identifies missing miner pair icons"
+    },
+    {
+      "item": "Navigation localization",
+      "category": "change request",
+      "source": "User confirmed Chinese names; natural English names requested"
+    },
+    {
+      "item": "Duplicate detail headings",
+      "category": "change request",
+      "source": "User red boxes mark headings; row buttons remain useful"
+    },
+    {
+      "item": "Technical errors visible",
+      "category": "confirmed defect",
+      "source": "User requests concise user-facing feedback; current code directly renders Error.message; RPC payload reproduced by test"
+    },
+    {
+      "item": "Manual NFT lookup",
+      "category": "accepted behavior",
+      "source": "V3/V4 require NFT positions; optional manual lookup stays folded, V2 and miner pool do not require it"
+    }
+  ],
+  "validation": {
+    "webFiles": 63,
+    "webTests": 547,
+    "workerFiles": 32,
+    "workerTests": 228,
+    "typecheck": "passed",
+    "lint": "passed",
+    "build": "passed",
+    "browser": {
+      "readOnly": true,
+      "chainWrites": 0,
+      "viewports": [
+        {
+          "width": 1440,
+          "overflow": false
+        },
+        {
+          "width": 820,
+          "overflow": false
+        },
+        {
+          "width": 390,
+          "overflow": false
+        }
+      ],
+      "swapTokens": [
+        "OKB",
+        "WOKB",
+        "sFAB",
+        "USD₮0",
+        "TEST-FAB",
+        "TEST-V2"
+      ],
+      "unknownTokenHasPoolHint": true,
+      "specialPairIcons": 2,
+      "fallbackText": "SF",
+      "redundantVisibleHeadersRemoved": true,
+      "detailButtons": 3,
+      "englishNavigation": [
+        "Swap",
+        "Liquidity Pools",
+        "Portfolio"
+      ],
+      "insufficientFundsNotice": "OKB 余额不足，请减少支付金额，并预留网络费",
+      "noticeAutoDismissed": true
+    }
+  },
+  "dirtyState": "Pre-existing unrelated untracked files excluded and retained"
+}

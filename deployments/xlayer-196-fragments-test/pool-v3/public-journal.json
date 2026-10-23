@@ -1,0 +1,184 @@
+{
+  "chainId": 196,
+  "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+  "treasury": "0xE5384c794cb59B3868D962641Df1943a95Cec7a4",
+  "productionTouched": false,
+  "localOnly": false,
+  "publicDeployed": true,
+  "completed": true,
+  "deploymentVerified": true,
+  "startNonce": 158,
+  "contracts": {
+    "SodaVault": {
+      "address": "0xb97d23f0c874fc1380016fa31d975d7ccd13b94d",
+      "runtimeHash": "0x02dcd3b531133ba0ca0f53d2fc3641caab7e3fd5b08b2a9eb948674e725173e4"
+    },
+    "SodaPolicy": {
+      "address": "0xb678a4b26ba091d6eeb3aaa85d6abd6afc794937",
+      "runtimeHash": "0xdc5354a3abd3ab669eeb4c2295b7b9b0c088c0f0a59de80308f8a6b3f7b6ffd6"
+    },
+    "SodaPool": {
+      "address": "0x39fa6467abac258ee61acc18ff6c7910a52af92e",
+      "runtimeHash": "0x693af342600a8f52065b3193d8378b9d28ec4489907b7e4421db961f118aa4cf"
+    },
+    "SodaLocker": {
+      "address": "0xb5b0b5a1073f6c8fa84efd04b261a263cce894a2",
+      "runtimeHash": "0xa7f4d2d84e43ca392faed9f0715d26f2813b00ea9ec8ec88233841f1ce912d8a"
+    },
+    "IgnixLpRewards": {
+      "address": "0xA48BA81F035278AcAdEa10dD9C4Aa06EBFBAa82D",
+      "runtimeHash": "0x6079ec9338e1d5d70be4e43e0c889cafacf40b83f453295df15859eb56c0b746"
+    }
+  },
+  "rows": [
+    {
+      "label": "deploy SodaPool",
+      "hash": "0xe99b8992e8bfcd176f6adca4b781c0f43c5faa605c5e7814d64c6904aaaa0a08",
+      "nonce": 158,
+      "to": null,
+      "value": "0",
+      "gas": "2800000",
+      "gasPrice": "21000000",
+      "status": "success",
+      "gasUsed": "2301805",
+      "feeWei": "48337905000000",
+      "blockNumber": "73784265",
+      "contractAddress": "0x39fa6467abac258ee61acc18ff6c7910a52af92e"
+    },
+    {
+      "label": "deploy SodaLocker",
+      "hash": "0x9868d190dc43a4c2079b8ba28838caa6343b55a7b48c3f8fa83416d269dd5bed",
+      "nonce": 159,
+      "to": null,
+      "value": "0",
+      "gas": "900000",
+      "gasPrice": "21000000",
+      "status": "success",
+      "gasUsed": "717441",
+      "feeWei": "15066261000000",
+      "blockNumber": "73784282",
+      "contractAddress": "0xb5b0b5a1073f6c8fa84efd04b261a263cce894a2"
+    },
+    {
+      "label": "approve",
+      "hash": "0xc923c15beac73ff70ffe4a14105f6fc35a118a440aaac407c320a234fa236e5d",
+      "nonce": 160,
+      "to": "0xb97d23f0c874fc1380016fa31d975d7ccd13b94d",
+      "value": "0",
+      "gas": "65000",
+      "gasPrice": "21000000",
+      "status": "success",
+      "gasUsed": "46018",
+      "feeWei": "966378000000",
+      "blockNumber": "73784297",
+      "contractAddress": null
+    },
+    {
+      "label": "addLiquidity",
+      "hash": "0x67e67ee6a0d2dc43c7309415f2f80b22eb001acfce1e5ae72885304e48a0a650",
+      "nonce": 161,
+      "to": "0x39FA6467aBAC258EE61AcC18ff6c7910A52AF92E",
+      "value": "300000000000",
+      "gas": "1500000",
+      "gasPrice": "21000000",
+      "status": "success",
+      "gasUsed": "973245",
+      "feeWei": "20438145000000",
+      "blockNumber": "73784764",
+      "contractAddress": null
+    },
+    {
+      "label": "addLiquidity",
+      "hash": "0x0d1295e3ac699d51f6e5eb582aa5e68604792c9ef846a070b44b9b5d77d35331",
+      "nonce": 162,
+      "to": "0x39FA6467aBAC258EE61AcC18ff6c7910A52AF92E",
+      "value": "30000000000",
+      "gas": "1500000",
+      "gasPrice": "21000000",
+      "status": "success",
+      "gasUsed": "942414",
+      "feeWei": "19790694000000",
+      "blockNumber": "73784956",
+      "contractAddress": null
+    },
+    {
+      "label": "swap",
+      "hash": "0x1a39593d89836e7986e91c912bd4862f521b951ad926dbb185cb0672a5ea0ec5",
+      "nonce": 163,
+      "to": "0x39FA6467aBAC258EE61AcC18ff6c7910A52AF92E",
+      "value": "100000000",
+      "gas": "1400000",
+      "gasPrice": "21000000",
+      "status": "success",
+      "gasUsed": "804267",
+      "feeWei": "16889607000000",
+      "blockNumber": "73784976",
+      "contractAddress": null
+    },
+    {
+      "label": "swap",
+      "hash": "0x25b5fd7cb858976c44d682d3270de10b4ad8f3bd69d1f2717fb9a0b22b0469c6",
+      "nonce": 164,
+      "to": "0x39FA6467aBAC258EE61AcC18ff6c7910A52AF92E",
+      "value": "0",
+      "gas": "1400000",
+      "gasPrice": "21000000",
+      "status": "success",
+      "gasUsed": "784614",
+      "feeWei": "16476894000000",
+      "blockNumber": "73784998",
+      "contractAddress": null
+    },
+    {
+      "label": "removeLiquidity",
+      "hash": "0x97dd9c2ba33cd9955aced2eafb2f9f3221b744d2ba269ab4c779ac51ef5017be",
+      "nonce": 165,
+      "to": "0x39FA6467aBAC258EE61AcC18ff6c7910A52AF92E",
+      "value": "0",
+      "gas": "1400000",
+      "gasPrice": "21000000",
+      "status": "success",
+      "gasUsed": "866056",
+      "feeWei": "18187176000000",
+      "blockNumber": "73785525",
+      "contractAddress": null
+    },
+    {
+      "label": "approve",
+      "hash": "0x88d1de1e20e2a99899a0b4ff62f15a07534647026fab7971a9b1691d4e05c052",
+      "nonce": 166,
+      "to": "0x39fa6467abac258ee61acc18ff6c7910a52af92e",
+      "value": "0",
+      "gas": "65000",
+      "gasPrice": "21000000",
+      "status": "success",
+      "gasUsed": "45974",
+      "feeWei": "965454000000",
+      "blockNumber": "73785575",
+      "contractAddress": null
+    },
+    {
+      "label": "lock",
+      "hash": "0xc20a5d63c21b76e38eac680a75c674e954e824725aecf6e05f717bfdb00374ea",
+      "nonce": 167,
+      "to": "0xb5b0b5a1073f6c8fa84efd04b261a263cce894a2",
+      "value": "0",
+      "gas": "1200000",
+      "gasPrice": "21000000",
+      "status": "success",
+      "gasUsed": "778976",
+      "feeWei": "16358496000000",
+      "blockNumber": "73785584",
+      "contractAddress": null
+    }
+  ],
+  "gasSpentWei": "173477010000000",
+  "nonGasSpentWei": "330100000000",
+  "pending": null,
+  "final": {
+    "lockedLp": "9526279441628825",
+    "reserveShares": "549884216652857722057",
+    "reserveOkb": "165034742319",
+    "unlockAt": "1797738620"
+  }
+}

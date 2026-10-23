@@ -1,3 +1,4 @@
+import { rememberedWallet, rememberWallet, walletConsentId } from './walletConsent'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   connectWallet,
@@ -23,7 +24,7 @@ export interface WalletController {
   getIdentity: () => WalletIdentity | undefined
 }
 
-/** Provider discovery and consent are local UI state; no account access runs on page load. */
+/** Restore only a user-selected provider via eth_accounts; never request access or switch chains on load. */
 export function useWallet(): WalletController {
   const [options, setOptions] = useState<WalletOption[]>([])
   const [session, setSession] = useState<WalletSession>()
@@ -36,6 +37,7 @@ export function useWallet(): WalletController {
     identity.current = value ? { ...value, revision: revision.current } : undefined
     setSession(value)
   }
+  const restoreAttempted = useRef(false)
   const attempt = useRef(0)
   const subscription = useRef(0)
   const chainEventRevision = useRef(0)
@@ -69,7 +71,8 @@ export function useWallet(): WalletController {
         'name' in info &&
         typeof info.name === 'string'
       ) {
-        register({ id: info.uuid, name: info.name.slice(0, 60), provider: detail.provider })
+        register({ id: info.uuid, name: info.name.slice(0, 60), provider: detail.provider,
+          ...('rdns' in info && typeof info.rdns === 'string' && info.rdns.length <= 255 ? { rdns: info.rdns } : {}) })
       }
     }
     window.addEventListener('eip6963:announceProvider', announce)
@@ -82,6 +85,7 @@ export function useWallet(): WalletController {
   }, [])
 
   const disconnect = useCallback((): void => {
+    rememberWallet(); restoreAttempted.current = true
     attempt.current += 1
     subscription.current += 1
     unsubscribe.current?.()
@@ -104,7 +108,8 @@ export function useWallet(): WalletController {
     [],
   )
 
-  const connect = async (option: WalletOption): Promise<void> => {
+  const connect = useCallback(async (option: WalletOption, restore = false): Promise<void> => {
+    restoreAttempted.current = true
     const currentAttempt = ++attempt.current
     const currentSubscription = ++subscription.current
     unsubscribe.current?.()
@@ -166,8 +171,9 @@ export function useWallet(): WalletController {
       provider.on?.('accountsChanged', accountsChanged)
       provider.on?.('chainChanged', chainChanged)
       provider.on?.('disconnect', providerDisconnected)
-      const connected = await connectWallet(option)
+      const connected = await connectWallet(option, restore)
       if (currentAttempt === attempt.current) {
+        rememberWallet(option)
         updateSession({
           ...connected,
           address: observedAddress ?? connected.address,
@@ -178,14 +184,22 @@ export function useWallet(): WalletController {
       if (currentAttempt === attempt.current) {
         unsubscribe.current?.()
         unsubscribe.current = undefined
-        setError(walletError(cause))
+        if (!restore) setError(walletError(cause))
+        else rememberWallet()
       }
     } finally {
       if (currentAttempt === attempt.current) {
         setStatus('idle')
       }
     }
-  }
+  }, [disconnect])
+
+  useEffect(() => {
+    if (restoreAttempted.current) return
+    const saved = rememberedWallet(), injected: unknown = (window as Window & { ethereum?: unknown }).ethereum
+    const option = options.find((item) => walletConsentId(item) === saved || saved === 'injected' && item.provider === injected)
+    if (option) void connect(option, true)
+  }, [options, connect])
 
   const switchChain = async (): Promise<void> => {
     if (!session) {

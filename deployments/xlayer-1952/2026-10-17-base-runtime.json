@@ -1,0 +1,1231 @@
+{
+  "chainId": 1952,
+  "rpc": "https://testrpc.xlayer.tech/terigon",
+  "sourceCommit": "4caabe00d0e4d198aac4576bc0ad27c8cca5ce54",
+  "repositoryCommit": "c25f049de398ba95fdf8e3adbc5796110aace1cb",
+  "checkedAtUtc": "2026-10-17T05:46:18.205939+00:00",
+  "blockNumber": 43757135,
+  "blockHash": "0x71c2b13ee2a93cf998264d91ea982e0d7043dcdf13e189691a6e288f63897fed",
+  "miningDeployment": {
+    "transactionHash": "0xef128f2913dcde37d2cbe2dbf664844bd81885de35edc8e1054dad4a0fb4e241",
+    "blockNumber": 43756780,
+    "blockHash": "0x912b9e28ad46fef77b2750a1f5e57b6a73558117e34b271bb15a9b18b6cea60f",
+    "timestamp": 1792215617
+  },
+  "scope": "Read-only runtime and initial-binding verification; unsigned candidates are not receipt evidence",
+  "passed": true,
+  "runtimeChecks": [
+    {
+      "role": "DewebRewardAccounting",
+      "address": "0x9cef28ada76d6af3e7a2604b0b6ac1a3b65b39c3",
+      "artifact": "DewebRewardAccounting",
+      "codeBytes": 6374,
+      "codeSha256": "5d076a9d5e4b50167bb33cd0700b79132f013c06356847216d9125fb63dca0c5",
+      "artifactSha256": "d04c875e6d2b00a6b77bfbb2df4f37878d5984e401fb48c052e464147217c60e",
+      "immutableAddresses": [
+        {
+          "start": 8,
+          "length": 32,
+          "address": "0x9cef28ada76d6af3e7a2604b0b6ac1a3b65b39c3"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "role": "DewebMiningExtension",
+      "address": "0x8f7ef5ae53bc24072115c6ed4027087b9631dffa",
+      "artifact": "DewebMiningExtension",
+      "codeBytes": 5536,
+      "codeSha256": "729f1990786074844d6197265baa2b67b48d9bd47317a2c5a47431cfae800b80",
+      "artifactSha256": "963faafa94e540c7f26dbc3528afdb81717dfe9f578dbb78bd3b0b8d6eb34696",
+      "immutableAddresses": [
+        {
+          "start": 8,
+          "length": 32,
+          "address": "0x8f7ef5ae53bc24072115c6ed4027087b9631dffa"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "role": "PodNetlist",
+      "address": "0x95932dac0cc6edb43fb74fae147dcf96e5b807ed",
+      "artifact": "PodNetlist",
+      "codeBytes": 11246,
+      "codeSha256": "775d6cdcfea02474e2b123952366522aa05bcbe14823fb3b6a69963eb447b6b2",
+      "artifactSha256": "79d2b026be6aa6cf187be6f7f8cfbefe057b9a6da994e5f8cc6d0f2c50ba0903",
+      "immutableAddresses": [
+        {
+          "start": 2216,
+          "length": 32,
+          "address": "0x95932dac0cc6edb43fb74fae147dcf96e5b807ed"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "role": "transistorsImplementation",
+      "address": "0x484c58d937387ec34c5ae01ad796f0c5f801fd72",
+      "artifact": "Transistors",
+      "codeBytes": 11420,
+      "codeSha256": "5f21cb3c198b3368c7a337a6bc81aaa35260d77137407d1bb74e56ee36bfb5a4",
+      "artifactSha256": "a5b7f0889805355133016cb273b16b9205ae5c689d5d1ba12d3c0b17f6c84c0f",
+      "immutableAddresses": [],
+      "passed": true
+    },
+    {
+      "role": "circuitsImplementation",
+      "address": "0x98f4dfbfab6fc37e59e00d6881e779b33b23b009",
+      "artifact": "Circuits",
+      "codeBytes": 12859,
+      "codeSha256": "f6d09d2fd4a4e03b94c3fac19ee2ae7e3a530849ea2a82b45c738a0f3537ec80",
+      "artifactSha256": "cbfefeea9b17f294e1764b920efd8b96ce772d8b8559aad139286629b64544d3",
+      "immutableAddresses": [
+        {
+          "start": 1427,
+          "length": 32,
+          "address": "0x6ecf746b078d46391f8c425b150153212f7c0545"
+        },
+        {
+          "start": 2489,
+          "length": 32,
+          "address": "0x6ecf746b078d46391f8c425b150153212f7c0545"
+        },
+        {
+          "start": 4506,
+          "length": 32,
+          "address": "0x6ecf746b078d46391f8c425b150153212f7c0545"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "role": "factoryImplementation",
+      "address": "0x6b5c32ad97eb42230138e02a21b0e6d811fd713d",
+      "artifact": "CircuitFactory",
+      "codeBytes": 8720,
+      "codeSha256": "3a7576a4ef351855b6779fd8b76f4477584aad60e26e3ded9589dda040adc3ad",
+      "artifactSha256": "0b3b6b9a6323237672ec466a64b638a8365f22819d34dc70dda6f5ccec6d6acf",
+      "immutableAddresses": [
+        {
+          "start": 2438,
+          "length": 32,
+          "address": "0x6b5c32ad97eb42230138e02a21b0e6d811fd713d"
+        },
+        {
+          "start": 2660,
+          "length": 32,
+          "address": "0x6b5c32ad97eb42230138e02a21b0e6d811fd713d"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "role": "factory",
+      "address": "0xad6e6bd6feecd3ef77ead8779ffcf5d52521abca",
+      "artifact": "ERC1967Proxy",
+      "codeBytes": 130,
+      "codeSha256": "81761725cf853082b50ab6857c420c4f69529e6c6eb3a88534b0e3771304d8fc",
+      "artifactSha256": "64527818c64dc5906cf81011650613e32be47b93daae710e5cbce6b30abdd369",
+      "immutableAddresses": [],
+      "passed": true
+    },
+    {
+      "role": "miningImplementation",
+      "address": "0xfe32078e62a43d88f65731da693950e6e221fe0b",
+      "artifact": "PodMining",
+      "codeBytes": 24504,
+      "codeSha256": "901ab8207ab2ada648be6d5aac9523ac1f964803867727d5613127e3eb26b912",
+      "artifactSha256": "b6f02c15414f37e76af33076bb7ad0ba258a7b107580f164dcf940a89f55d262",
+      "immutableAddresses": [
+        {
+          "start": 12061,
+          "length": 32,
+          "address": "0xfe32078e62a43d88f65731da693950e6e221fe0b"
+        },
+        {
+          "start": 12265,
+          "length": 32,
+          "address": "0xfe32078e62a43d88f65731da693950e6e221fe0b"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "role": "fab",
+      "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+      "artifact": "PodToken",
+      "codeBytes": 2191,
+      "codeSha256": "c4e3b3412d2f600e8dc32b8043fee23386115577a3f0288b6a1ebe30c38edd06",
+      "artifactSha256": "b048630baf1f82a52863c5119626a36ef982ea2fe3da7128eb065c6a80e642ee",
+      "immutableAddresses": [
+        {
+          "start": 783,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 1537,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "role": "mining",
+      "address": "0x7991d4a8493b9709365cd079dffc75e790007874",
+      "artifact": "ERC1967Proxy",
+      "codeBytes": 130,
+      "codeSha256": "81761725cf853082b50ab6857c420c4f69529e6c6eb3a88534b0e3771304d8fc",
+      "artifactSha256": "64527818c64dc5906cf81011650613e32be47b93daae710e5cbce6b30abdd369",
+      "immutableAddresses": [],
+      "passed": true
+    },
+    {
+      "role": "marketImplementation",
+      "address": "0xbdb90331b1c205bbfa84db7cbee6a53b24fc0e21",
+      "artifact": "CircuitMarket",
+      "codeBytes": 7849,
+      "codeSha256": "8568bb22e0f440f575890429ad74dde131a41d8e1c78d55274e7de42f2505b1f",
+      "artifactSha256": "650702e14e16409b6af7d1800e6b88e8789469f9e9d2fcf7e13ddb4efa093cec",
+      "immutableAddresses": [
+        {
+          "start": 3185,
+          "length": 32,
+          "address": "0xbdb90331b1c205bbfa84db7cbee6a53b24fc0e21"
+        },
+        {
+          "start": 3389,
+          "length": 32,
+          "address": "0xbdb90331b1c205bbfa84db7cbee6a53b24fc0e21"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "role": "circuitMarket",
+      "address": "0xa619c4cf1264bc071a3827edd0b64252842471be",
+      "artifact": "ERC1967Proxy",
+      "codeBytes": 130,
+      "codeSha256": "81761725cf853082b50ab6857c420c4f69529e6c6eb3a88534b0e3771304d8fc",
+      "artifactSha256": "64527818c64dc5906cf81011650613e32be47b93daae710e5cbce6b30abdd369",
+      "immutableAddresses": [],
+      "passed": true
+    },
+    {
+      "role": "lens",
+      "address": "0xcdb3efbdfe3858aba4d4d5c83e6bffa47848945e",
+      "artifact": "PodLens",
+      "codeBytes": 15216,
+      "codeSha256": "a5e18828a8c114b13773a27b204eb355527a5a7e5b7c85bc8687df3825ba88c5",
+      "artifactSha256": "c37c52910734298517886ed31466cfd73be68c5c0ccbddd1d2c9706ea81c3c2b",
+      "immutableAddresses": [
+        {
+          "start": 224,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 466,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 2324,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 2538,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 2654,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 3864,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 4602,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 5176,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 6101,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 6277,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 6364,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 6497,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 6595,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 6748,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 6870,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 6978,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 7172,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 7277,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 7393,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 7491,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 7596,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 7771,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 7868,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 8006,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 8416,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 8503,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 8652,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 10105,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 10738,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 11626,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 12406,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        },
+        {
+          "start": 13125,
+          "length": 32,
+          "address": "0x7991d4a8493b9709365cd079dffc75e790007874"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "role": "transistorBeacon",
+      "address": "0xb72356b2e945db20ec0c676309406ae79401b3cd",
+      "artifact": "UpgradeableBeacon",
+      "codeBytes": 611,
+      "codeSha256": "a7086de92005560b5ef8d3b500ab4e6b9793edf9d9608b883963bda828ec38c6",
+      "artifactSha256": "413c3d00dfcae2c58d337aa9996720583d28d515a0aa36c1459f422523b882bc",
+      "immutableAddresses": [],
+      "passed": true
+    },
+    {
+      "role": "circuitBeacon",
+      "address": "0x62874cf0179b35fdec20947281aaf8f5dff3d15c",
+      "artifact": "UpgradeableBeacon",
+      "codeBytes": 611,
+      "codeSha256": "a7086de92005560b5ef8d3b500ab4e6b9793edf9d9608b883963bda828ec38c6",
+      "artifactSha256": "413c3d00dfcae2c58d337aa9996720583d28d515a0aa36c1459f422523b882bc",
+      "immutableAddresses": [],
+      "passed": true
+    },
+    {
+      "role": "transistors",
+      "address": "0xd1bb400c5b0d1c65a0025b110cb7e942f168ae98",
+      "artifact": "BeaconProxy",
+      "codeBytes": 295,
+      "codeSha256": "f19da96affe89c144b4699ff7ea7bf509abbde804e82340bdeba5efce30569e8",
+      "artifactSha256": "a9450f92d4281fd716508e32c887766904cd6d8554f6593c2704e5aa09bd3c65",
+      "immutableAddresses": [
+        {
+          "start": 24,
+          "length": 32,
+          "address": "0xb72356b2e945db20ec0c676309406ae79401b3cd"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "role": "circuits",
+      "address": "0x5ae194d008292ef9d02933a599070c9661be040c",
+      "artifact": "BeaconProxy",
+      "codeBytes": 295,
+      "codeSha256": "a5ae47e3848f9af83437a1d0ead12feab547e6ba2280403e40a070e376008d7c",
+      "artifactSha256": "a9450f92d4281fd716508e32c887766904cd6d8554f6593c2704e5aa09bd3c65",
+      "immutableAddresses": [
+        {
+          "start": 24,
+          "length": 32,
+          "address": "0x62874cf0179b35fdec20947281aaf8f5dff3d15c"
+        }
+      ],
+      "passed": true
+    }
+  ],
+  "bindingChecks": [
+    {
+      "role": "factory",
+      "signature": "owner()",
+      "kind": "address",
+      "expected": "0x6ecf746b078d46391f8c425b150153212f7c0545",
+      "arguments": [],
+      "to": "0xad6e6bd6feecd3ef77ead8779ffcf5d52521abca",
+      "data": "0x8da5cb5b",
+      "raw": "0x0000000000000000000000006ecf746b078d46391f8c425b150153212f7c0545",
+      "actual": "0x6ecf746b078d46391f8c425b150153212f7c0545",
+      "passed": true
+    },
+    {
+      "role": "factory",
+      "signature": "isSealed()",
+      "kind": "bool",
+      "expected": false,
+      "arguments": [],
+      "to": "0xad6e6bd6feecd3ef77ead8779ffcf5d52521abca",
+      "data": "0x631f9852",
+      "raw": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "actual": false,
+      "passed": true
+    },
+    {
+      "role": "mining",
+      "signature": "owner()",
+      "kind": "address",
+      "expected": "0x6ecf746b078d46391f8c425b150153212f7c0545",
+      "arguments": [],
+      "to": "0x7991d4a8493b9709365cd079dffc75e790007874",
+      "data": "0x8da5cb5b",
+      "raw": "0x0000000000000000000000006ecf746b078d46391f8c425b150153212f7c0545",
+      "actual": "0x6ecf746b078d46391f8c425b150153212f7c0545",
+      "passed": true
+    },
+    {
+      "role": "mining",
+      "signature": "isSealed()",
+      "kind": "bool",
+      "expected": false,
+      "arguments": [],
+      "to": "0x7991d4a8493b9709365cd079dffc75e790007874",
+      "data": "0x631f9852",
+      "raw": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "actual": false,
+      "passed": true
+    },
+    {
+      "role": "circuitMarket",
+      "signature": "owner()",
+      "kind": "address",
+      "expected": "0x6ecf746b078d46391f8c425b150153212f7c0545",
+      "arguments": [],
+      "to": "0xa619c4cf1264bc071a3827edd0b64252842471be",
+      "data": "0x8da5cb5b",
+      "raw": "0x0000000000000000000000006ecf746b078d46391f8c425b150153212f7c0545",
+      "actual": "0x6ecf746b078d46391f8c425b150153212f7c0545",
+      "passed": true
+    },
+    {
+      "role": "circuitMarket",
+      "signature": "isSealed()",
+      "kind": "bool",
+      "expected": false,
+      "arguments": [],
+      "to": "0xa619c4cf1264bc071a3827edd0b64252842471be",
+      "data": "0x631f9852",
+      "raw": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "actual": false,
+      "passed": true
+    },
+    {
+      "role": "factoryImplementation",
+      "signature": "owner()",
+      "kind": "address",
+      "expected": "0x0000000000000000000000000000000000000000",
+      "arguments": [],
+      "to": "0x6b5c32ad97eb42230138e02a21b0e6d811fd713d",
+      "data": "0x8da5cb5b",
+      "raw": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "actual": "0x0000000000000000000000000000000000000000",
+      "passed": true
+    },
+    {
+      "role": "factoryImplementation",
+      "signature": "proxiableUUID()",
+      "kind": "bytes32",
+      "expected": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+      "arguments": [],
+      "to": "0x6b5c32ad97eb42230138e02a21b0e6d811fd713d",
+      "data": "0x52d1902d",
+      "raw": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+      "actual": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+      "passed": true
+    },
+    {
+      "role": "miningImplementation",
+      "signature": "owner()",
+      "kind": "address",
+      "expected": "0x0000000000000000000000000000000000000000",
+      "arguments": [],
+      "to": "0xfe32078e62a43d88f65731da693950e6e221fe0b",
+      "data": "0x8da5cb5b",
+      "raw": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "actual": "0x0000000000000000000000000000000000000000",
+      "passed": true
+    },
+    {
+      "role": "miningImplementation",
+      "signature": "proxiableUUID()",
+      "kind": "bytes32",
+      "expected": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+      "arguments": [],
+      "to": "0xfe32078e62a43d88f65731da693950e6e221fe0b",
+      "data": "0x52d1902d",
+      "raw": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+      "actual": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+      "passed": true
+    },
+    {
+      "role": "marketImplementation",
+      "signature": "owner()",
+      "kind": "address",
+      "expected": "0x0000000000000000000000000000000000000000",
+      "arguments": [],
+      "to": "0xbdb90331b1c205bbfa84db7cbee6a53b24fc0e21",
+      "data": "0x8da5cb5b",
+      "raw": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "actual": "0x0000000000000000000000000000000000000000",
+      "passed": true
+    },
+    {
+      "role": "marketImplementation",
+      "signature": "proxiableUUID()",
+      "kind": "bytes32",
+      "expected": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+      "arguments": [],
+      "to": "0xbdb90331b1c205bbfa84db7cbee6a53b24fc0e21",
+      "data": "0x52d1902d",
+      "raw": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+      "actual": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+      "passed": true
+    },
+    {
+      "role": "transistorBeacon",
+      "signature": "owner()",
+      "kind": "address",
+      "expected": "0xad6e6bd6feecd3ef77ead8779ffcf5d52521abca",
+      "arguments": [],
+      "to": "0xb72356b2e945db20ec0c676309406ae79401b3cd",
+      "data": "0x8da5cb5b",
+      "raw": "0x000000000000000000000000ad6e6bd6feecd3ef77ead8779ffcf5d52521abca",
+      "actual": "0xad6e6bd6feecd3ef77ead8779ffcf5d52521abca",
+      "passed": true
+    },
+    {
+      "role": "circuitBeacon",
+      "signature": "owner()",
+      "kind": "address",
+      "expected": "0xad6e6bd6feecd3ef77ead8779ffcf5d52521abca",
+      "arguments": [],
+      "to": "0x62874cf0179b35fdec20947281aaf8f5dff3d15c",
+      "data": "0x8da5cb5b",
+      "raw": "0x000000000000000000000000ad6e6bd6feecd3ef77ead8779ffcf5d52521abca",
+      "actual": "0xad6e6bd6feecd3ef77ead8779ffcf5d52521abca",
+      "passed": true
+    },
+    {
+      "role": "transistorBeacon",
+      "signature": "implementation()",
+      "kind": "address",
+      "expected": "0x484c58d937387ec34c5ae01ad796f0c5f801fd72",
+      "arguments": [],
+      "to": "0xb72356b2e945db20ec0c676309406ae79401b3cd",
+      "data": "0x5c60da1b",
+      "raw": "0x000000000000000000000000484c58d937387ec34c5ae01ad796f0c5f801fd72",
+      "actual": "0x484c58d937387ec34c5ae01ad796f0c5f801fd72",
+      "passed": true
+    },
+    {
+      "role": "circuitBeacon",
+      "signature": "implementation()",
+      "kind": "address",
+      "expected": "0x98f4dfbfab6fc37e59e00d6881e779b33b23b009",
+      "arguments": [],
+      "to": "0x62874cf0179b35fdec20947281aaf8f5dff3d15c",
+      "data": "0x5c60da1b",
+      "raw": "0x00000000000000000000000098f4dfbfab6fc37e59e00d6881e779b33b23b009",
+      "actual": "0x98f4dfbfab6fc37e59e00d6881e779b33b23b009",
+      "passed": true
+    },
+    {
+      "role": "factory",
+      "signature": "transistorBeacon()",
+      "kind": "address",
+      "expected": "0xb72356b2e945db20ec0c676309406ae79401b3cd",
+      "arguments": [],
+      "to": "0xad6e6bd6feecd3ef77ead8779ffcf5d52521abca",
+      "data": "0xb3746a25",
+      "raw": "0x000000000000000000000000b72356b2e945db20ec0c676309406ae79401b3cd",
+      "actual": "0xb72356b2e945db20ec0c676309406ae79401b3cd",
+      "passed": true
+    },
+    {
+      "role": "factory",
+      "signature": "circuitBeacon()",
+      "kind": "address",
+      "expected": "0x62874cf0179b35fdec20947281aaf8f5dff3d15c",
+      "arguments": [],
+      "to": "0xad6e6bd6feecd3ef77ead8779ffcf5d52521abca",
+      "data": "0xddcb22fa",
+      "raw": "0x00000000000000000000000062874cf0179b35fdec20947281aaf8f5dff3d15c",
+      "actual": "0x62874cf0179b35fdec20947281aaf8f5dff3d15c",
+      "passed": true
+    },
+    {
+      "role": "factory",
+      "signature": "protocolWallet()",
+      "kind": "address",
+      "expected": "0x6ecf746b078d46391f8c425b150153212f7c0545",
+      "arguments": [],
+      "to": "0xad6e6bd6feecd3ef77ead8779ffcf5d52521abca",
+      "data": "0x06d6e63f",
+      "raw": "0x0000000000000000000000006ecf746b078d46391f8c425b150153212f7c0545",
+      "actual": "0x6ecf746b078d46391f8c425b150153212f7c0545",
+      "passed": true
+    },
+    {
+      "role": "factory",
+      "signature": "deployFee()",
+      "kind": "uint",
+      "expected": 0,
+      "arguments": [],
+      "to": "0xad6e6bd6feecd3ef77ead8779ffcf5d52521abca",
+      "data": "0xeb2a5d2c",
+      "raw": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "actual": 0,
+      "passed": true
+    },
+    {
+      "role": "factory",
+      "signature": "protocolFee()",
+      "kind": "uint",
+      "expected": 0,
+      "arguments": [],
+      "to": "0xad6e6bd6feecd3ef77ead8779ffcf5d52521abca",
+      "data": "0xb0e21e8a",
+      "raw": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "actual": 0,
+      "passed": true
+    },
+    {
+      "role": "factory",
+      "signature": "cpuCount()",
+      "kind": "uint",
+      "expected": 1,
+      "arguments": [],
+      "to": "0xad6e6bd6feecd3ef77ead8779ffcf5d52521abca",
+      "data": "0xa94da8a7",
+      "raw": "0x0000000000000000000000000000000000000000000000000000000000000001",
+      "actual": 1,
+      "passed": true
+    },
+    {
+      "role": "factory",
+      "signature": "cpuAt(uint256)",
+      "kind": "address",
+      "expected": "0x5ae194d008292ef9d02933a599070c9661be040c",
+      "arguments": [
+        0
+      ],
+      "to": "0xad6e6bd6feecd3ef77ead8779ffcf5d52521abca",
+      "data": "0x4bc7cbbd0000000000000000000000000000000000000000000000000000000000000000",
+      "raw": "0x0000000000000000000000005ae194d008292ef9d02933a599070c9661be040c",
+      "actual": "0x5ae194d008292ef9d02933a599070c9661be040c",
+      "passed": true
+    },
+    {
+      "role": "factory",
+      "signature": "isCPU(address)",
+      "kind": "bool",
+      "expected": true,
+      "arguments": [
+        "0x5ae194d008292ef9d02933a599070c9661be040c"
+      ],
+      "to": "0xad6e6bd6feecd3ef77ead8779ffcf5d52521abca",
+      "data": "0x5f5a364f0000000000000000000000005ae194d008292ef9d02933a599070c9661be040c",
+      "raw": "0x0000000000000000000000000000000000000000000000000000000000000001",
+      "actual": true,
+      "passed": true
+    },
+    {
+      "role": "mining",
+      "signature": "token()",
+      "kind": "address",
+      "expected": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+      "arguments": [],
+      "to": "0x7991d4a8493b9709365cd079dffc75e790007874",
+      "data": "0xfc0c546a",
+      "raw": "0x0000000000000000000000007a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+      "actual": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+      "passed": true
+    },
+    {
+      "role": "mining",
+      "signature": "processorMultiplier(address)",
+      "kind": "uint",
+      "expected": 6,
+      "arguments": [
+        "0x5ae194d008292ef9d02933a599070c9661be040c"
+      ],
+      "to": "0x7991d4a8493b9709365cd079dffc75e790007874",
+      "data": "0x0f03daba0000000000000000000000005ae194d008292ef9d02933a599070c9661be040c",
+      "raw": "0x0000000000000000000000000000000000000000000000000000000000000006",
+      "actual": 6,
+      "passed": true
+    },
+    {
+      "role": "mining",
+      "signature": "startTime()",
+      "kind": "uint",
+      "expected": 1792215617,
+      "arguments": [],
+      "to": "0x7991d4a8493b9709365cd079dffc75e790007874",
+      "data": "0x78e97925",
+      "raw": "0x000000000000000000000000000000000000000000000000000000006ad30a41",
+      "actual": 1792215617,
+      "passed": true
+    },
+    {
+      "role": "mining",
+      "signature": "boost()",
+      "kind": "address",
+      "expected": "0x0000000000000000000000000000000000000000",
+      "arguments": [],
+      "to": "0x7991d4a8493b9709365cd079dffc75e790007874",
+      "data": "0xa66f42c0",
+      "raw": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "actual": "0x0000000000000000000000000000000000000000",
+      "passed": true
+    },
+    {
+      "role": "mining",
+      "signature": "taskCount()",
+      "kind": "uint",
+      "expected": 0,
+      "arguments": [],
+      "to": "0x7991d4a8493b9709365cd079dffc75e790007874",
+      "data": "0xb6cb58a5",
+      "raw": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "actual": 0,
+      "passed": true
+    },
+    {
+      "role": "mining",
+      "signature": "tasksFrozen()",
+      "kind": "bool",
+      "expected": false,
+      "arguments": [],
+      "to": "0x7991d4a8493b9709365cd079dffc75e790007874",
+      "data": "0x55fb3308",
+      "raw": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "actual": false,
+      "passed": true
+    },
+    {
+      "role": "mining",
+      "signature": "paused()",
+      "kind": "bool",
+      "expected": false,
+      "arguments": [],
+      "to": "0x7991d4a8493b9709365cd079dffc75e790007874",
+      "data": "0x5c975abb",
+      "raw": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "actual": false,
+      "passed": true
+    },
+    {
+      "role": "fab",
+      "signature": "minter()",
+      "kind": "address",
+      "expected": "0x7991d4a8493b9709365cd079dffc75e790007874",
+      "arguments": [],
+      "to": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+      "data": "0x07546172",
+      "raw": "0x0000000000000000000000007991d4a8493b9709365cd079dffc75e790007874",
+      "actual": "0x7991d4a8493b9709365cd079dffc75e790007874",
+      "passed": true
+    },
+    {
+      "role": "fab",
+      "signature": "name()",
+      "kind": "string",
+      "expected": "SodaDEX TEST FAB",
+      "arguments": [],
+      "to": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+      "data": "0x06fdde03",
+      "raw": "0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000010536f646144455820544553542046414200000000000000000000000000000000",
+      "actual": "SodaDEX TEST FAB",
+      "passed": true
+    },
+    {
+      "role": "fab",
+      "signature": "symbol()",
+      "kind": "string",
+      "expected": "TEST-FAB",
+      "arguments": [],
+      "to": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+      "data": "0x95d89b41",
+      "raw": "0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000008544553542d464142000000000000000000000000000000000000000000000000",
+      "actual": "TEST-FAB",
+      "passed": true
+    },
+    {
+      "role": "fab",
+      "signature": "decimals()",
+      "kind": "uint",
+      "expected": 8,
+      "arguments": [],
+      "to": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+      "data": "0x313ce567",
+      "raw": "0x0000000000000000000000000000000000000000000000000000000000000008",
+      "actual": 8,
+      "passed": true
+    },
+    {
+      "role": "fab",
+      "signature": "PREMINE()",
+      "kind": "uint",
+      "expected": 105000000000000,
+      "arguments": [],
+      "to": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+      "data": "0x3e8c80f2",
+      "raw": "0x00000000000000000000000000000000000000000000000000005f7f37b39000",
+      "actual": 105000000000000,
+      "passed": true
+    },
+    {
+      "role": "fab",
+      "signature": "totalSupply()",
+      "kind": "uint",
+      "expected": 105000000000000,
+      "arguments": [],
+      "to": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+      "data": "0x18160ddd",
+      "raw": "0x00000000000000000000000000000000000000000000000000005f7f37b39000",
+      "actual": 105000000000000,
+      "passed": true
+    },
+    {
+      "role": "fab",
+      "signature": "balanceOf(address)",
+      "kind": "uint",
+      "expected": 105000000000000,
+      "arguments": [
+        "0x6ecf746b078d46391f8c425b150153212f7c0545"
+      ],
+      "to": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+      "data": "0x70a082310000000000000000000000006ecf746b078d46391f8c425b150153212f7c0545",
+      "raw": "0x00000000000000000000000000000000000000000000000000005f7f37b39000",
+      "actual": 105000000000000,
+      "passed": true
+    },
+    {
+      "role": "transistors",
+      "signature": "circuits()",
+      "kind": "address",
+      "expected": "0x5ae194d008292ef9d02933a599070c9661be040c",
+      "arguments": [],
+      "to": "0xd1bb400c5b0d1c65a0025b110cb7e942f168ae98",
+      "data": "0x5f48772d",
+      "raw": "0x0000000000000000000000005ae194d008292ef9d02933a599070c9661be040c",
+      "actual": "0x5ae194d008292ef9d02933a599070c9661be040c",
+      "passed": true
+    },
+    {
+      "role": "transistors",
+      "signature": "creator()",
+      "kind": "address",
+      "expected": "0x6ecf746b078d46391f8c425b150153212f7c0545",
+      "arguments": [],
+      "to": "0xd1bb400c5b0d1c65a0025b110cb7e942f168ae98",
+      "data": "0x02d05d3f",
+      "raw": "0x0000000000000000000000006ecf746b078d46391f8c425b150153212f7c0545",
+      "actual": "0x6ecf746b078d46391f8c425b150153212f7c0545",
+      "passed": true
+    },
+    {
+      "role": "transistors",
+      "signature": "protocolWallet()",
+      "kind": "address",
+      "expected": "0x6ecf746b078d46391f8c425b150153212f7c0545",
+      "arguments": [],
+      "to": "0xd1bb400c5b0d1c65a0025b110cb7e942f168ae98",
+      "data": "0x06d6e63f",
+      "raw": "0x0000000000000000000000006ecf746b078d46391f8c425b150153212f7c0545",
+      "actual": "0x6ecf746b078d46391f8c425b150153212f7c0545",
+      "passed": true
+    },
+    {
+      "role": "transistors",
+      "signature": "mintPrice()",
+      "kind": "uint",
+      "expected": 0,
+      "arguments": [],
+      "to": "0xd1bb400c5b0d1c65a0025b110cb7e942f168ae98",
+      "data": "0x6817c76c",
+      "raw": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "actual": 0,
+      "passed": true
+    },
+    {
+      "role": "transistors",
+      "signature": "protocolFee()",
+      "kind": "uint",
+      "expected": 0,
+      "arguments": [],
+      "to": "0xd1bb400c5b0d1c65a0025b110cb7e942f168ae98",
+      "data": "0xb0e21e8a",
+      "raw": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "actual": 0,
+      "passed": true
+    },
+    {
+      "role": "transistors",
+      "signature": "supplyCap()",
+      "kind": "uint",
+      "expected": 100000,
+      "arguments": [],
+      "to": "0xd1bb400c5b0d1c65a0025b110cb7e942f168ae98",
+      "data": "0x8f770ad0",
+      "raw": "0x00000000000000000000000000000000000000000000000000000000000186a0",
+      "actual": 100000,
+      "passed": true
+    },
+    {
+      "role": "transistors",
+      "signature": "cpuName()",
+      "kind": "string",
+      "expected": "SodaDEX TEST FAB Miner",
+      "arguments": [],
+      "to": "0xd1bb400c5b0d1c65a0025b110cb7e942f168ae98",
+      "data": "0x700ed104",
+      "raw": "0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000016536f6461444558205445535420464142204d696e657200000000000000000000",
+      "actual": "SodaDEX TEST FAB Miner",
+      "passed": true
+    },
+    {
+      "role": "transistors",
+      "signature": "cpuSymbol()",
+      "kind": "string",
+      "expected": "TEST-FAB-NFT",
+      "arguments": [],
+      "to": "0xd1bb400c5b0d1c65a0025b110cb7e942f168ae98",
+      "data": "0x91254d67",
+      "raw": "0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000c544553542d4641422d4e46540000000000000000000000000000000000000000",
+      "actual": "TEST-FAB-NFT",
+      "passed": true
+    },
+    {
+      "role": "transistors",
+      "signature": "story()",
+      "kind": "string",
+      "expected": "X Layer 1952 learning/test assets",
+      "arguments": [],
+      "to": "0xd1bb400c5b0d1c65a0025b110cb7e942f168ae98",
+      "data": "0x46c922d1",
+      "raw": "0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000002158204c617965722031393532206c6561726e696e672f746573742061737365747300000000000000000000000000000000000000000000000000000000000000",
+      "actual": "X Layer 1952 learning/test assets",
+      "passed": true
+    },
+    {
+      "role": "circuits",
+      "signature": "factory()",
+      "kind": "address",
+      "expected": "0xad6e6bd6feecd3ef77ead8779ffcf5d52521abca",
+      "arguments": [],
+      "to": "0x5ae194d008292ef9d02933a599070c9661be040c",
+      "data": "0xc45a0155",
+      "raw": "0x000000000000000000000000ad6e6bd6feecd3ef77ead8779ffcf5d52521abca",
+      "actual": "0xad6e6bd6feecd3ef77ead8779ffcf5d52521abca",
+      "passed": true
+    },
+    {
+      "role": "circuits",
+      "signature": "transistors()",
+      "kind": "address",
+      "expected": "0xd1bb400c5b0d1c65a0025b110cb7e942f168ae98",
+      "arguments": [],
+      "to": "0x5ae194d008292ef9d02933a599070c9661be040c",
+      "data": "0x6fbd1719",
+      "raw": "0x000000000000000000000000d1bb400c5b0d1c65a0025b110cb7e942f168ae98",
+      "actual": "0xd1bb400c5b0d1c65a0025b110cb7e942f168ae98",
+      "passed": true
+    },
+    {
+      "role": "circuits",
+      "signature": "transistorsContract()",
+      "kind": "address",
+      "expected": "0xd1bb400c5b0d1c65a0025b110cb7e942f168ae98",
+      "arguments": [],
+      "to": "0x5ae194d008292ef9d02933a599070c9661be040c",
+      "data": "0x36e07b61",
+      "raw": "0x000000000000000000000000d1bb400c5b0d1c65a0025b110cb7e942f168ae98",
+      "actual": "0xd1bb400c5b0d1c65a0025b110cb7e942f168ae98",
+      "passed": true
+    },
+    {
+      "role": "circuits",
+      "signature": "TREASURY()",
+      "kind": "address",
+      "expected": "0x6ecf746b078d46391f8c425b150153212f7c0545",
+      "arguments": [],
+      "to": "0x5ae194d008292ef9d02933a599070c9661be040c",
+      "data": "0x2d2c5565",
+      "raw": "0x0000000000000000000000006ecf746b078d46391f8c425b150153212f7c0545",
+      "actual": "0x6ecf746b078d46391f8c425b150153212f7c0545",
+      "passed": true
+    },
+    {
+      "role": "circuitsImplementation",
+      "signature": "TREASURY()",
+      "kind": "address",
+      "expected": "0x6ecf746b078d46391f8c425b150153212f7c0545",
+      "arguments": [],
+      "to": "0x98f4dfbfab6fc37e59e00d6881e779b33b23b009",
+      "data": "0x2d2c5565",
+      "raw": "0x0000000000000000000000006ecf746b078d46391f8c425b150153212f7c0545",
+      "actual": "0x6ecf746b078d46391f8c425b150153212f7c0545",
+      "passed": true
+    },
+    {
+      "role": "circuits",
+      "signature": "TAPEOUT_FEE()",
+      "kind": "uint",
+      "expected": 0,
+      "arguments": [],
+      "to": "0x5ae194d008292ef9d02933a599070c9661be040c",
+      "data": "0xadfb2b69",
+      "raw": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "actual": 0,
+      "passed": true
+    },
+    {
+      "role": "circuits",
+      "signature": "name()",
+      "kind": "string",
+      "expected": "SodaDEX TEST FAB Miner",
+      "arguments": [],
+      "to": "0x5ae194d008292ef9d02933a599070c9661be040c",
+      "data": "0x06fdde03",
+      "raw": "0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000016536f6461444558205445535420464142204d696e657200000000000000000000",
+      "actual": "SodaDEX TEST FAB Miner",
+      "passed": true
+    },
+    {
+      "role": "circuits",
+      "signature": "symbol()",
+      "kind": "string",
+      "expected": "TEST-FAB-NFT",
+      "arguments": [],
+      "to": "0x5ae194d008292ef9d02933a599070c9661be040c",
+      "data": "0x95d89b41",
+      "raw": "0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000c544553542d4641422d4e46540000000000000000000000000000000000000000",
+      "actual": "TEST-FAB-NFT",
+      "passed": true
+    },
+    {
+      "role": "circuitMarket",
+      "signature": "factory()",
+      "kind": "address",
+      "expected": "0xad6e6bd6feecd3ef77ead8779ffcf5d52521abca",
+      "arguments": [],
+      "to": "0xa619c4cf1264bc071a3827edd0b64252842471be",
+      "data": "0xc45a0155",
+      "raw": "0x000000000000000000000000ad6e6bd6feecd3ef77ead8779ffcf5d52521abca",
+      "actual": "0xad6e6bd6feecd3ef77ead8779ffcf5d52521abca",
+      "passed": true
+    },
+    {
+      "role": "circuitMarket",
+      "signature": "protocolWallet()",
+      "kind": "address",
+      "expected": "0x6ecf746b078d46391f8c425b150153212f7c0545",
+      "arguments": [],
+      "to": "0xa619c4cf1264bc071a3827edd0b64252842471be",
+      "data": "0x06d6e63f",
+      "raw": "0x0000000000000000000000006ecf746b078d46391f8c425b150153212f7c0545",
+      "actual": "0x6ecf746b078d46391f8c425b150153212f7c0545",
+      "passed": true
+    },
+    {
+      "role": "circuitMarket",
+      "signature": "feeBps()",
+      "kind": "uint",
+      "expected": 0,
+      "arguments": [],
+      "to": "0xa619c4cf1264bc071a3827edd0b64252842471be",
+      "data": "0x24a9d853",
+      "raw": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "actual": 0,
+      "passed": true
+    },
+    {
+      "role": "lens",
+      "signature": "mining()",
+      "kind": "address",
+      "expected": "0x7991d4a8493b9709365cd079dffc75e790007874",
+      "arguments": [],
+      "to": "0xcdb3efbdfe3858aba4d4d5c83e6bffa47848945e",
+      "data": "0x662fac39",
+      "raw": "0x0000000000000000000000007991d4a8493b9709365cd079dffc75e790007874",
+      "actual": "0x7991d4a8493b9709365cd079dffc75e790007874",
+      "passed": true
+    }
+  ],
+  "slotChecks": [
+    {
+      "role": "factory",
+      "slot": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+      "expected": "0x6b5c32ad97eb42230138e02a21b0e6d811fd713d",
+      "actual": "0x6b5c32ad97eb42230138e02a21b0e6d811fd713d",
+      "passed": true
+    },
+    {
+      "role": "factory",
+      "slot": "0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50",
+      "expected": "0x0000000000000000000000000000000000000000",
+      "actual": "0x0000000000000000000000000000000000000000",
+      "passed": true
+    },
+    {
+      "role": "mining",
+      "slot": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+      "expected": "0xfe32078e62a43d88f65731da693950e6e221fe0b",
+      "actual": "0xfe32078e62a43d88f65731da693950e6e221fe0b",
+      "passed": true
+    },
+    {
+      "role": "mining",
+      "slot": "0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50",
+      "expected": "0x0000000000000000000000000000000000000000",
+      "actual": "0x0000000000000000000000000000000000000000",
+      "passed": true
+    },
+    {
+      "role": "circuitMarket",
+      "slot": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+      "expected": "0xbdb90331b1c205bbfa84db7cbee6a53b24fc0e21",
+      "actual": "0xbdb90331b1c205bbfa84db7cbee6a53b24fc0e21",
+      "passed": true
+    },
+    {
+      "role": "circuitMarket",
+      "slot": "0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50",
+      "expected": "0x0000000000000000000000000000000000000000",
+      "actual": "0x0000000000000000000000000000000000000000",
+      "passed": true
+    },
+    {
+      "role": "transistors",
+      "slot": "0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50",
+      "expected": "0xb72356b2e945db20ec0c676309406ae79401b3cd",
+      "actual": "0xb72356b2e945db20ec0c676309406ae79401b3cd",
+      "passed": true
+    },
+    {
+      "role": "transistors",
+      "slot": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+      "expected": "0x0000000000000000000000000000000000000000",
+      "actual": "0x0000000000000000000000000000000000000000",
+      "passed": true
+    },
+    {
+      "role": "circuits",
+      "slot": "0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50",
+      "expected": "0x62874cf0179b35fdec20947281aaf8f5dff3d15c",
+      "actual": "0x62874cf0179b35fdec20947281aaf8f5dff3d15c",
+      "passed": true
+    },
+    {
+      "role": "circuits",
+      "slot": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+      "expected": "0x0000000000000000000000000000000000000000",
+      "actual": "0x0000000000000000000000000000000000000000",
+      "passed": true
+    }
+  ],
+  "failures": []
+}

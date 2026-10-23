@@ -137,10 +137,11 @@ export async function getPosition(
   }
 }
 /** V4 is not enumerable: scan recipient Transfer topics, then verify current ownership. */
-export async function listPositions(owner: Address, read: PublicRpc = rpc): Promise<LiquidityPosition[]> {
+export async function listPositions(owner: Address, read: PublicRpc = rpc, protocol?: LiquidityProtocol): Promise<LiquidityPosition[]> {
   if (!isAddress(owner)) throw new LiquidityError('invalidCurrency')
+  if (protocol !== undefined && protocol !== 'v3' && protocol !== 'v4') throw new LiquidityError('invalidPool')
   const result: LiquidityPosition[] = []
-  const count = (await call(v3ManagerAbi, LP_CONTRACTS.v3Manager, 'balanceOf', [owner], read)) as bigint
+  const count = protocol === 'v4' ? 0n : (await call(v3ManagerAbi, LP_CONTRACTS.v3Manager, 'balanceOf', [owner], read)) as bigint
   for (let i = 0n; i < count; i++)
     result.push(
       await getPosition(
@@ -149,6 +150,7 @@ export async function listPositions(owner: Address, read: PublicRpc = rpc): Prom
         read,
       ),
     )
+  if (protocol === 'v3') return result
   const head = hexQuantity(await read('eth_blockNumber'))
   // Deployment block is retained in the immutable receipt, never inferred from a timestamp.
   const start = 73368428n // v4PositionManager deployment receipt block 0x45f836c

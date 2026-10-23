@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "chainId": 1952,
+  "status": "completed",
+  "capturedAt": "2026-10-18T02:43:44.475633+00:00",
+  "approval": "2026-10-18-expired-recovery-approved-plan.json",
+  "releaseCommit": "a65d3224df2a3ee22f280379829ae323cf11ef1b",
+  "frontend": "https://sodadex-mining-test-1952.jsmsdx2025.workers.dev/",
+  "frontendVersion": "6a2c8262-c7d9-4635-a36a-492260bab3c6",
+  "backendVersion": "3e0e4954-6fc2-4f45-8ca0-0badef4b4560",
+  "serviceBuild": "online-1952-20261018-v6-recovery",
+  "originalHash": "0x0fb7c2a1a0a532e8531744e408a31422b2e0c43a93ed8847e7eec3a46707c3a5",
+  "productionTouched": false,
+  "chain196Mutated": false,
+  "schemaAndLedgerPreserved": true,
+  "publicAdminSigningEndpointAdded": false,
+  "newPublicTransactions": 4,
+  "transactions": [
+    {
+      "role": "cancel",
+      "hash": "0x0e844ba7e59279d369462f5234aad6850df261e9d49e5a3743be984a3d6aaf9f",
+      "nonce": 23
+    },
+    {
+      "role": "conversion",
+      "hash": "0x78eb3877bea647937867ebd077f482f1487e8c3f68db93eac289bd54fd8b2d34",
+      "nonce": 24
+    },
+    {
+      "role": "sync",
+      "hash": "0x5a73b28b52f5f2e9596de8cd4a1cf4d9d3e27fc7d734c7bfdbed47892f24c4ad",
+      "nonce": 25
+    },
+    {
+      "role": "fund",
+      "hash": "0xb7cbf30602a1fbf8019d0e82b3a8a029a76d89369ec7774d9df72f2d1c373670",
+      "nonce": 26
+    }
+  ],
+  "amounts": {
+    "projectTokenConvertedRaw": "10000000000000000000",
+    "fabReceivedRaw": "24934",
+    "platformAccruedFabRaw": "249",
+    "creatorAccruedFabRaw": "0",
+    "farmFundedFabRaw": "24685",
+    "farmPendingFinalRaw": "0",
+    "tokenTaxBalanceFinalRaw": "0",
+    "platformScope": "249raw accrued this batch, retained as payable; not a platform cash payout.",
+    "farmBalanceScope": "Farm deposit also harvested actual mining income from4NFTs; its total FAB balance increase is not the tax contribution."
+  },
+  "accounting": {
+    "oldSpentWei": "391874999593749",
+    "additionalUniqueReceiptFeesWei": "48839882410494",
+    "keeperCumulativeSpentWei": "440714882004243",
+    "keeperBaselineWei": "186372669318633",
+    "keeperPhaseActualWei": "254342212685610",
+    "reservedWei": "0",
+    "keeperCumulativeCapWei": "456372669318633",
+    "keeperAvailableWei": "15657787314390",
+    "preparationActualWei": "36535281826764",
+    "walletActualWei": "957639569204524",
+    "allocationWei": {
+      "preparation": "40000000000000",
+      "frontendWallet": "990000000000000",
+      "keeperAdditional": "270000000000000"
+    },
+    "phaseActualWei": "1248517063716898",
+    "phaseCapWei": "1300000000000000",
+    "phaseActualRemainingWei": "51482936283102",
+    "keeperNativeBeforeWei": "108125000406251",
+    "keeperNativeAfterLastReceiptWei": "59285117995757",
+    "latestNonce": "27",
+    "pendingNonce": "27",
+    "nextListedNonce": "27",
+    "unlistedNewStatusHashes": [],
+    "checks": {
+      "allUniqueAndCanonicalSuccess1952": true,
+      "nonce23OnwardContinuous": true,
+      "onlyActualReceiptFeesOnce": true,
+      "oldHashNeverBilledAsSuccess": true,
+      "originalBaselinePreserved": true,
+      "keeperPhaseWithinApprovedCap": true,
+      "keeperSpentAndReserveWithinCumulativeCap": true,
+      "preparationWithinNewAllocation": true,
+      "frontendWithinNewAllocation": true,
+      "totalActualWithinUnchangedPhaseCap": true,
+      "noUnlistedStatusExecution": true,
+      "nativeFeeConservation": true,
+      "noPendingNonceGap": true,
+      "noUnlistedMinedKeeperNonce": true,
+      "historical36UiProofUnchanged": true,
+      "finalTokenTaxZero": true,
+      "finalFarmPendingZero": true
+    }
+  },
+  "validation": {
+    "serviceTestsPassed": 85,
+    "serviceTestsSkipped": 0,
+    "webTestsPassed": 436,
+    "webExistingFixtureSkipped": 22,
+    "workerTestsPassed": 179,
+    "typecheck": true,
+    "lint": true,
+    "build196": true,
+    "build1952": true,
+    "cloudflareDryRun": true,
+    "cspAndProfileGuard": true,
+    "browserWalletUiTransactions": 36,
+    "uiHistoryAfterRelease": 36,
+    "independentCanonicalRecoveryProofPassed": true,
+    "publicUiCancellationAndFreshFundingShown": true,
+    "upstreamFetchCombination": {
+      "cancel": 36,
+      "freshConversion": 45,
+      "limit": 45,
+      "scope": "HttpRpc mocked transport plus separately measured real Discovery; actual public recovery also completed."
+    }
+  },
+  "proof": "evidence/expired-recovery-2026-10-18/final-proof.json",
+  "frontendProof": "evidence/expired-recovery-2026-10-18/frontend-automation.json",
+  "limitations": [
+    "Main196 DEX preview navigation does not yet include the1952 mining workspace; both are in the same SodaDEX source project.",
+    "BEM remains outside the accepted FAB-first scope.",
+    "The public chain was not observed for a full7day burn-credit expiration; local boundary tests are separate.",
+    "Gas and balances are timestamped snapshots; subsequent user activity remains subject to the remaining approved keeper cap."
+  ],
+  "frozenProofInputs": {
+    "manifest": "evidence/expired-recovery-2026-10-18/final-manifest.json",
+    "status": "evidence/expired-recovery-2026-10-18/final-status.json",
+    "note": "Evidence retains original local source paths as provenance; these exact copied inputs make the record portable."
+  }
+}

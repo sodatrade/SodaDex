@@ -12,6 +12,7 @@ export interface ObjectState { storage: ObjectStorage }
 export interface OrdersEnv {
   ORDERS: { idFromName(name: string): unknown; get(id: unknown): { fetch(request: Request): Promise<Response> } }
   ORDERS_PUBLIC_ORIGIN?: string
+  ORDERS_ADDITIONAL_PUBLIC_ORIGINS?: string
   ORDERS_POLL_MS?: string
   ORDERS_EXECUTION_ENABLED?: string
   ORDERS_GAS_BUDGET_WEI?: string

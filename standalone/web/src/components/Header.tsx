@@ -1,5 +1,7 @@
+import { NETWORK } from '../network'
+import type { MiningTab } from '../mining/navigation'
 import type { ReactElement } from 'react'
-import { shortenAddress } from '../domain/assets'
+import { shortenAddress } from '../lib/address'
 import { workspaceMessages } from '../i18n/workspace'
 import { primaryPage, type Page } from '../features/workspace/navigation'
 import type { WalletController } from '../lib/useWallet'
@@ -14,14 +16,17 @@ interface HeaderProps {
   onPageChange: (page: Page) => void
   wallet: WalletController
   onWallet: () => void
-  onSearch: () => void
+  onSearch?: () => void
+  miningPage?: MiningTab
+  onMiningPageChange?: (page: MiningTab) => void
+  navigationDisabled?: boolean
   onPreferences: () => void
 }
 
-export function Header({ page, onPageChange, wallet, onWallet, onSearch, onPreferences }: HeaderProps): ReactElement {
-  const { t, locale } = usePreferences()
+export function Header({ page, onPageChange, wallet, onWallet, onSearch, onPreferences, miningPage, navigationDisabled = false }: HeaderProps): ReactElement {
+  const { t, locale, currency } = usePreferences()
   const m = workspaceMessages(locale)
-  const group = primaryPage(page)
+  const group = miningPage ? undefined : primaryPage(page)
   const pages: { id: Page; name: string }[] = [
     { id: 'swap', name: m.trade },
     { id: 'explore', name: m.explore },
@@ -30,7 +35,7 @@ export function Header({ page, onPageChange, wallet, onWallet, onSearch, onPrefe
   ]
   return (
     <header className="site-header">
-      <button className="brand" onClick={() => onPageChange('swap')} aria-label={t('home')}>
+      <button disabled={navigationDisabled} className="brand" onClick={() => onPageChange('swap')} aria-label={t('home')}>
         <SodaMark decorative />
         <span>
           Soda<span className="brand-dex">DEX</span>
@@ -41,6 +46,7 @@ export function Header({ page, onPageChange, wallet, onWallet, onSearch, onPrefe
         {pages.map((item) => (
           <button
             key={item.id}
+            disabled={navigationDisabled}
             className={group === item.id ? 'active' : ''}
             aria-current={group === item.id ? 'page' : undefined}
             onClick={() => onPageChange(item.id)}
@@ -48,22 +54,23 @@ export function Header({ page, onPageChange, wallet, onWallet, onSearch, onPrefe
             {item.name}
           </button>
         ))}
-        <IgnixLaunchLink />
+        {!navigationDisabled && <IgnixLaunchLink />}
       </nav>
       <div className="header-actions">
-        <span className="network-badge">
-          <NetworkIcon />
-          <span>X Layer</span>
-        </span>
-        <Button
-          appearance="icon"
-          className="header-tool"
+        {onSearch && <Button
+          appearance="ghost"
+          className="header-search"
           aria-label={t('globalSearch')}
           aria-haspopup="dialog"
           onClick={onSearch}
         >
           <Icon name="search" />
-        </Button>
+          <span>{t('globalSearchPlaceholder')}</span>
+        </Button>}
+        <span className="network-badge">
+          <NetworkIcon />
+          <span>{NETWORK.chainId === 1952 ? 'X Layer · 1952' : 'X Layer · 196'}</span>
+        </span>
         <Button
           appearance="primary"
           className="header-connect"
@@ -75,12 +82,13 @@ export function Header({ page, onPageChange, wallet, onWallet, onSearch, onPrefe
         </Button>
         <Button
           appearance="icon"
-          className="header-tool"
+          className="header-tool header-preferences"
           aria-label={t('preferences')}
           aria-haspopup="dialog"
           onClick={onPreferences}
         >
-          <Icon name="more" />
+          <Icon name="settings" size={18} />
+          <span>{currency}</span>
         </Button>
       </div>
     </header>

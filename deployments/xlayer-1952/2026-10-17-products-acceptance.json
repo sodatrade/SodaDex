@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "chainId": 1952,
+  "status": "published-and-checked",
+  "checkedAtUtc": "2026-10-17T12:24:55.836088+00:00",
+  "url": "https://sodadex-mining-test-1952.jsmsdx2025.workers.dev/",
+  "cloudflare": {
+    "worker": "sodadex-mining-test-1952",
+    "versionId": "094cfe97-58e1-44ad-b162-1779f1aa467c",
+    "frontendSourceCommit": "54aeed8d152ec17e37b1c7d132bac891fcc9ac0d",
+    "config": "standalone/worker/wrangler.1952-test.jsonc",
+    "manualDeployment": true,
+    "ownerKeyUploaded": false,
+    "ordersServiceBound": false
+  },
+  "deploymentRecord": "2026-10-17-products-deployment.json",
+  "publicHttp": {
+    "checkedAtUtc": "2026-10-17T12:23:28.309Z",
+    "url": "https://sodadex-mining-test-1952.jsmsdx2025.workers.dev/",
+    "checks": [
+      {
+        "label": "network profile",
+        "passed": true,
+        "profile": "1952-mining-test",
+        "chainId": 1952
+      },
+      {
+        "label": "asset profile",
+        "passed": true
+      },
+      {
+        "label": "RPC chain",
+        "passed": true
+      },
+      {
+        "label": "pending block freshness",
+        "passed": true,
+        "latest": "43780958",
+        "pending": "43780965"
+      },
+      {
+        "label": "pending owner balance",
+        "passed": true,
+        "balanceWei": "197250282067513610"
+      },
+      {
+        "label": "ready product ABI",
+        "passed": true
+      },
+      {
+        "label": "isolated /api/orders",
+        "passed": true
+      },
+      {
+        "label": "isolated /api/orders/list",
+        "passed": true
+      },
+      {
+        "label": "isolated /api/dex",
+        "passed": true
+      },
+      {
+        "label": "isolated /api/dex/pools",
+        "passed": true
+      },
+      {
+        "label": "isolated /api/reference",
+        "passed": true
+      },
+      {
+        "label": "isolated /api/reference/pools",
+        "passed": true
+      },
+      {
+        "label": "wrong-profile RPC rejection",
+        "passed": true
+      }
+    ]
+  },
+  "rpcObservations": {
+    "initialPendingBlockProbesFailed": 2,
+    "observedErrorStatus": 502,
+    "laterPendingBalanceSucceeded": true,
+    "fullHttpRecheckPassed": true,
+    "limitation": "Official1952 RPC intermittently returns obsolete pending state. Bounded freshness checks fail closed; users may need to retry a preview later. No stale result is accepted."
+  },
+  "browser": {
+    "profileVerified": true,
+    "testAssetNoticeVisible": true,
+    "tabs": [
+      "fundraising",
+      "fragments",
+      "rewards",
+      "activity"
+    ],
+    "locales": [
+      "zh-CN",
+      "en",
+      "yue-HK"
+    ],
+    "defaultTheme": "light",
+    "darkThemeChecked": true,
+    "viewportWidths": [
+      390,
+      820,
+      1440
+    ],
+    "horizontalOverflowObserved": false,
+    "walletConnected": false,
+    "publicBrowserTransactionsPerformed": false,
+    "screenshots": [
+      "evidence/desktop.png",
+      "evidence/mobile-yue-dark.png"
+    ]
+  },
+  "validation": {
+    "web": {
+      "passed": 354,
+      "skipped": 22,
+      "typecheck": true,
+      "lint": true,
+      "bothNetworkBuilds": true
+    },
+    "worker": {
+      "passed": 152,
+      "failed": 0,
+      "typecheck": true,
+      "lint": true
+    },
+    "canonicalContracts": {
+      "passed": 959,
+      "failed": 0,
+      "optionalSkipped": 3
+    },
+    "realFabxManagerIntegration": {
+      "passed": 15,
+      "skipped": 0
+    },
+    "sourceHistory": {
+      "passed": 32,
+      "failed": 0
+    },
+    "python": {
+      "passed": 101,
+      "skipped": 5
+    },
+    "executorTransportRecovery": {
+      "passed": 25,
+      "failed": 0
+    },
+    "localRealWalletBrowserTransactions": 8,
+    "publicSuccessfulOwnerTransactions": 102,
+    "publicReceiptAndRuntimeRecheckPassed": true,
+    "buildProfileAndCspGuardPassed": true
+  },
+  "generalDependencyReadiness": {
+    "ready": false,
+    "notDeployed": [
+      "sodaV3Factory",
+      "sodaV3PositionManager"
+    ],
+    "miningProductManifestReady": true
+  },
+  "deferred": [
+    "BEM",
+    "online issuance/procurement/tax-conversion signing services",
+    "general1952 V3 and V4 frontend",
+    "1952 general market and limit-order services"
+  ],
+  "productionTouched": false,
+  "chain196Touched": false
+}

@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "profileId": "196-mining-test",
+  "chainId": 196,
+  "approval": "pending",
+  "broadcast": false,
+  "publicWrites": 0,
+  "productionTouched": false,
+  "totalOwnerOutlayCapWei": "2600000000000000",
+  "totalOwnerOutlayCapOKB": "0.0026",
+  "maxGasPriceWei": "21000000",
+  "nativePrincipalCapWei": "11000000000",
+  "testFabPrincipalCapRaw": "670000000000",
+  "keeperFundingCapWei": "80000000000000",
+  "keeperFundingIncludedInTotal": true,
+  "fundingTransactionGasEstimateWei": "441000000000",
+  "conservativeOwnerOutlayIncludingKeeperResidualWei": "2580970468000000",
+  "measurement": {
+    "approval": "pending-human-budget-confirmation",
+    "gasPriceWei": "21000000",
+    "actualExecutionAtObservedGasPriceWei": "2274743037000000",
+    "gasLimitExecutionUpperBoundWei": "2571193695000000",
+    "additionalFeeUpperBoundWei": "0",
+    "totalGasUpperBoundWei": "2571193695000000",
+    "grossNativePrincipalUpperBoundWei": "10001000000",
+    "recoverableLpWrappedNativeWei": "9999000000",
+    "requiredGasAndPrincipalWei": "2571203696000000",
+    "requiredGasAndPrincipalOKB": "0.002571203696",
+    "ownerCurrentlyFunded": true,
+    "minimumMeaning": "Observed complete-scenario cost; not a guaranteed global minimum. Gas price, signer and block require refresh before any broadcast.",
+    "measuredGroups": {
+      "deployment": {
+        "transactions": 40,
+        "gasUsed": "66391058",
+        "gasLimits": "70038333",
+        "observedExecutionCostWei": "1394212218000000",
+        "feeUpperBoundWei": "1470804993000000",
+        "feeUpperBoundOKB": "0.001470804993"
+      },
+      "inventory": {
+        "transactions": 15,
+        "gasUsed": "7202044",
+        "gasLimits": "8774309",
+        "observedExecutionCostWei": "151242924000000",
+        "feeUpperBoundWei": "184260489000000",
+        "feeUpperBoundOKB": "0.000184260489"
+      },
+      "businessAcceptance": {
+        "transactions": 54,
+        "gasUsed": "34727995",
+        "gasLimits": "43625153",
+        "observedExecutionCostWei": "729287895000000",
+        "feeUpperBoundWei": "916128213000000",
+        "feeUpperBoundOKB": "0.000916128213"
+      },
+      "fullPhase": {
+        "transactions": 109,
+        "gasUsed": "108321097",
+        "gasLimits": "122437795",
+        "observedExecutionCostWei": "2274743037000000",
+        "feeUpperBoundWei": "2571193695000000",
+        "feeUpperBoundOKB": "0.002571193695"
+      },
+      "backendSubsetAlreadyIncluded": {
+        "transactions": 6,
+        "gasUsed": "2570361",
+        "gasLimits": "3365487",
+        "observedExecutionCostWei": "53977581000000",
+        "feeUpperBoundWei": "70675227000000",
+        "feeUpperBoundOKB": "0.000070675227"
+      },
+      "additionalBrowserReplayAllowance": {
+        "transactions": 54,
+        "gasUsed": "34727995",
+        "gasLimits": "43625153",
+        "observedExecutionCostWei": "729287895000000",
+        "feeUpperBoundWei": "916128213000000",
+        "feeUpperBoundOKB": "0.000916128213",
+        "note": "Optional second execution of all measured business calls. Already executed once in local rehearsal; this allowance must not be represented as current spending or browser proof."
+      }
+    },
+    "backendCallsIncludedInMeasuredBusiness": true,
+    "additionalBackendOperatingGasIncluded": false,
+    "publicBrowserAcceptanceIncluded": false
+  },
+  "fork": {
+    "block": "73542662",
+    "hash": "0xdaa2eb2316dc830b75564207c35f8cd84eeb24ee076b4c7a27b5cb1623b313bb",
+    "publicRpcReadOnly": "https://rpc.ignix.bot/rpc/196",
+    "observedGasPriceWei": "21000000",
+    "realOwnerBalanceWei": "18154796305801318",
+    "realOwnerNonce": "39",
+    "observedAt": "2026-10-18T08:21:50.365Z"
+  },
+  "contractsCommit": "ec10161c136a437722e50d8e581a94511e0f34c3",
+  "sodaSourceCommit": "653f4b99df024df17a626de6fba5fc7104cdbad2",
+  "scope": "New isolated TEST mining stack, inventory, one full acceptance. Public UI may perform the measured business calls instead of repeating them via scripts.",
+  "exclusions": [
+    "No production deployment or upgrade",
+    "No additional full public acceptance cycle or indefinite keeper operations",
+    "No real FAB or third-party miner purchase"
+  ],
+  "beforeBroadcast": [
+    "Budget approval",
+    "Provision distinct persistent 196 test signer/executor; replace ephemeral local signer",
+    "Rehearse exact identities, nonce, block and fees; stop above cap",
+    "Verify runtime identities before enabling frontend/service writes"
+  ],
+  "validation": {
+    "miningContracts": {
+      "passed": 174,
+      "failed": 0,
+      "skipped": 0
+    },
+    "web": 506,
+    "worker": 199,
+    "service": 97,
+    "runner": 4,
+    "python": {
+      "total": 107,
+      "skipped": 5
+    },
+    "broaderContractRun": {
+      "passed": 898,
+      "failed": 3,
+      "skipped": 110,
+      "note": "Existing RPC-dependent suites missing configuration: EarlyAuthorizeFork XLAYER_RPC_URL; PoolGuardFork/TaxGuardFork assertions without fork setup. Not counted as passing."
+    }
+  },
+  "evidence": {
+    "rehearsal.json": "ad5318692b71e92ef53d3616b5b2606002a1dba3b85e430226810dfb59fd09be",
+    "local-deployment.json": "31e482356dd29cbae84d9804dcdf398f21e4611e8f84dea2bae8651b2a9aaf49",
+    "frontend-build.json": "735249f583097d2f544e088e34dbe6c1bdd65cad5c77e75fbba9aacaa3383d70",
+    "compiled-artifacts.json": "d6ab66ceda9d5757834486464508e85433444291f847938c7b1811c27502e085"
+  }
+}

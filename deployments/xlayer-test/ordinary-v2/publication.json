@@ -1,0 +1,27 @@
+{
+  "url": "https://sodadex-preview.jsmsdx2025.workers.dev/",
+  "sourceCommit": "dfb36a74b73741f7ef47b0ca4fa3e9232f651e6a",
+  "workerVersion": "4f05c545-b503-4d19-ad87-f2cb5cffb826",
+  "config": "standalone/worker/wrangler.fragments-196-test.jsonc",
+  "productionTouched": false,
+  "publicUi": {
+    "walletMode": "read-only injected account; signing and broadcasting refused",
+    "createDialogProtocols": [
+      "V2",
+      "V3",
+      "V4",
+      "mining-special"
+    ],
+    "v2FeePercent": "0.3",
+    "v2FeeEditable": false,
+    "newV2PairVisible": true
+  },
+  "publicChainAcceptance": {
+    "transactions": 27,
+    "gasWei": "110374278000000",
+    "grossNativeWei": "10100000000",
+    "source": "public-journal.json",
+    "verification": "verification.json"
+  },
+  "indexAndMarketEvidence": "published-api.json"
+}

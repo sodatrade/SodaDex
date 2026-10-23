@@ -120,6 +120,8 @@ skills-lock.json
 
 # temporary files
 /tmp/
+# Foundry fuzz corpora from the isolated mining acceptance runs.
+/cache/
 .env*.local
 
 # i18n AI-pipeline artifacts (i18n_generate_translations.yml)

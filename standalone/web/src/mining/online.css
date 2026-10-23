@@ -1,0 +1,26 @@
+.mining-online-panel { padding: 24px; min-width: 0; }
+.mining-online-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; margin-bottom: 24px; }
+.mining-online-heading h2 { margin: 0 0 12px; font-size: 18px; font-weight: 600; }
+.mining-online-heading p { margin: 0; max-width: 760px; color: var(--soda-muted); line-height: 1.7; font-size: 14px; }
+.mining-online-heading .button { flex: none; }
+.mining-online-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-items: stretch; }
+.mining-online-form { display: flex; flex-direction: column; align-items: stretch; gap: 10px; }
+.mining-online-form label { font-size: 13px; font-weight: 550; color: var(--soda-text); }
+.mining-online-form input, .mining-online-recovery input { min-width: 0; width: 100%; border: 1px solid var(--soda-control-line); border-radius: 8px; padding: 13px 14px; color: var(--soda-text); background: var(--soda-surface); font: inherit; transition: border-color .18s; }
+.mining-online-form input { margin-bottom: 8px; }
+.mining-online-form input:hover:not(:disabled), .mining-online-recovery input:hover:not(:disabled) { border-color: var(--soda-control-hover); }
+.mining-online-form input:focus-visible, .mining-online-recovery input:focus-visible { border-color: var(--soda-focus); outline: none; }
+.mining-online-form input:disabled, .mining-online-recovery input:disabled { background: var(--soda-raised); color: var(--soda-muted); border-color: var(--soda-line); cursor: not-allowed; }
+.mining-online-form .button { margin-top: 10px; }.mining-online-form small { color: var(--soda-muted); line-height: 1.6; }
+.mining-online-form, .mining-online-policy { min-width: 0; padding: 20px; border: 1px solid transparent; background: var(--soda-field); border-radius: var(--soda-radius-control); }
+.mining-online-form { background: var(--soda-surface); border-color: var(--soda-line); }
+.mining-online-policy h3, .mining-online-jobs h3 { margin: 0 0 16px; font-size: 15px; }
+.mining-online-policy dl { margin: 0; }.mining-online-policy dl > div { display: flex; flex-wrap: wrap; gap: 8px 16px; justify-content: space-between; margin-bottom: 16px; line-height: 1.5; font-size: 13px; }
+.mining-online-policy dt { color: var(--soda-muted); }.mining-online-policy dd { margin: 0; max-width: 100%; overflow-wrap: anywhere; }.mining-online-policy p { margin: 16px 0 0; line-height: 1.7; font-size: 12px; color: var(--soda-muted); }
+.mining-online-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin: 0 0 24px; }
+.mining-online-metrics dt { margin-bottom: 8px; color: var(--soda-muted); font-size: 12px; }.mining-online-metrics dd { margin: 0; font-size: 17px; line-height: 1.5; overflow-wrap: anywhere; }.mining-online-metrics small { display: block; color: var(--soda-muted); margin-top: 6px; font-size: 11px; }
+.mining-online-addresses { margin: 0 0 24px; padding: 16px 0; border-block: 1px solid var(--soda-line); }.mining-online-addresses summary { cursor: pointer; font-size: 13px; color: var(--soda-muted); }.mining-online-addresses dt { font-size: 12px; color: var(--soda-muted); margin: 16px 0 8px; }.mining-online-addresses dd { margin: 0; font-size: 13px; overflow-wrap: anywhere; }
+.mining-online-panel a { color: var(--soda-accent); }.mining-online-jobs { margin-top: 28px; }.mining-online-jobs ol { list-style: none; padding: 0; margin: 0; }.mining-online-jobs li { padding: 18px 0; border-top: 1px solid var(--soda-line); }.mining-online-job-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; justify-content: space-between; font-size: 14px; }.mining-online-job-title span { color: var(--soda-muted); font-size: 12px; }.mining-online-jobs p { font-size: 13px; line-height: 1.6; margin-block: 10px; }.mining-online-address { overflow-wrap: anywhere; font-family: monospace; }.mining-online-jobs li > small { display: block; color: var(--soda-muted); margin-top: 10px; font-size: 11px; }
+.mining-online-recovery { padding: 20px; border: 1px solid var(--soda-line); border-radius: 12px; margin-bottom: 24px; }.mining-online-recovery p { margin-top: 0; line-height: 1.7; font-size: 14px; }.mining-online-recovery label { display: block; color: var(--soda-muted); font-size: 12px; margin-bottom: 10px; }.mining-online-recovery input { margin-bottom: 16px; font-size: 12px; font-family: monospace; }.mining-online-review dd { overflow-wrap: anywhere; text-align: right; }
+@media (max-width: 900px) { .mining-online-grid { grid-template-columns: 1fr; gap: 24px; }.mining-online-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .mining-online-panel { padding: 20px; }.mining-online-heading { flex-wrap: wrap; gap: 16px; }.mining-online-heading h2 { font-size: 20px; }.mining-online-metrics { gap: 18px 14px; }.mining-online-metrics dd { font-size: 15px; }.mining-online-review > div { flex-wrap: wrap; }.mining-online-review dd { text-align: left; } }

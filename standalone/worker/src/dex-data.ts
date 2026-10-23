@@ -1,3 +1,5 @@
+import { V2, V2_FACTORY } from '../../v2-protocol'
+import { v2Created, v2Snapshot } from './v2-data'
 import { decodeEventLog, encodeAbiParameters, keccak256, parseAbiParameters, toEventSelector, type Hex } from 'viem'
 import { deployment, EVENTS, FIRST_BLOCK, PAGE_BLOCKS, pools, record, same, STATE_READ, V3_POOL_READ, ZERO } from './contracts'
 import { call, rpc, RpcUnavailable } from './upstream'
@@ -5,7 +7,7 @@ import { call, rpc, RpcUnavailable } from './upstream'
 export interface Block { number: number; hash: string; timestamp: number }
 export interface Coverage { fromBlock: number; toBlock: number; complete: boolean; nextFromBlock: number | null }
 export interface Pool {
-  protocol: 'v3' | 'v4'; id: string; address: string | null; token0: string; token1: string; fee: number; tickSpacing: number; hooks: string
+  protocol: 'v2' | 'v3' | 'v4'; id: string; address: string | null; token0: string; token1: string; fee: number; tickSpacing: number; hooks: string
   createdBlock: number | null; source: 'manifest' | 'chain'; sqrtPriceX96: string | null; tick: number | null; liquidity: string | null; stateError: string | null
 }
 export interface ChainLog { address: string; topics: [Hex, ...Hex[]]; data: Hex; blockNumber: Hex; blockHash: Hex; transactionHash: Hex; logIndex: Hex; removed?: boolean }
@@ -56,10 +58,12 @@ export function knownPools(): Pool[] {
 }
 export async function discover(range: Coverage, upstreamFetch: typeof fetch): Promise<Pool[]> {
   const results = await Promise.all([
+    logs([V2.factory], range.fromBlock, range.toBlock, [toEventSelector(V2_FACTORY[4])], upstreamFetch),
     logs([deployment.contracts.v3Factory], range.fromBlock, range.toBlock, [toEventSelector(EVENTS[0])], upstreamFetch),
     logs([deployment.contracts.v4PoolManager], range.fromBlock, range.toBlock, [toEventSelector(EVENTS[1])], upstreamFetch),
   ])
   return results.flat().map((log) => {
+    if (same(log.address, V2.factory)) return v2Created(log)
     const { eventName, args } = decodeLog(log)
     const v3 = eventName === 'PoolCreated'
     return { protocol: v3 ? 'v3' : 'v4', id: String(v3 ? args.pool : args.id).toLowerCase(), address: v3 ? String(args.pool) : null, token0: String(v3 ? args.token0 : args.currency0), token1: String(v3 ? args.token1 : args.currency1), fee: Number(args.fee), tickSpacing: Number(args.tickSpacing), hooks: v3 ? ZERO : String(args.hooks), createdBlock: Number(BigInt(log.blockNumber)), source: 'chain', ...empty } as Pool
@@ -67,6 +71,7 @@ export async function discover(range: Coverage, upstreamFetch: typeof fetch): Pr
 }
 export async function snapshot(pool: Pool, block: Block, upstreamFetch: typeof fetch): Promise<Pool> {
   try {
+    if (pool.protocol === 'v2') return await v2Snapshot(pool, block, upstreamFetch)
     const at = hex(block.number)
     const [slot, liquidity] = await Promise.all(pool.protocol === 'v3' ? [call(V3_POOL_READ, pool.address!, 'slot0', [], at, upstreamFetch), call(V3_POOL_READ, pool.address!, 'liquidity', [], at, upstreamFetch)] : [call(STATE_READ, deployment.contracts.v4StateView, 'getSlot0', [pool.id], at, upstreamFetch), call(STATE_READ, deployment.contracts.v4StateView, 'getLiquidity', [pool.id], at, upstreamFetch)])
     if (!Array.isArray(slot) || typeof slot[0] !== 'bigint' || typeof slot[1] !== 'number' || typeof liquidity !== 'bigint') throw new Error('Invalid pool state')

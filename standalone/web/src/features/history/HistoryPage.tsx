@@ -2,8 +2,11 @@ import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState, type ReactElement } from 'react'
 import type { Hex } from 'viem'
 import { Button, Icon } from '../../components/primitives'
+import { Pagination, usePagination } from '../../components/Pagination'
+import { IndexProgress } from '../../components/IndexProgress'
 import { CHAIN_ID, EXPLORER_URL, shortenAddress } from '../../domain/assets'
 import { dataMessages } from '../../i18n/data'
+import { indexMessages } from '../../i18n/indexing'
 import type { WalletController } from '../../lib/useWallet'
 import { usePreferences } from '../../preferences/context'
 import { DataError, getEvents, mergeEvents, type EventQuery } from '../market/api'
@@ -40,11 +43,19 @@ export function HistoryPage({ wallet, onConnect, initialScope = 'all', scopes = 
       : data.coverage.nextFromBlock === null ? undefined
         : { ...request, cursor: undefined, fromBlock: data.coverage.nextFromBlock, toBlock: request.toBlock ?? data.asOf.number },
     enabled: scope === 'all' || (scope === 'mine' && !!account), retry: false,
+    refetchInterval: (query) => {
+      const pages = query.state.data?.pages, index = pages?.[0]?.data.index
+      return pages?.length === 1 && index ? index.syncing || index.lastError ? 5_000 : 30_000 : false
+    },
+    refetchOnWindowFocus: (query) => (query.state.data?.pages.length ?? 0) <= 1,
   })
   const restart = events.error instanceof DataError && events.error.code !== 'UNAVAILABLE'
   const rows = restart ? [] : mergeEvents(events.data?.pages.map((p) => p.data) ?? [])
   const last = restart ? undefined : events.data?.pages.at(-1)?.data
   const local = account ? readTransactions(account) : []
+  const paginationKey = `${scope}:${account?.toLowerCase() ?? ''}`
+  const chainPagination = usePagination(rows, paginationKey)
+  const localPagination = usePagination(local, paginationKey)
   return <section className={embedded ? "data-page portfolio-activity" : "content-page data-page"} aria-label={m.history}>
     {!embedded && <div className="page-heading"><span className="eyebrow">ACTIVITY / X LAYER</span>
       <h1 id="history-title">{m.history}</h1><p>{m.historyNote}</p></div>}
@@ -56,29 +67,36 @@ export function HistoryPage({ wallet, onConnect, initialScope = 'all', scopes = 
     {scope === 'local' ? <>
       <p className="data-muted">{m.localNote}</p>
       {account && local.length === 0 && <p>{m.localEmpty}</p>}
-      <ul className="history-local">{local.map((r) => <li key={r.hash}>
+      <ul className="history-local">{localPagination.items.map((r) => <li key={r.hash}>
         <div className="history-row"><div><strong>{r.kind}</strong><span>{m[r.status]}</span>
           <a href={`${EXPLORER_URL}/tx/${r.hash}`} target="_blank" rel="noreferrer">{shortenAddress(r.hash)} <Icon name="external" size={14} /></a></div>
           <Button onClick={() => setSelectedHash(r.hash)}>{m.check}</Button></div>
         <small>{new Date(r.submittedAt).toLocaleString(locale)}</small>
       </li>)}</ul>
+      <Pagination {...localPagination} />
     </> : <>
+      <Button disabled={events.isFetching || (scope === 'mine' && !account)} onClick={() => {
+        chainPagination.setPage(0)
+        void queryClient.resetQueries({ queryKey: ['dex-events', scope, scope === 'mine' ? account : undefined], exact: true })
+      }}><Icon name="refresh" size={14} />{indexMessages(locale).retry}</Button>
       {events.isFetching && <p role="status">{m.loading}</p>}
       {events.isError && <p className="error-text" role="alert">{restart ? m.scanRestart : m.unavailable} <Button onClick={() => {
         if (restart) void queryClient.resetQueries({ queryKey: ['dex-events', scope, scope === 'mine' ? account : undefined], exact: true })
         else void events.refetch()
       }}>{m.retry}</Button></p>}
-      {last && <p className="data-muted">{m.scanned}: #{events.data?.pages[0]?.data.coverage.fromBlock} – #{last.coverage.toBlock}
+      <IndexProgress status={last?.index} />
+      {last && !last.index && <p className="data-muted">{m.scanned}: #{events.data?.pages[0]?.data.coverage.fromBlock} – #{last.coverage.toBlock}
         {' · '}{events.hasNextPage ? m.partial : m.complete} · {m.snapshot} #{last.asOf.number}</p>}
       {last && rows.length === 0 && <p>{m.noData}</p>}
-      <ol className="history-list">{rows.map((r) => <li key={r.id}>
+      <ol className="history-list" start={chainPagination.start || 1}>{chainPagination.items.map((r) => <li key={r.id}>
         <div className="history-row"><div><strong>{r.event}</strong><span>{r.protocol.toUpperCase()}</span><span className="data-muted">#{r.blockNumber}</span></div>
           <a href={`${EXPLORER_URL}/tx/${r.transactionHash}`} target="_blank" rel="noreferrer">{shortenAddress(r.transactionHash)} <Icon name="external" size={14} /></a></div>
         <details><summary>{m.details}</summary><dl>{Object.entries(r.args).map(([key, value]) =>
           <div key={key} style={{ display: 'contents' }}><dt>{key}</dt><dd>{String(value)}</dd></div>)}
           <dt>Block hash</dt><dd>{r.blockHash}</dd></dl></details>
       </li>)}</ol>
-      {events.hasNextPage && <Button className="data-load-more" onClick={() => void events.fetchNextPage()} disabled={events.isFetching}>{m.more}</Button>}
+      <Pagination {...chainPagination} />
+      {events.hasNextPage && chainPagination.page + 1 === chainPagination.pages && <Button className="data-load-more" onClick={() => void events.fetchNextPage()} disabled={events.isFetching}>{m.more}</Button>}
     </>}
     <ReceiptLookup selectedHash={selectedHash} />
   </section>

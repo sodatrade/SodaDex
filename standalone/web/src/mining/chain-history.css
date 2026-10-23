@@ -1,0 +1,47 @@
+.mining-history-source { width: fit-content; min-width: 240px; margin-bottom: 16px; }
+.mining-chain-history .mining-history-heading { flex-wrap: wrap; gap: 12px 20px; }
+.mining-chain-history .mining-history-source { margin: 0; }
+.mining-history-controls { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.mining-history-controls .mining-action-switch { min-width: 0; flex: 1; }
+.mining-history-controls .mining-action-switch .button { white-space: nowrap; min-width: max-content; }
+.mining-history-controls > .button { flex-shrink: 0; min-height: 44px; padding-inline: 12px; font-size: 12px; }
+.mining-history-note { margin: 12px 0 0; color: var(--soda-muted); font-size: 12px; line-height: 1.7; }
+.mining-index-status { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 8px 0 12px; color: var(--soda-muted); font-size: 11px; line-height: 1.6; font-variant-numeric: tabular-nums; }
+.mining-chain-history .mining-history-list li { display: block; padding: 0; }
+.mining-chain-event { min-width: 0; }
+.mining-chain-event > summary { display: grid; grid-template-columns: minmax(120px, .85fr) minmax(0, 2fr) auto; align-items: center; gap: 12px 24px; min-height: 76px; padding: 12px 0; list-style: none; cursor: pointer; }
+.mining-chain-event > summary::-webkit-details-marker { display: none; }
+.mining-chain-event > summary > strong { font-size: 13px; font-weight: 550; line-height: 1.5; overflow-wrap: anywhere; }
+.mining-chain-event-meta { display: grid; grid-template-columns: minmax(100px, 1fr) minmax(150px, 1.2fr); align-items: center; gap: 16px; min-width: 0; }
+.mining-chain-event-meta a { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; font-variant-numeric: tabular-nums; }
+.mining-chain-event-meta a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.mining-chain-event-meta small { display: grid; gap: 2px; text-align: right; font-variant-numeric: tabular-nums; }
+.mining-chain-event-meta small > span { color: var(--soda-faint); }
+.mining-chain-event-action { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 8px 12px; border: 1px solid var(--soda-control-line); border-radius: var(--soda-radius-control); color: var(--soda-text); background: var(--soda-surface); font-size: 12px; font-weight: 550; white-space: nowrap; }
+.mining-chain-event > summary:hover .mining-chain-event-action { border-color: var(--soda-control-hover); background: var(--soda-field); }
+.mining-chain-event[open] .mining-chain-event-action { border-color: var(--soda-control-line); background: var(--soda-accent-dim); color: var(--soda-highlight); }
+.mining-chain-event[open] .mining-chain-event-action > svg { transform: rotate(180deg); }
+.mining-chain-event .review-details { margin: 0 0 16px; padding: 16px; border: 1px solid var(--soda-line); border-radius: var(--soda-radius-control); background: var(--soda-field); }
+.mining-chain-event .review-details > div { gap: 16px; }
+.mining-chain-event .review-details dd { overflow-wrap: anywhere; min-width: 0; }
+@media (max-width: 800px) {
+  .mining-chain-event > summary { grid-template-columns: minmax(110px, .8fr) minmax(0, 1.2fr) auto; gap: 12px; }
+  .mining-chain-event-meta { grid-template-columns: 1fr; gap: 0; }
+  .mining-chain-event-meta small { display: flex; gap: 6px; flex-wrap: wrap; text-align: left; }
+}
+@media (max-width: 540px) {
+  .mining-history-source { width: 100%; }
+  .mining-chain-history .mining-history-heading { align-items: stretch; gap: 10px; }
+  .mining-history-controls { width: 100%; }
+  .mining-history-controls > .button { width: 44px; min-width: 44px; padding: 0; }
+  .mining-history-refresh-label { display: none; }
+  .mining-history-controls .mining-action-switch .button { font-size: 11px; padding-inline: 6px; }
+  .mining-index-status { align-items: flex-start; }
+  .mining-chain-event > summary { grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; padding-block: 12px; }
+  .mining-chain-event-action { grid-column: 2; grid-row: 1; min-height: 40px; padding-inline: 10px; }
+  .mining-chain-event-meta { grid-column: 1 / -1; grid-row: 2; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 10px; }
+  .mining-chain-event-meta small { display: grid; gap: 2px; text-align: right; font-size: 10px; }
+  .mining-chain-event .review-details { padding: 12px; }
+  .mining-chain-event .review-details > div { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .mining-chain-event .review-details dd { text-align: left; }
+}

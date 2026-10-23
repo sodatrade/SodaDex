@@ -1,6 +1,6 @@
-import type { LiquidityPool } from '../liquidity/types'
+import type { AnyPool } from '../liquidity/v2Types'
 export interface PoolTradeQuote {
-  pool: LiquidityPool
+  pool: AnyPool
   zeroForOne: boolean
   amount: bigint
   amountOut: bigint

@@ -1,3 +1,5 @@
+import { V2 } from '../../v2-protocol'
+import { v2Request } from './v2-requests'
 import { decodeFunctionData, encodeFunctionData, parseAbi, type Hex } from 'viem'
 import deployment from '../../../deployments/xlayer-test/active.json'
 import { publicSwapsEnabled } from '../../trading-policy'
@@ -40,13 +42,15 @@ export function validContractRequest(value: unknown, simulation: boolean): boole
         } catch { /* Other selectors continue through the existing contract boundary. */ }
       }
     }
+    const v2 = v2Request(to, data, value.from as string | undefined, amount)
+    if (v2) return v2.kind !== 'swap' || publicSwapsEnabled()
     if (!simulation && amount === 0n && contractReadKind(to, data)) return true
     if (typeof value.from === 'string' && validLiquidityRequest(to, data, value.from, amount)) return true
     if (to !== PERMIT2 && to !== ZERO && amount === 0n) {
       try {
         const approval = decodeFunctionData({ abi: ERC20, data })
         if (approval.functionName === 'approve' && same(encodeFunctionData({ abi: ERC20, functionName: approval.functionName, args: approval.args }), data) && typeof value.from === 'string' &&
-          [PERMIT2, deployment.contracts.v3PositionManager.toLowerCase()].includes(approval.args[0].toLowerCase()) && (approval.args[1] === 0n || positive(approval.args[1]))) return true
+          [PERMIT2, deployment.contracts.v3PositionManager.toLowerCase(), V2.router.toLowerCase()].includes(approval.args[0].toLowerCase()) && (approval.args[1] === 0n || positive(approval.args[1]))) return true
       } catch { /* Other selectors continue through the protocol-specific boundary. */ }
     }
     if (to === WOKB && typeof value.from === 'string') {

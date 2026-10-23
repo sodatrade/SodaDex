@@ -1,11 +1,16 @@
+import { listV2Positions } from '../../liquidity/v2Pools'
+import { V2PositionRow } from './V2PositionRow'
+import type { AnyPool, V2Pool } from '../../liquidity/v2Types'
+import { V2LiquidityDialog } from './V2LiquidityDialog'
 import './liquidity.css'
-import { useQuery } from '@tanstack/react-query'
-import { useEffect, useState, type ReactElement } from 'react'
+import { skipToken, useQueries, useQuery } from '@tanstack/react-query'
+import { useEffect, useState, type ReactElement, type ReactNode } from 'react'
 import { Button, Icon } from '../../components/primitives'
+import { Pagination, usePagination } from '../../components/Pagination'
 import { CHAIN_ID } from '../../domain/assets'
 import { liquidityText } from '../../i18n/liquidity'
 import type { WalletController } from '../../lib/useWallet'
-import { listPools, listPositions } from '../../liquidity'
+import { listAllPools as listPools, listPositions } from '../../liquidity'
 import type { LiquidityPool, LiquidityPosition } from '../../liquidity/types'
 import { usePreferences } from '../../preferences/context'
 import { LiquidityPreviewDialog } from './LiquidityPreviewDialog'
@@ -15,28 +20,29 @@ import { MintWizard } from './MintWizard'
 import { PoolDetailDialog } from './PoolDetailDialog'
 import { PoolList } from './PoolList'
 import { PositionCard } from './PositionCard'
-import { PositionLookup } from './PositionLookup'
 import { sameAddress } from './presentation'
 import { useLiquidityOperation } from './useLiquidityOperation'
+import { confirmedPoolsKey, mergeConfirmedPools } from './confirmedPools'
 interface Props {
   wallet: WalletController
   onConnect: () => void
-  onSwap: () => void
+  onBusyChange?: (busy: boolean) => void
+  embedded?: boolean
+  specialPool?: { label: string; row: ReactNode; onChoose: () => void }
+  externalBusy?: boolean
 }
 type Editor =
   | { kind: 'mint'; pool?: LiquidityPool }
   | { kind: 'increase' | 'decrease' | 'collect' | 'transfer' | 'burn'; position: LiquidityPosition }
-export function LiquidityPage({ wallet, onConnect, onSwap }: Props): ReactElement {
+export function LiquidityPage({ wallet, onConnect, onBusyChange, embedded, specialPool, externalBusy }: Props): ReactElement {
   const [tab, setTab] = useState<'pools' | 'positions'>('pools')
+  const [v2Editor, setV2Editor] = useState<V2Pool>()
+  const [v2Busy, setV2Busy] = useState(false)
   const [detail, setDetail] = useState<LiquidityPool>()
   const [editor, setEditor] = useState<Editor>()
-  const [found, setFound] = useState<LiquidityPosition>()
   const { locale } = usePreferences(),
     l = liquidityText(locale)
   const operation = useLiquidityOperation(wallet)
-  useEffect(() => {
-    if (operation.progress?.stage === 'success' || operation.receiptMessage === 'receiptConfirmed') setFound(undefined)
-  }, [operation.progress?.stage, operation.receiptMessage])
   const correctChain = wallet.session?.chainId === CHAIN_ID
   const pools = useQuery({
     queryKey: ['liquidity', 'pools'],
@@ -44,14 +50,21 @@ export function LiquidityPage({ wallet, onConnect, onSwap }: Props): ReactElemen
     retry: false,
     refetchInterval: 30_000,
   })
-  const positions = useQuery({
-    queryKey: ['liquidity', 'positions', wallet.session?.address],
-    queryFn: () => listPositions(wallet.session?.address ?? '0x0000000000000000000000000000000000000000'),
+  const positions = useQueries({ queries: (['v3', 'v4'] as const).map(protocol => ({
+    queryKey: ['liquidity', 'positions', wallet.session?.address, protocol],
+    queryFn: async () => (await listPositions(wallet.session?.address ?? '0x0000000000000000000000000000000000000000', undefined, protocol)).filter(p => p.protocol === protocol),
     enabled: !!wallet.session && correctChain,
     retry: false,
     refetchInterval: 30_000,
-  })
-  const busy = operation.preparing || operation.executing || !!operation.blocked
+  })) })
+  const confirmed = useQuery<AnyPool[]>({ queryKey: confirmedPoolsKey, queryFn: skipToken, initialData: [] })
+  const visiblePools = mergeConfirmedPools(pools.data ?? [], confirmed.data ?? [])
+  const v2Positions = useQuery({ queryKey: ['liquidity', 'v2-positions', wallet.session?.address, visiblePools.map(p => `${p.protocol}:${p.id}`).join(',')],
+    queryFn: () => listV2Positions(visiblePools.filter((p): p is V2Pool => p.protocol === 'v2'), wallet.session!.address),
+    enabled: !!wallet.session && correctChain && (pools.isSuccess || visiblePools.some(p => p.protocol === 'v2')), retry: false, refetchInterval: 30_000 })
+  const busy = operation.preparing || operation.executing || !!operation.blocked || !!externalBusy || v2Busy
+  const navigationBusy = busy || !!operation.review || !!editor || !!detail || !!v2Editor
+  useEffect(() => { onBusyChange?.(navigationBusy) }, [navigationBusy, onBusyChange])
   const open = (value: Editor): void => {
     if (!wallet.session) {
       onConnect()
@@ -63,6 +76,13 @@ export function LiquidityPage({ wallet, onConnect, onSwap }: Props): ReactElemen
     }
     if (!busy) setEditor(value)
   }
+  const openPool = (pool: AnyPool): void => {
+    if (pool.protocol === 'v2') {
+      if (!wallet.session) { onConnect(); return }
+      if (!correctChain) { void wallet.switchChain(); return }
+      setEditor(undefined); setV2Editor(pool)
+    } else setDetail(pool)
+  }
   const closeEditor = (): void => {
     operation.cancel()
     setEditor(undefined)
@@ -73,18 +93,16 @@ export function LiquidityPage({ wallet, onConnect, onSwap }: Props): ReactElemen
   }
   const owned = (position: LiquidityPosition): boolean =>
     !!wallet.session && correctChain && sameAddress(position.owner, wallet.session.address)
-  const visiblePositions = positions.data ?? []
-  const extraFound =
-    found &&
-    !visiblePositions.some((position) => position.protocol === found.protocol && position.tokenId === found.tokenId)
-      ? [found]
-      : []
+  const visiblePositions = positions.flatMap(query => query.data ?? [])
+  const accountKey = `${wallet.session?.chainId}:${wallet.session?.address.toLowerCase() ?? ''}`
+  const positionRows = [...visiblePositions.map(position => ({ kind: 'nft' as const, position })), ...(v2Positions.data?.positions ?? []).map(position => ({ kind: 'v2' as const, position }))]
+  const positionPagination = usePagination(positionRows, accountKey)
   return (
-    <section className="content-page lp-page" aria-labelledby="lp-title">
+    <section className={`content-page lp-page${embedded ? ' lp-embedded' : ''}`} aria-labelledby="lp-title">
       <div className="lp-page-heading">
         <div className="page-heading">
           <span className="eyebrow">SodaDEX / X LAYER</span>
-          <h1 id="lp-title">{l('title')}</h1>
+          <h2 id="lp-title">{l('title')}</h2>
           <p>{l('description')}</p>
         </div>
         <Button appearance="primary" onClick={() => open({ kind: 'mint' })} disabled={busy}>
@@ -102,7 +120,7 @@ export function LiquidityPage({ wallet, onConnect, onSwap }: Props): ReactElemen
             {l('positions')}
           </button>
         </div>
-        <Button appearance="ghost" onClick={operation.refresh} disabled={pools.isFetching || positions.isFetching}>
+        <Button appearance="ghost" onClick={operation.refresh} disabled={pools.isFetching || positions.every(query => query.isFetching)}>
           <Icon name="refresh" size={15} />
           {l('refresh')}
         </Button>
@@ -119,17 +137,19 @@ export function LiquidityPage({ wallet, onConnect, onSwap }: Props): ReactElemen
       {tab === 'pools' ? (
         <div className="lp-pool-section">
           <p className="lp-muted">{l('poolFilterNote')}</p>
-          {pools.isPending ? (
+          {pools.isError && visiblePools.length > 0 && <p role="alert">{l('loadFailed')} <Button onClick={() => void pools.refetch()}>{l('retry')}</Button></p>}
+          {!pools.isSuccess && !visiblePools.length && specialPool && <PoolList pools={[]} l={l} disabled={busy} onDetails={openPool} extraRows={[{id:'configured-miner-pool',content:specialPool.row}]} />}
+          {pools.isPending && !visiblePools.length ? (
             <p role="status">{l('loading')}</p>
-          ) : pools.isError ? (
+          ) : pools.isError && !visiblePools.length ? (
             <div className="lp-empty">
               <p role="alert">{l('loadFailed')}</p>
               <Button onClick={() => void pools.refetch()}>{l('retry')}</Button>
             </div>
-          ) : pools.data.length === 0 ? (
+          ) : visiblePools.length === 0 && !specialPool ? (
             <p className="lp-empty">{l('emptyPools')}</p>
           ) : (
-            <PoolList pools={pools.data} l={l} disabled={busy} onDetails={setDetail} onAdd={(pool) => open({ kind: 'mint', pool })} />
+            <PoolList pools={visiblePools} l={l} disabled={busy} onDetails={openPool} extraRows={specialPool ? [{ id: 'configured-miner-pool', content: specialPool.row }] : undefined} />
           )}
         </div>
       ) : (
@@ -143,18 +163,16 @@ export function LiquidityPage({ wallet, onConnect, onSwap }: Props): ReactElemen
             </div>
           ) : correctChain ? (
             <>
-              {positions.isPending ? (
-                <p role="status">{l('loading')}</p>
-              ) : positions.isError ? (
-                <div className="lp-empty">
-                  <p role="alert">{l('loadFailed')}</p>
-                  <Button onClick={() => void positions.refetch()}>{l('retry')}</Button>
-                </div>
-              ) : visiblePositions.length === 0 && !found ? (
+              {positions.map((query, index) => query.isPending ? <p key={index} role="status">{index === 0 ? 'V3' : 'V4'} · {l('loading')}</p> : query.isError ? <div key={index} className="lp-empty"><p role="alert">{index === 0 ? 'V3' : 'V4'} · {l('loadFailed')}</p><Button onClick={() => void query.refetch()}>{l('retry')}</Button></div> : null)}
+              {positions.every(query => query.isSuccess) && v2Positions.isSuccess && positionRows.length === 0 ? (
                 <p className="lp-empty">{l('emptyPositions')}</p>
               ) : null}
+              {(v2Positions.isError || !!v2Positions.data?.unavailable) && <p role="alert">V2 · {l('loadFailed')} <Button onClick={() => void v2Positions.refetch()}>{l('retry')}</Button></p>}
               <div className="lp-position-list">
-                {[...visiblePositions, ...extraFound].map((position) => (
+                {positionPagination.items.map((row) => {
+                  if (row.kind === 'v2') return <V2PositionRow key={`v2:${row.position.pool.id}`} position={row.position} l={l} disabled={busy} onManage={() => openPool(row.position.pool)} />
+                  const position = row.position
+                  return (
                   <div key={`${position.protocol}:${position.tokenId}`}>
                     <PositionCard
                       position={position}
@@ -164,17 +182,13 @@ export function LiquidityPage({ wallet, onConnect, onSwap }: Props): ReactElemen
                     />
                     {!owned(position) && <p className="lp-muted">{l('notOwner')}</p>}
                   </div>
-                ))}
+                ) })}
               </div>
-              <PositionLookup l={l} onPosition={setFound} />
+              <Pagination {...positionPagination} />
             </>
           ) : null}
         </div>
       )}
-      <Button appearance="ghost" className="lp-back-swap" onClick={onSwap}>
-        {l('backSwap')}
-        <Icon name="arrow" size={15} />
-      </Button>
       {detail && (
         <PoolDetailDialog
           pool={detail}
@@ -189,6 +203,7 @@ export function LiquidityPage({ wallet, onConnect, onSwap }: Props): ReactElemen
       )}
       {editor && (editor.kind === 'mint' || editor.kind === 'increase') && (
         <MintWizard
+          onV2Pool={openPool}
           pool={editor.kind === 'mint' ? editor.pool : undefined}
           position={editor.kind === 'increase' ? editor.position : undefined}
           l={l}
@@ -197,6 +212,7 @@ export function LiquidityPage({ wallet, onConnect, onSwap }: Props): ReactElemen
           error={operation.error}
           onPreview={operation.prepare}
           onClose={closeEditor}
+          specialPool={specialPool ? { label: specialPool.label, onChoose: () => { closeEditor(); specialPool.onChoose() } } : undefined}
         />
       )}
       {editor && (editor.kind === 'decrease' || editor.kind === 'collect' || editor.kind === 'transfer' || editor.kind === 'burn') && (
@@ -211,6 +227,7 @@ export function LiquidityPage({ wallet, onConnect, onSwap }: Props): ReactElemen
           onClose={closeEditor}
         />
       )}
+      {v2Editor && <V2LiquidityDialog pool={v2Editor} wallet={wallet} onClose={() => { setV2Editor(undefined); setV2Busy(false) }} onBusyChange={setV2Busy} />}
       {operation.review && (
         <LiquidityPreviewDialog
           operation={operation}

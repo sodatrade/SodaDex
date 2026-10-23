@@ -83,10 +83,6 @@ function AppContent(): ReactElement {
       <a className="skip-link" href="#main">
         {t('skipMain')}
       </a>
-      <div className="ambient" aria-hidden="true">
-        <div className="ambient-halo" />
-        <div className="ambient-grid" />
-      </div>
       <Header
         page={page}
         onPageChange={navigate}
@@ -125,7 +121,7 @@ function AppContent(): ReactElement {
           </Suspense>
         ) : page === 'pools' ? (
           <Suspense fallback={<p className="content-page" role="status">{t('reading')}</p>}>
-            <LiquidityPage wallet={wallet} onConnect={() => setWalletOpen(true)} onSwap={() => navigate('swap')} />
+            <LiquidityPage wallet={wallet} onConnect={() => setWalletOpen(true)} />
           </Suspense>
         ) : primaryPage(page) === 'explore' ? (
           <Suspense fallback={<p className="content-page" role="status">{t('reading')}</p>}>

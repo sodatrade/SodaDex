@@ -21,7 +21,7 @@ export function PoolDetailDialog({
   onClose: () => void
 }): ReactElement {
   return (
-    <Dialog title={l('details')} description={l('test')} onClose={onClose}>
+    <Dialog title={l('manage')} description={l('test')} onClose={onClose}>
       <div className="lp-pair">
         <CurrencyLabel currency={pool.currency0} />
         <span>/</span>

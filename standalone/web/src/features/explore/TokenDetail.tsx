@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useState, type ReactElement } from 'react'
 import { decodeFunctionResult, encodeFunctionData, formatUnits, zeroAddress, type Address, type Hex } from 'viem'
 import { Button, Icon, Surface } from '../../components/primitives'
+import { Pagination, usePagination } from '../../components/Pagination'
 import { CHAIN_ID, EXPLORER_URL } from '../../domain/assets'
 import { exploreMessages } from '../../i18n/explore'
 import { tokenAbi } from '../../liquidity/abis'
@@ -24,8 +25,9 @@ export function TokenDetail({ address, wallet, onConnect, onBack }: {
     queryFn: async () => currency!.native ? hexQuantity(await rpc('eth_getBalance', [account, 'latest'])) :
       decodeFunctionResult({ abi: tokenAbi, functionName: 'balanceOf', data: await rpc('eth_call', [{ to: currency!.address,
         data: encodeFunctionData({ abi: tokenAbi, functionName: 'balanceOf', args: [account!] }) }, 'latest']) as Hex }) as bigint })
-  const pools = useQuery({ queryKey: ['liquidity', 'pools'], queryFn: () => listPools(), retry: false, staleTime: 30_000 })
+  const pools = useQuery({ queryKey: ['liquidity', 'concentrated-pools'], queryFn: () => listPools(), retry: false, staleTime: 30_000 })
   const matching = pools.data?.filter(p => [p.currency0, p.currency1].some(c => c.address.toLowerCase() === address.toLowerCase() || (address === zeroAddress && c.native))) ?? []
+  const pagination = usePagination(matching, address.toLowerCase())
   return <div className="explore-detail">
     <Button appearance="ghost" onClick={onBack}>← {m.back}</Button>
     {token.isPending && <p role="status">{m.loading}</p>}
@@ -41,8 +43,9 @@ export function TokenDetail({ address, wallet, onConnect, onBack }: {
       {pools.isPending && <p role="status">{m.loading}</p>}
       {pools.isError && <p role="alert" className="error-text">{m.error} <Button onClick={() => void pools.refetch()}>{m.retry}</Button></p>}
       {pools.isSuccess && !matching.length && <p>{m.noOwnPools}</p>}
-      {matching.map(p => <button className="explore-own-pool" key={`${p.protocol}:${p.id}`} aria-pressed={selected?.id === p.id} onClick={() => setSelected(p)}>
+      {pagination.items.map(p => <button className="explore-own-pool" key={`${p.protocol}:${p.id}`} aria-pressed={selected?.id === p.id} onClick={() => setSelected(p)}>
         <span>{p.currency0.symbol} / {p.currency1.symbol}</span><span>{p.protocol.toUpperCase()} · {p.fee / 10000}%</span><span>{m.quote} →</span></button>)}
+      <Pagination {...pagination} />
       {selected && <PoolQuotePanel pool={selected} />}
     </section>
   </div>

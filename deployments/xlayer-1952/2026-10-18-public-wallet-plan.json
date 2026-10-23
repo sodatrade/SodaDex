@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "phase": "mining-public-wallet-1952-v1",
+  "chainId": 1952,
+  "approved": true,
+  "productionTouched": false,
+  "chain196Touched": false,
+  "publicOrigin": "https://sodadex-mining-test-1952.jsmsdx2025.workers.dev",
+  "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+  "wallet": "0xe57f88c05810a9ad2b27f216665260c2d9f2b2da",
+  "walletSigning": "Real OKX extension, user confirms each exact transaction; no owner key in browser",
+  "proposedBudget": {
+    "totalNewGasCapWei": "1300000000000000",
+    "ownerPreparationGasCapWei": "100000000000000",
+    "browserWalletGasCapWei": "1000000000000000",
+    "keeperAdditionalGasCapWei": "200000000000000",
+    "keeperPriorCumulativeCapWei": "500000000000000",
+    "keeperBudgetNeverReset": true,
+    "nativePrincipalCapWei": "10000000000000",
+    "fabPrincipalCapRaw": "600000000000",
+    "fabDecimals": 8,
+    "fabFundingIsSameCirculatingPrincipal": true,
+    "additionalNativeWalletFundingWei": "0"
+  },
+  "inventory": {
+    "minerId": "8",
+    "listingId": "5",
+    "listingPriceWei": "10000000000",
+    "allowedListingIdsAfterPreparation": [
+      "3",
+      "4",
+      "5"
+    ],
+    "reservedRetailListingId": "2",
+    "reservedRetailMinerId": "5",
+    "farmBeforeCount": 3,
+    "farmCapacity": 4,
+    "capacityUnchanged": true
+  },
+  "rehearsal": {
+    "file": ".analysis/mining-1952/wallet-inventory/unsigned.json",
+    "sha256": "1cf0454479dfb27633a67a484bfbcca40fddd8e1c1692a11eacc9f99eac3c969",
+    "transactionCount": 7,
+    "gasUpperBoundWei": "44828702241435",
+    "actualLocalGasWei": "36567621828381",
+    "allLocalReceiptsSuccessful": true,
+    "noMockBusinessBytecode": true,
+    "noPublicWrites": true
+  },
+  "frontendChecks": [
+    "Get TEST-FAB using TEST-OKB",
+    "Launch TEST-WALLET through wallet message authentication and onchain issuance",
+    "Curve buy/sell then graduate with fixed5000FAB target",
+    "Project buy/sell and add/remove LP",
+    "Burn small project token amount to exercise boost",
+    "Observe approved automatic purchase/tax conversion/farm funding",
+    "Buy reserved retail miner5/listing2 then deposit/redeem same NFT",
+    "Fragment bidirectional swaps and add/remove LP",
+    "Harvest and positive project/fragment/LP reward claims",
+    "Reload and verify transaction journal/chain receipts/NFT ownership"
+  ],
+  "frontendMaximumGasPriceWei": "30000000",
+  "operatingPolicyOtherwiseUnchanged": true,
+  "noNewSecrets": true,
+  "ownerKeyLocalOnly": true,
+  "before": {
+    "chainId": 1952,
+    "wallet": "0xe57f88c05810a9ad2b27f216665260c2d9f2b2da",
+    "block": {
+      "number": "0x29cbc0c",
+      "hash": "0xae7d071480d26e8e721a9c676460b91285637adcdad8623c889cced4fbf89942"
+    },
+    "nonce": "120",
+    "nativeWei": "39572709358635469",
+    "isEoa": true,
+    "fabRaw": "0",
+    "keeperBudget": {
+      "capWei": "500000000000000",
+      "spentWei": "186372669318633",
+      "reservedWei": "0"
+    },
+    "serviceBuild": "online-1952-20261018-v2",
+    "capturedAt": "2026-10-18T00:57:10.473Z"
+  },
+  "preparedAt": "2026-10-18T01:01:10.382135+00:00",
+  "approvalReference": "User approval 2026-10-18: 同意，按上述测试上限继续; question call_58ead1d9e5e34270904f1174ef38ca67",
+  "approvedAt": "2026-10-18T01:03:23.551923+00:00",
+  "approvedBudget": {
+    "totalNewGasCapWei": "1300000000000000",
+    "ownerPreparationGasCapWei": "100000000000000",
+    "browserWalletGasCapWei": "1000000000000000",
+    "keeperAdditionalGasCapWei": "200000000000000",
+    "keeperPriorCumulativeCapWei": "500000000000000",
+    "keeperBudgetNeverReset": true,
+    "nativePrincipalCapWei": "10000000000000",
+    "fabPrincipalCapRaw": "600000000000",
+    "fabDecimals": 8,
+    "fabFundingIsSameCirculatingPrincipal": true,
+    "additionalNativeWalletFundingWei": "0"
+  }
+}

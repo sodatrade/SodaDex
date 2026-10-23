@@ -1,5 +1,5 @@
-import { CHAIN_ID, EXPLORER_URL, RPC_URL } from '../domain/assets'
-import { hexQuantity, isAddress } from './rpc'
+import { NETWORK } from '../network'
+import { hexQuantity, isAddress } from './readRpc'
 
 export interface Eip1193Provider {
   request: (args: { method: string; params?: unknown[] }) => Promise<unknown>
@@ -10,6 +10,7 @@ export interface Eip1193Provider {
 export interface WalletOption {
   id: string
   name: string
+  rdns?: string
   provider: Eip1193Provider
 }
 
@@ -48,8 +49,8 @@ export function providerChainId(value: unknown): number {
   return Number(quantity)
 }
 
-export async function connectWallet(option: WalletOption): Promise<WalletSession> {
-  const address = firstAccount(await option.provider.request({ method: 'eth_requestAccounts' }))
+export async function connectWallet(option: WalletOption, restore = false): Promise<WalletSession> {
+  const address = firstAccount(await option.provider.request({ method: restore ? 'eth_accounts' : 'eth_requestAccounts' }))
   if (!address) {
     throw new Error('钱包未提供可连接的账户')
   }
@@ -59,7 +60,7 @@ export async function connectWallet(option: WalletOption): Promise<WalletSession
 
 export async function switchToXLayer(provider: Eip1193Provider): Promise<number> {
   try {
-    await provider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0xc4' }] })
+    await provider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: NETWORK.chainHex }] })
   } catch (error: unknown) {
     if (typeof error !== 'object' || error === null || !('code' in error) || error.code !== 4902) {
       throw error
@@ -68,18 +69,18 @@ export async function switchToXLayer(provider: Eip1193Provider): Promise<number>
       method: 'wallet_addEthereumChain',
       params: [
         {
-          chainId: '0xc4',
-          chainName: 'X Layer',
-          nativeCurrency: { name: 'OKB', symbol: 'OKB', decimals: 18 },
-          rpcUrls: [RPC_URL],
-          blockExplorerUrls: [EXPLORER_URL],
+          chainId: NETWORK.chainHex,
+          chainName: NETWORK.chainName,
+          nativeCurrency: NETWORK.nativeCurrency,
+          rpcUrls: [NETWORK.rpcUrl],
+          blockExplorerUrls: [NETWORK.explorerUrl],
         },
       ],
     })
-    await provider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0xc4' }] })
+    await provider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: NETWORK.chainHex }] })
   }
   const chainId = providerChainId(await provider.request({ method: 'eth_chainId' }))
-  if (chainId !== CHAIN_ID) {
+  if (chainId !== NETWORK.chainId) {
     throw new Error('钱包尚未切换到 X Layer')
   }
   return chainId

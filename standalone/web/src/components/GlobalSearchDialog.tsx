@@ -12,6 +12,7 @@ import { exploreMessages } from '../i18n/explore'
 import { Dialog } from './Dialog'
 import { POOL_SEARCH_TEXT } from './PoolRecords'
 import { Button, Icon } from './primitives'
+import { Pagination, usePagination } from './Pagination'
 
 type Category = 'all' | 'tokens' | 'pools' | 'wallets'
 
@@ -48,6 +49,14 @@ export function GlobalSearchDialog({
   const showPools = poolCategory && (showSeed || poolMatches.length > 0)
   const showReference = !!onReference && poolCategory && (!query || `uniswap official 官方 官方池 只读 唯讀`.includes(query))
   const empty = !showPools && !showReference && !showAddress && !showTokenAddress && !(showTokens && matches.length > 0)
+  const pagination = usePagination([
+    ...(showTokens ? matches.map(({ currency }) => `token:${currency.address}`) : []),
+    ...(showPools ? [...(showSeed ? ['seed'] : []), ...poolMatches.map((pool) => `pool:${pool.protocol}:${pool.id}`)] : []),
+    ...(showReference ? ['reference'] : []), ...(showTokenAddress ? ['token-address'] : []), ...(showAddress ? ['address'] : []),
+  ], `${category}:${query}`)
+  const pageKeys = new Set(pagination.items)
+  const pageTokens = matches.filter(({ currency }) => pageKeys.has(`token:${currency.address}`))
+  const pagePools = poolMatches.filter((pool) => pageKeys.has(`pool:${pool.protocol}:${pool.id}`))
   const select = (address: Address): void => {
     const asset = ASSETS.find(a => (a.address ?? zeroAddress).toLowerCase() === address.toLowerCase())
     if (onToken) onToken(address)
@@ -99,10 +108,10 @@ export function GlobalSearchDialog({
         ))}
       </div>
       <div className="global-search-results" aria-live="polite">
-        {showTokens && matches.length > 0 && (
+        {pageTokens.length > 0 && (
           <section aria-label={t('knownAssets')}>
             <h3 className="search-section-heading">{t('knownAssets')}</h3>
-            {matches.map(({ currency, source }) => (
+            {pageTokens.map(({ currency, source }) => (
               <button className="asset-option" key={currency.address} onClick={() => select(currency.address)} disabled={!onToken && !ASSETS.some(a => (a.address ?? zeroAddress).toLowerCase() === currency.address.toLowerCase())}>
                 <TokenIcon address={currency.address} symbol={currency.symbol} native={currency.native} small />
                 <span className="asset-option-label">
@@ -116,10 +125,10 @@ export function GlobalSearchDialog({
             ))}
           </section>
         )}
-        {showPools && (
+        {(pageKeys.has('seed') || pagePools.length > 0) && (
           <section aria-label={t('searchPools')}>
             <h3 className="search-section-heading">{t('searchPools')}</h3>
-            {showSeed && <button className="asset-option" onClick={onPool}>
+            {pageKeys.has('seed') && <button className="asset-option" onClick={onPool}>
               <Icon name="layers" />
               <span className="asset-option-label">
                 <strong>OKB / USD₮0 · V3 + V4</strong>
@@ -127,17 +136,17 @@ export function GlobalSearchDialog({
               </span>
               <Icon name="chevron" size={16} />
             </button>}
-            {poolMatches.map(pool => <button className="asset-option" key={`${pool.protocol}:${pool.id}`} onClick={onPool}>
+            {pagePools.map(pool => <button className="asset-option" key={`${pool.protocol}:${pool.id}`} onClick={onPool}>
               <Icon name="layers" /><span className="asset-option-label"><strong>{symbol(pool.token0)} / {symbol(pool.token1)}</strong>
                 <span>SodaDEX · {pool.protocol.toUpperCase()} · {pool.fee / 10000}% · {shortenAddress(pool.id)}</span></span><Icon name="chevron" size={16} />
             </button>)}
           </section>
         )}
-        {showReference && <button className="asset-option" onClick={onReference}><Icon name="layers" /><span className="asset-option-label"><strong>{m.officialAction}</strong><span>Uniswap · {m.readOnly}</span></span><Icon name="chevron" size={16} /></button>}
-        {showTokenAddress && address && <button className="asset-option" onClick={() => onToken?.(address as Address)}><Icon name="search" /><span className="asset-option-label"><strong>{m.details}</strong><span>{address}</span></span></button>}
+        {pageKeys.has('reference') && <button className="asset-option" onClick={onReference}><Icon name="layers" /><span className="asset-option-label"><strong>{m.officialAction}</strong><span>Uniswap · {m.readOnly}</span></span><Icon name="chevron" size={16} /></button>}
+        {pageKeys.has('token-address') && address && <button className="asset-option" onClick={() => onToken?.(address as Address)}><Icon name="search" /><span className="asset-option-label"><strong>{m.details}</strong><span>{address}</span></span></button>}
         {poolCategory && pools.isError && <p role="alert">{m.error} <Button appearance="ghost" onClick={() => void pools.refetch()}>{m.retry}</Button></p>}
         {showTokens && catalog.data?.partial && <p role="alert">{m.partial} <Button appearance="ghost" onClick={() => void catalog.refetch()}>{m.retry}</Button></p>}
-        {showAddress && address && (
+        {pageKeys.has('address') && address && (
           <section aria-label={t('publicAddress')}>
             <h3 className="search-section-heading">{t('publicAddress')}</h3>
             <a
@@ -157,6 +166,7 @@ export function GlobalSearchDialog({
             <p className="dialog-note">{t('searchAddressNote')}</p>
           </section>
         )}
+        <Pagination {...pagination} />
         {empty && (
           <div className="empty-search">
             <p>

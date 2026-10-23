@@ -1,0 +1,36 @@
+{
+  "publishedAt": "2026-10-21T09:31:11.329154+00:00",
+  "target": "sodadex-preview",
+  "url": "https://sodadex-preview.jsmsdx2025.workers.dev/#swap",
+  "sourceCommit": "91f884ce157515b4cbd871decf19cbc0e7df3175",
+  "workerVersion": "2e854d42-b915-4af1-abbc-5b0a59676de2",
+  "config": "standalone/worker/wrangler.fragments-196-test.jsonc",
+  "buildAssetsMatch": true,
+  "productionTouched": false,
+  "contractsChanged": false,
+  "chainWrites": 0,
+  "browser": {
+    "nav": [
+      "兑换",
+      "流动性池",
+      "我的"
+    ],
+    "swapTokens": [
+      "OKB",
+      "WOKB",
+      "sFAB",
+      "USD₮0",
+      "TEST-FAB",
+      "TEST-V2"
+    ],
+    "specialPairFallback": "SF"
+  },
+  "validation": {
+    "webTests": 547,
+    "workerTests": 228,
+    "typecheck": "passed",
+    "lint": "passed",
+    "build": "passed"
+  },
+  "fullEvidence": "acceptance.json"
+}

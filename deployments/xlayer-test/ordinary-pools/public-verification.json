@@ -1,0 +1,293 @@
+{
+  "at": "2026-10-21T05:57:33.545Z",
+  "chainId": 196,
+  "mode": "read-only-public-verification",
+  "sourceCommit": "741eace17566ba015e940b25b7e03cef105e134c",
+  "productionTouched": false,
+  "successfulTransactions": 25,
+  "startNonce": 168,
+  "nextNonce": 193,
+  "pendingNonce": 193,
+  "gasSpentWei": "164004981000000",
+  "grossNativeInputWei": "1999752716318",
+  "grossNativeTotalWei": "166004733716318",
+  "testFabInputRaw": "19815052472",
+  "totalCapWei": "320000000000000",
+  "budgetRemainingWei": "153995266283682",
+  "journalSha256": "30a241becde666430d6bd137f9616aef63574f48f1613a2aa9ff7fe653d5b5ce",
+  "runtimeHashesVerified": 15,
+  "results": [
+    {
+      "protocol": "v3",
+      "tokenId": "2",
+      "remainingLiquidity": "0",
+      "poolId": "0x32Df27b7a6378805Cc826Fe85cC85CeB7C52DE57",
+      "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+      "manager": "0x2BeCd78E05FB33b0588e9cF61E65afeE9DC7428f",
+      "liquidity": "0",
+      "owed0": "0",
+      "owed1": "0"
+    },
+    {
+      "protocol": "v4",
+      "tokenId": "2",
+      "remainingLiquidity": "0",
+      "poolId": "0xcdeeefb22bba7608829417a9f563a5942be924fd67e9406ded434ffd9403f685",
+      "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+      "manager": "0x1f85377930011B701dd2940c526e32FD3aDaB730",
+      "liquidity": "0"
+    }
+  ],
+  "rows": [
+    {
+      "hash": "0xbdff895e766fba1a4d18217a384c90d046023b92f0a626969282af12b26bdd05",
+      "nonce": 168,
+      "action": "v3:create-and-first-add",
+      "status": "success",
+      "blockNumber": "73791212",
+      "feeWei": "965349000000",
+      "nativeInputWei": "0",
+      "testFabInputRaw": "0"
+    },
+    {
+      "hash": "0xb3b2bcf397bf679468e3a175b523ef489ca813369f1f4f5e2b466211aad69cae",
+      "nonce": 169,
+      "action": "v3:create-and-first-add",
+      "status": "success",
+      "blockNumber": "73791238",
+      "feeWei": "108520062000000",
+      "nativeInputWei": "900000000000",
+      "testFabInputRaw": "9000000000"
+    },
+    {
+      "hash": "0xb3b96c06ecb1878712b376af76c770bce8d5c78b4710917b6bcd4a1294c86f61",
+      "nonce": 170,
+      "action": "v3:increase",
+      "status": "success",
+      "blockNumber": "73791294",
+      "feeWei": "965097000000",
+      "nativeInputWei": "0",
+      "testFabInputRaw": "0"
+    },
+    {
+      "hash": "0x4324d6f633dfe9fe5c3d0b5e131f195786bc117bb8ee965380efe56a6d933ff1",
+      "nonce": 171,
+      "action": "v3:increase",
+      "status": "success",
+      "blockNumber": "73791320",
+      "feeWei": "3687012000000",
+      "nativeInputWei": "90000000000",
+      "testFabInputRaw": "900000000"
+    },
+    {
+      "hash": "0xfcf96ad6399ded15bf988504053bc7c9b555e32d8748d523064000a53d28dc38",
+      "nonce": 172,
+      "action": "v3:okb-to-token",
+      "status": "success",
+      "blockNumber": "73791370",
+      "feeWei": "3064383000000",
+      "nativeInputWei": "10000000000",
+      "testFabInputRaw": "0"
+    },
+    {
+      "hash": "0x27e765ed8203328020e9eff03c8453d4917f6ce7b87ac499699dce5e98d66444",
+      "nonce": 173,
+      "action": "v3:token-to-okb",
+      "status": "success",
+      "blockNumber": "73791410",
+      "feeWei": "963837000000",
+      "nativeInputWei": "0",
+      "testFabInputRaw": "0"
+    },
+    {
+      "hash": "0xa9886cb5a4fc98720da40fbb41524e2b40443c477af86b1d5d1491828cecc6d2",
+      "nonce": 174,
+      "action": "v3:token-to-okb",
+      "status": "success",
+      "blockNumber": "73791436",
+      "feeWei": "999390000000",
+      "nativeInputWei": "0",
+      "testFabInputRaw": "0"
+    },
+    {
+      "hash": "0x86ed6cd587d255e918b56c5245a000863923ff76333dd4347784a1841145a583",
+      "nonce": 175,
+      "action": "v3:token-to-okb",
+      "status": "success",
+      "blockNumber": "73791468",
+      "feeWei": "3240174000000",
+      "nativeInputWei": "0",
+      "testFabInputRaw": "10000000"
+    },
+    {
+      "hash": "0x6841a6afbfd4f0b008c266187fe9cc5826b7e8def9586a794d8afe9730a1c6a5",
+      "nonce": 176,
+      "action": "v3:remove-half",
+      "status": "success",
+      "blockNumber": "73791514",
+      "feeWei": "6423186000000",
+      "nativeInputWei": "0",
+      "testFabInputRaw": "0"
+    },
+    {
+      "hash": "0xe863c9d558629b9c8a790dcc5db0318886af3eadce679ec319ae31dd6cbc36f0",
+      "nonce": 177,
+      "action": "v3:remove-all",
+      "status": "success",
+      "blockNumber": "73791562",
+      "feeWei": "5186139000000",
+      "nativeInputWei": "0",
+      "testFabInputRaw": "0"
+    },
+    {
+      "hash": "0x5ab5da1c15bdeb3beb2a33f2309cc1ede5cb69ff291c1b6eb0c2011223724b31",
+      "nonce": 178,
+      "action": "v4:create-and-first-add",
+      "status": "success",
+      "blockNumber": "73791666",
+      "feeWei": "964341000000",
+      "nativeInputWei": "0",
+      "testFabInputRaw": "0"
+    },
+    {
+      "hash": "0x33e1d72722e05a141210374ba218457b568a00b1596207916eef0267fd65c601",
+      "nonce": 179,
+      "action": "v4:create-and-first-add",
+      "status": "success",
+      "blockNumber": "73791691",
+      "feeWei": "999894000000",
+      "nativeInputWei": "0",
+      "testFabInputRaw": "0"
+    },
+    {
+      "hash": "0xc44ab203b2cfffe20a9ae7a8b711a2bf414611d97d6ff62dec5c875a233ef643",
+      "nonce": 180,
+      "action": "v4:create-and-first-add",
+      "status": "success",
+      "blockNumber": "73791725",
+      "feeWei": "8463336000000",
+      "nativeInputWei": "899775196725",
+      "testFabInputRaw": "8995502248"
+    },
+    {
+      "hash": "0xd5cc36d38a7099eff07339211726d706a778ce6d06d1aec9c8ebbdc57b666f5d",
+      "nonce": 181,
+      "action": "v4:increase",
+      "status": "success",
+      "blockNumber": "73791776",
+      "feeWei": "503181000000",
+      "nativeInputWei": "0",
+      "testFabInputRaw": "0"
+    },
+    {
+      "hash": "0xc8f3b0c4474096e85c6008213878fb8c2fb37e086044e674b1aa7e09aaf2dffa",
+      "nonce": 182,
+      "action": "v4:increase",
+      "status": "success",
+      "blockNumber": "73791803",
+      "feeWei": "964089000000",
+      "nativeInputWei": "0",
+      "testFabInputRaw": "0"
+    },
+    {
+      "hash": "0x2b04ac673fe4dcca11f168778b5b1749e985a6d771009a75d3784f947a0b9bb1",
+      "nonce": 183,
+      "action": "v4:increase",
+      "status": "success",
+      "blockNumber": "73791830",
+      "feeWei": "640542000000",
+      "nativeInputWei": "0",
+      "testFabInputRaw": "0"
+    },
+    {
+      "hash": "0xd269c0805c84770df45eb473928a05d802c2663e39f273e80fac7c45bdab199d",
+      "nonce": 184,
+      "action": "v4:increase",
+      "status": "success",
+      "blockNumber": "73792663",
+      "feeWei": "640542000000",
+      "nativeInputWei": "0",
+      "testFabInputRaw": "0"
+    },
+    {
+      "hash": "0x7173d5ccf78453a36e524dea67087b8e335bd4523276fb0eafe221074125133c",
+      "nonce": 185,
+      "action": "v4:increase",
+      "status": "success",
+      "blockNumber": "73792693",
+      "feeWei": "3386187000000",
+      "nativeInputWei": "89977519593",
+      "testFabInputRaw": "899550224"
+    },
+    {
+      "hash": "0xf39211bbb0e83ab1599bb6c0226d4135d82e0f7ce9c3695f436f282d4742a303",
+      "nonce": 186,
+      "action": "v4:okb-to-token",
+      "status": "success",
+      "blockNumber": "73792739",
+      "feeWei": "2576532000000",
+      "nativeInputWei": "10000000000",
+      "testFabInputRaw": "0"
+    },
+    {
+      "hash": "0xfebb8ed57d73d89586911a03d36e45b32f19aa9f0e031e70750a8535e017419b",
+      "nonce": 187,
+      "action": "v4:token-to-okb",
+      "status": "success",
+      "blockNumber": "73792775",
+      "feeWei": "503181000000",
+      "nativeInputWei": "0",
+      "testFabInputRaw": "0"
+    },
+    {
+      "hash": "0x207bea72f2ce7005ecea2e7dce1cf17e7f9ebb922467da53a1667f9c9a8b9813",
+      "nonce": 188,
+      "action": "v4:token-to-okb",
+      "status": "success",
+      "blockNumber": "73792798",
+      "feeWei": "963837000000",
+      "nativeInputWei": "0",
+      "testFabInputRaw": "0"
+    },
+    {
+      "hash": "0x2b461088b914afce0ee20009b8402daaeed580121bae53a2715321e47f79253b",
+      "nonce": 189,
+      "action": "v4:token-to-okb",
+      "status": "success",
+      "blockNumber": "73792823",
+      "feeWei": "640290000000",
+      "nativeInputWei": "0",
+      "testFabInputRaw": "0"
+    },
+    {
+      "hash": "0xbfc8ead15c2dd717653d4d322c4ae9a7fb067bbd732546fff67ee081de7d0ec4",
+      "nonce": 190,
+      "action": "v4:token-to-okb",
+      "status": "success",
+      "blockNumber": "73792851",
+      "feeWei": "2717022000000",
+      "nativeInputWei": "0",
+      "testFabInputRaw": "10000000"
+    },
+    {
+      "hash": "0x686591dbc8e505a39054a890c59e1f59c91ca42d9871338655701287cc330cca",
+      "nonce": 191,
+      "action": "v4:remove-half",
+      "status": "success",
+      "blockNumber": "73792890",
+      "feeWei": "3614415000000",
+      "nativeInputWei": "0",
+      "testFabInputRaw": "0"
+    },
+    {
+      "hash": "0x6b73d2eb6d9e5aea2c811f9bcc8f78cdaa2a2d24b52a037c0d5f43db04c86bed",
+      "nonce": 192,
+      "action": "v4:remove-all",
+      "status": "success",
+      "blockNumber": "73792930",
+      "feeWei": "2412963000000",
+      "nativeInputWei": "0",
+      "testFabInputRaw": "0"
+    }
+  ]
+}

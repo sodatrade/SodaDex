@@ -1,0 +1,17 @@
+{
+  "approved": true,
+  "approvedAt": "2026-10-21T08:17:10.833817+00:00",
+  "userReply": "\u540c\u610f\uff0c\u6309 0.00039 OKB \u65b0\u589e\u4e0a\u9650\u6267\u884c",
+  "proposalSha256": "40a1a2a5171e9f054f2de3621149b1b143c811cb1d14e580ba7eee53815d7cb0",
+  "chainId": 196,
+  "totalCapWei": "390000000000000",
+  "gasCapWei": "389966990000000",
+  "nonGasCapWei": "33010000000",
+  "maxGasPriceWei": "30000000",
+  "maxTransactions": 14,
+  "maxSharesRaw": "110010000000000000000",
+  "maxFabRaw": "10000",
+  "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+  "treasury": "0x6EFa1Fad18900B929Fe6782fd3eaBeac2563416A",
+  "productionTouched": false
+}

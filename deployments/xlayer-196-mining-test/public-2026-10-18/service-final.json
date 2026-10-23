@@ -1,0 +1,130 @@
+{
+  "observedAt": "2026-10-18T10:50:02.420232+00:00",
+  "url": "https://sodadex-preview.jsmsdx2025.workers.dev/mining/api/mining/status",
+  "response": {
+    "schemaVersion": 1,
+    "profileId": "196-mining-test",
+    "chainId": 196,
+    "deploymentVersion": "test196-73544414",
+    "serviceBuild": "online-mining-20261018-v11-acceptance-complete",
+    "admissionEnabled": false,
+    "executionEnabled": false,
+    "signer": "0x4736834CCC952Aec7a0dCbC74F3C2C3e3BAb1498",
+    "keeper": "0xcb55ea57074d3A383847F94dD287BAE4e4475e28",
+    "budget": {
+      "capWei": "80000000000000",
+      "spentWei": "76483932000000",
+      "reservedWei": "0"
+    },
+    "farm": {
+      "capacity": 4,
+      "minerCount": 1,
+      "procurementBudgetFab": "5593845310"
+    },
+    "jobs": [
+      {
+        "id": "service",
+        "kind": "sync",
+        "status": "blocked",
+        "reason": "gas_budget_exhausted",
+        "updatedAt": 1792320450969
+      },
+      {
+        "id": "farm:purchase",
+        "kind": "purchase",
+        "status": "waiting",
+        "reason": "no_approved_inventory",
+        "updatedAt": 1792320434000
+      },
+      {
+        "id": "project:0xc9e6cfefb3433b1b46d3fa61e096abb519ffe7e0",
+        "kind": "sync",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0xc9e6CFEFB3433B1b46d3FA61E096ABB519fFE7E0",
+        "hash": "0x7a3ef793803ab9e6aad01bd1b5368bbe22cf2dda6ee0192a6fe745f1af33d7e9",
+        "updatedAt": 1792319616000
+      },
+      {
+        "id": "execution:0x7a3ef793803ab9e6aad01bd1b5368bbe22cf2dda6ee0192a6fe745f1af33d7e9",
+        "kind": "sync",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0xc9e6CFEFB3433B1b46d3FA61E096ABB519fFE7E0",
+        "hash": "0x7a3ef793803ab9e6aad01bd1b5368bbe22cf2dda6ee0192a6fe745f1af33d7e9",
+        "updatedAt": 1792319616000
+      },
+      {
+        "id": "execution:0xb68a043d2ec6bbea7ee335db0882bf15cfa3dd99f2f42113777e27a093fb0ea3",
+        "kind": "conversion",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0xc9e6CFEFB3433B1b46d3FA61E096ABB519fFE7E0",
+        "hash": "0xb68a043d2ec6bbea7ee335db0882bf15cfa3dd99f2f42113777e27a093fb0ea3",
+        "updatedAt": 1792319581000
+      },
+      {
+        "id": "execution:0xe274c1b423db0d8e520264536f7901290e74d2af09d95fd580831dbefacec7e0",
+        "kind": "fund",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0xc9e6CFEFB3433B1b46d3FA61E096ABB519fFE7E0",
+        "hash": "0xe274c1b423db0d8e520264536f7901290e74d2af09d95fd580831dbefacec7e0",
+        "updatedAt": 1792318712000
+      },
+      {
+        "id": "execution:0x655b80fc9385026a017c9fab5f1a587fd4d907ac597579f0e84f861afb4fb3b4",
+        "kind": "sync",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0xc9e6CFEFB3433B1b46d3FA61E096ABB519fFE7E0",
+        "hash": "0x655b80fc9385026a017c9fab5f1a587fd4d907ac597579f0e84f861afb4fb3b4",
+        "updatedAt": 1792318664000
+      },
+      {
+        "id": "execution:0x57495be670241f4d8604862fe610950b7f1acec2ef9c79c794f500970042e96e",
+        "kind": "fund",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0xc9e6CFEFB3433B1b46d3FA61E096ABB519fFE7E0",
+        "hash": "0x57495be670241f4d8604862fe610950b7f1acec2ef9c79c794f500970042e96e",
+        "updatedAt": 1792318194000
+      },
+      {
+        "id": "execution:0x9e5e94fe30617018e627929c4dbead4bec1ab17f9d4e7196051b6f4318ed4608",
+        "kind": "sync",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0xc9e6CFEFB3433B1b46d3FA61E096ABB519fFE7E0",
+        "hash": "0x9e5e94fe30617018e627929c4dbead4bec1ab17f9d4e7196051b6f4318ed4608",
+        "updatedAt": 1792318142000
+      },
+      {
+        "id": "execution:0x63ffab7d2f468f48b961b1eb37e7ea741f244af1d175e2efa9c3996b3dfe6910",
+        "kind": "purchase",
+        "status": "confirmed",
+        "reason": "settled",
+        "hash": "0x63ffab7d2f468f48b961b1eb37e7ea741f244af1d175e2efa9c3996b3dfe6910",
+        "updatedAt": 1792318033000
+      },
+      {
+        "id": "execution:0x9e1bf19739cfb3b11913452cb0ecce83c171d9deee66547d7fb8a7bf2dea8118",
+        "kind": "fund",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0xc9e6CFEFB3433B1b46d3FA61E096ABB519fFE7E0",
+        "hash": "0x9e1bf19739cfb3b11913452cb0ecce83c171d9deee66547d7fb8a7bf2dea8118",
+        "updatedAt": 1792318008000
+      },
+      {
+        "id": "execution:0xe1fb6b5f00c37b50eda6a79e68253f33b450536deea4c93f3f5a3627e71e461c",
+        "kind": "sync",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0xc9e6CFEFB3433B1b46d3FA61E096ABB519fFE7E0",
+        "hash": "0xe1fb6b5f00c37b50eda6a79e68253f33b450536deea4c93f3f5a3627e71e461c",
+        "updatedAt": 1792317973000
+      }
+    ]
+  }
+}

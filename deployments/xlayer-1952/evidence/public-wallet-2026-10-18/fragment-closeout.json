@@ -1,0 +1,332 @@
+{
+  "startedAt": "2026-10-18T02:05:24.323Z",
+  "readOnly": true,
+  "chainId": 1952,
+  "wallet": "0xe57f88c05810a9ad2b27f216665260c2d9f2b2da",
+  "publicActionsTriggered": 0,
+  "remove": {
+    "receipt": {
+      "hash": "0x7c734dd1f0c1e14e83f7475063f2647e91326e9c8cbdfd19cba97dcce4029fd2",
+      "status": "0x1",
+      "canonical": true,
+      "blockNumber": "0x29ccab6",
+      "blockHash": "0x87e158ed73c71d9758c7a919161e61bc6d600d88754cab3bf80255570856f426",
+      "from": "0xe57f88c05810a9ad2b27f216665260c2d9f2b2da",
+      "to": "0x6f1666231685cf8fc45b355a9eba8afd9ba6d2fa",
+      "nonce": "142",
+      "chainId": "1952",
+      "selector": "0xf88bf15a",
+      "gasUsed": "1221243",
+      "effectiveGasPriceWei": "20000002",
+      "feeWei": "24424862442486"
+    },
+    "addReceipt": {
+      "hash": "0x7f9520d51f67129fc96e43331a0d5d1ff589428bb05bc2129dbb4c6ab58b8880",
+      "status": "0x1",
+      "canonical": true,
+      "blockNumber": "0x29cc97e",
+      "blockHash": "0x8e635cc876b4df4798eebe01e657f9007b3468e092f9abf31c01892897f5ca14",
+      "from": "0xe57f88c05810a9ad2b27f216665260c2d9f2b2da",
+      "to": "0x6f1666231685cf8fc45b355a9eba8afd9ba6d2fa",
+      "nonce": "136",
+      "chainId": "1952",
+      "selector": "0xa360501c",
+      "gasUsed": "1282313",
+      "effectiveGasPriceWei": "20000002",
+      "feeWei": "25646262564626"
+    },
+    "added": {
+      "account": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+      "shares": "1000000000000000000",
+      "fab": "10066593",
+      "liquidity": "3172770878085"
+    },
+    "removed": {
+      "account": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+      "shares": "1000333754134765074",
+      "fab": "10063245",
+      "liquidity": "3172770878085"
+    },
+    "formatted": {
+      "lpBurned": "0.000003172770878085",
+      "sharesReturned": "1.000333754134765074",
+      "fabReturned": "0.10063245"
+    },
+    "snapshots": {
+      "before": {
+        "block": "0x29ccab5",
+        "lpWallet": "3172770878085",
+        "lpSupply": "9490005751383222",
+        "walletShares": "6007917075362602064224",
+        "walletFab": "168352485042",
+        "reserveShares": "2992076467170398677875",
+        "reserveFab": "30099953765"
+      },
+      "after": {
+        "block": "0x29ccab6",
+        "lpWallet": "0",
+        "lpSupply": "9486832980505137",
+        "walletShares": "6008917409116736829298",
+        "walletFab": "168362548287",
+        "reserveShares": "2991076133416263912801",
+        "reserveFab": "30089890520"
+      }
+    },
+    "events": [
+      {
+        "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+        "name": "Transfer",
+        "args": {
+          "from": "0x0000000000000000000000000000000000000000",
+          "to": "0xeD377733590639E0a4ec7cd14dF7509c7B2Ca87D",
+          "value": "235124991"
+        },
+        "logIndex": "0x0"
+      },
+      {
+        "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+        "name": "Transfer",
+        "args": {
+          "from": "0x0000000000000000000000000000000000000000",
+          "to": "0xeD377733590639E0a4ec7cd14dF7509c7B2Ca87D",
+          "value": "235124991"
+        },
+        "logIndex": "0x3"
+      },
+      {
+        "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+        "name": "Transfer",
+        "args": {
+          "from": "0xeD377733590639E0a4ec7cd14dF7509c7B2Ca87D",
+          "to": "0x6F1666231685CF8fC45B355a9EBa8AfD9ba6D2fa",
+          "value": "117251992"
+        },
+        "logIndex": "0x8"
+      },
+      {
+        "address": "0x6f1666231685cf8fc45b355a9eba8afd9ba6d2fa",
+        "name": "Transfer",
+        "args": {
+          "from": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+          "to": "0x0000000000000000000000000000000000000000",
+          "value": "3172770878085"
+        },
+        "logIndex": "0xe"
+      },
+      {
+        "address": "0xed377733590639e0a4ec7cd14df7509c7b2ca87d",
+        "name": "Transfer",
+        "args": {
+          "from": "0x6F1666231685CF8fC45B355a9EBa8AfD9ba6D2fa",
+          "to": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+          "value": "1000333754134765074"
+        },
+        "logIndex": "0x12"
+      },
+      {
+        "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+        "name": "Transfer",
+        "args": {
+          "from": "0x6F1666231685CF8fC45B355a9EBa8AfD9ba6D2fa",
+          "to": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+          "value": "10063245"
+        },
+        "logIndex": "0x13"
+      },
+      {
+        "address": "0x6f1666231685cf8fc45b355a9eba8afd9ba6d2fa",
+        "name": "LiquidityRemoved",
+        "args": {
+          "account": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+          "shares": "1000333754134765074",
+          "fab": "10063245",
+          "liquidity": "3172770878085"
+        },
+        "logIndex": "0x14"
+      }
+    ],
+    "checks": {
+      "canonical": true,
+      "success": true,
+      "walletAndPool": true,
+      "nonce142": true,
+      "lpBalanceAfterZero": true,
+      "entirePriorLpBurned": true,
+      "lpMintedAndBurnedMatch": true,
+      "lpSupplyChangeMatches": true,
+      "shareTransferMatches": true,
+      "fabTransferMatches": true,
+      "walletShareDeltaMatches": true,
+      "walletFabDeltaMatches": true,
+      "reserveShareDeltaMatches": true,
+      "reserveFabDeltaMatches": true
+    },
+    "allChecksPassed": true
+  },
+  "redeem": {
+    "receipt": {
+      "hash": "0x37e8e2ec450a08465b32918360055d92c1319c492d633b064b338039f601dc8c",
+      "status": "0x1",
+      "canonical": true,
+      "blockNumber": "0x29ccb93",
+      "blockHash": "0xdd75684a65a972037dfa9958b13db1c47470a4815bb8ad8e6cb7a20a77706c46",
+      "from": "0xe57f88c05810a9ad2b27f216665260c2d9f2b2da",
+      "to": "0xed377733590639e0a4ec7cd14df7509c7b2ca87d",
+      "nonce": "143",
+      "chainId": "1952",
+      "selector": "0x7cbc2373",
+      "gasUsed": "1064436",
+      "effectiveGasPriceWei": "20000002",
+      "feeWei": "21288722128872"
+    },
+    "nft5Key": "0x66f2e5a963f5a28c56631a79d94647777e58538ed7d7bd612d76ff99d5637d86",
+    "depositProof": "/tmp/sodadex-nft5-deposit-fab-source-readonly.json",
+    "depositHash": "0x76edb54ddda081006014c65dd80b23caf602114f6fcdc8cf3d5a0469b2ef1639",
+    "depositSharesRaw": "6000000000000000000000",
+    "redeemedSharesRaw": "6000000000000000000000",
+    "redeemedShares": "6000",
+    "event": {
+      "account": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+      "id": "5",
+      "shares": "6000000000000000000000"
+    },
+    "snapshots": {
+      "before": {
+        "block": "0x29ccb92",
+        "owner5": "0xeD377733590639E0a4ec7cd14dF7509c7B2Ca87D",
+        "contains5": true,
+        "minerCount": "2",
+        "totalEligibleWeight": "12",
+        "eligibleWeight5": "6",
+        "totalSupply": "12000000000000000000000",
+        "walletShares": "6008917409116736829298",
+        "serviceFeeBps": "0",
+        "minerIds": [
+          "4",
+          "5"
+        ],
+        "miner5": {
+          "circuits": "0x5ae194d008292EF9d02933A599070c9661bE040C",
+          "circuitId": "5",
+          "bstar": "1",
+          "mult": 6,
+          "status": 1,
+          "verifWeight": "600",
+          "unverWeight": "0",
+          "bonus": "0",
+          "optimal": false,
+          "boostBps": 10000
+        }
+      },
+      "after": {
+        "block": "0x29ccb93",
+        "owner5": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+        "contains5": false,
+        "minerCount": "1",
+        "totalEligibleWeight": "6",
+        "eligibleWeight5": "6",
+        "totalSupply": "6000000000000000000000",
+        "walletShares": "8917409116736829298",
+        "serviceFeeBps": "0",
+        "minerIds": [
+          "4"
+        ],
+        "miner5": {
+          "circuits": "0x5ae194d008292EF9d02933A599070c9661bE040C",
+          "circuitId": "5",
+          "bstar": "1",
+          "mult": 6,
+          "status": 1,
+          "verifWeight": "600",
+          "unverWeight": "0",
+          "bonus": "0",
+          "optimal": false,
+          "boostBps": 10000
+        }
+      }
+    },
+    "events": [
+      {
+        "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+        "name": "Transfer",
+        "args": {
+          "from": "0x0000000000000000000000000000000000000000",
+          "to": "0xeD377733590639E0a4ec7cd14dF7509c7B2Ca87D",
+          "value": "227906241"
+        },
+        "logIndex": "0x0"
+      },
+      {
+        "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+        "name": "Transfer",
+        "args": {
+          "from": "0x0000000000000000000000000000000000000000",
+          "to": "0xeD377733590639E0a4ec7cd14dF7509c7B2Ca87D",
+          "value": "227906241"
+        },
+        "logIndex": "0x3"
+      },
+      {
+        "address": "0xed377733590639e0a4ec7cd14df7509c7b2ca87d",
+        "name": "Transfer",
+        "args": {
+          "from": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+          "to": "0x0000000000000000000000000000000000000000",
+          "value": "6000000000000000000000"
+        },
+        "logIndex": "0xb"
+      },
+      {
+        "address": "0x5ae194d008292ef9d02933a599070c9661be040c",
+        "name": "Transfer",
+        "args": {
+          "from": "0xeD377733590639E0a4ec7cd14dF7509c7B2Ca87D",
+          "to": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+          "tokenId": "5"
+        },
+        "logIndex": "0xc"
+      },
+      {
+        "address": "0xed377733590639e0a4ec7cd14df7509c7b2ca87d",
+        "name": "MinerReleased",
+        "args": {
+          "id": "5"
+        },
+        "logIndex": "0xd"
+      },
+      {
+        "address": "0xed377733590639e0a4ec7cd14df7509c7b2ca87d",
+        "name": "Redeemed",
+        "args": {
+          "account": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+          "id": "5",
+          "shares": "6000000000000000000000"
+        },
+        "logIndex": "0xe"
+      }
+    ],
+    "checks": {
+      "canonical": true,
+      "success": true,
+      "nonce143": true,
+      "sameNftCollectionAndId": true,
+      "ownerBeforeVault": true,
+      "ownerAfterWallet": true,
+      "nftTransferMatches": true,
+      "removedFromBacking": true,
+      "minerCountReducedOne": true,
+      "baseWeightUnchanged": true,
+      "backingWeightReducedByMiner5": true,
+      "sharesBurnMatchesEvent": true,
+      "walletSharesReducedByBurn": true,
+      "totalSupplyReducedByBurn": true,
+      "depositMintAndRedeemBurnMatch": true,
+      "sharesPerBackingWeightPreserved": true,
+      "zeroServiceFee": true
+    },
+    "allChecksPassed": true
+  },
+  "allChecksPassed": true,
+  "nativeGasFeeWei": "45713584571358",
+  "completedAt": "2026-10-18T02:05:34.066Z"
+}

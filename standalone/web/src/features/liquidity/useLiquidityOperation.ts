@@ -1,13 +1,15 @@
+import type { AnyPool } from '../../liquidity/v2Types'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
 import { rpc } from '../../lib/rpc'
 import type { WalletController } from '../../lib/useWallet'
 import type { WalletIdentity } from '../../lib/wallet'
-import { executeLiquidity, liquidityError, prepareLiquidity, recheckLiquidityReceipt } from '../../liquidity'
-import type { LiquidityErrorCode, LiquidityOperation, LiquidityPreview, LiquidityProgress } from '../../liquidity/types'
+import { executeLiquidity, liquidityError, prepareLiquidity, recheckLiquidityReceipt, refreshPool } from '../../liquidity'
+import type { LiquidityErrorCode, LiquidityOperation, LiquidityPreview, LiquidityProgress, LiquidityPool } from '../../liquidity/types'
 import { LiquidityError } from '../../liquidity/types'
 import { readRecord, writeRecord, type LiquidityRecord } from './transactionRecord'
 import { recordTransaction } from '../history/journal'
+import { confirmedPoolsKey, mergeConfirmedPools } from './confirmedPools'
 
 export interface LiquidityOperationController {
   review?: { preview: LiquidityPreview; identity: WalletIdentity }
@@ -57,6 +59,20 @@ export function useLiquidityOperation(wallet: WalletController): LiquidityOperat
     void queryClient.invalidateQueries({ queryKey: ['liquidity'] })
     void queryClient.invalidateQueries({ queryKey: ['balances'] })
   }
+  const rememberVerifiedPool = async (candidate: LiquidityPool | undefined): Promise<void> => {
+    if (!candidate) return
+    try {
+      const pool = await refreshPool(candidate, rpc)
+      if (!pool.initialized) return
+      // Discard directory reads started before this confirmed operation. They
+      // must not overwrite the newly observed liquidity with pre-transaction data.
+      await queryClient.cancelQueries({ queryKey: ['liquidity', 'pools'], exact: true })
+      queryClient.setQueryData<AnyPool[]>(confirmedPoolsKey, previous => mergeConfirmedPools([pool], previous ?? []))
+      queryClient.setQueryData<AnyPool[]>(['liquidity', 'pools'], previous => mergeConfirmedPools([pool], previous ?? []))
+    } catch {
+      // A read outage must not relabel an already confirmed transaction as failed.
+    }
+  }
   const preparation = useMutation({
     retry: false,
     mutationFn: async (operation: LiquidityOperation) => {
@@ -100,9 +116,10 @@ export function useLiquidityOperation(wallet: WalletController): LiquidityOperat
         },
       })
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       const current = recordRef.current
       if (current) save({ ...current, status: 'success' })
+      await rememberVerifiedPool(review?.preview.pool)
       refresh()
     },
     onError: (cause) => {
@@ -125,6 +142,7 @@ export function useLiquidityOperation(wallet: WalletController): LiquidityOperat
       else {
         save({ ...current, status: 'success' })
         setReceiptMessage('receiptConfirmed')
+        if (current.kind === 'liquidity') await rememberVerifiedPool(review?.preview.pool)
         setProgress(
           current.kind === 'liquidity'
             ? { stage: 'success', hash: current.hash, to: current.to, kind: current.kind }

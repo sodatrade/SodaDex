@@ -1,0 +1,21 @@
+{
+  "verifiedAt": "2026-10-21T08:09:03.949525+00:00",
+  "method": "Independent read-only RPC reconciliation",
+  "transactions": 27,
+  "nonceRange": [
+    193,
+    219
+  ],
+  "canonicalReceipts": true,
+  "planTargetsValuesCalldataGasMatched": true,
+  "onlyCalldataException": "Previously approved router deadlines",
+  "l1FeesWei": "0",
+  "operatorFeeParametersAtAllReceiptBlocks": "0 / 0",
+  "totalGrossCostWei": "110384378000000",
+  "pending": null,
+  "latestAndPendingNonce": 220,
+  "newPairOwnerLp": "0",
+  "oldPairOwnerLpRaw": "31622775601",
+  "recoveredOriginalHash": "0x2ba4bd0775e597ab9bf9887b890fedbd64331cd3e1f65bae9c25aeacce1a46f0",
+  "recoveryRecordedOnce": true
+}

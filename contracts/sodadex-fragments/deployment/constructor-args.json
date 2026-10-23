@@ -1,0 +1,24 @@
+{
+  "SodaPolicy": [
+    "0x6EFa1Fad18900B929Fe6782fd3eaBeac2563416A",
+    "0x6EFa1Fad18900B929Fe6782fd3eaBeac2563416A",
+    "0x842b7bf61f2cb4be8aacac6adece3244c2a6f6ab"
+  ],
+  "SodaIncentiveVault": [
+    "0x842b7bf61f2cb4be8aacac6adece3244c2a6f6ab",
+    "0x3d1b48686f97fecc8f0c964e165c04ffc5f8d52b",
+    "0xB8C4Ea1483dbeFAaD2F35B480D950316819AED57",
+    "0xed377733590639e0a4ec7cd14df7509c7b2ca87d",
+    32,
+    "0x57d4Fb4F98fe8beD34dA997bE11dE6Dd25546085",
+    "0x6DB7Bb086C285FBE3eB6005C30eaED8c77db4506"
+  ],
+  "SodaIgnixPool": [
+    "0x77D94C4c34F1E67621aD94Aa20a697E3544aB726",
+    "0x6EFa1Fad18900B929Fe6782fd3eaBeac2563416A"
+  ],
+  "SodaLocker": [
+    "0x6DB7Bb086C285FBE3eB6005C30eaED8c77db4506",
+    "0x6EFa1Fad18900B929Fe6782fd3eaBeac2563416A"
+  ]
+}

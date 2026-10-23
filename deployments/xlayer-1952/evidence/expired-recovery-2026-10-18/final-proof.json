@@ -1,0 +1,755 @@
+{
+  "startedAt": "2026-10-18T02:42:09.085Z",
+  "readOnly": true,
+  "chainId": 1952,
+  "publicWrites": 0,
+  "publicActionPosts": 0,
+  "signatures": 0,
+  "privateKeysRead": false,
+  "repositoryModified": false,
+  "backendStatusQueriedByThisScript": false,
+  "originalHash": "0x0fb7c2a1a0a532e8531744e408a31422b2e0c43a93ed8847e7eec3a46707c3a5",
+  "manifestPath": "/tmp/sodadex-expired-recovery-final-manifest.json",
+  "statusSourceFile": "/tmp/sodadex-expired-recovery-final-status-captured.json",
+  "sourceRules": [
+    "standalone/mining-service/src/expired-recovery.ts",
+    "standalone/mining-service/src/keeper.ts",
+    "standalone/mining-service/src/planner.ts",
+    "/Users/LevyHoo/XTruthWorkspace/contract/src/mining/MiningProjectVault.sol",
+    "/Users/LevyHoo/XTruthWorkspace/contract/src/mining/MiningRevenueVault.sol",
+    "/Users/LevyHoo/XTruthWorkspace/contract/src/mining/MiningTaxMath.sol"
+  ],
+  "status": {
+    "sourceCapturedAt": null,
+    "serviceBuild": "online-1952-20261018-v6-recovery",
+    "keeper": "0x553D8C2e637fe67C5c7AdE3810E8Bc02799D41D4",
+    "budget": {
+      "capWei": "456372669318633",
+      "spentWei": "440714882004243",
+      "reservedWei": "0"
+    },
+    "farm": {
+      "capacity": 4,
+      "minerCount": 4,
+      "procurementBudgetFab": "15667787391"
+    },
+    "relevantJobs": [
+      {
+        "id": "project:0x2ae439a89b7d0332764507e4e021bfec348becde",
+        "kind": "fund",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0x2AE439a89b7d0332764507E4e021bfEc348beCDE",
+        "hash": "0xb7cbf30602a1fbf8019d0e82b3a8a029a76d89369ec7774d9df72f2d1c373670",
+        "updatedAt": 1792291291000
+      },
+      {
+        "id": "execution:0xb7cbf30602a1fbf8019d0e82b3a8a029a76d89369ec7774d9df72f2d1c373670",
+        "kind": "fund",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0x2AE439a89b7d0332764507E4e021bfEc348beCDE",
+        "hash": "0xb7cbf30602a1fbf8019d0e82b3a8a029a76d89369ec7774d9df72f2d1c373670",
+        "updatedAt": 1792291291000
+      },
+      {
+        "id": "execution:0x5a73b28b52f5f2e9596de8cd4a1cf4d9d3e27fc7d734c7bfdbed47892f24c4ad",
+        "kind": "sync",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0x2AE439a89b7d0332764507E4e021bfEc348beCDE",
+        "hash": "0x5a73b28b52f5f2e9596de8cd4a1cf4d9d3e27fc7d734c7bfdbed47892f24c4ad",
+        "updatedAt": 1792291214000
+      },
+      {
+        "id": "execution:0x78eb3877bea647937867ebd077f482f1487e8c3f68db93eac289bd54fd8b2d34",
+        "kind": "conversion",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0x2AE439a89b7d0332764507E4e021bfEc348beCDE",
+        "hash": "0x78eb3877bea647937867ebd077f482f1487e8c3f68db93eac289bd54fd8b2d34",
+        "updatedAt": 1792291068000
+      },
+      {
+        "id": "execution:0x0fb7c2a1a0a532e8531744e408a31422b2e0c43a93ed8847e7eec3a46707c3a5",
+        "kind": "conversion",
+        "status": "failed",
+        "reason": "authorization_cancelled",
+        "token": "0x2AE439a89b7d0332764507E4e021bfEc348beCDE",
+        "hash": "0x0fb7c2a1a0a532e8531744e408a31422b2e0c43a93ed8847e7eec3a46707c3a5",
+        "updatedAt": 1792290981000
+      },
+      {
+        "id": "execution:0x49052452488fb9f742e09b7760c2cc0786aa48aab751e3422bd86a33c152a188",
+        "kind": "fund",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0x2AE439a89b7d0332764507E4e021bfEc348beCDE",
+        "hash": "0x49052452488fb9f742e09b7760c2cc0786aa48aab751e3422bd86a33c152a188",
+        "updatedAt": 1792288431000
+      },
+      {
+        "id": "execution:0xc5ed18c2648dcaa94ec382cfcd05dd1094bcfb9d409fe14217eab8a62df8dddf",
+        "kind": "sync",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0x2AE439a89b7d0332764507E4e021bfEc348beCDE",
+        "hash": "0xc5ed18c2648dcaa94ec382cfcd05dd1094bcfb9d409fe14217eab8a62df8dddf",
+        "updatedAt": 1792287709000
+      },
+      {
+        "id": "execution:0x97d4b98ef6bbd924f0d1efb6f3f5a38093a1b7bc0c4bc53eea527ff0ce422e6e",
+        "kind": "sync",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0x2AE439a89b7d0332764507E4e021bfEc348beCDE",
+        "hash": "0x97d4b98ef6bbd924f0d1efb6f3f5a38093a1b7bc0c4bc53eea527ff0ce422e6e",
+        "updatedAt": 1792287593000
+      },
+      {
+        "id": "execution:0x2a94578ee584bec41cdd58036c22ad1eebc314a2d9d646cbebc9778416f366d0",
+        "kind": "conversion",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0x2AE439a89b7d0332764507E4e021bfEc348beCDE",
+        "hash": "0x2a94578ee584bec41cdd58036c22ad1eebc314a2d9d646cbebc9778416f366d0",
+        "updatedAt": 1792287515000
+      },
+      {
+        "id": "execution:0xbeab262c09f3ab9faf6a5b3ae45119ef654b79ae4ed3151f19eddb5f8230794a",
+        "kind": "fund",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0x2AE439a89b7d0332764507E4e021bfEc348beCDE",
+        "hash": "0xbeab262c09f3ab9faf6a5b3ae45119ef654b79ae4ed3151f19eddb5f8230794a",
+        "updatedAt": 1792287246000
+      },
+      {
+        "id": "execution:0xab0565f1bcd89471cb65709ae3b3a289413a3508219c1d57653b2dd29cb4a896",
+        "kind": "sync",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0x2AE439a89b7d0332764507E4e021bfEc348beCDE",
+        "hash": "0xab0565f1bcd89471cb65709ae3b3a289413a3508219c1d57653b2dd29cb4a896",
+        "updatedAt": 1792287164000
+      },
+      {
+        "id": "execution:0x91a2c9d84005f8b4d9508be23d18f5f7333677e8092978b8f0b6289a02fb164a",
+        "kind": "fund",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0x2AE439a89b7d0332764507E4e021bfEc348beCDE",
+        "hash": "0x91a2c9d84005f8b4d9508be23d18f5f7333677e8092978b8f0b6289a02fb164a",
+        "updatedAt": 1792287085000
+      },
+      {
+        "id": "execution:0x6490b52035504bcba8d300ade76e878bcd27554301b5d69a58b7608ba241820f",
+        "kind": "sync",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0x2AE439a89b7d0332764507E4e021bfEc348beCDE",
+        "hash": "0x6490b52035504bcba8d300ade76e878bcd27554301b5d69a58b7608ba241820f",
+        "updatedAt": 1792287006000
+      },
+      {
+        "id": "execution:0x601677bdb4457f7f52757e161c6d86cdc5cf9e5d261377d76ed3bfb93845c165",
+        "kind": "fund",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0x2AE439a89b7d0332764507E4e021bfEc348beCDE",
+        "hash": "0x601677bdb4457f7f52757e161c6d86cdc5cf9e5d261377d76ed3bfb93845c165",
+        "updatedAt": 1792286927000
+      },
+      {
+        "id": "execution:0x5cfc57c1e0e61520e9f04e45dc33175e181e8c3d2edc894ec8082eb11dfdd319",
+        "kind": "sync",
+        "status": "confirmed",
+        "reason": "settled",
+        "token": "0x2AE439a89b7d0332764507E4e021bfEc348beCDE",
+        "hash": "0x5cfc57c1e0e61520e9f04e45dc33175e181e8c3d2edc894ec8082eb11dfdd319",
+        "updatedAt": 1792286852000
+      }
+    ]
+  },
+  "authorizationChecks": {
+    "frozenApproval": true,
+    "exactApprovedOldHash": true,
+    "correctApprovedKeeper": true,
+    "fixedOldBaseline": true,
+    "fixedBeforeSpent": true,
+    "correctV6Runtime": true,
+    "approvedCap": true,
+    "capturedStatusKeeper": true,
+    "totalPhaseUnchanged": true
+  },
+  "beforeChainCanonical": true,
+  "oldOriginal": {
+    "hash": "0x0fb7c2a1a0a532e8531744e408a31422b2e0c43a93ed8847e7eec3a46707c3a5",
+    "canonicalReceipt": null,
+    "transactionKnown": false
+  },
+  "cancellation": {
+    "role": "cancel",
+    "hash": "0x0e844ba7e59279d369462f5234aad6850df261e9d49e5a3743be984a3d6aaf9f",
+    "canonical": true,
+    "status": "0x1",
+    "blockNumber": "0x29cd345",
+    "blockHash": "0x3420188a8786665f1480b9cc7d2f957c2e115755398246183e3cf93218a850ae",
+    "blockTimestamp": "1792290970",
+    "from": "0x553d8c2e637fe67c5c7ade3810e8bc02799d41d4",
+    "to": "0x553d8c2e637fe67c5c7ade3810e8bc02799d41d4",
+    "chainId": "1952",
+    "nonce": "23",
+    "valueWei": "0",
+    "gasLimit": "25200",
+    "gasUsed": "21000",
+    "gasPriceWei": "30000000",
+    "effectiveGasPriceWei": "30000000",
+    "feeWei": "630000000000",
+    "additionalFeeWei": "0",
+    "selector": "0x",
+    "checks": {
+      "canonical": true,
+      "success": true,
+      "correctChain": true,
+      "correctKeeper": true,
+      "zeroValue": true,
+      "perTransactionGasCap": true,
+      "perTransactionPriceCap": true,
+      "keeperSelfTransfer": true,
+      "emptyCalldata": true,
+      "originalNonce23": true,
+      "exactApprovedGasPrice": true,
+      "emptyKeeperCode": true,
+      "oldHashNotMined": true
+    }
+  },
+  "business": [
+    {
+      "role": "conversion",
+      "hash": "0x78eb3877bea647937867ebd077f482f1487e8c3f68db93eac289bd54fd8b2d34",
+      "canonical": true,
+      "status": "0x1",
+      "blockNumber": "0x29cd3a1",
+      "blockHash": "0xf86636f33a48d98e5f2958753e38b8a691438bcf7002be7927f3ebfc72385e12",
+      "blockTimestamp": "1792291062",
+      "from": "0x553d8c2e637fe67c5c7ade3810e8bc02799d41d4",
+      "to": "0xba7a7be2f42accc067ef1c441d7a46f3b83af690",
+      "chainId": "1952",
+      "nonce": "24",
+      "valueWei": "0",
+      "gasLimit": "287914",
+      "gasUsed": "200564",
+      "gasPriceWei": "20000001",
+      "effectiveGasPriceWei": "20000001",
+      "feeWei": "4011280200564",
+      "additionalFeeWei": "0",
+      "selector": "0x0166fe30",
+      "checks": {
+        "canonical": true,
+        "success": true,
+        "correctChain": true,
+        "correctKeeper": true,
+        "zeroValue": true,
+        "perTransactionGasCap": true,
+        "perTransactionPriceCap": true,
+        "correctVault": true,
+        "correctCall": true,
+        "newHash": true,
+        "exactTenProjectTokens": true,
+        "inputBalanceDelta": true,
+        "outputBalanceDelta": true,
+        "fabTransferMatches": true,
+        "projectTokenTransferMatches": true,
+        "minimumMet": true,
+        "deadlineValidAtCanonicalBlock": true,
+        "authorizationConsumedExactlyHere": true,
+        "positiveFabOutput": true
+      },
+      "call": "convertTax",
+      "before": {
+        "block": "0x29cd3a0",
+        "tokenTaxBalance": "10000000000000000000",
+        "fabBalance": "51030403",
+        "farmFabBalance": "106061975702",
+        "reserved": "51030403",
+        "totalRecognised": "5103040307",
+        "protocolOwed": "51030403",
+        "creatorOwed": "0",
+        "farmPending": "0",
+        "protocolBps": "100",
+        "creatorBps": "0",
+        "contribution": "5052009904"
+      },
+      "after": {
+        "block": "0x29cd3a1",
+        "tokenTaxBalance": "0",
+        "fabBalance": "51055337",
+        "farmFabBalance": "106061975702",
+        "reserved": "51030403",
+        "totalRecognised": "5103040307",
+        "protocolOwed": "51030403",
+        "creatorOwed": "0",
+        "farmPending": "0",
+        "protocolBps": "100",
+        "creatorBps": "0",
+        "contribution": "5052009904"
+      },
+      "events": [
+        {
+          "address": "0x2ae439a89b7d0332764507e4e021bfec348becde",
+          "name": "Transfer",
+          "args": {
+            "from": "0xba7a7BE2f42aCcc067ef1C441D7a46F3B83aF690",
+            "to": "0xCd42b58C47db43ab80C6c44E158Da8536975C00B",
+            "value": "10000000000000000000"
+          },
+          "logIndex": "0x1"
+        },
+        {
+          "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0xCd42b58C47db43ab80C6c44E158Da8536975C00B",
+            "to": "0xba7a7BE2f42aCcc067ef1C441D7a46F3B83aF690",
+            "value": "24934"
+          },
+          "logIndex": "0x2"
+        },
+        {
+          "address": "0xba7a7be2f42accc067ef1c441d7a46f3b83af690",
+          "name": "TaxConverted",
+          "args": {
+            "input": "10000000000000000000",
+            "fabReceived": "24934"
+          },
+          "logIndex": "0x6"
+        }
+      ],
+      "authorizationPublicParams": {
+        "input": "10000000000000000000",
+        "minimumFab": "24809",
+        "nonce": "35475987967571556407550729248705245394691911438428949894230993942005919094095",
+        "deadline": "1792291111",
+        "usedBefore": false,
+        "usedAfter": true
+      },
+      "allChecksPassed": true
+    },
+    {
+      "role": "sync",
+      "hash": "0x5a73b28b52f5f2e9596de8cd4a1cf4d9d3e27fc7d734c7bfdbed47892f24c4ad",
+      "canonical": true,
+      "status": "0x1",
+      "blockNumber": "0x29cd42e",
+      "blockHash": "0x7b9b1910500cf34640b471dabe5597a347ae08d877bed60ee96ef5e306ebff96",
+      "blockTimestamp": "1792291203",
+      "from": "0x553d8c2e637fe67c5c7ade3810e8bc02799d41d4",
+      "to": "0xba7a7be2f42accc067ef1c441d7a46f3b83af690",
+      "chainId": "1952",
+      "nonce": "25",
+      "valueWei": "0",
+      "gasLimit": "88581",
+      "gasUsed": "68336",
+      "gasPriceWei": "20000001",
+      "effectiveGasPriceWei": "20000001",
+      "feeWei": "1366720068336",
+      "additionalFeeWei": "0",
+      "selector": "0xfff6cae9",
+      "checks": {
+        "canonical": true,
+        "success": true,
+        "correctChain": true,
+        "correctKeeper": true,
+        "zeroValue": true,
+        "perTransactionGasCap": true,
+        "perTransactionPriceCap": true,
+        "correctVault": true,
+        "correctCall": true,
+        "positiveRecognition": true,
+        "recognisedCounter": true,
+        "protocolLedger": true,
+        "creatorLedger": true,
+        "farmLedger": true,
+        "allocationConserved": true,
+        "fabBalanceUnchanged": true,
+        "reservedConserved": true
+      },
+      "call": "sync",
+      "before": {
+        "block": "0x29cd42d",
+        "tokenTaxBalance": "0",
+        "fabBalance": "51055337",
+        "farmFabBalance": "106061975702",
+        "reserved": "51030403",
+        "totalRecognised": "5103040307",
+        "protocolOwed": "51030403",
+        "creatorOwed": "0",
+        "farmPending": "0",
+        "protocolBps": "100",
+        "creatorBps": "0",
+        "contribution": "5052009904"
+      },
+      "after": {
+        "block": "0x29cd42e",
+        "tokenTaxBalance": "0",
+        "fabBalance": "51055337",
+        "farmFabBalance": "106061975702",
+        "reserved": "51055337",
+        "totalRecognised": "5103065241",
+        "protocolOwed": "51030652",
+        "creatorOwed": "0",
+        "farmPending": "24685",
+        "protocolBps": "100",
+        "creatorBps": "0",
+        "contribution": "5052009904"
+      },
+      "events": [
+        {
+          "address": "0xba7a7be2f42accc067ef1c441d7a46f3b83af690",
+          "name": "TaxRecognised",
+          "args": {
+            "amount": "24934",
+            "protocol": "249",
+            "creator": "0",
+            "farm": "24685"
+          },
+          "logIndex": "0x0"
+        }
+      ],
+      "allChecksPassed": true
+    },
+    {
+      "role": "fund",
+      "hash": "0xb7cbf30602a1fbf8019d0e82b3a8a029a76d89369ec7774d9df72f2d1c373670",
+      "canonical": true,
+      "status": "0x1",
+      "blockNumber": "0x29cd480",
+      "blockHash": "0xc32262bcd7c5f0f407c11aea910268cda70c255df8220de9f5403720ed40445c",
+      "blockTimestamp": "1792291285",
+      "from": "0x553d8c2e637fe67c5c7ade3810e8bc02799d41d4",
+      "to": "0xba7a7be2f42accc067ef1c441d7a46f3b83af690",
+      "chainId": "1952",
+      "nonce": "26",
+      "valueWei": "0",
+      "gasLimit": "2650446",
+      "gasUsed": "2141594",
+      "gasPriceWei": "20000001",
+      "effectiveGasPriceWei": "20000001",
+      "feeWei": "42831882141594",
+      "additionalFeeWei": "0",
+      "selector": "0x0b899f28",
+      "checks": {
+        "canonical": true,
+        "success": true,
+        "correctChain": true,
+        "correctKeeper": true,
+        "zeroValue": true,
+        "perTransactionGasCap": true,
+        "perTransactionPriceCap": true,
+        "correctVault": true,
+        "correctCall": true,
+        "positiveFunding": true,
+        "vaultFabSpent": true,
+        "contributionIncrease": true,
+        "matchingContributed": true,
+        "transferMatches": true,
+        "pendingSettled": true,
+        "protocolNotSpent": true,
+        "creatorNotSpent": true
+      },
+      "call": "fundFarm",
+      "before": {
+        "block": "0x29cd47f",
+        "tokenTaxBalance": "0",
+        "fabBalance": "51055337",
+        "farmFabBalance": "106061975702",
+        "reserved": "51055337",
+        "totalRecognised": "5103065241",
+        "protocolOwed": "51030652",
+        "creatorOwed": "0",
+        "farmPending": "24685",
+        "protocolBps": "100",
+        "creatorBps": "0",
+        "contribution": "5052009904"
+      },
+      "after": {
+        "block": "0x29cd480",
+        "tokenTaxBalance": "0",
+        "fabBalance": "51030652",
+        "farmFabBalance": "113478750091",
+        "reserved": "51030652",
+        "totalRecognised": "5103065241",
+        "protocolOwed": "51030652",
+        "creatorOwed": "0",
+        "farmPending": "0",
+        "protocolBps": "100",
+        "creatorBps": "0",
+        "contribution": "5052034589"
+      },
+      "events": [
+        {
+          "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "1854187426"
+          },
+          "logIndex": "0x1"
+        },
+        {
+          "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "1854187426"
+          },
+          "logIndex": "0x4"
+        },
+        {
+          "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "1854187426"
+          },
+          "logIndex": "0x7"
+        },
+        {
+          "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0x0000000000000000000000000000000000000000",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "1854187426"
+          },
+          "logIndex": "0xa"
+        },
+        {
+          "address": "0x7a188d4c46c9fe045a5875fecaef9bf00e4521ff",
+          "name": "Transfer",
+          "args": {
+            "from": "0xba7a7BE2f42aCcc067ef1C441D7a46F3B83aF690",
+            "to": "0x0E51055559BE68416210eAe41d7E31DF890B5708",
+            "value": "24685"
+          },
+          "logIndex": "0xf"
+        },
+        {
+          "address": "0x0e51055559be68416210eae41d7e31df890b5708",
+          "name": "Contributed",
+          "args": {
+            "vault": "0xba7a7BE2f42aCcc067ef1C441D7a46F3B83aF690",
+            "amount": "24685",
+            "contribution": "5052034589"
+          },
+          "logIndex": "0x10"
+        },
+        {
+          "address": "0xba7a7be2f42accc067ef1c441d7a46f3b83af690",
+          "name": "FarmFunded",
+          "args": {
+            "amount": "24685"
+          },
+          "logIndex": "0x12"
+        }
+      ],
+      "allChecksPassed": true
+    }
+  ],
+  "finalVault": {
+    "block": "0x29cd480",
+    "tokenTaxBalance": "0",
+    "fabBalance": "51030652",
+    "farmFabBalance": "113478750091",
+    "reserved": "51030652",
+    "totalRecognised": "5103065241",
+    "protocolOwed": "51030652",
+    "creatorOwed": "0",
+    "farmPending": "0",
+    "protocolBps": "100",
+    "creatorBps": "0",
+    "contribution": "5052034589"
+  },
+  "receipts": [
+    {
+      "role": "cancel",
+      "hash": "0x0e844ba7e59279d369462f5234aad6850df261e9d49e5a3743be984a3d6aaf9f",
+      "canonical": true,
+      "status": "0x1",
+      "blockNumber": "0x29cd345",
+      "blockHash": "0x3420188a8786665f1480b9cc7d2f957c2e115755398246183e3cf93218a850ae",
+      "blockTimestamp": "1792290970",
+      "from": "0x553d8c2e637fe67c5c7ade3810e8bc02799d41d4",
+      "to": "0x553d8c2e637fe67c5c7ade3810e8bc02799d41d4",
+      "chainId": "1952",
+      "nonce": "23",
+      "valueWei": "0",
+      "gasLimit": "25200",
+      "gasUsed": "21000",
+      "gasPriceWei": "30000000",
+      "effectiveGasPriceWei": "30000000",
+      "feeWei": "630000000000",
+      "additionalFeeWei": "0",
+      "selector": "0x",
+      "checks": {
+        "canonical": true,
+        "success": true,
+        "correctChain": true,
+        "correctKeeper": true,
+        "zeroValue": true,
+        "perTransactionGasCap": true,
+        "perTransactionPriceCap": true,
+        "keeperSelfTransfer": true,
+        "emptyCalldata": true,
+        "originalNonce23": true,
+        "exactApprovedGasPrice": true,
+        "emptyKeeperCode": true,
+        "oldHashNotMined": true
+      }
+    },
+    {
+      "role": "conversion",
+      "hash": "0x78eb3877bea647937867ebd077f482f1487e8c3f68db93eac289bd54fd8b2d34",
+      "canonical": true,
+      "status": "0x1",
+      "blockNumber": "0x29cd3a1",
+      "blockHash": "0xf86636f33a48d98e5f2958753e38b8a691438bcf7002be7927f3ebfc72385e12",
+      "blockTimestamp": "1792291062",
+      "from": "0x553d8c2e637fe67c5c7ade3810e8bc02799d41d4",
+      "to": "0xba7a7be2f42accc067ef1c441d7a46f3b83af690",
+      "chainId": "1952",
+      "nonce": "24",
+      "valueWei": "0",
+      "gasLimit": "287914",
+      "gasUsed": "200564",
+      "gasPriceWei": "20000001",
+      "effectiveGasPriceWei": "20000001",
+      "feeWei": "4011280200564",
+      "additionalFeeWei": "0",
+      "selector": "0x0166fe30",
+      "checks": {
+        "canonical": true,
+        "success": true,
+        "correctChain": true,
+        "correctKeeper": true,
+        "zeroValue": true,
+        "perTransactionGasCap": true,
+        "perTransactionPriceCap": true,
+        "correctVault": true
+      }
+    },
+    {
+      "role": "sync",
+      "hash": "0x5a73b28b52f5f2e9596de8cd4a1cf4d9d3e27fc7d734c7bfdbed47892f24c4ad",
+      "canonical": true,
+      "status": "0x1",
+      "blockNumber": "0x29cd42e",
+      "blockHash": "0x7b9b1910500cf34640b471dabe5597a347ae08d877bed60ee96ef5e306ebff96",
+      "blockTimestamp": "1792291203",
+      "from": "0x553d8c2e637fe67c5c7ade3810e8bc02799d41d4",
+      "to": "0xba7a7be2f42accc067ef1c441d7a46f3b83af690",
+      "chainId": "1952",
+      "nonce": "25",
+      "valueWei": "0",
+      "gasLimit": "88581",
+      "gasUsed": "68336",
+      "gasPriceWei": "20000001",
+      "effectiveGasPriceWei": "20000001",
+      "feeWei": "1366720068336",
+      "additionalFeeWei": "0",
+      "selector": "0xfff6cae9",
+      "checks": {
+        "canonical": true,
+        "success": true,
+        "correctChain": true,
+        "correctKeeper": true,
+        "zeroValue": true,
+        "perTransactionGasCap": true,
+        "perTransactionPriceCap": true,
+        "correctVault": true
+      }
+    },
+    {
+      "role": "fund",
+      "hash": "0xb7cbf30602a1fbf8019d0e82b3a8a029a76d89369ec7774d9df72f2d1c373670",
+      "canonical": true,
+      "status": "0x1",
+      "blockNumber": "0x29cd480",
+      "blockHash": "0xc32262bcd7c5f0f407c11aea910268cda70c255df8220de9f5403720ed40445c",
+      "blockTimestamp": "1792291285",
+      "from": "0x553d8c2e637fe67c5c7ade3810e8bc02799d41d4",
+      "to": "0xba7a7be2f42accc067ef1c441d7a46f3b83af690",
+      "chainId": "1952",
+      "nonce": "26",
+      "valueWei": "0",
+      "gasLimit": "2650446",
+      "gasUsed": "2141594",
+      "gasPriceWei": "20000001",
+      "effectiveGasPriceWei": "20000001",
+      "feeWei": "42831882141594",
+      "additionalFeeWei": "0",
+      "selector": "0x0b899f28",
+      "checks": {
+        "canonical": true,
+        "success": true,
+        "correctChain": true,
+        "correctKeeper": true,
+        "zeroValue": true,
+        "perTransactionGasCap": true,
+        "perTransactionPriceCap": true,
+        "correctVault": true
+      }
+    }
+  ],
+  "accounting": {
+    "oldSpentWei": "391874999593749",
+    "additionalUniqueReceiptFeesWei": "48839882410494",
+    "keeperCumulativeSpentWei": "440714882004243",
+    "keeperBaselineWei": "186372669318633",
+    "keeperPhaseActualWei": "254342212685610",
+    "reservedWei": "0",
+    "keeperCumulativeCapWei": "456372669318633",
+    "keeperAvailableWei": "15657787314390",
+    "preparationActualWei": "36535281826764",
+    "walletActualWei": "957639569204524",
+    "allocationWei": {
+      "preparation": "40000000000000",
+      "frontendWallet": "990000000000000",
+      "keeperAdditional": "270000000000000"
+    },
+    "phaseActualWei": "1248517063716898",
+    "phaseCapWei": "1300000000000000",
+    "phaseActualRemainingWei": "51482936283102",
+    "keeperNativeBeforeWei": "108125000406251",
+    "keeperNativeAfterLastReceiptWei": "59285117995757",
+    "latestNonce": "27",
+    "pendingNonce": "27",
+    "nextListedNonce": "27",
+    "unlistedNewStatusHashes": [],
+    "checks": {
+      "allUniqueAndCanonicalSuccess1952": true,
+      "nonce23OnwardContinuous": true,
+      "onlyActualReceiptFeesOnce": true,
+      "oldHashNeverBilledAsSuccess": true,
+      "originalBaselinePreserved": true,
+      "keeperPhaseWithinApprovedCap": true,
+      "keeperSpentAndReserveWithinCumulativeCap": true,
+      "preparationWithinNewAllocation": true,
+      "frontendWithinNewAllocation": true,
+      "totalActualWithinUnchangedPhaseCap": true,
+      "noUnlistedStatusExecution": true,
+      "nativeFeeConservation": true,
+      "noPendingNonceGap": true,
+      "noUnlistedMinedKeeperNonce": true,
+      "historical36UiProofUnchanged": true,
+      "finalTokenTaxZero": true,
+      "finalFarmPendingZero": true
+    }
+  },
+  "allChecksPassed": true,
+  "completedAt": "2026-10-18T02:42:19.580Z"
+}

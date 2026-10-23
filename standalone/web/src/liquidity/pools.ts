@@ -1,3 +1,5 @@
+import { discoverV2, listV2Pools } from './v2Pools'
+import type { AnyPool, V2Pool } from './v2Types'
 import { decodeEventLog, encodeAbiParameters, keccak256, zeroAddress, type Address, type Hex } from 'viem'
 import pools from '../../../../deployments/xlayer-test/pools.json'
 import { hexQuantity, rpc } from '../lib/rpc'
@@ -7,6 +9,7 @@ import { importCurrency, positionCurrency, validateCurrency } from './currencies
 import { createdAbi, initializedAbi, deploymentLogs } from './events'
 import { call } from './rpc'
 import { LiquidityError, type LiquidityPool, type PoolDraft, type PublicRpc } from './types'
+import { getPools } from '../data/dex'
 export const poolKey = (p: Pick<LiquidityPool, 'currency0' | 'currency1' | 'fee' | 'tickSpacing'>) => ({
   currency0: p.currency0.address,
   currency1: p.currency1.address,
@@ -79,7 +82,11 @@ export async function discoverPool(draft: PoolDraft, read: PublicRpc = rpc): Pro
   const [sqrtPriceX96, tick] = slot as readonly [bigint, number]
   return { ...base, id, sqrtPriceX96, tick, liquidity: liquidity as bigint, initialized: sqrtPriceX96 > 0n }
 }
-export async function refreshPool(pool: LiquidityPool, read: PublicRpc): Promise<LiquidityPool> {
+export function refreshPool(pool: LiquidityPool, read: PublicRpc): Promise<LiquidityPool>
+export function refreshPool(pool: V2Pool, read: PublicRpc): Promise<V2Pool>
+export function refreshPool(pool: AnyPool, read: PublicRpc): Promise<AnyPool>
+export async function refreshPool(pool: AnyPool, read: PublicRpc): Promise<AnyPool> {
+  if (pool.protocol === 'v2') return discoverV2(pool.currency0, pool.currency1, read)
   return discoverPool(
     {
       protocol: pool.protocol,
@@ -93,6 +100,9 @@ export async function refreshPool(pool: LiquidityPool, read: PublicRpc): Promise
 }
 /** Seed pools plus hookless deployment events whose assets and current state can be read. */
 export async function listPools(read: PublicRpc = rpc): Promise<LiquidityPool[]> {
+  // Browser discovery reads the shared persistent directory. Explicit RPC adapters
+  // retain direct discovery for isolated forks and protocol acceptance tests.
+  if (read === rpc) return (await indexedPools(read)).filter((pool): pool is LiquidityPool => pool.protocol !== 'v2')
   const stable = await importCurrency(pools.stable.address, read)
   const result = await Promise.all([
     discoverPool({ protocol: 'v3', currencyA: NATIVE_CURRENCY, currencyB: stable, fee: pools.v3.fee }, read),
@@ -152,4 +162,30 @@ export async function listPools(read: PublicRpc = rpc): Promise<LiquidityPool[]>
     }
   }
   return result
+}
+
+async function indexedPools(read: PublicRpc): Promise<AnyPool[]> {
+  const catalog = await getPools(), result: AnyPool[] = []
+  // Bound concurrent metadata/state reads as permissionless pool counts grow.
+  for (let offset = 0; offset < catalog.pools.length; offset += 4) {
+    const batch = await Promise.all(catalog.pools.slice(offset, offset + 4).map(async (pool) => {
+      if (pool.hooks.toLowerCase() !== zeroAddress) return null
+      try {
+        const [currencyA, currencyB] = await Promise.all([
+          positionCurrency(pool.token0 as Address, pool.protocol === 'v2' ? 'v3' : pool.protocol, read),
+          positionCurrency(pool.token1 as Address, pool.protocol === 'v2' ? 'v3' : pool.protocol, read),
+        ])
+        const current = pool.protocol === 'v2' ? await discoverV2(currencyA, currencyB, read) : await discoverPool({ protocol: pool.protocol, currencyA, currencyB, fee: pool.fee, tickSpacing: pool.tickSpacing }, read)
+        // A directory supplies candidates, never authority over a pool identity.
+        return current.id.toLowerCase() === pool.id.toLowerCase() && current.initialized ? current : null
+      } catch { return null }
+    }))
+    for (const pool of batch) if (pool) result.push(pool)
+  }
+  if (catalog.pools.length && !result.length) throw new LiquidityError('failed')
+  return result
+}
+
+export async function listAllPools(read: PublicRpc = rpc): Promise<AnyPool[]> {
+  return read === rpc ? indexedPools(read) : [...await listPools(read), ...await listV2Pools(read)]
 }

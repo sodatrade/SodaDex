@@ -3,11 +3,11 @@ import { useId, useState, type ReactElement } from 'react'
 import { formatUnits } from 'viem'
 import { Button, Icon } from '../../components/primitives'
 import { parseAmount } from '../../domain/amount'
-import type { LiquidityPool } from '../../liquidity/types'
+import type { AnyPool } from '../../liquidity/v2Types'
 import { usePreferences } from '../../preferences/context'
 import { getPoolQuote } from '../../trading/poolQuotes'
 
-export function PoolQuotePanel({ pool }: { pool: LiquidityPool }): ReactElement {
+export function PoolQuotePanel({ pool }: { pool: AnyPool }): ReactElement {
   const { t } = usePreferences()
   const id = useId()
   const [direction, setDirection] = useState(true)

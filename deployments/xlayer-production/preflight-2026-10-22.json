@@ -1,0 +1,142 @@
+{
+  "capturedUtc": "2026-10-23T03:03:33.965Z",
+  "mode": "read-only-production-dependency-preflight",
+  "chainId": 196,
+  "block": "73955566",
+  "blockHash": "0x5e59a2090dc75b76f60d17aadc49d84e73ca99523e85f1538293ec17f9e1955d",
+  "source": "https://api.fabx.tech/v1/pod/mainnet",
+  "sourceStatus": 200,
+  "sourceContracts": {
+    "mining": "0x4F6A2312D80753BdAFd35DDB1Bf4BB14C43F8265",
+    "lens": "0xE566F9F6F20C19e2AfbD0BB9028A2517d55Bf5F5",
+    "lensNext": "0xE566F9F6F20C19e2AfbD0BB9028A2517d55Bf5F5",
+    "token": "0x72F349B1Eee7833B26f8C81a8410775A4e231ed2",
+    "factory": "0x82935793a854fA2F2e8A9d2B3F17BbfBf81D6C05",
+    "boost": "0x2F90b730BB696C1567f1eB8D0bA26b96D3B7A821"
+  },
+  "cpu": {
+    "address": "0x87BFCa3494Aa228fF589ab9B642143A5e8c8F9a6",
+    "multiplier": 6,
+    "fromBlock": 73042958
+  },
+  "rpc": "https://rpc.xlayer.tech",
+  "rows": [
+    {
+      "name": "FAB.decimals",
+      "address": "0x72F349B1Eee7833B26f8C81a8410775A4e231ed2",
+      "success": true,
+      "result": 8
+    },
+    {
+      "name": "Mining.token",
+      "address": "0x4F6A2312D80753BdAFd35DDB1Bf4BB14C43F8265",
+      "success": true,
+      "result": "0x72F349B1Eee7833B26f8C81a8410775A4e231ed2"
+    },
+    {
+      "name": "Mining.processorMultiplier",
+      "address": "0x4F6A2312D80753BdAFd35DDB1Bf4BB14C43F8265",
+      "success": true,
+      "result": "6"
+    },
+    {
+      "name": "Mining.paidTo",
+      "address": "0x4F6A2312D80753BdAFd35DDB1Bf4BB14C43F8265",
+      "success": false,
+      "error": "The contract function \"paidTo\" reverted.",
+      "details": "execution reverted",
+      "cause": "The contract function \"paidTo\" reverted."
+    },
+    {
+      "name": "Mining.dewebWeights",
+      "address": "0x4F6A2312D80753BdAFd35DDB1Bf4BB14C43F8265",
+      "success": true,
+      "result": [
+        "0",
+        "0",
+        "331938690",
+        "13134000"
+      ]
+    },
+    {
+      "name": "NFT.factory",
+      "address": "0x87BFCa3494Aa228fF589ab9B642143A5e8c8F9a6",
+      "success": true,
+      "result": "0x1f09DAeFA827f02CBb40967cc91b259763760761"
+    },
+    {
+      "name": "Factory.isCPU",
+      "address": "0x82935793a854fA2F2e8A9d2B3F17BbfBf81D6C05",
+      "success": true,
+      "result": true
+    }
+  ],
+  "codes": [
+    {
+      "name": "fab",
+      "address": "0x72F349B1Eee7833B26f8C81a8410775A4e231ed2",
+      "hasCode": true,
+      "runtimeHash": "0x9ba3170347ad6b67f432a438fb99eac2af88599b09d6ab6b1848c1e8462e5471"
+    },
+    {
+      "name": "mining",
+      "address": "0x4F6A2312D80753BdAFd35DDB1Bf4BB14C43F8265",
+      "hasCode": true,
+      "runtimeHash": "0x1969e2b8ee841a212d901592cb79f8953baab128c097223e34cbb2397d9e4530"
+    },
+    {
+      "name": "nft",
+      "address": "0x87BFCa3494Aa228fF589ab9B642143A5e8c8F9a6",
+      "hasCode": true,
+      "runtimeHash": "0x57aa306fd0be97087da3534e03398f5ff4efd533b5be4e45a405ce86fa6717d5"
+    },
+    {
+      "name": "factory",
+      "address": "0x82935793a854fA2F2e8A9d2B3F17BbfBf81D6C05",
+      "hasCode": true,
+      "runtimeHash": "0xf458a3f84e0201fc2a73d7587231d79d1e2e1ce079d6d68060bd2a0fd3ea3100"
+    }
+  ],
+  "productionWrites": 0,
+  "newDeployments": 0,
+  "knownRequirement": "FabxMinerCustody constructor requires the actual-paid paidTo(bytes32,address) extension; all admissibility getters must also be compatible.",
+  "readyToDeploy": false,
+  "deploymentExecutor": "Owner signs and deploys; Codex prepares and verifies only",
+  "ownerAndTreasury": "0x6EFa1Fad18900B929Fe6782fd3eaBeac2563416A",
+  "blockingIssues": [
+    {
+      "id": "formal-paid-counter",
+      "classification": "confirmed defect",
+      "scope": "Direct production binding of the unchanged TEST v5 source",
+      "expectedBehaviorSource": "FabxMinerCustody constructor and reward collection require paidTo(bytes32,address).",
+      "evidence": "Production eth_call at recorded block reverted; no production writes performed.",
+      "disposition": "Do not deploy this unchanged v5 against formal mining. Adapt and verify the SodaDEX integration before Owner deployment.",
+      "decisionOwner": "SodaDEX integration maintainer; FABX changes are outside current authorization"
+    },
+    {
+      "id": "factory-role",
+      "classification": "confirmed defect",
+      "scope": "Using API contracts.factory directly as current Vault NFT_FACTORY",
+      "expectedBehaviorSource": "FabxMinerCustody requires collection.factory() == factory and factory.isCPU(collection).",
+      "evidence": "NFT.factory returns 0x1f09DAeFA827f02CBb40967cc91b259763760761; API registry factory is 0x82935793a854fA2F2e8A9d2B3F17BbfBf81D6C05.",
+      "disposition": "Keep NFT origin factory and FABX registration factory as separate roles; validate constructor-compatible factory before deployment.",
+      "decisionOwner": "SodaDEX deployment maintainer"
+    }
+  ],
+  "formalSodaContracts": null,
+  "secondaryChecks": [
+    {
+      "name": "production-paidTo-real-recipient",
+      "rpc": "https://rpc.ignix.bot/rpc/196",
+      "success": false,
+      "error": "The contract function \"paidTo\" reverted.",
+      "details": "execution reverted"
+    },
+    {
+      "name": "origin-factory-isCPU",
+      "rpc": "https://rpc.ignix.bot/rpc/196",
+      "success": true,
+      "result": true
+    }
+  ]
+}

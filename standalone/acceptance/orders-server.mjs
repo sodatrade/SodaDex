@@ -15,6 +15,8 @@ import { OrdersService } from '../orders/src/service.ts'
 import { OrdersKeeper } from '../orders/src/keeper.ts'
 import { ViemOrderChain } from '../orders/src/chain.ts'
 import { createOrdersServer } from '../orders/src/server.ts'
+import { fixtureProviderResponse, injectFixtureProvider } from './fixture-provider.mjs'
+import { installFixtureMetadata } from './fixture-metadata.mjs'
 const root = fileURLToPath(new URL('../../', import.meta.url))
 const webRequire = createRequire(new URL('../web/package.json', import.meta.url))
 const workerRequire = createRequire(new URL('../worker/package.json', import.meta.url))
@@ -33,6 +35,11 @@ function owned() {
   const pid = execFileSync('lsof', ['-nP', `-iTCP@127.0.0.1:${fixture.fork.port}`, '-sTCP:LISTEN', '-t'], { encoding: 'utf8' }).trim()
   if (pid !== String(fixture.fork.pid)) throw Error('Owned Anvil listener changed')
 }
+async function assertLocalChain() {
+  owned()
+  if (!String(await fixture.request('web3_clientVersion')).toLowerCase().includes('anvil') ||
+    BigInt(await fixture.request('eth_chainId')) !== 196n) throw Error('Owned chain-196 Anvil required')
+}
 async function stop() {
   if (stopped) return
   stopped = true; clearInterval(timer)
@@ -43,7 +50,8 @@ async function stop() {
   await rm(folder, { recursive: true, force: true })
 }
 try {
-  owned()
+  await assertLocalChain()
+  await installFixtureMetadata(fixture.request)
   await fixture.request('anvil_setIntervalMining', [1]); await fixture.request('evm_mine')
   const config = validateConfig({ settlement: fixture.settlement, rpcUrl, publicOrigin: origin, databasePath: resolve(folder, 'orders.sqlite'),
     localTest: true, executionEnabled: true, gasBudgetWei: 10n ** 16n })
@@ -59,7 +67,10 @@ try {
   const manifestPath = resolve(root, 'deployments/orders-test.json')
   const workerBundle = resolve(folder, 'worker.mjs')
   await build({ entryPoints: [resolve(root, 'standalone/worker/src/index.ts')], outfile: workerBundle, bundle: true, format: 'esm', platform: 'node', target: 'node22',
-    plugins: [{ name: 'owned-orders-test-manifest', setup(builder) { builder.onLoad({ filter: /orders-test\.json$/ }, args =>
+    nodePaths: [resolve(root, 'standalone/worker/node_modules')],
+    plugins: [{ name: 'owned-orders-test-manifest', setup(builder) {
+      builder.onResolve({ filter: /preferences-script\.json$/ }, () => ({ path: resolve(process.env.SODADEX_FIXTURE_ASSETS ?? resolve(root, 'standalone/web/dist'), 'preferences-script.json') }))
+      builder.onLoad({ filter: /orders-test\.json$/ }, args =>
       args.path === manifestPath ? { contents: JSON.stringify(manifest), loader: 'json' } : undefined) } }] })
   globalThis.fetch = async (input, init) => {
     const target = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url
@@ -76,7 +87,7 @@ try {
   } }
   const worker = (await import(pathToFileURL(workerBundle).href)).default
   vite = await createViteServer({ root: resolve(root, 'standalone/web'), configFile: resolve(root, 'standalone/web/vite.config.ts'),
-    plugins: [{ name: 'owned-orders-browser-manifest', enforce: 'pre', load(id) {
+    plugins: [{ name: 'owned-orders-browser-manifest', enforce: 'pre', transformIndexHtml: injectFixtureProvider, load(id) {
       if (id.split('?')[0] === manifestPath) return JSON.stringify(manifest)
     } }], server: { middlewareMode: true, hmr: false, fs: { allow: [root] }, proxy: {} } })
   const walletRequest = async input => {
@@ -115,12 +126,16 @@ try {
       const chunks = []; let size = 0
       for await (const chunk of incoming) { size += chunk.length; if (size > 16384) throw Error('Local request too large'); chunks.push(chunk) }
       const body = Buffer.concat(chunks)
-      let response
-      if (url.pathname === '/fixture-status' && incoming.method === 'GET') response = Response.json({ mode: 'owned-orders-anvil', maker: fixture.maker.address,
-        settlement: fixture.settlement, timestamp: Number(await fixture.timestamp()), signatures, transactions })
+      let response = fixtureProviderResponse(url.pathname, incoming.method)
+      if (response) { /* External self script for normal EIP-6963 discovery. */ }
+      else if (url.pathname === '/fixture-status' && incoming.method === 'GET') {
+        await assertLocalChain()
+        response = Response.json({ mode: 'owned-orders-anvil', chainId: 196, maker: fixture.maker.address,
+          settlement: fixture.settlement, timestamp: Number(await fixture.timestamp()), signatures, transactions })
+      }
       else if (url.pathname === '/fixture-wallet') {
         if (incoming.method !== 'POST' || incoming.headers.origin !== origin || incoming.headers['x-sodadex-fixture'] !== '1') throw Error('Same-origin fixture marker required')
-        owned(); response = Response.json({ result: await walletRequest(JSON.parse(body)) })
+        await assertLocalChain(); response = Response.json({ result: await walletRequest(JSON.parse(body)) })
       } else response = await worker.fetch(new Request(url, { method: incoming.method, headers: incoming.headers,
         ...(incoming.method === 'GET' || incoming.method === 'HEAD' ? {} : { body }) }), {})
       outgoing.writeHead(response.status, Object.fromEntries(response.headers)); outgoing.end(Buffer.from(await response.arrayBuffer()))

@@ -1,0 +1,33 @@
+{
+  "capturedAt": "2026-10-18T04:00:51.707Z",
+  "chainId": 1952,
+  "readOnly": true,
+  "snapshot": {
+    "number": "0x29ce718",
+    "hash": "0xa0f98b567c1e5b0b824bbbac2feb5fe31d3e36daafd30ea818f78513f751ced3"
+  },
+  "accounts": [
+    {
+      "address": "0xe57f88c05810a9ad2b27f216665260c2d9f2b2da",
+      "confirmedAtSnapshot": 190,
+      "latest": 190,
+      "pending": 190,
+      "pendingEqualLatest": true
+    },
+    {
+      "address": "0x6ecf746b078d46391f8c425b150153212f7c0545",
+      "confirmedAtSnapshot": 152,
+      "latest": 152,
+      "pending": 152,
+      "pendingEqualLatest": true
+    },
+    {
+      "address": "0x553d8c2e637fe67c5c7ade3810e8bc02799d41d4",
+      "confirmedAtSnapshot": 34,
+      "latest": 34,
+      "pending": 34,
+      "pendingEqualLatest": true
+    }
+  ],
+  "olderStaleObservationPreservedAt": "/tmp/sodadex-main-wallet-receipts-fragment-checkpoint.json"
+}

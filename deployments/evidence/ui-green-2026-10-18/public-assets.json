@@ -1,0 +1,37 @@
+{
+  "observedAt": "2026-10-18T07:09:57.317154+00:00",
+  "sourceCommit": "2ec695590adf0fc926d4dc8ab80b5cb9ebe9e0c2",
+  "versionId": "8d2cb7de-6fdd-4a3e-a570-c9a0a99adcf7",
+  "assets": [
+    {
+      "path": "index.html",
+      "sha256": "7426b78bc69440b8c581e55907836d57dca08e9388d64ae9726b3f269e6726c5",
+      "matched": true
+    },
+    {
+      "path": "assets/index-VnycN_SW.js",
+      "sha256": "6e821847c797916bd918fca174686265ca0330bb6ee4a0540daa8dd0427056c5",
+      "matched": true
+    },
+    {
+      "path": "assets/index-bpqnVBT0.css",
+      "sha256": "152d360d3cffe92e40b39859d423c6f2fe6d93bbe16547a05e05e6c8c8435dbf",
+      "matched": true
+    },
+    {
+      "path": "mining/index.html",
+      "sha256": "d424f4186aedbbe68b97a2fbe30b9d6f892f81652b8d72bddf23155c35cacbfd",
+      "matched": true
+    },
+    {
+      "path": "mining/assets/index-B7MWgEzd.js",
+      "sha256": "3c1c233320259bc76f448bb7cf5dde657b702f6be045a3a937ab3a1bace4c161",
+      "matched": true
+    },
+    {
+      "path": "mining/assets/index-BOV9mYGW.css",
+      "sha256": "4552b23ebceb010efe6c0198501482a84886b41293e1184a8f478f9aa8ae5a3f",
+      "matched": true
+    }
+  ]
+}

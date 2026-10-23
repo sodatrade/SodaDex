@@ -1,0 +1,35 @@
+{
+  "publishedAt": "2026-10-21T08:54:13.328Z",
+  "url": "https://sodadex-preview.jsmsdx2025.workers.dev/#pool",
+  "sourceCommit": "ea7d8df85bcae84b4d3349a9691af3f3bd76fdb0",
+  "contractSourceCommit": "3961ad36804559509e155c4934fcb28a61f0c357",
+  "contractHandoffCommit": "13f0eaf031370a9de44f6a55501dbb3097a7a55a",
+  "workerVersion": "fa0d6f93-4e44-4b1c-95d9-faf075558007",
+  "target": "sodadex-preview",
+  "config": "standalone/worker/wrangler.fragments-196-test.jsonc",
+  "bundleAssets": [
+    "/assets/index-DYf0Iw2u.js",
+    "/assets/network-DcdP2qJU.js",
+    "/assets/index-Dw7Zn55E.css"
+  ],
+  "publishedAssetsMatchBuild": true,
+  "newPool": "0x5d98189f79234d5f988ea5b94641c3b04b0a7866",
+  "indexSynced": true,
+  "actualTrades": 2,
+  "historyPageMaximum": 10,
+  "productionTouched": false,
+  "publicAcceptance": "14 successful transactions, 0.000200441911 OKB gross cost; verification.json retains block-hash reconciliation",
+  "validation": {
+    "webTests": 540,
+    "workerTests": 228,
+    "typecheck": "passed",
+    "lint": "passed",
+    "build": "passed"
+  },
+  "earlierVersions": [
+    {
+      "source": "872af16e19b33e50569000a4eb78b5e40cd66919",
+      "worker": "09280c4a-81e3-4a1a-bf03-641c25ebcf48"
+    }
+  ]
+}

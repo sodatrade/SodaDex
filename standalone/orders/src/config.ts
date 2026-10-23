@@ -11,7 +11,7 @@ export const FIXED = {
   stateView: '0x7991D4a8493b9709365cD079DfFc75e790007874' as Address,
 }
 export interface OrderRuntimeConfig {
-  settlement: Address | null; rpcUrl: string; publicOrigin: string; executionEnabled: boolean; gasBudgetWei: bigint
+  settlement: Address | null; rpcUrl: string; publicOrigin: string; additionalPublicOrigins?: readonly string[]; executionEnabled: boolean; gasBudgetWei: bigint
 }
 export interface OrdersConfig extends OrderRuntimeConfig { databasePath: string; localTest: boolean }
 export const reviewedSettlement = (): Address | null => reviewed.settlement as Address | null
@@ -25,6 +25,12 @@ export function validateRuntime(config: OrderRuntimeConfig, localTest = false): 
     throw Error('Remote settlement must match the reviewed test deployment')
   }
   if (origin.protocol !== 'https:' && !(origin.protocol === 'http:' && ['127.0.0.1', 'localhost'].includes(origin.hostname))) throw Error('Orders service requires an explicit HTTPS or local origin')
+  const additional = config.additionalPublicOrigins ?? []
+  if (!Array.isArray(additional) || new Set(additional).size !== additional.length || additional.some(value => {
+    if (typeof value !== 'string' || value === config.publicOrigin) return true
+    try { const u = new URL(value); return u.origin !== value || !!u.username || !!u.password || u.protocol !== 'https:' }
+    catch { return true }
+  })) throw Error('Invalid additional orders origins')
   if (config.settlement !== null && (!/^0x[0-9a-fA-F]{40}$/.test(config.settlement) || /^0x0{40}$/.test(config.settlement))) throw Error('Invalid settlement configuration')
   if (config.gasBudgetWei < 0n || (config.executionEnabled && (config.settlement === null || config.gasBudgetWei === 0n))) throw Error('Execution requires a deployed settlement and explicit positive gas budget')
   return { ...config }

@@ -3,6 +3,7 @@ import { act, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { zeroAddress, type Hex } from 'viem'
+import { confirmedPoolsKey } from '../src/features/liquidity/confirmedPools'
 import { GeneralSwapCard } from '../src/features/swap/GeneralSwapCard'
 import { KNOWN_CURRENCIES } from '../src/liquidity/config'
 import * as liquidity from '../src/liquidity'
@@ -37,7 +38,7 @@ beforeEach(() => {
   wallet = { options: [], session: { ...identity, id: 'mock', name: 'Mock' }, status: 'idle', error: undefined, getIdentity: () => identity,
     connect: vi.fn(), switchChain: vi.fn(), disconnect: vi.fn() }
   vi.spyOn(policy, 'publicSwapsEnabled').mockReturnValue(true)
-  vi.spyOn(liquidity, 'listPools').mockResolvedValue([pool])
+  vi.spyOn(liquidity, 'listAllPools').mockResolvedValue([pool])
   vi.spyOn(liquidity, 'importCurrency').mockResolvedValue(custom)
   vi.spyOn(trades, 'getPoolTradeQuote').mockImplementation(async (p, dir, amount, slippageBps = 50) => ({ pool: p, zeroForOne: dir, amount, amountOut: 1000n, minimumOut: 995n, slippageBps }))
   vi.spyOn(trades, 'executePoolTrade').mockImplementation(async (_quote, c) => { c.onProgress({ stage: 'tradeConfirming', hash, to: CONTRACTS.router, kind: 'swap' }); c.onProgress({ stage: 'tradeSucceeded', hash, kind: 'swap' }); return hash })
@@ -49,6 +50,53 @@ async function amount(value = '0.000001'): Promise<void> {
   await waitFor(() => expect(screen.getByRole('button', { name: 'Review swap' })).toBeEnabled())
 }
 describe('main swap interactions', () => {
+  it('quotes a V2-only directory on a fresh Swap page without a Pool-page cache', async () => {
+    const v2 = { protocol: 'v2' as const, id: custom.address, address: custom.address,
+      currency0: stable, currency1: { ...native, address: KNOWN_CURRENCIES[1].address }, fee: 3000 as const,
+      reserve0: 1000000n, reserve1: 10n ** 18n, totalSupply: 10n ** 12n, kLast: 0n, feeOn: false, initialized: true }
+    vi.mocked(liquidity.listAllPools).mockResolvedValue([v2])
+    mount()
+    await userEvent.click(screen.getByRole('button', { name: 'Swap settings' }))
+    await userEvent.click(screen.getByRole('radio', { name: 'V2' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Close dialog' }))
+    await amount()
+    expect(trades.getPoolTradeQuote).toHaveBeenCalledWith(v2, false, 1000000000000n, 50)
+    expect(trades.executePoolTrade).not.toHaveBeenCalled()
+  })
+  it('keeps directory failure and retry visible when the cached pool belongs to another pair', async () => {
+    vi.mocked(liquidity.listAllPools).mockRejectedValue(new Error('Directory unavailable'))
+    const { client } = mount()
+    await act(async () => { client.setQueryData(confirmedPoolsKey, [{ ...pool, currency1: custom }]) })
+    expect(await screen.findByRole('button', { name: 'Retry' })).toBeEnabled()
+    expect(screen.getByRole('alert')).toBeVisible()
+    expect(trades.executePoolTrade).not.toHaveBeenCalled()
+  })
+
+  it('quotes a confirmed live pool while the persistent directory is still loading', async () => {
+    vi.mocked(liquidity.listAllPools).mockImplementation(() => new Promise(() => {}))
+    const { client } = mount()
+    await act(async () => { client.setQueryData(confirmedPoolsKey, [pool]) })
+    await amount()
+    expect(trades.getPoolTradeQuote).toHaveBeenCalledWith(pool, true, 1000000000000n, 50)
+    expect(screen.getByRole('button', { name: 'Review swap' })).toBeEnabled()
+    expect(trades.executePoolTrade).not.toHaveBeenCalled()
+  })
+
+  it('finds the configured share token in the normal picker and routes only its native pair to the extension', async () => {
+    const share = { ...custom, symbol: 'sFAB', name: 'Miner shares', decimals: 18 }
+    const renderPair = vi.fn(({ onSelect }: { onSelect: (side: 'to') => void }) => <button onClick={() => onSelect('to')}>Change share token</button>)
+    render(<QueryClientProvider client={new QueryClient({defaultOptions:{queries:{retry:false}}})}><PreferencesProvider><GeneralSwapCard wallet={wallet} balances={balances} balancesLoading={false} balancesError={false} onConnect={vi.fn()} pairExtension={{currencies:[share],matches:(a,b)=>a.native && b.address===share.address,render:renderPair}} /></PreferencesProvider></QueryClientProvider>)
+    await userEvent.click(screen.getByRole('button',{name:/Choose receive/}))
+    await userEvent.type(screen.getByRole('textbox',{name:'Search name, symbol or contract'}),'sFAB')
+    await userEvent.click(screen.getByRole('button',{name:/sFAB/}))
+    expect(await screen.findByRole('button',{name:'Change share token'})).toBeVisible()
+    expect(trades.getPoolTradeQuote).not.toHaveBeenCalled()
+    expect(trades.executePoolTrade).not.toHaveBeenCalled()
+    await userEvent.click(screen.getByRole('button',{name:'Change share token'}))
+    await userEvent.click(screen.getByRole('button',{name:/USD₮0/}))
+    expect(await screen.findByLabelText('You pay')).toBeVisible()
+    expect(screen.queryByRole('button',{name:'Change share token'})).not.toBeInTheDocument()
+  })
   it('shows pool fee/minimum and executes only after explicit confirmation', async () => {
     mount(); await amount(); expect(trades.executePoolTrade).not.toHaveBeenCalled()
     expect(screen.getByText('Minimum received')).toBeVisible()
@@ -86,34 +134,36 @@ describe('main swap interactions', () => {
     expect(screen.getByLabelText('You receive')).toHaveValue('0.001')
   })
   it('selects a token from a newly created pool and quotes its actual fee', async () => {
-    vi.mocked(liquidity.listPools).mockResolvedValue([pool, { ...pool, currency1: custom, fee: 500 }])
+    vi.mocked(liquidity.listAllPools).mockResolvedValue([pool, { ...pool, currency1: custom, fee: 500 }])
     mount(); await userEvent.click(screen.getByRole('button', { name: /Choose receive/ }))
     await userEvent.type(screen.getByRole('textbox', { name: 'Search name, symbol or contract' }), custom.address)
     await userEvent.click(await screen.findByRole('button', { name: /NEW/ })); await amount()
     expect(trades.getPoolTradeQuote).toHaveBeenCalledWith(expect.objectContaining({ fee: 500, currency1: custom }), true, 1000000000000n, 50)
   })
-  it('validates an unknown contract before making it selectable', async () => {
+  it('does not import an unrelated contract into Swap without a SodaDEX pool', async () => {
     mount(); await userEvent.click(screen.getByRole('button', { name: /Choose receive/ }))
     await userEvent.type(screen.getByRole('textbox', { name: 'Search name, symbol or contract' }), custom.address)
-    await userEvent.click(screen.getByRole('button', { name: 'Import token' }))
-    await waitFor(() => expect(liquidity.importCurrency).toHaveBeenCalledWith(custom.address))
-    await userEvent.click(await screen.findByRole('button', { name: 'Import token' }))
-    expect(screen.getByRole('button', { name: /Choose receive.*NEW/ })).toBeInTheDocument()
-    expect(screen.getByText('No initialized SodaDEX pool for this pair.')).toBeInTheDocument()
+    expect(screen.getByRole('status')).toHaveTextContent('No matching token with SodaDEX liquidity.')
+    expect(screen.queryByRole('button', { name: 'Import token' })).not.toBeInTheDocument()
+    expect(liquidity.importCurrency).not.toHaveBeenCalled()
   })
-  it('loads reference tokens and rechecks on-chain metadata before selecting', async () => {
+  it('ignores the global reference token list in Swap', async () => {
     vi.stubGlobal('fetch', vi.fn(async () => new Response(JSON.stringify({ chainId: 196, tokens: [{ ...custom, symbol: 'LISTED' }] }), { status: 200 })))
     mount(); await userEvent.click(screen.getByRole('button', { name: /Choose receive/ }))
-    await userEvent.click(await screen.findByRole('button', { name: /LISTED/ }))
-    await waitFor(() => expect(liquidity.importCurrency).toHaveBeenCalledWith(custom.address))
-    expect(screen.getByRole('button', { name: /Choose receive.*NEW/ })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /LISTED/ })).not.toBeInTheDocument()
+    expect(liquidity.importCurrency).not.toHaveBeenCalled()
+    expect(fetch).not.toHaveBeenCalledWith('/api/reference/tokens', expect.anything())
   })
-  it('keeps built-in tokens and manual imports usable when the reference list fails', async () => {
+  it('does not expose saved imports or zero-liquidity pool assets', async () => {
+    localStorage.setItem('sodadex.imported-tokens.196.v1', JSON.stringify([custom.address]))
+    vi.mocked(liquidity.listAllPools).mockResolvedValue([pool, { ...pool, id: `0x${'c'.repeat(64)}`, currency1: custom, liquidity: 0n }])
     vi.stubGlobal('fetch', vi.fn(async () => new Response('{}', { status: 503 })))
     mount(); await userEvent.click(screen.getByRole('button', { name: /Choose receive/ }))
-    expect(screen.getByRole('button', { name: /WOKB/ })).toBeEnabled()
+    expect(await screen.findByRole('button', { name: /WOKB/ })).toBeEnabled()
     await userEvent.type(screen.getByRole('textbox', { name: 'Search name, symbol or contract' }), custom.address)
-    expect(screen.getByRole('button', { name: 'Import token' })).toBeEnabled()
+    expect(screen.queryByRole('button', { name: 'Import token' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /NEW/ })).not.toBeInTheDocument()
+    expect(liquidity.importCurrency).not.toHaveBeenCalled()
   })
   it('supports wrap as an explicit 1:1 wallet operation', async () => {
     mount(); await userEvent.click(screen.getByRole('button', { name: /Choose receive/ })); await userEvent.click(screen.getByRole('button', { name: /WOKB/ }))

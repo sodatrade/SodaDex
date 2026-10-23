@@ -20,6 +20,8 @@ export function cloudConfig(env: OrdersEnv): { config: OrderRuntimeConfig; signe
     signer = { address: account.address, signTransaction: plan => account.signTransaction({ ...plan, type: 'legacy' }) }
   }
   const executionEnabled = deployment.status === 'ready' && deployment.executionEnabled && env.ORDERS_EXECUTION_ENABLED === 'true' && !!signer && pollMs !== null && BigInt(budget) > 0n
-  const config = validateRuntime({ settlement: deployment.settlement as Address | null, rpcUrl: FIXED.rpcUrl, publicOrigin: env.ORDERS_PUBLIC_ORIGIN ?? '', executionEnabled, gasBudgetWei: BigInt(budget) })
+  const additional: unknown = env.ORDERS_ADDITIONAL_PUBLIC_ORIGINS === undefined ? [] : JSON.parse(env.ORDERS_ADDITIONAL_PUBLIC_ORIGINS)
+  if (!Array.isArray(additional) || additional.some(value => typeof value !== 'string')) throw Error('Invalid additional orders origins')
+  const config = validateRuntime({ settlement: deployment.settlement as Address | null, rpcUrl: FIXED.rpcUrl, publicOrigin: env.ORDERS_PUBLIC_ORIGIN ?? '', additionalPublicOrigins: additional, executionEnabled, gasBudgetWei: BigInt(budget) })
   return { config, signer, pollMs }
 }

@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "checkedAtUtc": "2026-10-17T05:19:16.837569+00:00",
+  "requirement": "mining-products-1952",
+  "sources": {
+    "sodadexHead": "7506ce36138dfb6262ef11d1e3ca4828fec5ede3",
+    "ignixBase": "1426a613b6386be26c6ac91e14612ec581ff9c4c",
+    "fabxCommit": "4caabe00d0e4d198aac4576bc0ad27c8cca5ce54"
+  },
+  "localTests": {
+    "newMiningContracts": {
+      "passed": 34,
+      "failed": 0,
+      "skipped": 0,
+      "invariants": 3,
+      "runsPerInvariant": 256,
+      "callsPerInvariant": 128000
+    },
+    "realFabxSourceAndChainGuards": {
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0,
+      "liveChain": false
+    },
+    "web": {
+      "passed": 332,
+      "skipped": 22,
+      "typecheck": true,
+      "lint": true,
+      "buildProfiles": [
+        "196-test",
+        "1952-mining-test"
+      ]
+    },
+    "worker": {
+      "passed": 133,
+      "failed": 0,
+      "typecheck": true,
+      "lint": true
+    },
+    "python": {
+      "total": 76,
+      "passed": 71,
+      "skipped": 5
+    },
+    "ignixFullWithoutRpc": {
+      "passed": 761,
+      "failed": 3,
+      "skipped": 110,
+      "scope": "Offline run; failures are missing fork initialization, not a full-suite PASS"
+    },
+    "existingForkGroupsWithPublicRpc": {
+      "passed": 27,
+      "failed": 0,
+      "skipped": 0,
+      "groups": [
+        "EarlyAuthorizeForkTest",
+        "PoolGuardForkTest",
+        "TaxGuardForkTest"
+      ],
+      "scope": "Separate run resolving the three offline setup failures; not all previously skipped Fork tests"
+    }
+  },
+  "browser": {
+    "widths": [
+      1280,
+      768,
+      390
+    ],
+    "local1952RpcRead": true,
+    "defaultTheme": "light",
+    "languages": [
+      "zh-CN",
+      "en",
+      "yue-HK"
+    ],
+    "walletFlow": "Mock EIP1193 component covers chain/account/balance changes; no real signing",
+    "screenshots": [
+      "/tmp/sodadex-1952-desktop.png",
+      "/tmp/sodadex-1952-mobile.png",
+      "/tmp/sodadex-1952-tablet.png",
+      "/tmp/sodadex-1952-vite-dev.png"
+    ]
+  },
+  "chain": {
+    "id": 1952,
+    "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+    "balanceWei": "200000000000000000",
+    "block": 43755398,
+    "nonce": 0,
+    "evmReadOnlyProbes": {
+      "PUSH0": "32 zero bytes",
+      "TSTORE_TLOAD": "32-byte value 1",
+      "MCOPY": "32-byte value 1"
+    },
+    "broadcastPerformed": false
+  },
+  "dependencySimulation": {
+    "passed": true,
+    "signed": false,
+    "broadcastPerformed": false,
+    "transactions": 16,
+    "estimatedGas": 33865214,
+    "estimatedRequiredWei": "1354608593865214",
+    "nativeCurrency": "TEST OKB",
+    "scriptSha256": "5c0d7eaf430b6dad23190733927ec880c1705f99f658f797dd73a12aaa8a30d0",
+    "allWiringAssertionsPassed": true,
+    "setupFees": "CPU/mint/tapeout/market zero; separate product fees unchanged",
+    "artifactDirectory": "/tmp/sodadex-1952-readiness/dependency-simulation-final",
+    "addressesAreDeployed": false
+  },
+  "productionChanged": false,
+  "published": false,
+  "limitations": [
+    "Real farm production, procurement and holder dividends not implemented by abstract funding ledger",
+    "Fragment vault, AMM and LP yield accounting are not yet integrated",
+    "No live1952 dependency or product deployment",
+    "Standalone validation is not an upstream Uniswap monorepo PASS"
+  ]
+}

@@ -1,0 +1,111 @@
+{
+  "classification": "change request",
+  "requirement": "mining-products-1952/main-integration-and-owner-deployment-handoff",
+  "lifecycle": "active",
+  "repository": "sodatrade/SodaDex",
+  "ownerLocator": "current SodaDEX integration chat",
+  "ownerWorktree": "/Users/LevyHoo/Documents/SodaDex",
+  "branch": "codex/feat/mining-products-1952",
+  "parentHead": "c5458605bfe8888c9ac6d4dca6912f45f504900a",
+  "stack": {
+    "pr2Base": "codex/feat/sodadex-bootstrap",
+    "pr2BaseSha": "7506ce36138dfb6262ef11d1e3ca4828fec5ede3",
+    "mainBase": "0a3e6ca78e7c3af79e6e5804b8c2c7a66e9f8d37"
+  },
+  "userDecisions": [
+    "Merge source into main",
+    "Use the tested React interface when resolving the Svelte rewrite",
+    "Owner deploys formal contracts; this task does not sign or broadcast"
+  ],
+  "changes": [
+    "Commit the exact previously approved/test-published retirement, order C2 and custom-domain sources",
+    "Retain current React tree; record main/Svelte history without reintroducing it",
+    "Make inherited Uniswap tag/release workflow manual; do not publish upstream version automatically on merge",
+    "Publish production-dependency read-only findings and owner handoff; do not claim v5 is deployable against formal mining"
+  ],
+  "validation": {
+    "web": {
+      "passed": 518,
+      "skipped": 27,
+      "typecheck": true,
+      "lint": true
+    },
+    "worker": {
+      "passed": 222,
+      "skipped": 0,
+      "typecheck": true,
+      "lint": true
+    },
+    "orders": {
+      "passed": 74,
+      "typecheck": true,
+      "lint": true,
+      "localWorkerdSlowBodyAndAlarm": true
+    },
+    "retiredMining": {
+      "passed": 102,
+      "typecheck": true,
+      "lint": true,
+      "localWorkerdHistoryPreservedNoOutbound": true
+    },
+    "auditSnapshot": {
+      "passed": 12,
+      "skipped": 0,
+      "bytecodeAbiReproducedContracts": 6
+    },
+    "dexBuildAndCspVerified": true,
+    "formalRpcReads": true
+  },
+  "validationLimits": [
+    "Optional web fixtures absent; upstream monorepo suite not run",
+    "Production mining paidTo calls reverted on two RPCs",
+    "No production deployment or IGNIX cutover occurred"
+  ],
+  "migrations": "No new production database/DO migration; old namespaces and ledgers retained",
+  "productionReady": false,
+  "productionWrites": 0,
+  "remainingLocalUntrackedWork": "Unrelated historical acceptance artifacts and experimental reward-distribution sources remain outside this commit",
+  "sourceSha256": {
+    "scripts/sodadex/build-dex-test-web.mjs": "df7a71d50f6e6518428d4e939fbf49dca5a50f71f1b614100be5fe8b97675767",
+    "scripts/sodadex/check-dex-web-build.mjs": "6cb5c0e6f4813b44f530ca0f143258044dd24ac9b0d4abac3e74eac5afd6ed2e",
+    "standalone/README.md": "598cd04d1d03fca8cb5146d6f7ba53b405cf74b80887316c1e0dcca77e7dcddd",
+    "standalone/mining-service/README.md": "0a7065ea050a4c78d2f7e0f4e05f9872002505d95c1c9160e97185899ee92d0c",
+    "standalone/mining-service/cloudflare/config.ts": "94b344c776fef6363e49b283d0dcf29bef7ee6198b7a2113618e14d03f25da4d",
+    "standalone/mining-service/cloudflare/index.ts": "3c8ca9880f5e5dfd50f09faa04dbb29f20cf841c432103615b4cb0217e0aa385",
+    "standalone/mining-service/cloudflare/runtime.ts": "c3af8f77cd574cbad62541af81492cc314cadc7a843f9cdfade7c6c794bf3c16",
+    "standalone/mining-service/cloudflare/wrangler.196-test.jsonc": "dac36141533d01412f6210d65070a2799eaf60decd17e350f0d4e927d3cab957",
+    "standalone/mining-service/cloudflare/wrangler.test.jsonc": "f377a7a99cdf7f43810c0aef27fb0bd0eeded5c41c9352de24bcef12d5991a36",
+    "standalone/mining-service/package.json": "d71270c0399371596e368c8f9be6f917a66c32b3fec9cf07ece514494a489a8d",
+    "standalone/mining-service/test/http-config.test.ts": "2ab2850f5324962443516433b40bf2cfcc03f3d413df2e48042039b9781e6b52",
+    "standalone/mining-service/test/retirement-runtime.mjs": "5dee42d61e1a881564761ffe733b9e837e8dce875733287b0c6b363a148198fe",
+    "standalone/orders/CLOUDFLARE.md": "bf517009bc48d437e64acd26e1840bf0255920633045304863e032a77581982b",
+    "standalone/orders/cloudflare/config.ts": "2b48d0fa57ddb25ce6334f256fa16d48a2864a3049b1e5b5a1ae2084e9f494ca",
+    "standalone/orders/cloudflare/index.ts": "03e4dda34b29a04f7daa1325f4e9f3754de200b52ba5de1c45a419850400cdb1",
+    "standalone/orders/cloudflare/runtime.ts": "adfba64173977b60f3f15a08a8a76097da780e3d8990fbb4e46f4420f1826eb1",
+    "standalone/orders/cloudflare/wrangler.test.jsonc": "c20b2c800711dd4fc8eb2d6e33151c33e018f21f1a499b88d02555dd0b39ab98",
+    "standalone/orders/src/config.ts": "f24282e0a558917a1b28d9a2b2779015d4eac155cf80af4eab7ac2b993ff229e",
+    "standalone/orders/src/http.ts": "80ec939917d1837c7487d448399cd4eee060978464fa3e20514c851ae21dbfdd",
+    "standalone/orders/test/cloud-config.test.ts": "6af15cd6ef0092bf904f096a43ed070b2770727ab286600446ef89ee97505970",
+    "standalone/orders/test/cloudflare-runtime.mjs": "6e6698ac0a0477e8d4fd5099ca5398a9a043a58a6cc1fff0e9b340d028440b99",
+    "standalone/orders/test/http-body.test.ts": "763905fd7409a2facbb8ddca7a47e47e553b46321914a4ad28b4339afc392c64",
+    "standalone/web/package.json": "9e22de0baf0ea0a980dc424f736f32eb08562f1443781c6f13aa24701d4975a7",
+    "standalone/web/src/components/Header.tsx": "f4cfb4c658f1b4ce3e90801ae4f79cef23b40f851cf04d3a26746c7b123f1fa5",
+    "standalone/web/tests/unifiedNavigation.test.tsx": "b9de715fffb08fbe4a61243c4ede6e1bf101f9cd37f638db1fbb607bb6069d77",
+    "standalone/worker/package.json": "37ace27e988f1d5e24f4e6fbe9a3178470b847b738f1c616d4902be16e5b8615",
+    "standalone/worker/src/index.ts": "ad7af126e1eef3a8209c79f80a35d8bb4fe6a3c9dd1fc64c785f9c5fe300faa8",
+    "standalone/worker/test/mining196-profile.test.ts": "ebb5506c4ed140e313412f88b594bb66e3c712c48be414c478fe734d4dd952bf",
+    "standalone/worker/test/network-profile.test.ts": "407e070b6249cc31ada460f537be731cf2b511b1057480529ba6b4ba26df0c78",
+    "standalone/worker/test/unified-mount.test.ts": "a420c953dd8a4f257001d11333665f092d6e8f9e3d19082ae1a22587007a6c4d",
+    "standalone/worker/wrangler.1952-test.jsonc": "51f53dcb44cf7233e6d44a8fc144a0cc84baa3f55fc62855020c52880cf13c07",
+    "standalone/worker/wrangler.196-mining-test.jsonc": "2783d9dc7bba17c45418e6daff5aaa6f6b701df54eaf73512742cdd46ccdc08e",
+    "standalone/worker/wrangler.fragments-196-test.jsonc": "60da3c395ceccdd2ff390cf4855faf90778930e417201cb36f855bd87913c47b",
+    "standalone/worker/wrangler.jsonc": "0662644269f00e1caeb9e58a8a5565708c5c594d69e7d93cba9f0838b6ba40a9",
+    "standalone/worker/wrangler.unified-196-test.jsonc": "3b9c409e38e573be416d46493221aa8a86a9f1fc0e3d6aa14694b203e8092f3d",
+    "deployments/domain-soda-ignix-bot.json": "49f78345d44aafd5ab5da56cf071a3d6ca3e2ecfb342ecb7a12adb878a9fa447",
+    "deployments/xlayer-test/service-retirement-2026-10-21/README.md": "0b363a4ed20ef916902f93a3a71ef6a470e1fb9760cf65864b81d56547e2b459",
+    "deployments/xlayer-test/service-retirement-2026-10-21/release.json": "603b9e3003da58ac22ef6b32b0252eca67143c0123709e39e039de36c134ffa7",
+    ".github/workflows/tag_and_release.yml": "8962318782f4b0ca51c2a58b72c1937dedd3e6e224c53ecb20bc01c04ab42b80",
+    "deployments/xlayer-production/README.md": "b3b4c0eec4129503c3e43c4074c742fa18fe75479cb5276c5d65443aaa7e05e6",
+    "deployments/xlayer-production/preflight-2026-10-22.json": "08980ccea3a9b2d4eb0f1013c2d5a2342fc12b6b9c70f5bbd55361bb9b2d9863"
+  }
+}

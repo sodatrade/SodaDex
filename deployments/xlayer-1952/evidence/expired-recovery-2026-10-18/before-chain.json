@@ -1,0 +1,17 @@
+{
+  "capturedAt": "2026-10-18T02:28:00.848Z",
+  "readOnly": true,
+  "chainId": 1952,
+  "block": {
+    "number": "0x29cd159",
+    "hash": "0x53c30d7d9e6ef48fccf023d68a2fa337d42a602c7502efdcadaa6b03aa229f46",
+    "timestamp": "0x6ad42eae"
+  },
+  "keeper": "0x553D8C2e637fe67C5c7AdE3810E8Bc02799D41D4",
+  "latestNonce": 23,
+  "pendingNonce": 23,
+  "oldHash": "0x0fb7c2a1a0a532e8531744e408a31422b2e0c43a93ed8847e7eec3a46707c3a5",
+  "oldReceipt": null,
+  "oldTransaction": null,
+  "keeperCode": "0x"
+}

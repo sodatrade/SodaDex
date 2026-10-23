@@ -1,7 +1,10 @@
+import { V2 } from '../../../v2-protocol'
+import { ensureDirectApproval } from './directApproval'
+import { v2Quote } from './v2Trade'
 import { decodeFunctionResult, encodeFunctionData, toHex, type Address, type Hex } from 'viem'
 import { CHAIN_ID } from '../domain/assets'
 import { refreshPool, poolKey } from '../liquidity/pools'
-import type { LiquidityPool } from '../liquidity/types'
+import type { AnyPool } from '../liquidity/v2Types'
 import { hexQuantity, rpc } from '../lib/rpc'
 import { v3QuoterAbi, v4QuoterAbi } from './abis'
 import { ensureApprovals } from './approvals'
@@ -19,7 +22,7 @@ export type { PoolExactOutputQuote } from './poolExactOutputTypes'
 
 /** Revalidates the selected own pool, then asks its fixed Quoter for input needed for exact output. */
 export async function getPoolExactOutputQuote(
-  pool: LiquidityPool, zeroForOne: boolean, amountOut: bigint,
+  pool: AnyPool, zeroForOne: boolean, amountOut: bigint,
   slippageBps = Number(SLIPPAGE_BPS), read: PublicRpc = rpc,
 ): Promise<PoolExactOutputQuote> {
   assertTradePool(pool)
@@ -32,7 +35,9 @@ export async function getPoolExactOutputQuote(
   if (verified.id.toLowerCase() !== pool.id.toLowerCase()) throw new TradeError('tradeQuoteChanged')
   const block = toHex(hexQuantity(await read('eth_blockNumber')))
   let amountIn: bigint
-  if (verified.protocol === 'v3') {
+  if (verified.protocol === 'v2') {
+    amountIn = await v2Quote(verified, zeroForOne, amountOut, true, read, block)
+  } else if (verified.protocol === 'v3') {
     const [input, output] = poolTradeCurrencies({ pool: verified, zeroForOne })
     const data = encodeFunctionData({ abi: v3QuoterAbi, functionName: 'quoteExactOutputSingle', args: [{
       tokenIn: input.address, tokenOut: output.address, amount: amountOut, fee: verified.fee, sqrtPriceLimitX96: 0n,
@@ -52,7 +57,8 @@ export async function getPoolExactOutputQuote(
 
 /** Standard non-FOT/non-rebasing assets only. The reviewed exact output and maximum spend never change. */
 export async function executePoolExactOutput(review: PoolExactOutputQuote, c: ExecutionContext): Promise<Hex> {
-  const { read, assertCurrent, progress, send } = createExecutionSession(c)
+  const session = createExecutionSession(c)
+  const { read, assertCurrent, progress, send } = session
   buildPoolExactOutput(review, c.identity.address, 1n)
   progress('tradePreparing')
   const refresh = async (): Promise<void> => {
@@ -64,7 +70,9 @@ export async function executePoolExactOutput(review: PoolExactOutputQuote, c: Ex
   let deadline = (await latestTimestamp(read)) + DEADLINE_SECONDS
   assertCurrent()
   const [input] = poolTradeCurrencies(review)
-  if (!input.native) {
+  if (!input.native && review.pool.protocol === 'v2') {
+    await ensureDirectApproval(session, c.identity.address, input.address, V2.router, review.maximumIn)
+  } else if (!input.native) {
     const expiration = await ensureApprovals({ owner: c.identity.address, token: input.address,
       amount: review.maximumIn, expiry: deadline, read, assertCurrent,
       send: async (to: Address, data: Hex, stage) => { await send({ from: c.identity.address, to, data, value: '0x0' }, stage, 'approval') },

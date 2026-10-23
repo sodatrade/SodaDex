@@ -1,0 +1,88 @@
+{
+  "classification": "change request",
+  "previousHead": "923ecab6a74eed81ed6d8823725df9941c233233",
+  "retiredSources": [
+    {
+      "path": "contracts/mining-rehearsal/foundry.toml",
+      "sha256": "2005eb0272610f0551820ada9b173aed1dff70eb54958e01c101516b633bb19d"
+    },
+    {
+      "path": "contracts/mining-rehearsal/patches/fabx-history-v2.json",
+      "sha256": "6b2a38af7bda6403fb2d4ba17230a01277ca8f98a0f950ed18f982652d416b11"
+    },
+    {
+      "path": "contracts/mining-rehearsal/patches/fabx-history-v2.patch",
+      "sha256": "1cb8e9c16d9425b357aea5eaa33be697ccbd8b3839126b963fa7cd97f25552b1"
+    },
+    {
+      "path": "contracts/mining-rehearsal/patches/fabx-paid-rewards-v1.json",
+      "sha256": "aef8c7a7e197bf52500bda2d174a5288d604e499368a8daf11990499bac9e351"
+    },
+    {
+      "path": "contracts/mining-rehearsal/patches/fabx-paid-rewards-v1.patch",
+      "sha256": "e8fec71075f60ae10f4418f12e13a59afc59104ac5ff24ab4ecaa042488f9939"
+    },
+    {
+      "path": "contracts/mining-rehearsal/script/PrepareFabx1952.s.sol",
+      "sha256": "5c0d7eaf430b6dad23190733927ec880c1705f99f658f797dd73a12aaa8a30d0"
+    },
+    {
+      "path": "contracts/mining-rehearsal/src/FabxHistoryMath.sol",
+      "sha256": "28507577f2e2f6679721fea3dc39c3fe57dc0a9a0ca27ffa26d68e4d9d8f6ece"
+    },
+    {
+      "path": "contracts/mining-rehearsal/src/FabxRewardHistory.sol",
+      "sha256": "17faccc39ac722c61069387ed0aaf7c012abc3edcc41a95aeb22f0e9dc095975"
+    },
+    {
+      "path": "contracts/mining-rehearsal/test/FabFragmentRealIntegration.t.sol",
+      "sha256": "2c2de67556d113efd9d4eaabaea6e537b94493a82209cae2d18d52c6f22e9ad3"
+    },
+    {
+      "path": "contracts/mining-rehearsal/test/FabMiningFullLaunch.t.sol",
+      "sha256": "a8ab2da9abd0d2afe9d0612c8f594cf69e318e8986cdf8088ce470d35351ee17"
+    },
+    {
+      "path": "contracts/mining-rehearsal/test/FabMiningRealIntegration.t.sol",
+      "sha256": "606dfbb7f38fc868f263bf8b584a0e9708c2d81d8adf48a31c62b2df97fe7851"
+    },
+    {
+      "path": "contracts/mining-rehearsal/test/FabxChallengeFixture.sol",
+      "sha256": "14ce10e20f2b4fb748bf2ea60f64200cc393f421ab0e83ea35297141c5a680eb"
+    },
+    {
+      "path": "contracts/mining-rehearsal/test/FabxDependencies.t.sol",
+      "sha256": "6e9806d4fe8f458f009384850fc6214cc658b329c2e30b044d9ae5f1ea41bb6d"
+    },
+    {
+      "path": "contracts/mining-rehearsal/test/FabxHistoryMath.t.sol",
+      "sha256": "c044656bb4c7af98a5bfc5a5c7701570ef8095d1b8c243fac426a5ec06f29e89"
+    },
+    {
+      "path": "contracts/mining-rehearsal/test/FabxPaidRewards.t.sol",
+      "sha256": "8adb61d4be3c1ce3db8ae12469208fbe7fff116a91f68dc200875f5abc28d7d0"
+    },
+    {
+      "path": "contracts/mining-rehearsal/test/FabxPaidRewardsInvariant.t.sol",
+      "sha256": "46e6262e5fea5409b3ada5fa5502ab64be4c20e1b6084fb10044e1ecfbf81b80"
+    },
+    {
+      "path": "contracts/mining-rehearsal/test/FabxRewardHistory.t.sol",
+      "sha256": "fd7936b63f07156b022f60568ebcbe811218b49a5de6fb30d3d4e1e4c8e414ce"
+    },
+    {
+      "path": "contracts/mining-rehearsal/test/MiningLaunchAbi.sol",
+      "sha256": "3db5e92631744f8c6d39b0408c1a07b87ca7f76a9bb8484a8b000f8053b0bf53"
+    },
+    {
+      "path": "contracts/mining-rehearsal/test/MiningProductAbi.sol",
+      "sha256": "e152893e6b60be7c19f712314218b20d8614423cb7f1d371511369f1f241993c"
+    },
+    {
+      "path": "contracts/mining-rehearsal/test/PrepareFabx1952.t.sol",
+      "sha256": "5d68d9f1c9fbe359016859463ee66336de11284830d0c58e3bfb8d6eb338733c"
+    }
+  ],
+  "historicalDeploymentRecordsPreserved": true,
+  "onchainChanges": false
+}

@@ -1,15 +1,35 @@
 import { describe, expect, it } from 'vitest'
 import { dexApi } from '../src/dex-api'
 import { FIRST_BLOCK, pools } from '../src/contracts'
+import type { ChainLog } from '../src/dex-data'
 import type { ChartResponse } from '../src/dex-chart-types'
 import { memoryStore, request } from './dex-fixtures'
-import { BASE_TIME, chartFixture, chartPath, chartSwap, Q96 } from './dex-chart-fixtures'
+import { BASE_TIME, chartHash, chartFixture, chartPath, chartSwap, Q96 } from './dex-chart-fixtures'
 async function response(path: string, source = chartFixture(), store = memoryStore()): Promise<ChartResponse> {
   const result = await dexApi(request(path), source, store)
   expect(result.status).toBe(200)
   return result.json() as Promise<ChartResponse>
 }
 describe('verified timestamp chart API', () => {
+  it('reads durable historical trades in one response without log scans or per-trade block calls', async () => {
+    const source = chartFixture(), current = FIRST_BLOCK + 5000
+    const rows = [FIRST_BLOCK + 10, FIRST_BLOCK + 4010].map(number => ({ log: chartSwap(number) as ChainLog, block: { number, hash: chartHash(number), timestamp: BASE_TIME + number - FIRST_BLOCK } }))
+    for (let i = 0; i < 2; i++) {
+      const result = await dexApi(request(chartPath()), source, memoryStore(), async () => ({ asOf: { number: current, hash: chartHash(current), timestamp: BASE_TIME + 5000 }, rows }))
+      expect(result.status).toBe(200)
+      const data = await result.json() as ChartResponse
+      expect(data.queryComplete).toBe(true); expect(data.nextCursor).toBeNull()
+      expect(data.trades).toHaveLength(2); expect(data.candles).toHaveLength(2)
+    }
+    const calls = source.mock.calls.map(([, init]) => JSON.parse(String(init?.body)))
+    expect(calls.filter(c => c.method === 'eth_getLogs')).toHaveLength(0)
+    expect(calls.filter(c => c.method === 'eth_getBlockByNumber').every(c => Number(BigInt(c.params[0])) === current)).toBe(true)
+  })
+  it('does not fall back to scanning when the configured index is unavailable', async () => {
+    const source = chartFixture()
+    const result = await dexApi(request(chartPath()), source, memoryStore(), async () => { throw Error('Index warming up') })
+    expect(result.status).toBe(502); expect(source).not.toHaveBeenCalled()
+  })
   it('returns real timestamp OHLC, signed amounts, raw volumes and per-pool V4 recipient semantics', async () => {
     const number = FIRST_BLOCK + 10
     const v3 = await response(chartPath(`&fromBlock=${FIRST_BLOCK}&toBlock=${FIRST_BLOCK + 100}`), chartFixture([chartSwap(number, 0), chartSwap(number, 1, Q96 * 2n)]))

@@ -1,0 +1,15 @@
+{
+  "observedAt": "2026-10-18T10:50:02.420232+00:00",
+  "chainId": 196,
+  "productionTouched": false,
+  "mainUrl": "https://sodadex-preview.jsmsdx2025.workers.dev/mining/#fundraising",
+  "backendService": "sodadex-mining-api-test-196",
+  "backendVersion": "c9caf615-ffd8-42f3-89db-799a3177e92e",
+  "mainVersion": "1090aeb4-33ab-4549-88f4-bc9dbbeb3a52",
+  "sourceBaseCommit": "9cee885e48e659e11c595341e88b105a045b7cc0",
+  "releaseSourceChange": "serviceBuild marker v11; no contract or business rule change",
+  "admissionEnabled": false,
+  "executionEnabled": false,
+  "keeperGasCapWei": "80000000000000",
+  "deploymentVersion": "test196-73544414"
+}

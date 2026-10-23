@@ -27,7 +27,7 @@ beforeEach(() => {
   vi.spyOn(policy, 'publicSwapsEnabled').mockReturnValue(true)
   // Display preferences and empty search do not depend on a live pool index.
   POOLS.ready = false
-  vi.spyOn(liquidity, 'listPools').mockResolvedValue([])
+  vi.spyOn(liquidity, 'listAllPools').mockResolvedValue([])
   vi.spyOn(liquidity, 'listPositions').mockResolvedValue([])
   vi.stubGlobal(
     'fetch',

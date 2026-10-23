@@ -1,0 +1,64 @@
+{
+  "capturedAt": "2026-10-18T07:52:08.524Z",
+  "chainId": 196,
+  "block": 73540888,
+  "hash": "0x9252a50056b9f7ed8da00b448eddb23fb38c5861f58e6fe0a7ad3b419e537e6c",
+  "rpc": "https://rpc.ignix.bot/rpc/196",
+  "gasPriceWei": "21000000",
+  "baseFeePerGas": "20000000",
+  "owner": "0x6ecf746b078d46391f8C425B150153212F7C0545",
+  "ownerBalanceWei": "18154796305801318",
+  "ownerNonce": "39",
+  "contracts": {
+    "wrappedNative": {
+      "address": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+      "codeBytes": 3474,
+      "keccak256": "0xde187307e119db7066ef4d8d154ba1617313e4c9a410c70378abe475cd2cffd2",
+      "unchangedFromPriorRead": true
+    },
+    "permit2": {
+      "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+      "codeBytes": 9152,
+      "keccak256": "0xe2fbd4d9ddf7f3f1a2b804e92988cb7075e72967945e1f4d53f72a0767b161ab",
+      "unchangedFromPriorRead": true
+    },
+    "v4PoolManager": {
+      "address": "0x6B5C32aD97EB42230138e02a21B0E6d811FD713D",
+      "codeBytes": 24009,
+      "keccak256": "0x8ecda25d1d6a78ff07f58d913c24f9550115e5d1a755f7d9b3c1c536fffa3267",
+      "unchangedFromPriorRead": true
+    },
+    "v4PositionManager": {
+      "address": "0x1f85377930011B701dd2940c526e32FD3aDaB730",
+      "codeBytes": 20078,
+      "keccak256": "0x7574b6b2a0ac39fdec2d901d7a946100a9c17db054e80d7a8d7e02dde79099bb",
+      "unchangedFromPriorRead": true
+    },
+    "v4Descriptor": {
+      "address": "0x1d59446D84e2470015dC926d9dF7d83A2395d264",
+      "codeBytes": 14852,
+      "keccak256": "0x39b4211b08060ae4b2c271b803502d6a93810662273db1c8ff3a32a3cba0a010",
+      "unchangedFromPriorRead": true
+    },
+    "v4Quoter": {
+      "address": "0x7a188D4C46C9FE045A5875FecaeF9Bf00e4521fF",
+      "codeBytes": 6118,
+      "keccak256": "0x8c1f63d113a69e0fabeb2acc9c2013bffb3da29dc27a87b1ca6933633600669e",
+      "unchangedFromPriorRead": true
+    },
+    "v4StateView": {
+      "address": "0x7991D4a8493b9709365cD079DfFc75e790007874",
+      "codeBytes": 3531,
+      "keccak256": "0x9c36a01342d31033391ace44a9fe557981150cecd310f1e4e09a348f68769a5d",
+      "unchangedFromPriorRead": true
+    }
+  },
+  "calls": {
+    "poolManager": "0x6B5C32aD97EB42230138e02a21B0E6d811FD713D",
+    "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+    "wrappedNative": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+    "l1Fee40k": "0",
+    "operatorFee8m": "0"
+  },
+  "priorCapturedAt": "2026-10-18T06:36:48.371Z"
+}

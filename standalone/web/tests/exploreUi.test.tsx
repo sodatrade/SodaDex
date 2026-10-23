@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type { ReactElement } from 'react'
-import { toHex } from 'viem'
+import { toHex, type Address } from 'viem'
 import { describe, expect, it, vi } from 'vitest'
 import { STABLE_ADDRESS } from '../src/domain/assets'
 import { ExplorePage } from '../src/features/explore/ExplorePage'
@@ -22,6 +22,51 @@ function mount(ui: ReactElement): void {
   render(<QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } })}><PreferencesProvider>{ui}</PreferencesProvider></QueryClientProvider>)
 }
 describe('Explore user paths', () => {
+  it('caps all combined global search results at ten and keeps the official entry reachable', async () => {
+    vi.spyOn(reference, 'getReferenceTokens').mockResolvedValue(Array.from({ length: 23 }, (_, i) => ({ ...referenceToken,
+      address: `0x${(i + 1).toString(16).padStart(40, '0')}` as Address, symbol: `TOKEN${i}`, name: `Token ${i}` })))
+    vi.spyOn(market, 'getPools').mockResolvedValue({ schemaVersion: 1, chainId: 196, asOf: referencePools.asOf,
+      coverage: { fromBlock: 1, toBlock: 10, complete: true, nextFromBlock: null }, pools: [] })
+    const user = userEvent.setup(), onReference = vi.fn()
+    mount(<GlobalSearchDialog onClose={vi.fn()} onAsset={vi.fn()} onPool={vi.fn()} onReference={onReference} onToken={vi.fn()} />)
+    await screen.findByRole('button', { name: '下一页' })
+    expect(document.querySelectorAll('.global-search-results .asset-option')).toHaveLength(10)
+    await user.click(screen.getByRole('button', { name: '下一页' }))
+    expect(document.querySelectorAll('.global-search-results .asset-option')).toHaveLength(10)
+    await user.click(screen.getByRole('button', { name: '下一页' }))
+    expect(document.querySelectorAll('.global-search-results .asset-option').length).toBeLessThanOrEqual(10)
+    await user.click(screen.getByRole('button', { name: /查看官方池只读数据/ }))
+    expect(onReference).toHaveBeenCalledOnce()
+    await user.type(screen.getByLabelText('搜索名称、代号或地址'), 'TOKEN0')
+    expect(document.querySelectorAll('.global-search-results .asset-option')).toHaveLength(1)
+  })
+  it('pages the catalog and resets to the first page when filtering by a token', async () => {
+    vi.spyOn(reference, 'getReferenceTokens').mockResolvedValue(Array.from({ length: 23 }, (_, i) => ({ ...referenceToken,
+      address: `0x${(i + 1).toString(16).padStart(40, '0')}` as Address, symbol: `TOKEN${i}`, name: `Token ${i}` })))
+    const onToken = vi.fn(), user = userEvent.setup()
+    mount(<TokenList onToken={onToken} />)
+    await screen.findByRole('button', { name: '下一页' })
+    expect(screen.getAllByRole('row')).toHaveLength(11)
+    await user.click(screen.getByRole('button', { name: '下一页' }))
+    expect(screen.getAllByRole('row')).toHaveLength(11)
+    await user.type(screen.getByLabelText('搜索名称、符号或地址'), 'TOKEN22')
+    expect(screen.getAllByRole('row')).toHaveLength(2)
+    await user.click(screen.getByRole('button', { name: /TOKEN22/ }))
+    expect(onToken).toHaveBeenCalledWith(`0x${(23).toString(16).padStart(40, '0')}`)
+    expect(screen.queryByRole('navigation', { name: '分页' })).not.toBeInTheDocument()
+  })
+  it('keeps every official pool reachable while rendering at most ten per page', async () => {
+    vi.spyOn(reference, 'getReferencePools').mockResolvedValue({ ...referencePools, pools: Array.from({ length: 23 }, (_, i) => ({ ...referencePool,
+      id: `0x${(i + 1).toString(16).padStart(40, '0')}`, address: `0x${(i + 1).toString(16).padStart(40, '0')}` as Address })) })
+    const user = userEvent.setup(); mount(<ReferencePoolsPanel />)
+    await screen.findByRole('button', { name: '下一页' })
+    expect(screen.getAllByRole('article')).toHaveLength(10)
+    await user.click(screen.getByRole('button', { name: '下一页' }))
+    expect(screen.getAllByRole('article')).toHaveLength(10)
+    await user.click(screen.getByRole('button', { name: '下一页' }))
+    expect(screen.getAllByRole('article')).toHaveLength(3)
+    expect(screen.getByRole('button', { name: '下一页' })).toBeDisabled()
+  })
   it('searches a de-duplicated official catalog by symbol and complete address', async () => {
     vi.spyOn(reference, 'getReferenceTokens').mockResolvedValue([referenceToken, { ...referenceToken, address: '0x1111111111111111111111111111111111111111', symbol: 'XYZ', name: 'Token XYZ' }])
     const onToken = vi.fn(), user = userEvent.setup()

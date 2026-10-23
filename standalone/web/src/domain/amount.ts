@@ -1,3 +1,4 @@
+import { compactTinyDecimal } from './compactDecimal'
 export type AmountError =
   | { code: 'amountInvalid' | 'amountZero' | 'amountTooLarge' | 'amountInsufficient' }
   | { code: 'amountPrecision'; decimals: number }
@@ -36,7 +37,7 @@ export function formatBalance(units: bigint, decimals = 18): string {
   const whole = units / scale
   const fraction = (units % scale).toString().padStart(decimals, '0').slice(0, 6).replace(/0+$/, '')
   if (whole === 0n && !fraction) {
-    return '< 0.000001'
+    return compactTinyDecimal(`0.${(units % scale).toString().padStart(decimals, '0')}`) ?? '0'
   }
   return fraction ? `${whole}.${fraction}` : whole.toString()
 }

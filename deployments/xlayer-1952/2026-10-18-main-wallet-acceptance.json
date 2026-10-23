@@ -1,0 +1,214 @@
+{
+  "schemaVersion": 1,
+  "status": "complete-main-site-wallet-acceptance",
+  "chainId": 1952,
+  "capturedAt": "2026-10-18T04:02:03.887Z",
+  "requirement": "mining-products-1952",
+  "approval": "2026-10-18-main-wallet-retest-approved-plan.json",
+  "frontend": {
+    "url": "https://sodadex-preview.jsmsdx2025.workers.dev/mining/",
+    "sourceCommit": "d05ee016201a46aaac6a6d4cfcfd5513a77e7a48",
+    "versionId": "0f582b7b-277d-4c35-ae4e-5e398a422973",
+    "redeployedInThisStage": false
+  },
+  "service": {
+    "worker": "sodadex-mining-api-test-1952",
+    "sourceCommit": "53e04c8cee8453b2535f652d4ff135691b309c73",
+    "versionId": "539078bd-d4aa-476f-bf65-e3d075879d60",
+    "serviceBuild": "online-1952-20261018-v8-unified-retest",
+    "maxProjects": 4,
+    "maxProjectsPerWallet": 2,
+    "schemaMigration": false,
+    "keysChanged": false,
+    "ledgerReset": false
+  },
+  "wallet": {
+    "address": "0xe57f88c05810a9ad2b27f216665260c2d9f2b2da",
+    "interface": "Actual Google Chrome + OKX extension on the unified public main frontend",
+    "businessTransactions": 34,
+    "nonceFirst": 156,
+    "nonceLast": 189,
+    "canonicalSucceeded": 34,
+    "newWalletCreated": false,
+    "confirmationAttribution": {
+      "observedAgentFinalConfirmNonces": [
+        174
+      ],
+      "otherWalletFinalConfirmations": "unobserved; no actor inferred from receipts"
+    },
+    "authorization": "User authorized autonomous confirmations for this approved valueless 1952 test workflow. Chain receipts do not establish who clicked unobserved wallet prompts."
+  },
+  "transactionCounts": {
+    "wallet": 34,
+    "ownerPreparation": 2,
+    "keeper": 7,
+    "totalCanonicalSucceeded": 43
+  },
+  "project": {
+    "symbol": "TEST-MAIN",
+    "token": {
+      "address": "0x5c5018Ee76aBE07A2d1a9197865606864d315cEf",
+      "runtimeKeccak256": "0xd9e795626672ef48d8e7a7cc3bd904713b4fe71f7611a1fdc391f7354e399a4b"
+    },
+    "vault": {
+      "address": "0x321e67c6b41694ee2908912294477ed52b2C138a",
+      "runtimeKeccak256": "0x331af0ffddbf7500d49110108138b6c47bfd81a51bdad75148d72039ff79c767"
+    },
+    "holder": {
+      "address": "0x65bd595A5688d4d0A03dE34ee0b53D5F98E712Ef",
+      "runtimeKeccak256": "0x6346eb686bccaf3b8daf0ebc1afb2a9c3e7c1659aaa9f220f15bd44eb23e3b7e"
+    },
+    "pair": {
+      "address": "0x77c20d8909C8bBE6F15c9710983e96D1c26bE939",
+      "runtimeKeccak256": "0x5b83bdbcc56b2e630f2807bbadd2b0c21619108066b92a58de081261089e9ce5"
+    }
+  },
+  "coverage": {
+    "fragmentation": {
+      "swapFeeAllocationMatches": true,
+      "lpFeeRetainedInReserves": true,
+      "depositNFT5": true,
+      "fabToFragments": true,
+      "fragmentsToFab": true,
+      "addLiquidity": true,
+      "harvest": true,
+      "positiveHolderDividend": true,
+      "positiveLpDividend": true,
+      "removeLiquidity": true,
+      "lpClosedToInitialZero": true,
+      "redeemNFT5": true,
+      "nft5ReturnedToWallet": true,
+      "canonical": true
+    },
+    "fundraising": {
+      "canonical": true,
+      "created": true,
+      "curveBuy": true,
+      "curveSell": true,
+      "graduated": true,
+      "postBuy": true,
+      "postSell": true,
+      "addedLiquidity": true,
+      "removedAllLiquidity": true,
+      "swapWhileHoldingLp": true,
+      "constantProductIncreasedFromSwap": true,
+      "burnOneToken": true,
+      "creditExactlySevenDays": true,
+      "holderWeightIncludesCredit": true,
+      "positiveHolderDividend": true,
+      "taxConverted": true,
+      "taxSynced": true,
+      "fundedExistingFarm": true,
+      "existingFarmRemainsFour": true,
+      "nativeTestOkbToFab": true
+    },
+    "history": {
+      "expectedWalletChain": true,
+      "continuousNonce156to189": true,
+      "allCanonicalSucceeded": true,
+      "allHistoryRowsSuccessful": true,
+      "beforeHashesMatchChain": true,
+      "reloadHashesMatchChain": true,
+      "reconnectHashesMatchChain": true
+    }
+  },
+  "outcomes": {
+    "nft5Owner": "0xe57f88C05810A9ad2B27f216665260C2D9F2B2dA",
+    "nft5SharesMintedAndRedeemedRaw": "6000000000000000000000",
+    "fragmentLpBalanceRaw": "0",
+    "projectLpBalanceRaw": "0",
+    "fragmentHolderDividendFabRaw": "605724941",
+    "fragmentLpDividendFabRaw": "295316",
+    "projectHolderDividendFabRaw": "277017069",
+    "totalThreeExplicitDividendClaimsFabRaw": "883037326",
+    "nft5HistoricalYieldSettledOnDepositFabRaw": "5054156048",
+    "nativeSwapInputWei": "1000000000000",
+    "nativeSwapFabReceivedRaw": "994280154",
+    "projectFarmContributionFabRaw": "5052007142",
+    "projectFarmPendingFabRaw": "0",
+    "taxConvertedTokenRaw": "399720495134067707889",
+    "taxConvertedFabRaw": "996698",
+    "convertedTaxFarmFabRaw": "986731",
+    "convertedTaxProtocolPayableFabRaw": "9967",
+    "activeBurnCreditRaw": "1000000000000000000",
+    "projectTokenBalanceRaw": "800039372328923831406474723",
+    "projectWeightRaw": "800039373328923831406474723",
+    "existingFarmMinerCount": 4,
+    "newMinerPurchases": 0
+  },
+  "budget": {
+    "approved": {
+      "stageGasWei": "1755000000000000",
+      "walletGasWei": "1500000000000000",
+      "preparationGasWei": "5000000000000",
+      "additionalKeeperGasWei": "250000000000000",
+      "principalFabRaw": "600000000000",
+      "principalNativeWei": "2000000000000"
+    },
+    "actual": {
+      "actualGasWei": {
+        "wallet": "812989981298990",
+        "preparation": "1105260055263",
+        "keeper": "93095064654753"
+      },
+      "totalActualGasWei": "907190306009006",
+      "remainingWei": {
+        "wallet": "687010018701010",
+        "preparation": "3894739944737",
+        "keeper": "156904935345247"
+      },
+      "nativePrincipalWei": "1000000000000",
+      "walletGrossFabOutRaw": "510506348276",
+      "ownerFabTopupRaw": "430174051289",
+      "keeperFundingWei": "200000000000000"
+    },
+    "keeperSpentBaselineWei": "440714882004243",
+    "keeperFinalBudget": {
+      "capWei": "690714882004243",
+      "spentWei": "533809946658996",
+      "reservedWei": "0"
+    },
+    "allCapsPassed": true,
+    "gasAllocationNotExpense": "Keeper funding of 0.0002 TEST-OKB is an allocation; actual canonical receipt gas is counted once.",
+    "fabPrincipalAccounting": "Gross outward wallet FAB transfers, including LP input before its refund; no recycling of proceeds into the limit."
+  },
+  "validation": {
+    "canonicalReceiptsPassed": true,
+    "businessEventAndBalanceChecksPassed": true,
+    "uiHashesMatchCanonicalReceipts": true,
+    "historySurvivesReloadAndReconnect": true,
+    "latestAndPendingNoncesMatch": true,
+    "serviceTestsPassed": 92,
+    "serviceTestFilesPassed": 9,
+    "serviceTestsSkipped": 0,
+    "serviceTypecheckPassed": true,
+    "serviceLintPassed": true,
+    "serviceCloudflareDryRunPassed": true,
+    "frontendScope": "Unchanged deployed frontend; earlier unit/build/responsive checks remain in frontend-unified-mining.json. This stage adds real browser wallet and independent chain evidence."
+  },
+  "evidence": {
+    "receipts": "2026-10-18-main-wallet-receipts.json",
+    "directory": "evidence/main-wallet-2026-10-18",
+    "manifest": "evidence/main-wallet-2026-10-18/manifest.json"
+  },
+  "limitations": [
+    "The first receipt scan returned stale pending nonces. It is preserved unchanged with noPendingNonceGap=false; pending-fresh.json separately proves wallet190/190, owner152/152 and keeper34/34 at a later canonical snapshot.",
+    "The first fundraising verifier incorrectly expected a zero-address burn. The initial failed evidence is preserved; the corrected verifier checks the source-defined DEAD transfer and actual credit event. No product change was made.",
+    "Burn credit is created by transferring 1 token to DEAD. ERC20 totalSupply does not decrease. Holding decreases by1 while credit increases by1, so this action alone does not increase absolute weight.",
+    "The public chain has not elapsed seven days; expiry boundary coverage remains in the earlier local contract tests.",
+    "Existing farm has four of four miners. This round reuses them and does not claim a new miner purchase.",
+    "History is a local main-origin journal of up to100 entries. Its saved statuses are supplemented by independent canonical receipts. Historical old-domain entries are not auto-imported.",
+    "Previously accrued NFT income on deposit is separate from the three dividend claims. Accrual may continue after claims and snapshots.",
+    "Project LP fee evidence proves a swap while LP was held and increased reserve product, not net LP profit.",
+    "There are now four registered projects, the approved admission cap. New issuance needs separately approved capacity; existing trading and positions remain available."
+  ],
+  "productionContractsModified": false,
+  "chain196Writes": false,
+  "gitTarget": {
+    "repository": "sodatrade/SodaDex",
+    "branch": "codex/feat/mining-products-1952",
+    "pr": 2,
+    "draft": true,
+    "merged": false
+  }
+}

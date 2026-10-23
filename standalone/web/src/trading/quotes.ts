@@ -59,6 +59,7 @@ export async function getQuote(
   if (!ready) throw new TradeError('tradeNotReady')
   assertPair(form)
   if (hexQuantity(await read('eth_chainId')) !== BigInt(CHAIN_ID)) throw new TradeError('tradeUnavailable')
+  if (preference === 'v2') throw new TradeError('tradeUnsupported')
   if (preference !== 'auto') return quoteRoute(form, preference, read)
   const candidates = await Promise.allSettled([quoteRoute(form, 'v4', read), quoteRoute(form, 'v3', read)])
   const routes = candidates.flatMap((result) => (result.status === 'fulfilled' ? [result.value] : []))

@@ -1,23 +1,23 @@
-.limit-panel { position: relative; padding: 20px; border-radius: 16px; min-width: 0; }
+.limit-panel { position: relative; padding: 24px; border-radius: var(--soda-radius-card); min-width: 0; }
 .limit-panel > .limit-refresh { position: absolute; top: 10px; right: 12px; width: 44px; padding: 0; }
-.trade-order-column:has(> .workspace-tabs) .limit-panel { position: static; }
 .limit-panel > h2 { font-size: 20px; margin: 0 0 10px; font-weight: 620; letter-spacing: -.4px; }
 .limit-panel form { display: grid; gap: 12px; margin-top: 18px; }
 .limit-panel form > label { display: grid; gap: 8px; font-size: 11px; color: var(--soda-muted); min-width: 0; }
-.limit-panel input, .limit-panel select { min-width: 0; max-width: 100%; width: 100%; min-height: 44px; border: 1px solid var(--soda-line); background: var(--soda-field); color: var(--soda-text); padding: 11px 12px; border-radius: 9px; font-size: 12px; }
+.limit-panel input, .limit-panel select { min-width: 0; max-width: 100%; width: 100%; min-height: 44px; border: 1px solid var(--soda-control-line); background: var(--soda-surface); color: var(--soda-text); padding: 11px 12px; border-radius: 9px; font-size: 12px; }
 .limit-panel select { text-overflow: ellipsis; }
 .limit-panel .button, .order-list .button, .order-submission .button, .order-primary { min-height: 44px; font-size: 12px; }
 .limit-panel .order-primary { min-height: 48px; font-size: 14px; font-weight: 600; }
 .order-primary { width: 100%; margin-top: 8px; }
-.limit-amount-field { border: 1px solid transparent; padding: 14px 16px; border-radius: 12px; background: var(--soda-field); min-width: 0; }
-.limit-amount-field:focus-within { border-color: var(--soda-highlight); box-shadow: 0 0 0 2px var(--soda-accent-dim); }
+.limit-panel input:focus-visible, .limit-panel select:focus-visible { border-color: var(--soda-focus); outline: none; }
+.limit-amount-field { border: 1px solid var(--soda-control-line); padding: 14px 16px; border-radius: 12px; background: var(--soda-surface); min-width: 0; }
+.limit-amount-field:focus-within { border-color: var(--soda-focus); }
 .limit-amount-field > label { color: var(--soda-muted); font-size: 11px; display: block; line-height: 1.5; margin-bottom: 8px; }
 .limit-amount-row { display: flex; min-width: 0; align-items: center; gap: 8px; }
-.limit-panel .limit-amount-row input { min-width: 0; flex: 1; width: 0; min-height: 48px; background: transparent; border: 0; padding: 0; font-size: 30px; font-weight: 550; letter-spacing: -.8px; font-variant-numeric: tabular-nums; outline: 0; }
+.limit-panel .limit-amount-row input { min-width: 0; flex: 1; width: 0; min-height: 48px; background: transparent; border: 0; padding: 0; font-size: 30px; font-weight: 550; letter-spacing: -.8px; font-variant-numeric: tabular-nums; outline: 0; text-align: right; }
 .limit-panel .limit-amount-row input::placeholder { color: var(--soda-faint); opacity: 1; }
-.limit-amount-row .button { display: flex; align-items: center; gap: 6px; min-width: 0; max-width: 58%; padding: 7px 9px; border-radius: 24px; flex-shrink: 0; }
-.limit-amount-row .button > span:not(.asset-icon) { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; font-weight: 600; }
-.limit-amount-row .asset-icon.small { width: 25px; height: 25px; }
+.limit-amount-row .button { order: -1; display: flex; align-items: center; gap: 8px; min-width: 0; max-width: 58%; padding: 7px 4px 7px 0; border: 0; background: transparent; border-radius: 8px; flex-shrink: 0; }
+.limit-amount-row .button > span:not(.asset-icon) { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 17px; font-weight: 650; }
+.limit-amount-row .asset-icon.small { width: 30px; height: 30px; }
 .limit-amount-field .order-note { margin: 6px 0 0; font-size: 10px; }
 .order-price { display: flex; justify-content: space-between; gap: 12px; margin: 2px 0 6px; font-size: 11px; line-height: 1.6; }
 .order-price > span { color: var(--soda-muted); flex-shrink: 0; }

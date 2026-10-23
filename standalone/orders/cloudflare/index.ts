@@ -2,7 +2,7 @@ import { DurableObject } from 'cloudflare:workers'
 import { createPublicClient, http } from 'viem'
 import { FIXED } from '../src/config.ts'
 import { ViemOrderChain } from '../src/chain.ts'
-import { handleOrdersRequest, ordersError } from '../src/http.ts'
+import { handleOrdersRequest, ordersError, ORDER_IO_TIMEOUT_MS } from '../src/http.ts'
 import { OrdersKeeper } from '../src/keeper.ts'
 import { OrderRepository } from '../src/repository.ts'
 import { OrdersService } from '../src/service.ts'
@@ -27,7 +27,7 @@ export class SodaOrders extends DurableObject {
   #application(): { service: OrdersService; keeper: OrdersKeeper; pollMs: number | null } {
     const { config, signer, pollMs } = cloudConfig(this.#env)
     let requests = 0
-    const client = createPublicClient({ cacheTime: 0, transport: http(FIXED.rpcUrl, { retryCount: 0, timeout: 12_000, fetchOptions: { redirect: 'manual' }, fetchFn: async (input, init) => {
+    const client = createPublicClient({ cacheTime: 0, transport: http(FIXED.rpcUrl, { retryCount: 0, timeout: ORDER_IO_TIMEOUT_MS, fetchOptions: { redirect: 'manual' }, fetchFn: async (input, init) => {
       const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url
       if (url !== FIXED.rpcUrl || ++requests > MAX_RPC_PER_EVENT) throw Error('Orders RPC event budget exhausted')
       return fetch(input, init)
@@ -39,15 +39,15 @@ export class SodaOrders extends DurableObject {
     if (!deployed || pollMs === null || !this.#store.hasWork()) { await this.#state.storage.deleteAlarm(); return }
     if (await this.#state.storage.getAlarm() === null) await this.#state.storage.setAlarm(Date.now() + pollMs)
   }
-  fetch(request: Request): Promise<Response> {
-    return this.#serial(async () => {
-      try {
-        const { service, pollMs } = this.#application()
-        const response = await handleOrdersRequest(request, service)
-        await this.#schedule(pollMs, service.config.settlement !== null)
-        return response
-      } catch (error) { return ordersError(error) }
-    })
+  async fetch(request: Request): Promise<Response> {
+    try {
+      const { service, pollMs } = this.#application()
+      // Untrusted network input is read before acquiring the shared state/keeper queue.
+      return await handleOrdersRequest(request, service, operation => this.#serial(async () => {
+        try { return await operation() }
+        finally { await this.#schedule(pollMs, service.config.settlement !== null) }
+      }))
+    } catch (error) { return ordersError(error) }
   }
   alarm(): Promise<void> {
     return this.#serial(async () => {
