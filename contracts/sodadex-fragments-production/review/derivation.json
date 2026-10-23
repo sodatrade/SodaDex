@@ -1,0 +1,23 @@
+{
+  "frozenV5GitCommit": "c5458605bfe8888c9ac6d4dca6912f45f504900a",
+  "sourceFiles": 12,
+  "changedSourceFiles": [
+    "src/mining/FabxMinerCustody.sol",
+    "src/mining/interfaces/IFabxMining.sol",
+    "src/mining/soda/IgnixLpRewards.sol",
+    "src/mining/soda/SodaIgnixPool.sol",
+    "src/mining/soda/SodaIncentiveVault.sol",
+    "src/mining/soda/SodaRewards.sol",
+    "src/mining/soda/SodaVault.sol"
+  ],
+  "unchangedSourceFiles": [
+    "src/mining/soda/IgnixTreasuryIncome.sol",
+    "src/mining/soda/RewardLedger.sol",
+    "src/mining/soda/SodaLocker.sol",
+    "src/mining/soda/SodaPolicy.sol",
+    "src/mining/soda/SodaPool.sol"
+  ],
+  "candidateNotDeployed": true,
+  "newDeploymentOnly": true,
+  "storageUpgradeOrMigration": false
+}

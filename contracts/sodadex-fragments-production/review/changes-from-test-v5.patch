@@ -1,0 +1,172 @@
+--- contracts/sodadex-fragments/src/mining/FabxMinerCustody.sol
++++ contracts/sodadex-fragments-production/src/mining/FabxMinerCustody.sol
+@@ -25,7 +25,6 @@
+ 
+     uint256[] private _minerIds;
+     mapping(uint256 => uint256) private _indexPlusOne;
+-    mapping(uint256 => uint256) private _paidBaseline;
+     bool private _receiving;
+     uint256 private _expectedId;
+     address private _expectedFrom;
+@@ -33,13 +32,11 @@
+ 
+     event MinerAdmitted(uint256 indexed id, uint256 weight);
+     event MinerReleased(uint256 indexed id);
+-    event MiningCollected(uint256 amount, uint256 eligibleWeight);
+ 
+     error InvalidMiningBinding();
+     error IneligibleMiner();
+     error UnexpectedNft();
+     error MiningUnavailable();
+-    error InvalidPaidCounter();
+     error MinerCapacityReached();
+ 
+     constructor(
+@@ -58,8 +55,6 @@
+         ) revert InvalidMiningBinding();
+         uint256 multiplier = mining.processorMultiplier(address(collection));
+         if (multiplier == 0) revert InvalidMiningBinding();
+-        // Old FABX implementations without the actual-paid extension cannot be used.
+-        mining.paidTo(bytes32(0), address(this));
+         MINING_ASSET = asset;
+         MINING = mining;
+         MINER_NFT = collection;
+@@ -116,20 +111,15 @@
+ 
+     /// @dev A product must collect and allocate under OLD ownership before changing shares.
+     /// Historical stored dividend claims must not call this function or depend on source liveness.
+-    function _collectMining() internal returns (uint256 received, uint256 weight) {
++    function _collectMining() internal returns (uint256 weight) {
+         if (_minerIds.length != 0 && MINING.paused()) revert MiningUnavailable();
+         for (uint256 i; i < _minerIds.length; ++i) {
+             uint256 id = _minerIds[i];
+             bytes32 key = minerKey(id);
+             if (MINER_NFT.ownerOf(id) != address(this)) revert UnexpectedNft();
+             if (MINING.getMiner(key).status == 1) MINING.claim(key);
+-            uint256 cumulative = MINING.paidTo(key, address(this));
+-            if (cumulative < _paidBaseline[id]) revert InvalidPaidCounter();
+-            received += cumulative - _paidBaseline[id];
+-            _paidBaseline[id] = cumulative;
+             weight += eligibleWeight(id);
+         }
+-        emit MiningCollected(received, weight);
+     }
+ 
+     function _depositMiner(address from, uint256 id) internal returns (uint256 weight) {
+@@ -160,7 +150,6 @@
+         if (containsMiner(id) || MINER_NFT.ownerOf(id) != address(this)) revert UnexpectedNft();
+         weight = eligibleWeight(id);
+         if (weight == 0 || !admissibleMiner(id)) revert IneligibleMiner();
+-        _paidBaseline[id] = MINING.paidTo(minerKey(id), address(this));
+         _minerIds.push(id);
+         _indexPlusOne[id] = _minerIds.length;
+         emit MinerAdmitted(id, weight);
+--- contracts/sodadex-fragments/src/mining/interfaces/IFabxMining.sol
++++ contracts/sodadex-fragments-production/src/mining/interfaces/IFabxMining.sol
+@@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: MIT
+ pragma solidity ^0.8.26;
+ 
+-/// @dev ABI of the pinned FABX miner, including the separate 1952 actual-payout extension.
++/// @dev Formal FABX ABI. Does not require the independent TEST actual-payout extension.
+ interface IFabxMining {
+     struct Miner {
+         address circuits;
+@@ -33,7 +33,6 @@
+     function paused() external view returns (bool);
+     function getMiner(bytes32 key) external view returns (Miner memory);
+     function claim(bytes32 key) external;
+-    function paidTo(bytes32 key, address recipient) external view returns (uint256);
+     function processorMultiplier(address collection) external view returns (uint256);
+     function dewebWeights(bytes32 key) external view returns (uint256, uint256, uint256, uint256);
+ }
+--- contracts/sodadex-fragments/src/mining/soda/IgnixLpRewards.sol
++++ contracts/sodadex-fragments-production/src/mining/soda/IgnixLpRewards.sol
+@@ -116,6 +116,8 @@
+     }
+ 
+     function _claimFab(address account) private returns (uint256 fab) {
++        // Keep self-owned LP income reserved; a FAB self-transfer pays out nothing.
++        if (account == address(this)) revert InvalidBinding();
+         fab = _fab.take(account, balanceOf[account]);
+         if (fab != 0) FAB.safeTransfer(account, fab);
+     }
+--- contracts/sodadex-fragments/src/mining/soda/SodaIgnixPool.sol
++++ contracts/sodadex-fragments-production/src/mining/soda/SodaIgnixPool.sol
+@@ -14,7 +14,7 @@
+     }
+ 
+     function PRODUCT_VERSION() public pure override returns (bytes32) {
+-        return keccak256("SodaDEX.OKB.Fragments.v5");
++        return keccak256("SodaDEX.OKB.Fragments.Formal.v1");
+     }
+ 
+     function _recordPlatform(uint256 amount) internal override {
+--- contracts/sodadex-fragments/src/mining/soda/SodaIncentiveVault.sol
++++ contracts/sodadex-fragments-production/src/mining/soda/SodaIncentiveVault.sol
+@@ -19,6 +19,7 @@
+     using RewardLedger for RewardLedger.Book;
+ 
+     address public immutable LP_POOL;
++    /// @notice All recognized FAB, including unsolicited transfers under the approved rule.
+     uint256 public cumulativeMiningFab;
+     uint256 public cumulativeIncentiveFab;
+ 
+@@ -49,7 +50,7 @@
+     }
+ 
+     function _checkpoint() internal override {
+-        (uint256 received,) = _collectMining();
++        uint256 received = _collectFabIncome();
+         if (received == 0) return;
+         uint256 service = Math.mulDiv(received, 1000, 10000);
+         uint256 incentive = Math.mulDiv(received, 500, 10000);
+--- contracts/sodadex-fragments/src/mining/soda/SodaRewards.sol
++++ contracts/sodadex-fragments-production/src/mining/soda/SodaRewards.sol
+@@ -33,6 +33,9 @@
+ 
+     /// @notice Pays cached income to its owner. No dependency on live mining or owner pause flags.
+     function claimFor(address account) public nonReentrant returns (uint256 fab, uint256 okb) {
++        // A self-transfer cannot discharge debt: the FAB balance would not fall,
++        // and a later balance-based checkpoint would recognize the same FAB again.
++        if (account == address(this)) revert InvalidBinding();
+         fab = _fab.take(account, balanceOf(account));
+         okb = _okb.take(account, balanceOf(account));
+         if (fab != 0) FAB.safeTransfer(account, fab);
+--- contracts/sodadex-fragments/src/mining/soda/SodaVault.sol
++++ contracts/sodadex-fragments-production/src/mining/soda/SodaVault.sol
+@@ -14,10 +14,12 @@
+     using SafeERC20 for IERC20;
+     using RewardLedger for RewardLedger.Book;
+     uint256 public constant INITIAL_SHARES_PER_WEIGHT = 1000 ether;
+-    bytes32 public constant PRODUCT_VERSION = keccak256("SodaDEX.OKB.Fragments.v1");
++    bytes32 public constant PRODUCT_VERSION = keccak256("SodaDEX.OKB.Fragments.Formal.v1");
+     SodaPolicy public immutable POLICY;
+     error Slippage();
+     error InvalidAmount();
++    error InsufficientFabBacking();
++    event FabIncomeRecognized(uint256 amount, uint256 eligibleWeight);
+     event Deposited(address indexed account, uint256 indexed id, uint256 weight, uint256 shares);
+     event Redeemed(address indexed account, uint256 indexed id, uint256 shares, uint256 fee);
+ 
+@@ -91,8 +93,19 @@
+         _checkpoint();
+     }
+ 
++    /// @dev Includes third-party-triggered mining receipts and direct FAB transfers.
++    /// Existing unpaid holder income (including rounding and zero-supply reserves)
++    /// remains excluded. Claims reduce the token balance and reserved debt together.
++    function _collectFabIncome() internal returns (uint256 received) {
++        uint256 weight = _collectMining();
++        uint256 balance = FAB.balanceOf(address(this));
++        if (balance < _fab.reserved) revert InsufficientFabBacking();
++        received = balance - _fab.reserved;
++        emit FabIncomeRecognized(received, weight);
++    }
++
+     function _checkpoint() internal virtual override {
+-        (uint256 received,) = _collectMining();
++        uint256 received = _collectFabIncome();
+         if (received == 0) return;
+         uint256 service = Math.mulDiv(received, 1000, 10000);
+         uint256 soda = Math.mulDiv(received, 500, 10000);

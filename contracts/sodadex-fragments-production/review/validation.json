@@ -1,0 +1,66 @@
+{
+  "dateLosAngeles": "2026-10-22",
+  "requirement": "formal-fabx-adapter",
+  "lifecycle": "merged-unreleased",
+  "repository": "https://github.com/sodatrade/SodaDex",
+  "baseRef": "origin/main",
+  "baseSha": "d5c1a940ba8353ab8a5541f1c219362376679f23",
+  "ownerWorktree": "/Users/LevyHoo/Documents/SodaDex",
+  "targetBranch": "codex/fix/sodadex-formal-fabx-adapter",
+  "headSha": "d5c1a940ba8353ab8a5541f1c219362376679f23",
+  "changesCommitted": false,
+  "pushed": false,
+  "deployed": false,
+  "productionWrites": 0,
+  "checks": {
+    "foundry": {
+      "passed": 26,
+      "failed": 0,
+      "skipped": 0,
+      "forkTests": 3,
+      "invariantTests": 4,
+      "runsPerInvariant": 256,
+      "callsPerInvariant": 128000,
+      "handlerReverts": 0
+    },
+    "pythonPreflight": {
+      "passed": 6,
+      "failed": 0
+    },
+    "build": true,
+    "productionHighSeverityLint": true,
+    "format": true,
+    "frozenV5BytecodeReproduction": true
+  },
+  "fork": {
+    "block": 73957111,
+    "rpc": "https://rpc.xlayer.tech",
+    "mode": "local Forge EVM; remote reads only",
+    "realNftIds": [
+      1,
+      2
+    ],
+    "rejectedUnverifiedNftId": 11
+  },
+  "scannerTriage": "review/scanner-triage.json",
+  "scanners": {
+    "slitherExitCode": 255,
+    "slitherResults": 78,
+    "aderynIssueGroups": {
+      "high": 3,
+      "low": 14
+    },
+    "manualTriage": "No reproduced adapter defect found among these detector reports; not an independent audit approval.",
+    "aderynDirectRoot": "Tool crash with external vendor path; isolated identical source and dependency bytes with local vendor remappings succeeded.",
+    "slitherRawSha256": "7db462d7bb444472b6cb152b6ce7dbf1a84eff30135075dac2290859f41ed7b1",
+    "aderynRawSha256": "a0a27b58c293ae2661c30887822b931fa9629a649996468578ce51c3a240bf18"
+  },
+  "releasePrerequisites": [
+    "Independent review/audit of this candidate",
+    "Owner-approved capacity, initial price/liquidity, locker funding and gas budget",
+    "Latest dependency validation and rehearsal with final Owner nonce/parameters",
+    "Freeze and verify deployment artifacts and source commit before broadcasting"
+  ],
+  "candidateVersion": "SodaDEX.OKB.Fragments.Formal.v1",
+  "websiteBindings": "deployments/xlayer-production/fabx-website-binding-2026-10-22.json"
+}

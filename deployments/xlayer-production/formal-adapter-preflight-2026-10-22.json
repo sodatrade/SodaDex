@@ -1,0 +1,41 @@
+{
+  "capturedUtc": "2026-10-23T03:29:21.435375+00:00",
+  "chainId": 196,
+  "block": 73957111,
+  "blockHash": "0xae7beea52a5db5dab64e6cb93c871f3113b45c4b85f744ac8e560386e8ec2ead",
+  "fab": "0x72F349B1Eee7833B26f8C81a8410775A4e231ed2",
+  "mining": "0x4F6A2312D80753BdAFd35DDB1Bf4BB14C43F8265",
+  "nft": "0x87BFCa3494Aa228fF589ab9B642143A5e8c8F9a6",
+  "vaultConstructorFactory": "0x1f09daefa827f02cbb40967cc91b259763760761",
+  "miningRegistryFactory": "0x82935793a854fA2F2e8A9d2B3F17BbfBf81D6C05",
+  "processorMultiplier": 6,
+  "code": {
+    "fab": {
+      "address": "0x72F349B1Eee7833B26f8C81a8410775A4e231ed2",
+      "runtimeHash": "0x9ba3170347ad6b67f432a438fb99eac2af88599b09d6ab6b1848c1e8462e5471"
+    },
+    "mining": {
+      "address": "0x4F6A2312D80753BdAFd35DDB1Bf4BB14C43F8265",
+      "runtimeHash": "0x1969e2b8ee841a212d901592cb79f8953baab128c097223e34cbb2397d9e4530"
+    },
+    "nft": {
+      "address": "0x87BFCa3494Aa228fF589ab9B642143A5e8c8F9a6",
+      "runtimeHash": "0x57aa306fd0be97087da3534e03398f5ff4efd533b5be4e45a405ce86fa6717d5"
+    },
+    "nftOriginFactory": {
+      "address": "0x1f09daefa827f02cbb40967cc91b259763760761",
+      "runtimeHash": "0x5cddc08137fc81eb8ba1d37902e77553152c2f639b6bf6f601ecb094e2cae5c8"
+    },
+    "miningRegistryFactory": {
+      "address": "0x82935793a854fA2F2e8A9d2B3F17BbfBf81D6C05",
+      "runtimeHash": "0xf458a3f84e0201fc2a73d7587231d79d1e2e1ce079d6d68060bd2a0fd3ea3100"
+    }
+  },
+  "incomeAccounting": "FAB balance minus reserved unpaid holder liabilities",
+  "directFabTransfers": "85% holders / 10% treasury / 5% LP; approved 2026-10-22 LA",
+  "productionWrites": 0,
+  "formalSodaContracts": null,
+  "readyForOwnerBroadcast": false,
+  "source": "https://api.fabx.tech/v1/pod/mainnet",
+  "rpc": "https://rpc.ignix.bot/rpc/196"
+}

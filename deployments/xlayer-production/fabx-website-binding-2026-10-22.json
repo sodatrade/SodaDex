@@ -1,0 +1,29 @@
+{
+  "capturedUtc": "2026-10-23T03:40:47.309811+00:00",
+  "website": "https://fabx.tech/",
+  "entryAsset": "https://fabx.tech/assets/index-yX6x8BTj.js",
+  "configurationAsset": "https://fabx.tech/assets/indexed-BLINDush.js",
+  "configurationAssetSha256": "41ad1fe6ffb108183f91a44a2828f952b87b0702c79aab8e5642c44c37a151e0",
+  "embeddedBuildVariables": {
+    "VITE_XMAKE_ADDRESS": "0x72F349B1Eee7833B26f8C81a8410775A4e231ed2",
+    "VITE_POD_MINING_ADDRESS": "0x4F6A2312D80753BdAFd35DDB1Bf4BB14C43F8265",
+    "VITE_CIRCUITS_ADDRESS": "0x87BFCa3494Aa228fF589ab9B642143A5e8c8F9a6",
+    "VITE_API_URL": "https://api.fabx.tech"
+  },
+  "chainId": 196,
+  "runtimeStateUrl": "https://api.fabx.tech/v1/pod/state",
+  "runtimeStateBlock": "73957614",
+  "runtimeSource": {
+    "lens": "0xE566F9F6F20C19e2AfbD0BB9028A2517d55Bf5F5",
+    "xmake": "0x72F349B1Eee7833B26f8C81a8410775A4e231ed2",
+    "mining": "0x4F6A2312D80753BdAFd35DDB1Bf4BB14C43F8265",
+    "chainId": 196,
+    "dewebRegistry": "0x5e7bfC87616F4648a501b8aFD5C3595E88625adb"
+  },
+  "runtimeMultipliers": {
+    "0x265e2580cb9c3fc059f2aa3cf20ad30f3f0a653c": 0,
+    "0x87bfca3494aa228ff589ab9b642143a5e8c8f9a6": 6
+  },
+  "matchesAdapterPreflight": true,
+  "evidenceLayer": "Published website JavaScript configuration, public runtime JSON and pinned on-chain dependency preflight; no wallet interaction."
+}

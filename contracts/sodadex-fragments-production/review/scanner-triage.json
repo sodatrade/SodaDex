@@ -1,0 +1,228 @@
+{
+  "scannerResultsAreNotAuditApproval": true,
+  "slitherResults": 78,
+  "aderynHighIssueGroups": 3,
+  "aderynLowIssueGroups": 14,
+  "rows": [
+    {
+      "tool": "Slither 0.11.6",
+      "detector": "arbitrary-send-eth",
+      "instances": 4,
+      "classification": "false positive",
+      "disposition": "Claims calculate only the named account historical debt and send to that same account; INCOME recipient is immutable; swap/refund pay msg.sender. No caller-controlled recipient for another account debt."
+    },
+    {
+      "tool": "Slither 0.11.6",
+      "detector": "incorrect-equality",
+      "instances": 3,
+      "classification": "false positive",
+      "disposition": "Zero newly received income is a no-op; no dependency on exact total balance. Balance minus reserved supports positive donations."
+    },
+    {
+      "tool": "Slither 0.11.6",
+      "detector": "reentrancy-no-eth",
+      "instances": 7,
+      "classification": "false positive",
+      "disposition": "Deposit/redeem, vault share transfers, pool mutations, locker withdrawal and beneficiary acceptance enter nonReentrant before external calls. Custody callback is view-only and checks NFT, from, operator, id and expectation."
+    },
+    {
+      "tool": "Slither 0.11.6",
+      "detector": "unused-return",
+      "instances": 3,
+      "classification": "accepted behavior",
+      "disposition": "Pool/locker intentionally measure actual balances including third-party-triggered claims. dewebWeights uses per-miner fields and intentionally ignores aggregate pool fields."
+    },
+    {
+      "tool": "Slither 0.11.6",
+      "detector": "missing-zero-check",
+      "instances": 2,
+      "classification": "false positive",
+      "disposition": "No debt can be credited to address zero: treasury/beneficiary constructors and updates reject zero. A zero account has zero liability and causes no positive native send."
+    },
+    {
+      "tool": "Slither 0.11.6",
+      "detector": "calls-loop",
+      "instances": 13,
+      "classification": "accepted behavior",
+      "disposition": "Harvest must settle all held miners before ownership changes; MAX_MINERS bounds length. Source liveness and final full-capacity gas rehearsal are explicit release conditions, not validated for an unspecified production capacity."
+    },
+    {
+      "tool": "Slither 0.11.6",
+      "detector": "reentrancy-benign",
+      "instances": 6,
+      "classification": "false positive",
+      "disposition": "All implicated mutable external entry points are nonReentrant; read-only balance/getter callbacks do not mutate rewards or ownership."
+    },
+    {
+      "tool": "Slither 0.11.6",
+      "detector": "reentrancy-events",
+      "instances": 4,
+      "classification": "false positive",
+      "disposition": "Events describe a completed guarded operation; transaction rollback removes logs. This adapter introduces no unguarded checkpoint entry."
+    },
+    {
+      "tool": "Slither 0.11.6",
+      "detector": "timestamp",
+      "instances": 4,
+      "classification": "accepted behavior",
+      "disposition": "Timestamp is intentionally used for 60-day lock, 48-hour treasury delay and user deadline; it is not randomness or a spot-price source."
+    },
+    {
+      "tool": "Slither 0.11.6",
+      "detector": "low-level-calls",
+      "instances": 6,
+      "classification": "accepted behavior",
+      "disposition": "Native sends check success, pay an immutable recipient/account debt or caller, and are guarded where callbacks could mutate state. Failure reverts; accrued debts persist."
+    },
+    {
+      "tool": "Slither 0.11.6",
+      "detector": "naming-convention",
+      "instances": 25,
+      "classification": "accepted behavior",
+      "disposition": "Uppercase immutable bindings and PRODUCT_VERSION are existing public ABI conventions; no economic mismatch."
+    },
+    {
+      "tool": "Slither 0.11.6",
+      "detector": "cache-array-length",
+      "instances": 1,
+      "classification": "accepted behavior",
+      "disposition": "Optional gas optimization of bounded traversal; no behavior change required for this compatibility fix."
+    },
+    {
+      "tool": "Aderyn 0.6.8",
+      "detector": "eth-send-unchecked-address",
+      "reportedSeverity": "high",
+      "instances": 7,
+      "classification": "false positive",
+      "disposition": "Claims calculate only the named account historical debt and send to that same account; INCOME recipient is immutable; swap/refund pay msg.sender. No caller-controlled recipient for another account debt."
+    },
+    {
+      "tool": "Aderyn 0.6.8",
+      "detector": "incorrect-erc721-interface",
+      "reportedSeverity": "high",
+      "instances": 1,
+      "classification": "false positive",
+      "disposition": "SodaRewards inherits ERC20. transferFrom returns bool as required by ERC20; this is not an ERC721 transfer interface."
+    },
+    {
+      "tool": "Aderyn 0.6.8",
+      "detector": "reentrancy-state-change",
+      "reportedSeverity": "high",
+      "instances": 14,
+      "classification": "false positive",
+      "disposition": "Deposit/redeem, vault share transfers, pool mutations, locker withdrawal and beneficiary acceptance enter nonReentrant before external calls. Custody callback is view-only and checks NFT, from, operator, id and expectation."
+    },
+    {
+      "tool": "Aderyn 0.6.8",
+      "detector": "centralization-risk",
+      "reportedSeverity": "low",
+      "instances": 4,
+      "classification": "accepted behavior",
+      "disposition": "Policy owner may pause named operations and schedule a delayed treasury; cannot seize principal or redirect already accrued debts. Roles are existing product rules."
+    },
+    {
+      "tool": "Aderyn 0.6.8",
+      "detector": "internal-function-used-once",
+      "reportedSeverity": "low",
+      "instances": 1,
+      "classification": "accepted behavior",
+      "disposition": "RewardLedger.move centralizes historical entitlement corrections; inlining is optional and would duplicate responsibility."
+    },
+    {
+      "tool": "Aderyn 0.6.8",
+      "detector": "large-numeric-literal",
+      "reportedSeverity": "low",
+      "instances": 6,
+      "classification": "accepted behavior",
+      "disposition": "Basis point denominators express approved percentages and admission factors; notation does not change arithmetic."
+    },
+    {
+      "tool": "Aderyn 0.6.8",
+      "detector": "literal-instead-of-constant",
+      "reportedSeverity": "low",
+      "instances": 4,
+      "classification": "accepted behavior",
+      "disposition": "Existing basis point arithmetic remains unchanged; optional style cleanup is outside this adapter."
+    },
+    {
+      "tool": "Aderyn 0.6.8",
+      "detector": "non-reentrant-not-first",
+      "reportedSeverity": "low",
+      "instances": 3,
+      "classification": "false positive",
+      "disposition": "onlyPool is a sender equality check without external calls or state changes; nonReentrant runs before function interactions."
+    },
+    {
+      "tool": "Aderyn 0.6.8",
+      "detector": "push-zero-opcode",
+      "reportedSeverity": "low",
+      "instances": 12,
+      "classification": "accepted behavior",
+      "disposition": "Build is pinned to Cancun and execution succeeds on the recorded X Layer fork; this does not authorize deployment to a different EVM chain."
+    },
+    {
+      "tool": "Aderyn 0.6.8",
+      "detector": "require-revert-in-loop",
+      "reportedSeverity": "low",
+      "instances": 2,
+      "classification": "accepted behavior",
+      "disposition": "Settling under old ownership intentionally fails atomically on custody/source inconsistency; policy renounce must verify all five pauses are clear."
+    },
+    {
+      "tool": "Aderyn 0.6.8",
+      "detector": "state-change-without-event",
+      "reportedSeverity": "low",
+      "instances": 7,
+      "classification": "accepted behavior",
+      "disposition": "Pool LP moves/trades/withdrawals and ERC20 Transfer expose primary transitions. Some bookkeeping has no dedicated redundant event; optional observability work, not a confirmed loss."
+    },
+    {
+      "tool": "Aderyn 0.6.8",
+      "detector": "state-no-address-check",
+      "reportedSeverity": "low",
+      "instances": 2,
+      "classification": "false positive",
+      "disposition": "_expectNft is internal; current path passes depositor msg.sender and address(this); onERC721Received verifies exact expected values and NFT binding."
+    },
+    {
+      "tool": "Aderyn 0.6.8",
+      "detector": "storage-array-length-not-cached",
+      "reportedSeverity": "low",
+      "instances": 2,
+      "classification": "accepted behavior",
+      "disposition": "Optional gas optimization of bounded traversal; no behavior change required for this compatibility fix."
+    },
+    {
+      "tool": "Aderyn 0.6.8",
+      "detector": "unchecked-return",
+      "reportedSeverity": "low",
+      "instances": 2,
+      "classification": "accepted behavior",
+      "disposition": "Pool/locker intentionally measure actual balances including third-party-triggered claims. dewebWeights uses per-miner fields and intentionally ignores aggregate pool fields."
+    },
+    {
+      "tool": "Aderyn 0.6.8",
+      "detector": "uninitialized-local-variable",
+      "reportedSeverity": "low",
+      "instances": 3,
+      "classification": "false positive",
+      "disposition": "Solidity initializes loop counters to zero; there is no uninitialized memory or attacker-selected loop origin."
+    },
+    {
+      "tool": "Aderyn 0.6.8",
+      "detector": "unsafe-erc20-operation",
+      "reportedSeverity": "low",
+      "instances": 2,
+      "classification": "false positive",
+      "disposition": "Pool _pull explicitly reverts on false from the known sFAB transferFrom; SodaRewards returns super ERC20 transfer result. Arbitrary FAB transfers use SafeERC20."
+    },
+    {
+      "tool": "Aderyn 0.6.8",
+      "detector": "unspecific-solidity-pragma",
+      "reportedSeverity": "low",
+      "instances": 11,
+      "classification": "accepted behavior",
+      "disposition": "Compiler 0.8.26, optimizer 200, viaIR and Cancun are pinned in foundry.toml; release must use these settings rather than infer compiler from pragma."
+    }
+  ]
+}
