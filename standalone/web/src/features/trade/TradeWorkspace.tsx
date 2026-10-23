@@ -1,9 +1,7 @@
 import { useState, type ReactElement, type ReactNode } from 'react'
-import { Icon } from '../../components/primitives'
 import type { AssetId } from '../../domain/assets'
 import type { WalletController } from '../../lib/useWallet'
 import { usePreferences } from '../../preferences/context'
-import { POOLS } from '../../trading/config'
 import { TradeMarketPanel } from '../market/TradeMarketPanel'
 import { GeneralSwapCard } from '../swap/GeneralSwapCard'
 import type { TradeMarketContext } from './context'
@@ -23,7 +21,7 @@ export function TradeWorkspace({ active = true, activeMode = 'swap', orderMarket
         {orderModeControl && <div className="trade-mode-bar">{orderModeControl}</div>}
         <div hidden={activeMode !== 'swap'}><GeneralSwapCard {...swapProps} onContextChange={setContext} /></div>
         {activeMode === 'limit' && context && renderOrderPanel?.(context)}
-        {!context || !swapProps.pairExtension?.matches(context.from, context.to) ? <div className="trade-meta"><span><Icon name="layers" size={15} />{t(POOLS.ready ? 'poolsReady' : 'deploymentPending')}</span><span>{t('platformZero')}</span></div> : null}
+        {!context || !swapProps.pairExtension?.matches(context.from, context.to) ? <div className="trade-meta"><span>{t('platformZero')}</span></div> : null}
       </div>
       {renderMarket?.(context) ?? <TradeMarketPanel context={activeMode === 'limit' ? orderMarketContext ?? context : context} active={active} />}
     </div>

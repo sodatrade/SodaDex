@@ -54,3 +54,11 @@
 .fragment-shell input[inputmode="decimal"],.fragment-price-value,.fragment-stats strong,.fragment-pool-reserves{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
 .fragment-amount{background:var(--soda-field)}
 @media(max-width:760px){.fragment-header nav button[aria-current]::after{bottom:-14px}}
+
+.header-preferences{display:flex;align-items:center;gap:8px;min-width:0}
+.header-theme{display:flex;border:1px solid var(--border);border-radius:10px;padding:2px;background:var(--surface)}
+.fragment-shell .header-theme .button{min-width:36px;min-height:36px;width:36px;padding:8px;border-radius:7px}
+.header-theme .button[aria-pressed=true]{background:var(--accent-soft);color:var(--soda-highlight)}
+.header-preferences select{height:42px;max-width:130px;padding:0 10px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);font:inherit;cursor:pointer}
+@media(min-width:761px) and (max-width:1100px){.fragment-header{flex-wrap:wrap;gap:16px}.fragment-header nav{order:3;width:100%;justify-content:center}}
+@media(max-width:760px){.fragment-header .header-preferences{grid-column:1;grid-row:2;gap:4px}.fragment-header .fragment-actions>.button:last-of-type{grid-column:2;grid-row:2}.fragment-header nav{grid-row:3}.fragment-header .header-preferences select{font-size:16px;max-width:110px;padding:0 4px}.fragment-header .header-preferences>.button{min-height:42px;padding:8px 4px}}

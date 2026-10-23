@@ -44,12 +44,12 @@ beforeEach(() => {
 afterEach(() => { vi.unstubAllGlobals(); delete (window as Window & { ethereum?: Eip1193Provider }).ethereum })
 
 describe('1952 mining readiness entry', () => {
-  it('shows the undeployed state, keeps light mode, and reads no mainnet contracts or orders', async () => {
+  it('shows the undeployed state, uses default night mode, and reads no mainnet contracts or orders', async () => {
     const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } })
     render(<QueryClientProvider client={client}><MiningNetworkApp /></QueryClientProvider>)
     expect((await screen.findAllByText(/X Layer 已连接/))[0]).toBeVisible()
     expect(screen.getByRole('heading', { name: '矿机业务尚未部署就绪' })).toBeVisible()
-    expect(document.documentElement.dataset.theme).toBe('light')
+    expect(document.documentElement.dataset.theme).toBe('dark')
     expect(await screen.findByText('1.25 TEST-FAB')).toBeVisible()
     expect(screen.getByRole('heading', { name: 'FAB 矿机基础合约已部署' })).toBeVisible()
     expect(fetchMock.mock.calls.map(([url]) => url)).toEqual(['/api/network', '/api/rpc', '/api/rpc', '/api/rpc', '/api/rpc', '/api/rpc'])

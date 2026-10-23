@@ -1,17 +1,16 @@
 import { useId, type ReactElement } from 'react'
 import { usePreferences } from '../preferences/context'
-import { CURRENCIES, LOCALES, THEMES } from '../preferences/model'
+import { CURRENCIES, LOCALES, THEMES, LANGUAGE_NAMES } from '../preferences/model'
 import { Dialog } from './Dialog'
 import { Icon } from './primitives'
 
-const LANGUAGE_NAMES = { 'zh-CN': '简体中文', en: 'English', 'yue-HK': '粵語' } as const
 
-export function PreferencesDialog({ onClose }: { onClose: () => void }): ReactElement {
+export function PreferencesDialog({ onClose, currencyOnly = false }: { onClose: () => void; currencyOnly?: boolean }): ReactElement {
   const { t, theme, locale, currency, update } = usePreferences()
   const id = useId()
   return (
     <Dialog title={t('preferences')} description={t('preferencesDescription')} onClose={onClose}>
-      <fieldset className="preference-group">
+      {!currencyOnly && <><fieldset className="preference-group">
         <legend>{t('appearance')}</legend>
         <div className="theme-options">
           {THEMES.map((choice) => (
@@ -48,6 +47,7 @@ export function PreferencesDialog({ onClose }: { onClose: () => void }): ReactEl
           ))}
         </select>
       </div>
+      </>}
       <div className="preference-select">
         <label htmlFor={`${id}-currency`}>{t('displayCurrency')}</label>
         <select

@@ -9,7 +9,7 @@ export interface Preferences {
   theme: Theme
   currency: Currency
 }
-export const DEFAULT_PREFERENCES: Preferences = { locale: 'zh-CN', theme: 'light', currency: 'CNY' }
+export const DEFAULT_PREFERENCES: Preferences = { locale: 'zh-CN', theme: 'dark', currency: 'CNY' }
 export const PREFERENCES_KEY = 'sodadex.preferences.v1'
 export const CURRENCY_SYMBOLS: Record<Currency, string> = { CNY: '¥', USD: '$', HKD: 'HK$' }
 
@@ -37,3 +37,5 @@ export function persistPreferences(preferences: Preferences): void {
     /* Preferences still work in memory when browser storage is unavailable. */
   }
 }
+
+export const LANGUAGE_NAMES = { 'zh-CN': '简体中文', en: 'English', 'yue-HK': '粵語' } as const

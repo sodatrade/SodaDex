@@ -7,6 +7,7 @@ import { useWallet } from '../lib/useWallet'
 import { PreferencesProvider } from '../preferences/PreferencesProvider'
 import { usePreferences } from '../preferences/context'
 import { WalletDialog } from '../components/WalletDialog'
+import { HeaderPreferences } from '../components/HeaderPreferences'
 import { PreferencesDialog } from '../components/PreferencesDialog'
 import { Button, SodaMark } from '../components/primitives'
 import { shortenAddress } from '../lib/address'
@@ -65,7 +66,7 @@ function FragmentWorkspace(): ReactElement {
   const fallback = <p role="status">{snapshot.isError ? m.unavailable : m.loading}</p>
   return <div className="fragment-shell"><a className="skip-link" href="#main">Skip</a><header className="fragment-header"><button className="brand" aria-label="SodaDEX" onClick={() => navigate('swap')}><SodaMark decorative /><span>Soda<span className="brand-dex">DEX</span></span></button>
     <nav aria-label="SodaDEX">{(['swap', 'pool', 'mine'] as const).map(id => <button key={id} aria-current={tab === id ? 'page' : undefined} disabled={preparing || !!transaction || ordinaryBusy || swapBusy || specialOpen} onClick={() => navigate(id)}>{id === 'swap' ? m.dex : id === 'pool' ? m.pool : m.mine}</button>)}</nav>
-    <div className="fragment-actions"><span className="fragment-test-badge" title={m.test} aria-label={`TEST · X Layer ${NETWORK.chainId} · ${m.test}`}><span className="fragment-test-dot" aria-hidden="true" />TEST · X Layer {NETWORK.chainId}</span><Button onClick={() => setPreferencesOpen(true)}>{m.settings}</Button><Button appearance="primary" onClick={() => setWalletOpen(true)}>{wallet.session ? shortenAddress(wallet.session.address) : m.connect}</Button></div></header>
+    <div className="fragment-actions"><span className="fragment-test-badge" title={m.test} aria-label={`TEST · X Layer ${NETWORK.chainId} · ${m.test}`}><span className="fragment-test-dot" aria-hidden="true" />TEST · X Layer {NETWORK.chainId}</span><HeaderPreferences onCurrency={() => setPreferencesOpen(true)} /><Button appearance="primary" onClick={() => setWalletOpen(true)}>{wallet.session ? shortenAddress(wallet.session.address) : m.connect}</Button></div></header>
     <main id="main" className="fragment-main"><div className="fragment-page-heading"><div><span className="eyebrow">X LAYER · SODADEX</span><h1>{tab === 'swap' ? m.swap : tab === 'pool' ? m.liquidity : m.mine}</h1></div></div>
       {wallet.session && !account && <Button onClick={() => { void wallet.switchChain() }}>{m.switchChain} · {NETWORK.chainId}</Button>}
       {(!NETWORK.dexEnabled || tab === 'mine') && <div>
@@ -81,7 +82,7 @@ function FragmentWorkspace(): ReactElement {
       {swapLoaded && <div hidden={tab !== 'swap'}><Suspense fallback={<p role="status">{m.loading}</p>}><OrdinarySwap active={tab === 'swap'} wallet={wallet} onConnect={() => setWalletOpen(true)} onBusyChange={setSwapBusy} onCreatePool={() => navigate('pool')} fragment={deployment ? { deployment, screen, fallback } : undefined} /></Suspense></div>}
       {ordinaryLoaded && <div hidden={tab !== 'pool'}><Suspense fallback={<p role="status">{m.loading}</p>}><OrdinaryLiquidity embedded wallet={wallet} onConnect={() => setWalletOpen(true)} onBusyChange={setOrdinaryBusy} externalBusy={preparing || !!transaction} specialPool={screen ? { label: m.specialPool, onChoose: () => setSpecialOpen(true), row: <PoolScreen {...screen} rowOnly controlledOpen={specialOpen} onOpenChange={setSpecialOpen} /> } : undefined} /></Suspense></div>}
       {NETWORK.dexEnabled && success && tab !== 'mine' && <p role="status">{m.success} · <a target="_blank" rel="noreferrer" href={`${NETWORK.explorerUrl}/tx/${success}`}>{m.explorer} ↗</a></p>}
-    </main>{notice.message && <TransientNotice message={notice.message} id={notice.id} onDismiss={dismissNotice} />}{walletOpen && <WalletDialog wallet={wallet} onClose={() => setWalletOpen(false)} />}{preferencesOpen && <PreferencesDialog onClose={() => setPreferencesOpen(false)} />}
+    </main>{notice.message && <TransientNotice message={notice.message} id={notice.id} onDismiss={dismissNotice} />}{walletOpen && <WalletDialog wallet={wallet} onClose={() => setWalletOpen(false)} />}{preferencesOpen && <PreferencesDialog currencyOnly onClose={() => setPreferencesOpen(false)} />}
     {transaction && client && deployment && <TransactionReview tx={transaction} client={client} deployment={deployment} wallet={wallet} m={m} onClose={() => setTransaction(undefined)} onSuccess={hash => { setSuccess(hash); setTransaction(undefined); void cache.invalidateQueries({ predicate: q => String(q.queryKey[0]).startsWith('fragment-') }) }} />}
   </div>
 }

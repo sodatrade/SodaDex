@@ -51,12 +51,12 @@ afterEach(() => {
 })
 
 describe('display preferences', () => {
-  it('starts in Chinese day mode, persists changes and updates the price display without inventing prices', async () => {
+  it('starts in Chinese night mode, persists changes and updates the price display without inventing prices', async () => {
     const user = userEvent.setup()
     const first = renderApp()
-    expect(document.documentElement).toHaveAttribute('data-theme', 'light')
+    expect(document.documentElement).toHaveAttribute('data-theme', 'dark')
     await user.click(screen.getByRole('button', { name: '偏好设置' }))
-    expect(screen.getByRole('radio', { name: '日间' })).toBeChecked()
+    expect(screen.getByRole('radio', { name: '夜间' })).toBeChecked()
     expect(screen.getByLabelText('语言')).toHaveValue('zh-CN')
     expect(screen.getByLabelText('展示货币')).toHaveValue('CNY')
     await user.selectOptions(screen.getByLabelText('语言'), 'en')
@@ -84,7 +84,7 @@ describe('display preferences', () => {
       localStorage.setItem(PREFERENCES_KEY, stored)
       renderApp()
       expect(document.documentElement).toHaveAttribute('lang', 'zh-CN')
-      expect(document.documentElement).toHaveAttribute('data-theme', 'light')
+      expect(document.documentElement).toHaveAttribute('data-theme', 'dark')
       await userEvent.click(screen.getByRole('button', { name: '偏好设置' }))
       expect(screen.getByLabelText('展示货币')).toHaveValue('CNY')
     },
@@ -96,7 +96,7 @@ describe('display preferences', () => {
       throw new DOMException('blocked', 'SecurityError')
     })
     renderApp()
-    expect(document.documentElement).toHaveAttribute('data-theme', 'light')
+    expect(document.documentElement).toHaveAttribute('data-theme', 'dark')
     await user.click(screen.getByRole('button', { name: '偏好设置' }))
     await user.selectOptions(screen.getByLabelText('语言'), 'yue-HK')
     await user.click(screen.getByRole('radio', { name: '夜間' }))
