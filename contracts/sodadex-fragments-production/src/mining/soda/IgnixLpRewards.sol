@@ -19,7 +19,7 @@ contract IgnixLpRewards is ReentrancyGuard {
     mapping(address => uint256) public balanceOf;
     uint256 public totalSupply;
     RewardLedger.Book private _fab;
-    RewardLedger.Book private _okb;
+    RewardLedger.Book internal _okb;
     error Unauthorized();
     error TransferFailed();
     error InvalidBinding();
@@ -45,7 +45,7 @@ contract IgnixLpRewards is ReentrancyGuard {
     }
 
     /// @dev Called before LP mint/burn/transfer; existing income remains with the old holder.
-    function move(address from, address to, uint256 amount) external onlyPool nonReentrant {
+    function move(address from, address to, uint256 amount) public virtual onlyPool nonReentrant {
         _fab.move(from, to, amount);
         _okb.move(from, to, amount);
         if (from == address(0)) totalSupply += amount;
@@ -54,7 +54,7 @@ contract IgnixLpRewards is ReentrancyGuard {
         else balanceOf[to] += amount;
     }
 
-    function recordFab() external onlyPool nonReentrant {
+    function recordFab() external virtual onlyPool nonReentrant {
         uint256 amount = FAB.balanceOf(address(this)) - _fab.reserved;
         if (amount == 0) return;
         _fab.accrue(amount, totalSupply);
@@ -69,7 +69,7 @@ contract IgnixLpRewards is ReentrancyGuard {
     /// @notice The bound vault approves this contract, then atomically funds and records FAB.
     /// @dev The vault must settle pending incentives before the pool changes any LP balance.
     /// Zero-supply income stays reserved but cannot be claimed by future LPs.
-    function notifyIncentive(uint256 amount) external nonReentrant {
+    function notifyIncentive(uint256 amount) external virtual nonReentrant {
         if (msg.sender != INCENTIVE_SOURCE) revert Unauthorized();
         if (amount == 0) revert EmptyAmount();
         uint256 before_ = FAB.balanceOf(address(this));
@@ -82,17 +82,17 @@ contract IgnixLpRewards is ReentrancyGuard {
     }
 
     /// @notice FAB recorded while no LP existed; never redistributed to later LPs.
-    function unallocatedFab() external view returns (uint256) {
+    function unallocatedFab() external view virtual returns (uint256) {
         return _fab.parked;
     }
 
-    function claimable(address account) external view returns (uint256, uint256) {
+    function claimable(address account) external view virtual returns (uint256, uint256) {
         return (
             _fab.claimable(account, balanceOf[account]), _okb.claimable(account, balanceOf[account])
         );
     }
 
-    function rewardLiabilities() external view returns (uint256, uint256) {
+    function rewardLiabilities() external view virtual returns (uint256, uint256) {
         return (_fab.reserved, _okb.reserved);
     }
 
@@ -115,7 +115,7 @@ contract IgnixLpRewards is ReentrancyGuard {
         emit RewardsClaimed(account, 0, okb);
     }
 
-    function _claimFab(address account) private returns (uint256 fab) {
+    function _claimFab(address account) internal virtual returns (uint256 fab) {
         // Keep self-owned LP income reserved; a FAB self-transfer pays out nothing.
         if (account == address(this)) revert InvalidBinding();
         fab = _fab.take(account, balanceOf[account]);

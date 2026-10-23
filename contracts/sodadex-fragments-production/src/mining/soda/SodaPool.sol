@@ -41,7 +41,11 @@ contract SodaPool is ERC20, ReentrancyGuard {
         VAULT = vault;
         POLICY = vault.POLICY();
         FAB = vault.FAB();
-        REWARDS = new IgnixLpRewards(FAB, address(vault));
+        REWARDS = _newRewards(vault);
+    }
+
+    function _newRewards(SodaVault vault) internal virtual returns (IgnixLpRewards) {
+        return new IgnixLpRewards(vault.FAB(), address(vault));
     }
 
     function fees(uint256 grossOkb) public pure returns (uint256 platform, uint256 lp) {
@@ -164,7 +168,7 @@ contract SodaPool is ERC20, ReentrancyGuard {
         _checkpoint();
     }
 
-    function _checkpoint() internal {
+    function _checkpoint() internal virtual {
         VAULT.harvest();
         VAULT.claimFor(address(this));
         // Includes payouts triggered by third parties; rewards never enter principal.
