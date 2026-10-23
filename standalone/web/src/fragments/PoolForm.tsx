@@ -1,3 +1,4 @@
+import { shareSymbol } from './config'
 import { useState, type ReactElement } from 'react'
 import { encodeFunctionData, formatEther, parseEther } from 'viem'
 import { Button } from '../components/primitives'
@@ -10,7 +11,7 @@ export function PoolForm({ client, deployment: d, snapshot: s, account, m, prepa
   const [mode, setMode] = useState<'add' | 'remove'>('add'), [shares, setShares] = useState(''), [okb, setOkb] = useState(''), [lp, setLp] = useState(''), [slip, setSlip] = useState('0.5')
   return <section className="fragment-card"><h1>{m.liquidity}</h1><p className="fragment-muted">{m.principal}</p>
     <div className="fragment-segments">{(['add', 'remove'] as const).map(item => <Button key={item} aria-pressed={mode === item} onClick={() => setMode(item as typeof mode)}>{item === 'add' ? m.add : m.remove}</Button>)}</div>
-    {mode !== 'remove' ? <div className="fragment-two"><label className="fragment-field">sFAB<input inputMode="decimal" placeholder="0.00" value={shares} onChange={e => setShares(e.target.value)} /></label><label className="fragment-field">OKB<input inputMode="decimal" placeholder="0.00" value={okb} onChange={e => setOkb(e.target.value)} /></label></div> : <div><label className="fragment-field">{m.lpAmount}<input inputMode="decimal" value={lp} onChange={e => setLp(e.target.value)} /></label><Button disabled={!account || s.lpBalance === 0n} onClick={() => setLp(formatEther(s.lpBalance))}>{m.allLp}</Button></div>}
+    {mode !== 'remove' ? <div className="fragment-two"><label className="fragment-field">{shareSymbol(d)}<input inputMode="decimal" placeholder="0.00" value={shares} onChange={e => setShares(e.target.value)} /></label><label className="fragment-field">OKB<input inputMode="decimal" placeholder="0.00" value={okb} onChange={e => setOkb(e.target.value)} /></label></div> : <div><label className="fragment-field">{m.lpAmount}<input inputMode="decimal" value={lp} onChange={e => setLp(e.target.value)} /></label><Button disabled={!account || s.lpBalance === 0n} onClick={() => setLp(formatEther(s.lpBalance))}>{m.allLp}</Button></div>}
     <label className="fragment-field">{m.slippage}<input inputMode="decimal" value={slip} onChange={e => setSlip(e.target.value)} /></label>
     {mode === 'add' && !s.preciseLiquidity && <p role="status" className="fragment-muted">{m.lpUpdating}</p>}
     {mode === 'add' && s.tradingPaused && <p role="status" className="fragment-muted">{m.tradingPaused}</p>}

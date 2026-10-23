@@ -1,7 +1,7 @@
 import type { Messages } from './types'
 export const yueHK = {
-  pageTitle: 'SodaDEX Test · 畀資產流動',
-  pageDescription: 'SodaDEX Test · X Layer 低費率測試兌換，使用真實資產。',
+  pageTitle: 'SodaDEX · 畀資產流動',
+  pageDescription: 'SodaDEX · X Layer 上嘅代幣兌換同流動性服務。',
   skipMain: '跳去主要內容',
   home: 'SodaDEX 主頁',
   mainNavigation: '主導覽',

@@ -1,5 +1,5 @@
 import { formatBalance } from './format'
-import { deploymentKey } from './config'
+import { deploymentKey, shareSymbol } from './config'
 import { lazy, Suspense, useMemo, useState, useEffect, useCallback, type ReactElement } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { type Address, type Hex } from 'viem'
@@ -69,7 +69,7 @@ function FragmentWorkspace(): ReactElement {
     <main id="main" className="fragment-main"><div className="fragment-page-heading"><div><span className="eyebrow">X LAYER · SODADEX</span><h1>{tab === 'swap' ? m.swap : tab === 'pool' ? m.liquidity : m.mine}</h1></div></div>
       {wallet.session && !account && <Button onClick={() => { void wallet.switchChain() }}>{m.switchChain} · {NETWORK.chainId}</Button>}
       {(!NETWORK.dexEnabled || tab === 'mine') && <div>
-      <div className="fragment-overview">{!NETWORK.dexEnabled && snapshot.data && <><span>{m.reserves}</span><span>OKB <strong>{formatBalance(snapshot.data.okb)}</strong></span><span>sFAB <strong>{formatBalance(snapshot.data.shares)}</strong></span></>}</div>
+      <div className="fragment-overview">{!NETWORK.dexEnabled && snapshot.data && <><span>{m.reserves}</span><span>OKB <strong>{formatBalance(snapshot.data.okb)}</strong></span><span>{shareSymbol(deployment)} <strong>{formatBalance(snapshot.data.shares)}</strong></span></>}</div>
       <div className={tab === 'swap' && deployment ? 'fragment-grid' : undefined}>{tab === 'swap' && deployment && <MarketPanel key={deploymentKey(deployment)} deployment={deployment} m={m} />}<div>
       {!deployment ? <section className="fragment-card"><p role="status">{m.notDeployed}</p></section> : snapshot.isPending ? <p role="status">{m.loading}</p> : snapshot.isError ? <section className="fragment-card"><p role="alert">{m.unavailable}</p><Button disabled={snapshot.isFetching} onClick={() => void snapshot.refetch()}>{m.retry}</Button></section> : client && snapshot.data && <>
 
