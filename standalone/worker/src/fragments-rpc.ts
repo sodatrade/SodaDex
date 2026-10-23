@@ -1,5 +1,5 @@
 import { decodeFunctionData, encodeFunctionData, isAddress, type Abi, type Hex } from 'viem'
-import { poolAbi, tokenAbi, lpRewardsAbi, ignixIncomeAbi } from '../../web/src/fragments/abi'
+import { poolAbi, tokenAbi, lpRewardsAbi, ignixIncomeAbi, mirrorVaultAbi } from '../../web/src/fragments/abi'
 import { RPC_URL } from './upstream'
 type Manifest = { chainId: number; pool: string; vault: string; rewards: string; income?: string; ignixTreasury?: string }
 const record = (x: unknown): x is Record<string, unknown> => typeof x === 'object' && x !== null && !Array.isArray(x)
@@ -32,7 +32,7 @@ export function validFragmentRpc(method: unknown, params: unknown, m: Manifest):
   if(!record(t)||!hex(t.data)||Object.keys(t).some(k=>!['from','to','data','value','gas','gasPrice','maxFeePerGas','maxPriorityFeePerGas'].includes(k))) return false
   if(t.from!==undefined&&(typeof t.from!=='string'||!isAddress(t.from))) return false
   if(['value','gas','gasPrice','maxFeePerGas','maxPriorityFeePerGas'].some(k=>t[k]!==undefined&&(typeof t[k]!=='string'||!/^0x[0-9a-fA-F]{1,64}$/.test(t[k] as string)))) return false
-  const abi: Abi = same(t.to,m.pool)?[...poolAbi,...tokenAbi]:same(t.to,m.vault)?tokenAbi:same(t.to,m.rewards)?lpRewardsAbi:m.income&&same(t.to,m.income)?ignixIncomeAbi:[]
+  const abi: Abi = same(t.to,m.pool)?[...poolAbi,...tokenAbi]:same(t.to,m.vault)?[...tokenAbi,...mirrorVaultAbi]:same(t.to,m.rewards)?lpRewardsAbi:m.income&&same(t.to,m.income)?ignixIncomeAbi:[]
   try {
     const decoded=decodeFunctionData({abi,data:t.data})
     if(encodeFunctionData({abi,functionName:decoded.functionName,args:decoded.args}).toLowerCase()!==t.data.toLowerCase())return false

@@ -17,7 +17,7 @@ function mount(account: ScreenProps['account'] = address) {
     client: { readContract } as unknown as ScreenProps['client'], account, m: messages('en'), prepare,
     deployment: { vault: address, pool: address, policy: address, chainId: 196, fromBlock: 0n, rpcUrl: 'http://fixture.invalid' },
     snapshot: { okb: parseEther('10'), shares: parseEther('100'), lpSupply: 1n, rewards: address,
-      preciseLiquidity: true, okbBalance: parseEther('2'), shareBalance: parseEther('1250.123456789'), lpBalance: 0n },
+      preciseLiquidity: true, mirrorVault: false, tradingPaused: false, vaultClaimable: undefined, okbBalance: parseEther('2'), shareBalance: parseEther('1250.123456789'), lpBalance: 0n },
   } satisfies ScreenProps
   const tree = (overrides: Partial<ScreenProps> = {}) => <QueryClientProvider client={client}><PreferencesProvider><SwapScreen {...props} {...overrides} onConnect={onConnect} /></PreferencesProvider></QueryClientProvider>
   const view = render(tree())

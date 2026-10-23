@@ -16,7 +16,7 @@ it('rechecks a broadcast receipt after timeout without sending the transaction a
   const wallet={getIdentity:()=>identity} as unknown as WalletController
   const waitForTransactionReceipt=vi.fn().mockRejectedValueOnce(new Error('RPC timeout')).mockResolvedValue({status:'success'})
   const client={call:vi.fn().mockResolvedValue({}),estimateGas:vi.fn().mockResolvedValue(500000n),waitForTransactionReceipt} as unknown as clientModule.FragmentClient
-  vi.spyOn(clientModule,'verifyDeployment').mockResolvedValue({rewards:account,preciseLiquidity:true})
+  vi.spyOn(clientModule,'verifyDeployment').mockResolvedValue({rewards:account,preciseLiquidity:true,mirrorVault:false})
   const done=vi.fn()
   render(<PreferencesProvider><TransactionReview tx={{to:account,account,data:'0x',value:0n,chainId:1952,label:'Test'}} deployment={{} as FragmentDeployment} wallet={wallet} client={client} m={messages('en')} onClose={()=>{}} onSuccess={done}/></PreferencesProvider>)
   await userEvent.click(screen.getByRole('button',{name:'Confirm in wallet'}))
