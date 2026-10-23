@@ -38,9 +38,10 @@ export function SwapScreen({ client, deployment: d, snapshot: s, account, m, pre
     {error && <p id="swap-amount-error" role="alert" className="amount-error">{error}</p>}
     <p className="fragment-muted">{m.fee}</p><details className="fragment-trade-settings"><summary>{m.tradeSettings}<span>{slippage}%</span></summary><label className="fragment-field">{m.slippage}<input inputMode="decimal" value={slippage} onChange={e => setSlippage(e.target.value)} /></label></details>
     {quote.data && valid && <p>{m.minOut}: {formatEther(minimum(quote.data[0], bps))} {shareIn ? 'OKB' : 'sFAB'}</p>}
-    {quote.isError && <p role="alert">{m.quoteError}</p>}{s.okb === 0n && <p>{m.noLiquidity}</p>}
-    <Button appearance="primary" disabled={busy || (!account && !onConnect) || (!!account && (!valid || quote.isFetching))} onClick={() => { if (!account) { onConnect?.(); return }; prepare(m.swap, async () => {
+    {quote.isError && <p role="alert">{m.quoteError}</p>}{s.okb === 0n && <p>{m.noLiquidity}</p>}{s.tradingPaused && <p role="status">{m.tradingPaused}</p>}
+    <Button appearance="primary" disabled={busy || (!account && !onConnect) || (!!account && (!valid || quote.isFetching || s.tradingPaused))} onClick={() => { if (!account) { onConnect?.(); return }; prepare(m.swap, async () => {
       if (!account || !quote.data) throw new Error(m.walletRequired)
+      if (s.tradingPaused) throw new Error(m.tradingPaused)
       if (shareIn) { const approval = await approveIfNeeded(client, d.vault, account, d.pool, input); if (approval) return { ...approval, label: m.approval } }
       return { to: d.pool, data: encodeFunctionData({ abi: poolAbi, functionName: 'swap', args: [shareIn, input, minimum(quote.data[0], bps), BigInt(Math.floor(Date.now() / 1000) + 1200)] }), value: shareIn ? 0n : input }
     }) }}>{account ? insufficient ? t('amountInsufficient') : m.preview : m.connect}</Button>

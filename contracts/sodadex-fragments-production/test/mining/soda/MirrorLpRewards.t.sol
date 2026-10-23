@@ -10,6 +10,8 @@ import {SodaVault} from "../../../src/mining/soda/SodaVault.sol";
 import {MirrorSodaPool} from "../../../src/mining/soda/MirrorSodaPool.sol";
 import {MirrorLpRewards} from "../../../src/mining/soda/MirrorLpRewards.sol";
 import {EpochRewardLedger} from "../../../src/mining/soda/EpochRewardLedger.sol";
+import {SodaLocker} from "../../../src/mining/soda/SodaLocker.sol";
+import {SodaPool} from "../../../src/mining/soda/SodaPool.sol";
 
 /// @dev Explicit proposed IGNIX protocol fixture, not a claim that f0ca687 already has these hooks.
 contract EpochVaultFixture is ERC20 {
@@ -296,5 +298,25 @@ contract MirrorLpRewardsTest is Test {
             (uint256 liability,) = rewards.rewardLiabilities();
             assertEq(liability, fab.balanceOf(address(rewards)));
         }
+    }
+
+    /// Epoch-funded FAB reaches a locker after the epoch confirms; a handover in between would hand
+    /// the pre-handover share to the new beneficiary, so the beneficiary is fixed on epoch pools.
+    function test_lockerBeneficiaryIsFixedAndKeepsItsEpochIncome() public {
+        uint256 lp = add(alice);
+        vm.startPrank(alice);
+        SodaLocker locker = new SodaLocker(SodaPool(payable(address(pool))), alice);
+        assertTrue(locker.EPOCH_REWARDS());
+        pool.approve(address(locker), lp);
+        locker.lock(lp);
+        vm.expectRevert(SodaLocker.HandoverUnsupported.selector);
+        locker.proposeBeneficiary(bob);
+        vm.stopPrank();
+        wait(3600);
+        uint64 e = vault.close();
+        vault.fund(e, 100e8, 20e8);
+        locker.harvest();
+        assertApproxEqAbs(locker.fabOwed(alice), 120e8, 2, "the only LP's beneficiary gets the epoch");
+        assertEq(locker.fabOwed(bob), 0);
     }
 }

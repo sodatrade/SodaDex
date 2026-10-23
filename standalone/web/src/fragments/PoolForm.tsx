@@ -12,7 +12,8 @@ export function PoolForm({ client, deployment: d, snapshot: s, account, m, prepa
     {mode !== 'remove' ? <div className="fragment-two"><label className="fragment-field">sFAB<input inputMode="decimal" placeholder="0.00" value={shares} onChange={e => setShares(e.target.value)} /></label><label className="fragment-field">OKB<input inputMode="decimal" placeholder="0.00" value={okb} onChange={e => setOkb(e.target.value)} /></label></div> : <div><label className="fragment-field">{m.lpAmount}<input inputMode="decimal" value={lp} onChange={e => setLp(e.target.value)} /></label><Button disabled={!account || s.lpBalance === 0n} onClick={() => setLp(formatEther(s.lpBalance))}>{m.allLp}</Button></div>}
     <label className="fragment-field">{m.slippage}<input inputMode="decimal" value={slip} onChange={e => setSlip(e.target.value)} /></label>
     {mode === 'add' && !s.preciseLiquidity && <p role="status" className="fragment-muted">{m.lpUpdating}</p>}
-    <Button appearance="primary" disabled={!account || (mode === 'add' && !s.preciseLiquidity)} onClick={() => prepare(mode === 'add' ? m.add : m.remove, async () => {
+    {mode === 'add' && s.tradingPaused && <p role="status" className="fragment-muted">{m.tradingPaused}</p>}
+    <Button appearance="primary" disabled={!account || (mode === 'add' && (!s.preciseLiquidity || s.tradingPaused))} onClick={() => prepare(mode === 'add' ? m.add : m.remove, async () => {
       if (!account) throw new Error(m.walletRequired)
       const deadline = BigInt(Math.floor(Date.now() / 1000) + 1200), bps = Number(slip) * 100
       minimum(1n, bps)
@@ -23,6 +24,7 @@ export function PoolForm({ client, deployment: d, snapshot: s, account, m, prepa
         return { to: d.pool, data: encodeFunctionData({ abi: poolAbi, functionName: 'removeLiquidity', args: [liquidity, minimum(current.shares * liquidity / current.lpSupply, bps), minimum(current.okb * liquidity / current.lpSupply, bps), deadline] }) }
       }
       if (!s.preciseLiquidity) throw new Error(m.lpUpdating)
+      if (current.tradingPaused) throw new Error(m.tradingPaused)
       const desiredShares = parseEther(shares), value = parseEther(okb)
       if (desiredShares <= 0n || value <= 0n) throw new Error(m.amountError)
       const approval = await approveIfNeeded(client, d.vault, account, d.pool, desiredShares)

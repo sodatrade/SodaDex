@@ -58,8 +58,10 @@ abstract contract SodaRewards is ERC20, ReentrancyGuard {
 
     function _update(address from, address to, uint256 amount) internal override {
         _checkpoint();
-        _fab.move(from, to, amount);
-        _okb.move(from, to, amount);
+        uint256 fromBalance = from == address(0) ? 0 : balanceOf(from);
+        uint256 toBalance = to == address(0) ? 0 : balanceOf(to);
+        _fab.move(from, fromBalance, to, toBalance);
+        _okb.move(from, fromBalance, to, toBalance);
         super._update(from, to, amount);
     }
 

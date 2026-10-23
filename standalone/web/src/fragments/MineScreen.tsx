@@ -22,6 +22,7 @@ export function MineScreen({ snapshot: s, account, deployment, m }: ScreenProps)
       <div className="fragment-table fragment-account-table"><table aria-label={m.balances}><thead><tr><th>{m.asset}</th><th>{m.balance}</th><th><span className="sr-only">{m.details}</span></th></tr></thead>
         <tbody>{assets.items.map(asset => <tr key={asset.symbol}><td><strong>{asset.symbol}</strong></td><td>{amount(asset.balance)}</td><td>{details(asset.symbol, () => setSelected(asset.symbol))}</td></tr>)}</tbody>
       </table></div><Pagination {...assets} />
+      {s.vaultClaimable !== undefined && <p className="fragment-muted">{m.vaultIncome}: {amount(s.vaultClaimable)} FAB · {m.vaultIncomeHint}</p>}
     </section>
     <section className="fragment-card fragment-account-section"><h2>{m.lpPositions}</h2><p className="fragment-muted">{m.principal}</p>
       <div className="fragment-table fragment-account-table"><table aria-label={m.lpPositions}><thead><tr><th>{m.pair}</th><th>{m.lpAmount}</th><th><span className="sr-only">{m.details}</span></th></tr></thead>
