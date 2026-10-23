@@ -94,7 +94,7 @@ describe('market and history user paths', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent('数据暂不可用')
     expect(screen.getByRole('combobox')).toHaveTextContent('数据暂不可用')
     await user.click(screen.getByRole('button', { name: '重试' }))
-    expect(await screen.findByRole('status')).toHaveTextContent('暂无可用的测试池')
+    expect(await screen.findByRole('status')).toHaveTextContent('暂无可用的资金池')
     expect(screen.getByRole('combobox')).toBeDisabled()
     expect(getPools).toHaveBeenCalledTimes(2)
     expect(market).not.toHaveBeenCalled()

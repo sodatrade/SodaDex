@@ -1,6 +1,6 @@
 import type { Locale } from '../preferences/model'
 const en = {
-  market: 'Pair market', title: 'Pool price', source: 'SodaDEX test pool', pairSource: 'Pair pool · before a route quote', quoteSource: 'Current quoted route',
+  market: 'Pair market', title: 'Pool price', source: 'SodaDEX pool', pairSource: 'Pair pool · before a route quote', quoteSource: 'Current quoted route',
   noPool: 'No initialized pool for this pair.', unavailable: 'Market data unavailable.', loading: 'Reading pool market…', wrap: 'OKB / WOKB converts 1:1. No pool chart is used.',
   line: 'Line', candles: 'Candles', chartView: 'Chart view', interval: 'Candle interval', snapshot: 'Pool snapshot', scanned: 'Scanned blocks',
   observed: 'Observed trades', volume: 'Scanned volume', change: 'Observed price change', fee: 'Pool fee', noTrades: 'No swaps observed in the scanned blocks.',
@@ -12,7 +12,7 @@ const en = {
 } as const
 type Messages = Record<keyof typeof en, string>
 const zh: Messages = {
-  market: '交易对行情', title: '池内价格', source: 'SodaDEX 测试池', pairSource: '交易对资金池 · 尚未报价选路', quoteSource: '当前报价路径',
+  market: '交易对行情', title: '池内价格', source: 'SodaDEX 资金池', pairSource: '交易对资金池 · 尚未报价选路', quoteSource: '当前报价路径',
   noPool: '该交易对暂无已初始化的资金池。', unavailable: '行情数据暂不可用。', loading: '读取资金池行情中…', wrap: 'OKB / WOKB 按 1:1 转换，不使用资金池图表。',
   line: '曲线', candles: '蜡烛图', chartView: '图表形式', interval: '蜡烛周期', snapshot: '资金池快照', scanned: '已扫描区块',
   observed: '已观察成交', volume: '已扫描成交量', change: '已观察价格变化', fee: '资金池费率', noTrades: '已扫描区块中尚无兑换成交。',
@@ -23,7 +23,7 @@ const zh: Messages = {
   currentNote: '顶部价格是该区块的资金池状态，图表显示已观察的成交价格。', pool: '资金池', candleCount: '已观察蜡烛', stale: '扫描已变化或过期，请重新读取快照。', rangeLimit: '此区间超过 5,000 笔兑换，请缩小区块范围。', lastScan: '失败前已扫描',
 }
 const yue: Messages = {
-  market: '交易對行情', title: '池內價格', source: 'SodaDEX 測試池', pairSource: '交易對資金池 · 未報價揀路', quoteSource: '目前報價路徑',
+  market: '交易對行情', title: '池內價格', source: 'SodaDEX 資金池', pairSource: '交易對資金池 · 未報價揀路', quoteSource: '目前報價路徑',
   noPool: '呢個交易對未有已初始化嘅資金池。', unavailable: '行情數據暫時用唔到。', loading: '讀取資金池行情中…', wrap: 'OKB / WOKB 按 1:1 轉換，唔使用資金池圖表。',
   line: '曲線', candles: '蠟燭圖', chartView: '圖表形式', interval: '蠟燭週期', snapshot: '資金池快照', scanned: '已掃描區塊',
   observed: '已觀察成交', volume: '已掃描成交量', change: '已觀察價格變化', fee: '資金池費率', noTrades: '已掃描區塊入面未有兌換成交。',

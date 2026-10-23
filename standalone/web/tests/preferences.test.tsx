@@ -248,7 +248,7 @@ describe('global search', () => {
     await user.type(input, 'unknown-token')
     expect(within(dialog).getByText('没有匹配的结果')).toBeVisible()
     await user.click(within(dialog).getByRole('button', { name: '流动池' }))
-    expect(within(dialog).getByText('暂无可搜索的测试池。')).toBeVisible()
+    expect(within(dialog).getByText('暂无可搜索的资金池。')).toBeVisible()
     await user.click(within(dialog).getByRole('button', { name: '钱包' }))
     await user.clear(input)
     await user.type(input, '0x123')
