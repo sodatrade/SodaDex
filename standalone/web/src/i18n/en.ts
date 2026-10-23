@@ -1,7 +1,7 @@
 import type { Messages } from './types'
 export const en = {
-  pageTitle: 'SodaDEX Test · Let liquidity flow',
-  pageDescription: 'SodaDEX Test · Low fee test swaps on X Layer using real assets.',
+  pageTitle: 'SodaDEX · Let liquidity flow',
+  pageDescription: 'SodaDEX · Token swaps and liquidity on X Layer.',
   skipMain: 'Skip to main content',
   home: 'SodaDEX home',
   mainNavigation: 'Main navigation',

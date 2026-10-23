@@ -1,6 +1,6 @@
 export const zhCN = {
-  pageTitle: 'SodaDEX Test · 让流动发生',
-  pageDescription: 'SodaDEX Test · X Layer 上的低费率测试兑换，使用真实资产。',
+  pageTitle: 'SodaDEX · 让流动发生',
+  pageDescription: 'SodaDEX · X Layer 上的代币兑换与流动性服务。',
   skipMain: '跳转至主要内容',
   home: 'SodaDEX 首页',
   mainNavigation: '主导航',
