@@ -13,7 +13,7 @@ import { tradeMessages } from '../i18n/trade'
 import { NATIVE_CURRENCY } from '../liquidity/config'
 import { usePreferences } from '../preferences/context'
 import '../features/swap/swap.css'
-export function SwapScreen({ client, deployment: d, snapshot: s, account, m, prepare, selection, onConnect, busy }: ScreenProps & { selection?: PairSelection; onConnect?: () => void }): ReactElement {
+export function SwapScreen({ client, deployment: d, snapshot: s, account, m, prepare, selection, onConnect, onAddLiquidity, busy }: ScreenProps & { selection?: PairSelection; onConnect?: () => void; onAddLiquidity?: () => void }): ReactElement {
   const { locale, t } = usePreferences(), trade = tradeMessages(locale)
   const [localShareIn, setShareIn] = useState(false), [amount, setAmount] = useState(''), [slippage, setSlippage] = useState('0.5')
   const shareIn = selection ? !selection.from.native : localShareIn
@@ -24,22 +24,24 @@ export function SwapScreen({ client, deployment: d, snapshot: s, account, m, pre
   const share = { address: shareToken(d), symbol: shareSymbol(d), name: 'Soda miner shares', decimals: 18, native: false }
   const from = selection?.from ?? (shareIn ? share : NATIVE_CURRENCY), to = selection?.to ?? (shareIn ? NATIVE_CURRENCY : share)
   const balance = (value: bigint): string => `${trade.balance} ${account ? formatBalance(value) : '—'}`
-  const quote = useQuery({ queryKey: ['fragment-quote', deploymentKey(d), shareIn, amount], enabled: input > 0n && s.okb > 0n && !insufficient,
+  const hasLiquidity = s.okb > 0n && s.shares > 0n
+  const quote = useQuery({ queryKey: ['fragment-quote', deploymentKey(d), shareIn, amount], enabled: input > 0n && hasLiquidity && !insufficient,
     queryFn: () => client.readContract({ address: d.pool, abi: poolAbi, functionName: 'quote', args: [shareIn, input] }), refetchInterval: 12000, retry: false })
   const bps = Number(slippage) * 100
-  const valid = input > 0n && !error && Number.isInteger(bps) && bps >= 0 && bps < 10000 && !!quote.data?.[0]
+  const valid = hasLiquidity && input > 0n && !error && Number.isInteger(bps) && bps >= 0 && bps < 10000 && !!quote.data?.[0]
   return <section className="fragment-card fragment-swap swap-card general-swap"><h1>{m.swap}</h1><p className="fragment-muted">OKB / {share.symbol}</p>
     <AmountPanel currency={from} pay amount={amount} onAmount={setAmount} balance={balance(fromBalance)} balanceExact={account ? `${formatEther(fromBalance)} ${from.symbol}` : undefined}
       disabled={!!busy} error={!!error} hint={from.native ? trade.nativeMax : undefined} onSelect={selection ? () => selection.onSelect('from') : undefined}
       onMax={account && shareIn ? () => setAmount(formatEther(fromBalance)) : undefined} />
     <Button className="fragment-reverse" disabled={busy} aria-label={m.reverse} onClick={() => { setAmount(''); if (selection) selection.onReverse(); else setShareIn(!shareIn) }}>↓</Button>
-    <AmountPanel currency={to} amount={quote.isFetching ? '…' : quote.data ? formatEther(quote.data[0]) : ''} balance={balance(toBalance)}
+    <AmountPanel currency={to} amount={!hasLiquidity ? '' : quote.isFetching ? '…' : quote.data ? formatEther(quote.data[0]) : ''} balance={balance(toBalance)}
       balanceExact={account ? `${formatEther(toBalance)} ${to.symbol}` : undefined} disabled={!!busy} readOnly estimated onSelect={selection ? () => selection.onSelect('to') : undefined} />
     {error && <p id="swap-amount-error" role="alert" className="amount-error">{error}</p>}
     <div className="fragment-fee-row"><span>{m.fee}</span><span>0.5%</span></div><details className="fragment-trade-settings"><summary>{m.tradeSettings}<span>{slippage}%</span></summary><label className="fragment-field">{m.slippage}<input inputMode="decimal" value={slippage} onChange={e => setSlippage(e.target.value)} /></label></details>
     {quote.data && valid && <p>{m.minOut}: {formatEther(minimum(quote.data[0], bps))} {shareIn ? 'OKB' : share.symbol}</p>}
-    {quote.isError && <p role="alert">{m.quoteError}</p>}{s.okb === 0n && <p>{m.noLiquidity}</p>}{s.tradingPaused && <p role="status">{m.tradingPaused}</p>}
+    {hasLiquidity && quote.isError && <p role="alert">{m.quoteError}</p>}{!hasLiquidity && <div className="fragment-actions"><p role="status">{m.poolEmpty}</p>{onAddLiquidity && <Button onClick={onAddLiquidity} disabled={busy}>{m.add}</Button>}</div>}{s.tradingPaused && <p role="status">{m.tradingPaused}</p>}
     <Button appearance="primary" disabled={busy || (!account && !onConnect) || (!!account && (!valid || quote.isFetching || s.tradingPaused))} onClick={() => { if (!account) { onConnect?.(); return }; prepare(m.swap, async () => {
+      if (!hasLiquidity) throw new Error(m.noLiquidity)
       if (!account || !quote.data) throw new Error(m.walletRequired)
       if (s.tradingPaused) throw new Error(m.tradingPaused)
       if (shareIn) { const approval = await approveIfNeeded(client, shareToken(d), account, d.pool, input); if (approval) return { ...approval, label: m.approval } }

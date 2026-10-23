@@ -12,20 +12,46 @@ const address = '0x1111111111111111111111111111111111111111'
 function mount(account: ScreenProps['account'] = address) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } })
   const readContract = vi.fn().mockResolvedValue([parseEther('0.1'), 0n, 0n])
-  const prepare = vi.fn(), onConnect = vi.fn()
+  const prepare = vi.fn(), onConnect = vi.fn(), onAddLiquidity = vi.fn()
   const props = {
     client: { readContract } as unknown as ScreenProps['client'], account, m: messages('en'), prepare,
     deployment: { vault: address, pool: address, policy: address, chainId: 196, fromBlock: 0n, rpcUrl: 'http://fixture.invalid' },
     snapshot: { okb: parseEther('10'), shares: parseEther('100'), lpSupply: 1n, rewards: address,
       preciseLiquidity: true, mirrorVault: false, tradingPaused: false, vaultClaimable: undefined, okbBalance: parseEther('2'), shareBalance: parseEther('1250.123456789'), lpBalance: 0n },
   } satisfies ScreenProps
-  const tree = (overrides: Partial<ScreenProps> = {}) => <QueryClientProvider client={client}><PreferencesProvider><SwapScreen {...props} {...overrides} onConnect={onConnect} /></PreferencesProvider></QueryClientProvider>
+  const tree = (overrides: Partial<ScreenProps> = {}) => <QueryClientProvider client={client}><PreferencesProvider><SwapScreen {...props} {...overrides} onConnect={onConnect} onAddLiquidity={onAddLiquidity} /></PreferencesProvider></QueryClientProvider>
   const view = render(tree())
-  return { props, prepare, readContract, onConnect, rerender: (overrides: Partial<ScreenProps>) => view.rerender(tree(overrides)) }
+  return { props, prepare, readContract, onConnect, onAddLiquidity, rerender: (overrides: Partial<ScreenProps>) => view.rerender(tree(overrides)) }
 }
 beforeEach(() => localStorage.setItem(PREFERENCES_KEY, JSON.stringify({ locale: 'en', theme: 'light', currency: 'USD' })))
 
 describe('miner share swap balances', () => {
+  it('shows the empty-pool action, blocks quoting, and enables quotes after liquidity arrives', async () => {
+    const view = mount()
+    view.rerender({ snapshot: { ...view.props.snapshot, okb: 0n, shares: 0n } })
+    fireEvent.change(screen.getByLabelText('You pay'), { target: { value: '0.1' } })
+    expect(screen.getByRole('status')).toHaveTextContent(messages('en').poolEmpty)
+    expect(screen.getByRole('button', { name: 'Preview transaction' })).toBeDisabled()
+    expect(view.readContract).not.toHaveBeenCalled()
+    fireEvent.click(screen.getByRole('button', { name: messages('en').add }))
+    expect(view.onAddLiquidity).toHaveBeenCalledOnce()
+    view.rerender({ snapshot: view.props.snapshot })
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Preview transaction' })).toBeEnabled())
+    expect(screen.queryByRole('button', { name: messages('en').add })).not.toBeInTheDocument()
+  })
+  it.each(['okb', 'shares'] as const)('discards cached output and blocks submission when %s reserves become empty', async reserve => {
+    const view = mount()
+    fireEvent.change(screen.getByLabelText('You pay'), { target: { value: '0.1' } })
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Preview transaction' })).toBeEnabled())
+    view.rerender({ snapshot: { ...view.props.snapshot, [reserve]: 0n } })
+    expect(screen.getByLabelText('You receive')).toHaveValue('')
+    expect(screen.queryByText(/Minimum receive:/)).not.toBeInTheDocument()
+    const preview = screen.getByRole('button', { name: 'Preview transaction' })
+    expect(preview).toBeDisabled()
+    fireEvent.click(preview)
+    expect(view.prepare).not.toHaveBeenCalled()
+  })
+
   it('uses FABS throughout production quotes and shows only the total trading fee', async () => {
     const view = mount()
     view.rerender({ deployment: { ...view.props.deployment, fabs: address } })
