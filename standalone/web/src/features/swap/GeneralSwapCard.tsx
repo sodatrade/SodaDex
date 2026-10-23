@@ -42,8 +42,8 @@ async function customBalance(currency: Currency, address: Address): Promise<bigi
 }
 export function GeneralSwapCard({ wallet, balances, balancesLoading, balancesError, onConnect, onCreatePool, onContextChange, onBusyChange, pairExtension }: Props): ReactElement {
   const { locale, t } = usePreferences(), m = tradeMessages(locale)
-  const [from, setFrom] = useState<Currency>(NATIVE_CURRENCY)
-  const [to, setTo] = useState<Currency>(KNOWN_CURRENCIES.find((c) => c.address.toLowerCase() === STABLE_ADDRESS.toLowerCase()) ?? KNOWN_CURRENCIES[2])
+  const [from, setFrom] = useState<Currency>(() => pairExtension?.initialPair?.from ?? NATIVE_CURRENCY)
+  const [to, setTo] = useState<Currency>(() => pairExtension?.initialPair?.to ?? KNOWN_CURRENCIES.find((c) => c.address.toLowerCase() === STABLE_ADDRESS.toLowerCase()) ?? KNOWN_CURRENCIES[2])
   const extendedPair = pairExtension?.matches(from, to) ?? false
   const [amount, setAmount] = useState(''), [editedSide, setEditedSide] = useState<'from' | 'to'>('from')
   const [selector, setSelector] = useState<'from' | 'to'>()

@@ -4,6 +4,7 @@ import type { Currency } from '../../liquidity/types'
 /** A configured pool keeps its own quote and transaction builder behind the shared token picker. */
 export interface PairExtension {
   currencies: readonly Currency[]
+  initialPair?: { from: Currency; to: Currency }
   matches: (from: Currency, to: Currency) => boolean
   render: (selection: PairSelection) => ReactNode
 }

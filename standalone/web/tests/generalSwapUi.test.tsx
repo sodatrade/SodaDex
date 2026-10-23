@@ -10,6 +10,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { zeroAddress, type Hex } from 'viem'
 import { confirmedPoolsKey } from '../src/features/liquidity/confirmedPools'
 import { GeneralSwapCard } from '../src/features/swap/GeneralSwapCard'
+import { OrdinarySwap } from '../src/fragments/OrdinarySwap'
+import type { FragmentDeployment } from '../src/fragments/config'
+import type { PairSelection } from '../src/features/swap/pairExtension'
 import { KNOWN_CURRENCIES } from '../src/liquidity/config'
 import * as liquidity from '../src/liquidity'
 import type { Currency, LiquidityPool } from '../src/liquidity/types'
@@ -55,6 +58,39 @@ async function amount(value = '0.000001'): Promise<void> {
   await waitFor(() => expect(screen.getByRole('button', { name: 'Review swap' })).toBeEnabled())
 }
 describe('main swap interactions', () => {
+  it('defaults the configured deployment to OKB/FABS before snapshot loading and preserves a manual selection on refresh', async () => {
+    wallet = { ...wallet, session: undefined, getIdentity: () => undefined }
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } })
+    const deployment: FragmentDeployment = { chainId: 196, vault: owner, pool: owner, policy: owner, fabs: custom.address, fromBlock: 0n, rpcUrl: 'http://fixture.invalid' }
+    const tree = () => <QueryClientProvider client={client}><PreferencesProvider><OrdinarySwap wallet={wallet} active
+      onConnect={vi.fn()} onCreatePool={vi.fn()} onBusyChange={vi.fn()}
+      fragment={{ deployment: { ...deployment }, fallback: <p>Loading share pool</p> }} /></PreferencesProvider></QueryClientProvider>
+    const view = render(tree())
+    expect(screen.getByRole('button', { name: 'OKB ▾' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'FABS ▾' })).toBeVisible()
+    expect(screen.getByText('Loading share pool')).toBeVisible()
+    await userEvent.click(screen.getByRole('button', { name: 'FABS ▾' }))
+    await userEvent.click(await screen.findByRole('button', { name: /USD₮0/ }))
+    view.rerender(tree())
+    expect(screen.getByRole('button', { name: /Choose receive.*USD₮0/ })).toBeVisible()
+    expect(screen.queryByText('Loading share pool')).not.toBeInTheDocument()
+    expect(trades.executePoolTrade).not.toHaveBeenCalled()
+  })
+
+  it('reverses the default extension pair and keeps that direction across refreshes', async () => {
+    const share = { ...custom, symbol: 'FABS', decimals: 18 }
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } })
+    const renderPair = ({ from, to, onReverse }: PairSelection) => <button onClick={onReverse}>{from.symbol} → {to.symbol}</button>
+    const tree = () => <QueryClientProvider client={client}><PreferencesProvider><GeneralSwapCard wallet={wallet} balances={balances}
+      balancesLoading={false} balancesError={false} onConnect={vi.fn()} pairExtension={{ currencies: [native, share],
+        initialPair: { from: native, to: share }, matches: (a, b) => (a.native && b.address === share.address) || (b.native && a.address === share.address), render: renderPair }} /></PreferencesProvider></QueryClientProvider>
+    const view = render(tree())
+    await userEvent.click(screen.getByRole('button', { name: 'OKB → FABS' }))
+    view.rerender(tree())
+    expect(screen.getByRole('button', { name: 'FABS → OKB' })).toBeVisible()
+    expect(trades.executePoolTrade).not.toHaveBeenCalled()
+  })
+
   it('quotes a V2-only directory on a fresh Swap page without a Pool-page cache', async () => {
     const v2 = { protocol: 'v2' as const, id: custom.address, address: custom.address,
       currency0: stable, currency1: { ...native, address: KNOWN_CURRENCIES[1].address }, fee: 3000 as const,
