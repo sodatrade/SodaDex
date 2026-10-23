@@ -11,4 +11,4 @@
 
 普通 V2/V3/V4 的 Factory、Pool、Router 上游来源和实际部署记录仍在 `deployments/xlayer-test/`；不能因为源码未在这个目录单独展开，就认为这些依赖可以删除。历史部署、账本与测试回执保留，删除仓库文件不改变链上合约。
 
-当前交付分支是 `codex/feat/mining-products-1952`，PR 为 [#2](https://github.com/sodatrade/SodaDex/pull/2)。审计请固定该分支的具体提交，不使用未包含本次清理的 `main`。
+v5 审计冻结提交为 [`c5458605bfe8888c9ac6d4dca6912f45f504900a`](https://github.com/sodatrade/SodaDex/tree/c5458605bfe8888c9ac6d4dca6912f45f504900a/contracts/sodadex-fragments)。后续交付请固定实际提交和 `audit-manifest.json`，不要只按分支名判断版本。正式部署由 Owner 执行；[生产接入核验和交付说明](../deployments/xlayer-production/README.md)记录了当前 v5 与正式 FABX 的兼容阻塞，源码合入 main 不等于可以直接部署生产。
