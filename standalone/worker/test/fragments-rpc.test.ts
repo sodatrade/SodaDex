@@ -30,9 +30,11 @@ describe('fragment RPC deployment boundary',()=>{
   expect(fragmentManifest(JSON.stringify({...manifest,chainId:1952}))).toBeUndefined()
  })
  it('allows MirrorVault views on the bound vault, never its writes',()=>{
-  const read=encodeFunctionData({abi:mirrorVaultAbi,functionName:'totalEligibleWeight'})
-  expect(validFragmentRpc('eth_call',[{to:vault,data:read},'latest'],manifest)).toBe(true)
-  expect(validFragmentRpc('eth_call',[{to:user,data:read},'latest'],manifest)).toBe(false)
+  for (const functionName of ['totalEligibleWeight', 'totalBase'] as const) {
+   const read=encodeFunctionData({abi:mirrorVaultAbi,functionName})
+   expect(validFragmentRpc('eth_call',[{to:vault,data:read},'0x7b'],manifest)).toBe(true)
+   expect(validFragmentRpc('eth_call',[{to:user,data:read},'0x7b'],manifest)).toBe(false)
+  }
   const write=encodeFunctionData({abi:parseAbi(['function finalizeRedeem(uint256) returns(uint256)']),functionName:'finalizeRedeem',args:[1n]})
   expect(validFragmentRpc('eth_call',[{from:user,to:vault,data:write},'latest'],manifest)).toBe(false)
  })

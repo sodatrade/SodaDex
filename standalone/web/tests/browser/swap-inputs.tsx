@@ -30,7 +30,7 @@ function Fixture() {
       <div className="direction-row"><button className="direction-button" onClick={() => setReverse(!reverse)}>↓</button></div>
       <AmountPanel currency={to} amount="3" balance="余额 1250.123456" disabled={false} onSelect={() => setPicker(true)} /></section>
       : <SwapScreen client={client} deployment={{ chainId: 196, vault: address, pool: address, policy: address, fromBlock: 0n, rpcUrl: 'http://fixture.invalid' }}
-        snapshot={{ okb: parseEther('10'), shares: parseEther('100'), lpSupply: 1n, rewards: address, preciseLiquidity: true, mirrorVault: false, tradingPaused: false, vaultClaimable: undefined, okbBalance: parseEther('2'), shareBalance: parseEther('1250.123456789'), lpBalance: 0n }}
+        snapshot={{ okb: parseEther('10'), shares: parseEther('100'), lpSupply: 1n, rewards: address, preciseLiquidity: true, mirrorVault: false, tradingPaused: false, pauseReason: undefined, vaultClaimable: undefined, okbBalance: parseEther('2'), shareBalance: parseEther('1250.123456789'), lpBalance: 0n }}
         account={account} m={messages('zh-CN')} prepare={() => { throw new Error('This read-only fixture never prepares transactions') }} onConnect={() => setAccount(address)}
         selection={{ from, to, onSelect: () => setPicker(true), onReverse: () => setReverse(!reverse) }} />}</main>
     {picker && <CurrencyPicker poolOnly currencies={currencies} selected={from} onSelect={() => setPicker(false)} onClose={() => setPicker(false)} />}

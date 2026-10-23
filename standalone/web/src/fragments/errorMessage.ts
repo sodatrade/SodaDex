@@ -2,7 +2,7 @@ import type { Messages } from './messages'
 
 /** Translate known failures; never render RPC calldata, vendor stacks or unknown text. */
 export function fragmentErrorMessage(error: unknown, m: Messages): string {
-  const safe = [m.amountError, m.quoteError, m.walletChanged, m.walletRequired, m.approval, m.actionError, m.tradingPaused]
+  const safe = [m.amountError, m.quoteError, m.walletChanged, m.walletRequired, m.approval, m.actionError, m.tradingPaused, m.noBacking]
   const seen = new Set<unknown>(), parts: string[] = []
   let current = error
   for (let depth = 0; current && typeof current === 'object' && depth < 8 && !seen.has(current); depth++) {

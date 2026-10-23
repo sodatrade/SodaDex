@@ -17,7 +17,7 @@ function mount(account: ScreenProps['account'] = address) {
     client: { readContract } as unknown as ScreenProps['client'], account, m: messages('en'), prepare,
     deployment: { vault: address, pool: address, policy: address, chainId: 196, fromBlock: 0n, rpcUrl: 'http://fixture.invalid' },
     snapshot: { okb: parseEther('10'), shares: parseEther('100'), lpSupply: 1n, rewards: address,
-      preciseLiquidity: true, mirrorVault: false, tradingPaused: false, vaultClaimable: undefined, okbBalance: parseEther('2'), shareBalance: parseEther('1250.123456789'), lpBalance: 0n },
+      preciseLiquidity: true, mirrorVault: false, tradingPaused: false, pauseReason: undefined, vaultClaimable: undefined, okbBalance: parseEther('2'), shareBalance: parseEther('1250.123456789'), lpBalance: 0n },
   } satisfies ScreenProps
   const tree = (overrides: Partial<ScreenProps> = {}) => <QueryClientProvider client={client}><PreferencesProvider><SwapScreen {...props} {...overrides} onConnect={onConnect} onAddLiquidity={onAddLiquidity} /></PreferencesProvider></QueryClientProvider>
   const view = render(tree())
@@ -26,6 +26,19 @@ function mount(account: ScreenProps['account'] = address) {
 beforeEach(() => localStorage.setItem(PREFERENCES_KEY, JSON.stringify({ locale: 'en', theme: 'light', currency: 'USD' })))
 
 describe('miner share swap balances', () => {
+  it.each(['noBacking', 'tradingPaused'] as const)('shows %s and blocks swapping until backing is ready', async reason => {
+    const view = mount()
+    fireEvent.change(screen.getByLabelText('You pay'), { target: { value: '0.1' } })
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Preview transaction' })).toBeEnabled())
+    view.rerender({ snapshot: { ...view.props.snapshot, tradingPaused: true, pauseReason: reason } })
+    expect(screen.getByRole('status')).toHaveTextContent(messages('en')[reason])
+    expect(screen.queryByText(messages('en')[reason === 'noBacking' ? 'tradingPaused' : 'noBacking'])).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Preview transaction' })).toBeDisabled()
+    view.rerender({ snapshot: view.props.snapshot })
+    expect(screen.queryByRole('status')).not.toBeInTheDocument()
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Preview transaction' })).toBeEnabled())
+  })
+
   it('shows the empty-pool action, blocks quoting, and enables quotes after liquidity arrives', async () => {
     const view = mount()
     view.rerender({ snapshot: { ...view.props.snapshot, okb: 0n, shares: 0n } })

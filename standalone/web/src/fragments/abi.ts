@@ -21,7 +21,7 @@ export const lpRewardsAbi = parseAbi(['function POOL() view returns(address)', '
 /** IGNIX MirrorVault reads used by the epoch pool. Views only: miners, redemptions and claims live in IGNIX. */
 export const mirrorVaultAbi = parseAbi([
   'function LP_POOL() view returns(address)', 'function LP_REWARDS_VERSION() view returns(bytes32)', 'function POLICY() view returns(address)',
-  'function totalEligibleWeight() view returns(uint256)', 'function claimable(address) view returns(uint256)',
+  'function totalEligibleWeight() view returns(uint256)', 'function totalBase() view returns(uint256)', 'function claimable(address) view returns(uint256)',
   'function FABS() view returns(address)', 'function lockedShares(address) view returns(uint256)',
   'function openEpoch() view returns(uint64)', 'function confirmedEpoch() view returns(uint64)',
   'function minerCount() view returns(uint256)', 'function heldIds(uint256,uint256) view returns(uint256[])',
