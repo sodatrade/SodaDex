@@ -5,6 +5,13 @@ import { handleRequest } from '../src/http.ts'
 import { validateConfig, TEST_SIGNER } from '../src/config.ts'
 import { cloudConfig } from '../cloudflare/config.ts'
 import { fixture, d, signer, wallet, now } from './fixture.ts'
+it('retirement overrides stale enable flags without loading signing credentials or changing the budget', () => {
+  const result = cloudConfig({ MINING_PUBLIC_ORIGIN: fixture().c.publicOrigin, MINING_SERVICE_RETIRED: 'true',
+    MINING_ADMISSION_ENABLED: 'true', MINING_EXECUTION_ENABLED: 'true', MINING_GAS_CAP_WEI: '690714882004243',
+    MINING_SIGNER_PRIVATE_KEY: 'retired-fixture-must-not-be-read', MINING_KEEPER_PRIVATE_KEY: 'retired-fixture-must-not-be-read' })
+  expect(result.config).toMatchObject({ admissionEnabled: false, executionEnabled: false, gasCapWei: 690714882004243n })
+  expect(result.authorizer).toBeUndefined(); expect(result.keeper).toBeUndefined()
+})
 function setup() {
   const f = fixture(), app = { config: f.c, d, repo: f.repo, admission: new Admission(f.c, d, f.repo, f.rpc, f.discovery, signer, () => now),
     directory: new Directory(f.c, d, f.repo, f.rpc, f.discovery) }

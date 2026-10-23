@@ -21,6 +21,13 @@ const broadcasts = [], rpcMethods = [], outboundUrls = []
 async function compile(manifest = undeployedManifest) {
   await build({ entryPoints: [entry], outfile: bundle, bundle: true, format: 'esm', platform: 'browser', external: ['cloudflare:workers'], target: 'es2022', plugins: [{ name: 'owned-do-only', setup(builder) {
     builder.onLoad({ filter: /orders-test\.json$/ }, args => args.path === resolve(root, 'deployments/orders-test.json') ? { contents: JSON.stringify(manifest), loader: 'json' } : undefined)
+    // Local bundle only: exercise the real alarm while another request's body is open.
+    builder.onLoad({ filter: /orders\/cloudflare\/index\.ts$/ }, args => {
+      const source = readFileSync(args.path, 'utf8')
+      const helper = `fetch(request: Request): Promise<Response> {
+        if (new URL(request.url).pathname === '/__fixture/alarm') return this.alarm().then(() => Response.json({alarmCompleted:true}));`
+      return { contents: source.replace('fetch(request: Request): Promise<Response> {', helper), loader: 'ts' }
+    })
     // Count signer invocations without disclosing the key, signature or raw transaction.
     builder.onLoad({ filter: /orders\/cloudflare\/config\.ts$/ }, async args => {
       const { readFile } = await import('node:fs/promises')
@@ -67,9 +74,24 @@ try {
   const empty = await sql('sodadex-orders:196:undeployed')
   assert.equal((await empty.exec('SELECT COUNT(*) AS n FROM orders'))[0].n, 0)
   assert.equal((await empty.exec("SELECT COUNT(*) AS n FROM sqlite_master WHERE name='keeper_guard'"))[0].n, 0)
+  // An incomplete public body must not own the actor's application queue.
+  let slowBody
+  const stream = new ReadableStream({ start(controller) { slowBody = controller; controller.enqueue(new TextEncoder().encode('{')) } })
+  const slow = api('/v1/orders', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: stream, duplex: 'half' })
+  let slowCompleted = false
+  void slow.then(() => { slowCompleted = true })
+  await pause(25)
+  try {
+    const concurrent = await Promise.race([api('/v1/status'), pause(2000).then(() => { throw Error('Incomplete body blocked another request') })])
+    assert.equal(concurrent.status, 200); assert.equal(slowCompleted, false)
+    const alarm = await Promise.race([api('/__fixture/alarm'), pause(2000).then(() => { throw Error('Incomplete body blocked the alarm') })])
+    assert.equal((await alarm.json()).alarmCompleted, true); assert.equal(slowCompleted, false)
+  } finally {
+    slowBody.enqueue(new TextEncoder().encode('}')); slowBody.close(); await slow
+  }
   await pause(1100); assert.equal(rpcCalls, 0); assert.equal(signCalls, 0)
   await mf.dispose(); mf = undefined
-  const proof = { mode: 'local-workerd-sqlite-do', undeployedStatusDisabled: true, fixedSingleActor: true, noNodePidTable: true, emptyQueueNoRpcOrSigner: true }
+  const proof = { mode: 'local-workerd-sqlite-do', undeployedStatusDisabled: true, fixedSingleActor: true, noNodePidTable: true, emptyQueueNoRpcOrSigner: true, incompleteBodyDoesNotBlockStatus: true, incompleteBodyDoesNotBlockAlarm: true }
   if (process.argv.includes('--integration')) {
     const module = process.env.SODADEX_ORDER_FIXTURE_MODULE ? pathToFileURL(resolve(process.env.SODADEX_ORDER_FIXTURE_MODULE)) : new URL('../../../contracts/sodadex-orders/test/fixture.mjs', import.meta.url)
     fixture = await (await import(module.href)).startOrderFixture()

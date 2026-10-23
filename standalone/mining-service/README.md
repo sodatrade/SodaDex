@@ -1,4 +1,16 @@
-# SodaDEX 1952 online mining service
+# 旧 SodaDEX 挖矿执行服务：已退役
+
+2026-10-21 起，矿机执行业务交由 IGNIX。1952 与 196 两个旧后台启用 `MINING_SERVICE_RETIRED=true`，该开关覆盖旧 admission/execution 配置且不加载签名适配器。写入、带查询参数的刷新请求均返回 410；alarm 仅删除定时安排。主站和旧前端已移除对应 Service Binding。
+
+原 Worker、DO 类名、namespace、累计支出、预留、历史 raw/hash 和部署记录保留，不重建或迁移。私有接口仅允许无查询参数的 `GET /v1/status` 与 `GET /v1/projects` 快照。SodaDEX 的专用 LP、金库、分红合约与接口继续工作。本次不修改已部署合约。
+
+发布退役版本须显式使用 Wrangler 的 `--durable-objects-code-update-mode immediate`，并核对实际状态响应；只看到上传成功不能证明旧 alarm 已停止。不要回退至仍启用执行的历史版本。
+
+本地验证：`npm --prefix standalone/mining-service run check`、`npm --prefix standalone/mining-service run test:retirement`。后者使用真实 workerd/SQLite 和测试内 alarm 注入，验证停止执行、拒绝写入、历史行原样保存、零外部请求；无真实密钥或广播。
+
+以下为历史运行机制和验收记录，不表示服务仍启用。
+
+## 历史：SodaDEX 1952 online mining service
 
 This package is isolated from the 196 order service and production. The Worker has
 no public `workers.dev` route. The approved SodaDEX main frontend and legacy 1952

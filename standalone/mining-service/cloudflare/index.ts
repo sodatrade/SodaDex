@@ -57,17 +57,24 @@ export class SodaMining1952 extends DurableObject {
     if (await this.state.storage.getAlarm() === null) await this.state.storage.setAlarm(Date.now() + pollMs)
   }
   fetch(request: Request): Promise<Response> {
+    const url = new URL(request.url)
+    const retired = this.env.MINING_SERVICE_RETIRED === 'true'
+    if (retired && !(request.method === 'GET' && !url.search && ['/v1/status', '/v1/projects'].includes(url.pathname)))
+      return this.state.storage.deleteAlarm().then(() => errorResponse(new ServiceError('mining_service_retired', 410), this.deployment.chainId))
     const handle = async (): Promise<Response> => {
       try {
         const app = this.#application(), response = await handleRequest(request, app)
-        await this.#schedule(app.config.executionEnabled, app.config.pollMs); return response
+        await this.#schedule(app.config.executionEnabled, app.config.pollMs)
+        if (retired && url.pathname === '/v1/status') return Response.json({ ...await response.json(), retired: true }, { status: response.status, headers: response.headers })
+        return response
       } catch (e) { return errorResponse(e, this.deployment.chainId) }
     }
-    const url = new URL(request.url)
     // Directory/status are SQL snapshots and cannot wait behind RPC/signing/keeper activity.
     return request.method === 'GET' && (url.pathname === '/v1/status' || url.pathname === '/v1/projects' && !url.search) ? handle() : this.#serial(handle)
   }
   alarm(): Promise<void> {
+    // Retirement must not touch signed transactions, reserves, or external RPCs.
+    if (this.env.MINING_SERVICE_RETIRED === 'true') return this.state.storage.deleteAlarm()
     return this.#serial(async () => {
       const app = this.#application()
       try {

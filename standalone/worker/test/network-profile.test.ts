@@ -59,7 +59,7 @@ describe('independent test network profiles', () => {
       const response = await worker.fetch(new Request(`https://soda.example${path}`), {
         ASSETS: { fetch: assets }, ORDERS_API: { fetch: orders }, SODADEX_NETWORK_PROFILE: mining.id,
       })
-      expect(response.status).toBe(503)
+      expect(response.status).toBe(410)
       expect(await response.json()).toMatchObject({ chainId: 1952 })
     }
     expect(orders).not.toHaveBeenCalled(); expect(assets).not.toHaveBeenCalled()
@@ -68,7 +68,8 @@ describe('independent test network profiles', () => {
   it('reports explicit readiness and refuses invalid server configuration', async () => {
     const assets = vi.fn()
     const response = await worker.fetch(new Request('https://soda.example/api/network'), { ASSETS: { fetch: assets }, SODADEX_NETWORK_PROFILE: mining.id })
-    expect(await response.json()).toMatchObject({ id: mining.id, chainId: 1952, dexEnabled: false, ordersEnabled: false })
+    expect(response.status).toBe(410)
+    expect(await response.json()).toMatchObject({ code: 'MINING_RETIRED', chainId: 1952 })
     expect(response.headers.get('Cache-Control')).toBe('no-store')
     expect((await worker.fetch(new Request('https://soda.example/'), { ASSETS: { fetch: assets }, SODADEX_NETWORK_PROFILE: 'invalid' })).status).toBe(503)
     expect(assets).not.toHaveBeenCalled()

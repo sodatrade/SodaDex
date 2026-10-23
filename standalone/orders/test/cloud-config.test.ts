@@ -8,6 +8,13 @@ import { actorName, cloudConfig } from '../cloudflare/config.ts'
 const base = { ORDERS: { idFromName: (): string => 'unused', get: (): never => { throw Error('not called') } }, ORDERS_PUBLIC_ORIGIN: 'https://orders.test' }
 beforeEach(() => { Object.assign(reviewed.manifest, undeployed) })
 describe('explicit Cloudflare execution configuration', () => {
+  it('allows the named Soda domain without replacing the original origin', () => {
+    const configured = cloudConfig({ ...base, ORDERS_ADDITIONAL_PUBLIC_ORIGINS: '["https://soda.ignix.bot"]' })
+    expect(configured.config.publicOrigin).toBe(base.ORDERS_PUBLIC_ORIGIN)
+    expect(configured.config.additionalPublicOrigins).toEqual(['https://soda.ignix.bot'])
+    for (const value of ['{}', '[42]', '["*"]', '["https://soda.ignix.bot/"]', '["https://soda.ignix.bot","https://soda.ignix.bot"]'])
+      expect(() => cloudConfig({ ...base, ORDERS_ADDITIONAL_PUBLIC_ORIGINS: value })).toThrow()
+  })
   it('keeps an undeployed fixture disabled without a key, budget or polling configuration', () => {
     const result = cloudConfig(base)
     expect(result.config.settlement).toBeNull()

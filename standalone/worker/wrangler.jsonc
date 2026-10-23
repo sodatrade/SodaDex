@@ -5,10 +5,36 @@
   "compatibility_date": "2026-10-16",
   "workers_dev": true,
   "preview_urls": false,
-  "vars": { "SODADEX_MINING_MOUNT": "enabled" },
-  "services": [{ "binding": "ORDERS_API", "service": "sodadex-orders-test" }, { "binding": "MINING_API", "service": "sodadex-mining-api-test-1952" }],
-  "durable_objects": { "bindings": [{ "name": "CHAIN_INDEX", "class_name": "SodaChainIndex" }] },
-  "migrations": [{ "tag": "v1-chain-index-sqlite", "new_sqlite_classes": ["SodaChainIndex"] }],
+  "routes": [
+    {
+      "pattern": "soda.ignix.bot",
+      "custom_domain": true,
+      "zone_name": "ignix.bot"
+    }
+  ],
+  "vars": {},
+  "services": [
+    {
+      "binding": "ORDERS_API",
+      "service": "sodadex-orders-test"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "CHAIN_INDEX",
+        "class_name": "SodaChainIndex"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1-chain-index-sqlite",
+      "new_sqlite_classes": [
+        "SodaChainIndex"
+      ]
+    }
+  ],
   "assets": {
     "directory": "../web/dist",
     "binding": "ASSETS",

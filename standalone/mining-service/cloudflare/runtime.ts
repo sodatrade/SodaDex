@@ -9,6 +9,7 @@ export interface SqlStorage {
 export interface ObjectState { storage: SqlStorage }
 export interface MiningNamespace { idFromName(name: string): unknown; get(id: unknown): { fetch(request: Request): Promise<Response> } }
 export interface MiningEnv {
+  MINING_SERVICE_RETIRED?: string
   MINING_1952?: MiningNamespace
   MINING_196?: MiningNamespace
   MINING_NETWORK_PROFILE?: '1952-mining-test' | '196-mining-test'

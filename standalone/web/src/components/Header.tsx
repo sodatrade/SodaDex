@@ -1,5 +1,4 @@
 import { NETWORK } from '../network'
-import { miningMessages } from '../mining/messages'
 import type { MiningTab } from '../mining/navigation'
 import type { ReactElement } from 'react'
 import { shortenAddress } from '../lib/address'
@@ -24,12 +23,10 @@ interface HeaderProps {
   onPreferences: () => void
 }
 
-export function Header({ page, onPageChange, wallet, onWallet, onSearch, onPreferences, miningPage, onMiningPageChange, navigationDisabled = false }: HeaderProps): ReactElement {
+export function Header({ page, onPageChange, wallet, onWallet, onSearch, onPreferences, miningPage, navigationDisabled = false }: HeaderProps): ReactElement {
   const { t, locale, currency } = usePreferences()
   const m = workspaceMessages(locale)
   const group = miningPage ? undefined : primaryPage(page)
-  const mining = miningMessages(locale)
-  const miningTarget = miningPage ?? 'fundraising'
   const pages: { id: Page; name: string }[] = [
     { id: 'swap', name: m.trade },
     { id: 'explore', name: m.explore },
@@ -57,14 +54,6 @@ export function Header({ page, onPageChange, wallet, onWallet, onSearch, onPrefe
             {item.name}
           </button>
         ))}
-        <a href={`${NETWORK.dexEnabled ? '/mining/' : import.meta.env.BASE_URL}#${miningTarget}`}
-          className={`nav-product${miningPage ? ' active' : ''}`} aria-current={miningPage ? 'page' : undefined}
-          aria-disabled={navigationDisabled || undefined} onClick={(event) => {
-            if (navigationDisabled) { event.preventDefault(); return }
-            if (onMiningPageChange && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
-              event.preventDefault(); onMiningPageChange(miningTarget)
-            }
-          }}>{mining.minerTrading}</a>
         {!navigationDisabled && <IgnixLaunchLink />}
       </nav>
       <div className="header-actions">

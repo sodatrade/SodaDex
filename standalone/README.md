@@ -9,7 +9,7 @@
 ```sh
 npm --prefix standalone/web ci --workspaces=false
 npm --prefix standalone/worker ci --workspaces=false
-npm --prefix standalone/web run build:unified
+npm --prefix standalone/web run build:dex-test
 npm --prefix standalone/worker run dev
 ```
 
@@ -19,7 +19,7 @@ npm --prefix standalone/worker run dev
 npm --prefix standalone/web run typecheck
 npm --prefix standalone/web run lint
 npm --prefix standalone/web test
-npm --prefix standalone/web run build:unified
+npm --prefix standalone/web run build:dex-test
 npm --prefix standalone/worker run check
 ```
 
@@ -64,7 +64,7 @@ npm --prefix standalone/web test
 
 ## 测试发布
 
-`worker/wrangler.jsonc` 只配置 `sodadex-preview` 的 `workers.dev` 地址。没有自定义域名、Cron 或自动发布 CI。人工发布前，先完成上述检查与浏览器验收，再运行：
+`worker/wrangler.jsonc` 与当前碎片测试发布配置 `worker/wrangler.fragments-196-test.jsonc` 均保留 `soda.ignix.bot` 的自定义域名绑定，同时保留 `workers.dev` 地址。没有 Cron 或自动发布 CI。人工发布前，先完成上述检查与浏览器验收，再运行：
 
 ```sh
 npm --prefix standalone/worker run deploy:test
@@ -72,7 +72,7 @@ npm --prefix standalone/worker run deploy:test
 
 Cloudflare 凭证使用本机 Wrangler 登录状态，不进入源码或前端构建。静态资源只从 `web/dist` 上传。
 
-当前测试地址为 [sodadex-preview.jsmsdx2025.workers.dev](https://sodadex-preview.jsmsdx2025.workers.dev)，版本记录保存在 [`../deployments/frontend-test.json`](../deployments/frontend-test.json)，矿机同站整合另见[发布记录](../deployments/frontend-unified-mining.json)。正式域名暂未绑定。
+指定域名 [soda.ignix.bot](https://soda.ignix.bot) 已绑定现有 `sodadex-preview` 站点；[原测试地址](https://sodadex-preview.jsmsdx2025.workers.dev) 保留。域名绑定不切换合约，站点仍使用独立测试合约。绑定记录见 [`../deployments/domain-soda-ignix-bot.json`](../deployments/domain-soda-ignix-bot.json)。历史版本记录保存在 [`../deployments/frontend-test.json`](../deployments/frontend-test.json)，历史矿机同站整合另见[发布记录](../deployments/frontend-unified-mining.json)。
 
 浏览器读取 `/api/rpc`；Worker 用固定地址 `https://rpc.ignix.bot/rpc/196` 查询 X Layer。代理接受受限读取、自有 V3/V4 池报价，以及当前 PositionManager 的建池、仓位和有限授权模拟。行情及事件分页接口见 [`worker/API.md`](worker/API.md)。真实交易由用户的浏览器钱包签名与广播；代理不签名、不广播，也不接受任意上游地址。节点失败时前端显示连接失败，不回退到其他节点。
 
@@ -118,24 +118,10 @@ npm --prefix standalone/web test
 部署地址和开关见 [orders-test.json](../deployments/orders-test.json)，实际部署、微量成交及撤单回执见 [orders-receipts.json](../deployments/xlayer-test/orders-receipts.json)，运行和暂停步骤见 [orders/CLOUDFLARE.md](orders/CLOUDFLARE.md)。Node CLI 默认只读；公开测试站使用独立云端服务，生产合约保持未部署。
 
 
-## 同站矿机业务（1952）
+## 旧挖矿执行服务已退役
 
-主站导航以「矿机交易」统一进入同域名 `/mining/#fundraising`；进入后用内部页签选择「募资分红」或「矿机碎片」。
-已在矿机业务内时，顶栏入口保留当前子页；原 `/mining/#fundraising`、`/mining/#fragments` 深链接继续有效。
+矿机执行业务由 IGNIX 处理。SodaDEX 的旧 `/mining`、`/mining/api/*` 和 `/api/mining/*` 入口返回 410；旧 1952 前端也不再提供业务入口。主站保留 196 DEX、矿机碎片专用 LP、份额金库与分红接口。
 
-资金池、仓位、矿机本机交易记录与后台最近任务每页显示10条；钱包/记录筛选变化时回到第一页。
-交易记录、池、仓位、订单、资产和搜索结果每页最多10条。矿机「链上记录」使用独立的1952持久索引；「本机提交」仍保留最近100条本机记录，自动处理接口仍返回最近50条后台任务，二者不冒充完整链上历史。切换钱包或筛选条件回到第一页。索引只覆盖本项目测试合约及已核实的项目，不代表全链所有交易。
-资金池目录为空、加载中或读取失败时显示明确状态；无可用池时不调用行情读取。
-矿机工作台复用主站 Header、主题、语言和展示货币；六个业务页签支持刷新、浏览器前进后退及直接链接。
-本标签页中用户选择过的钱包通过 `eth_accounts` 恢复连接；新访客不主动请求地址，钱包断开后不自动重连。
-页面不会自动切链；矿机业务要求用户点击切换到 1952，返回兑换后要求196。
+两个旧后台保留原 Worker、Durable Object 类、namespace、账本及已签交易记录。`MINING_SERVICE_RETIRED=true` 强制关闭 admission/execution，alarm 只清除自身，不签名、不广播、不清零费用或预留。私有后台只保留无查询参数的状态与项目快照读取。历史源码、链上合约和验收记录保留，不能用旧的同站整合记录说明当前入口仍开放。
 
-`npm --prefix standalone/web run build:unified` 构建主站196入口及 `dist/mining` 下的1952入口，
-检查两份网络标识、挂载路径和首帧偏好脚本 CSP hash。`deploy:test` 先运行同一检查，避免遗漏矿机文件。
-矿机页面的读取与业务请求固定发到 `/mining/api/*`，Worker根据明确启用的挂载路径选择1952，
-不从请求头、URL参数或localStorage选择RPC。原 `/api/*` 仍服务196；矿机路径拒绝196订单与行情接口。
-后端复用现有1952 Service Binding、项目目录、签名服务与费用账本；没有重新部署合约。
-
-旧矿机测试域名保留原记录。浏览器本机交易历史按origin隔离，不会自动导入主站；链上资产、持仓和后台记录共用。
-本轮浏览器脚本 `acceptance/unified-mining-readonly.js` 覆盖1440/1024/390宽度、三语、主题、导航和连接恢复；
-钱包使用只读隔离fixture，不签名、不广播，不将此证据等同此前36笔真实钱包交易。
+当前发布使用 `build:dex-test`，从碎片测试 Worker 配置读取同一份公开 manifest，只构建 `web/dist` 的 196 DEX；`deploy:test` 校验专用池 manifest、入口、网络与 CSP hash，并使用 `wrangler.fragments-196-test.jsonc`。旧 `build:unified` 脚本仅作历史资料，当前发布拒绝带 `dist/mining` 的构建。退役验证使用 `npm --prefix standalone/mining-service run test:retirement`，只在本地 workerd/SQLite 上验证账本不变和零外部调用。

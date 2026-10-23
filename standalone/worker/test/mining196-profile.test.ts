@@ -14,30 +14,16 @@ describe('196 mining private routing', () => {
     expect(actorName(config)).toContain(':196-mining-test:')
     expect(actorName(config)).not.toBe(actorName(baseConfig('196-test')))
   })
-  it('never calls the existing service when the new binding or deployment is missing', async () => {
-    const legacy = vi.fn(), assets = vi.fn()
-    for (const extra of [{}, env]) {
-      const response = await worker.fetch(new Request('https://test.example/api/mining/status'), {
-        ASSETS: { fetch: assets }, SODADEX_NETWORK_PROFILE: '196-mining-test', MINING_API: { fetch: legacy }, ...extra,
-      })
-      expect(response.status).toBe(503)
+  it('retires legacy profiles before assets, RPCs or service bindings can run', async () => {
+    const legacy = vi.fn(), isolated = vi.fn(), assets = vi.fn()
+    for (const id of ['1952-mining-test', '196-mining-test']) {
+      for (const path of ['/', '/api/network', '/api/mining/status', '/api/rpc', '/api/orders/status', '/api/dex/pools']) {
+        const response = await worker.fetch(new Request('https://test.example' + path), {
+          ASSETS: { fetch: assets }, SODADEX_NETWORK_PROFILE: id, MINING_API: { fetch: legacy }, MINING_API_196: { fetch: isolated }, ...env,
+        })
+        expect(response.status).toBe(410); expect(await response.json()).toMatchObject({ code: 'MINING_RETIRED' })
+      }
     }
-    expect(legacy).not.toHaveBeenCalled(); expect(assets).not.toHaveBeenCalled()
-  })
-  it('binds new service requests to profile and deployment and rejects wrong-chain responses', async () => {
-    const legacy = vi.fn(), isolated = vi.fn(async (request: Request) => {
-      expect(request.headers.get('X-SodaDEX-Network-Profile')).toBe('196-mining-test')
-      return Response.json({ schemaVersion: 1, chainId: 1952, deploymentVersion: d.version })
-    })
-    const response = await worker.fetch(new Request('https://test.example/api/mining/status'), {
-      ASSETS: { fetch: vi.fn() }, SODADEX_NETWORK_PROFILE: '196-mining-test', MINING_API: { fetch: legacy }, MINING_API_196: { fetch: isolated }, ...env,
-    })
-    expect(response.status).toBe(503); expect(isolated).toHaveBeenCalledOnce(); expect(legacy).not.toHaveBeenCalled()
-  })
-  it('fails closed on malformed manifest and disabled DEX routes', async () => {
-    const assets = { fetch: vi.fn() }
-    expect((await worker.fetch(new Request('https://test.example/api/network'), { ASSETS: assets, SODADEX_NETWORK_PROFILE: '196-mining-test', MINING_196_DEPLOYMENT: '{' })).status).toBe(503)
-    for (const path of ['orders/status', 'dex/pools', 'reference/tokens'])
-      expect((await worker.fetch(new Request(`https://test.example/api/${path}`), { ASSETS: assets, SODADEX_NETWORK_PROFILE: '196-mining-test' })).status).toBe(503)
+    expect(legacy).not.toHaveBeenCalled(); expect(isolated).not.toHaveBeenCalled(); expect(assets).not.toHaveBeenCalled()
   })
 })

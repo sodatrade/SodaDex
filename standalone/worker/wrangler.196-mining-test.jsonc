@@ -8,12 +8,7 @@
   "vars": {
     "SODADEX_NETWORK_PROFILE": "196-mining-test"
   },
-  "services": [
-    {
-      "binding": "MINING_API_196",
-      "service": "sodadex-mining-api-test-196"
-    }
-  ],
+  "services": [],
   "durable_objects": {
     "bindings": [
       {

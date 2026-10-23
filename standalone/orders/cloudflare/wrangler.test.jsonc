@@ -23,6 +23,7 @@
   ],
   "vars": {
     "ORDERS_PUBLIC_ORIGIN": "https://sodadex-preview.jsmsdx2025.workers.dev",
+    "ORDERS_ADDITIONAL_PUBLIC_ORIGINS": "[\"https://soda.ignix.bot\"]",
     "ORDERS_POLL_MS": "10000",
     "ORDERS_EXECUTION_ENABLED": "true",
     "ORDERS_GAS_BUDGET_WEI": "100000000000000",

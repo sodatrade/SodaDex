@@ -8,6 +8,7 @@
   },
   "scripts": {
     "test": "vitest run",
+    "test:retirement": "node --experimental-strip-types test/retirement-runtime.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "oxlint --config .oxlintrc.json --deny-warnings src test cloudflare local",
     "check": "npm run typecheck && npm run lint && npm test",
