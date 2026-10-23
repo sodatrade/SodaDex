@@ -14,6 +14,17 @@ import { MineScreen } from '../src/fragments/MineScreen'
 const props = { m: messages('en'), snapshot: { okb: 1n, shares: 10n, lpBalance: 0n }, prepare: vi.fn() } as unknown as ScreenProps
 
 describe('pool list and transient feedback', () => {
+  it.each(['noBacking', 'tradingPaused'] as const)('shows %s on adds but leaves LP removal available', reason => {
+    const address = '0x2222222222222222222222222222222222222222'
+    render(<PoolForm {...props} account={address} deployment={{pool:address,vault:address,policy:address,chainId:196,fromBlock:0n,rpcUrl:'https://rpc.test'}}
+      snapshot={{ ...props.snapshot, preciseLiquidity: true, tradingPaused: true, pauseReason: reason }} />)
+    expect(screen.getByRole('status')).toHaveTextContent(messages('en')[reason])
+    expect(screen.getByRole('button', {name:'Preview transaction'})).toBeDisabled()
+    fireEvent.click(screen.getByRole('button', {name:'Remove liquidity'}))
+    expect(screen.queryByRole('status')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', {name:'Preview transaction'})).toBeEnabled()
+  })
+
   it('shows asset and LP lists, with exact amounts and principal in read-only details', () => {
     const address = '0x2222222222222222222222222222222222222222'
     const account = '0x1111111111111111111111111111111111111111'

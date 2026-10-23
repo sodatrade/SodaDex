@@ -32,7 +32,8 @@ const zh = {
   quoteError: '无法报价，请检查金额和池子状态', walletChanged: '钱包或网络已变化，请重新预览',
   historyHint: '仅展示当前资金池的链上成交，最多每页 10 条。', noChart: '还没有足够成交绘制行情',
   review: '核对交易', contract: '目标合约', native: '支付 OKB（不含 Gas）', explorer: '查看交易',
-  tradingPaused: '矿机金库正在每日对账，兑换和添加流动性暂停；移除流动性不受影响。对账完成后自动恢复。',
+  noBacking: '金库尚无有效矿机算力支撑，请先在 IGNIX 存入合格矿机获取 FABS，再添加流动性。',
+  tradingPaused: '金库对账已逾期，兑换和添加流动性暂不可用；移除流动性不受影响。对账确认后恢复。',
   vaultIncome: '已确认待领 FAB（在 IGNIX 领取）', vaultIncomeHint: '金库收益每天确认一次，确认后才计入可领。',
 }
 export type Messages = typeof zh
@@ -69,7 +70,8 @@ const en: Messages = {
   quoteError: 'Quote unavailable. Check amount and pool state.', walletChanged: 'Wallet or network changed. Preview again.',
   historyHint: 'On-chain trades from this pool only. At most 10 per page.', noChart: 'Not enough trades to draw a chart yet',
   review: 'Review transaction', contract: 'Target contract', native: 'OKB payment (excluding gas)', explorer: 'View transaction',
-  tradingPaused: 'The miner vault is reconciling its daily books. Swaps and adding liquidity are paused; removing liquidity still works. Trading resumes automatically.',
+  noBacking: 'The vault has no eligible miner backing. Deposit eligible miners in IGNIX to obtain FABS before adding liquidity.',
+  tradingPaused: 'Vault reconciliation is overdue. Swaps and adding liquidity are unavailable; removing liquidity is unaffected. Trading resumes after reconciliation is confirmed.',
   vaultIncome: 'Confirmed FAB to claim (claim in IGNIX)', vaultIncomeHint: 'Vault income is confirmed once a day and becomes claimable after confirmation.',
 }
 const yue: Messages = { ...zh, dex: '兌換', pool: '流動性池', insufficientOkb: 'OKB 餘額不足，請減少支付金額，並預留網絡費', walletCancelled: '已取消銀包操作', priceChanged: '價格已變，請更新報價再試', networkUnavailable: '網絡暫時繁忙，請稍後再試', receiptUnavailable: '暫未確認交易結果，請查看銀包記錄，唔好重複提交', transactionReverted: '交易未成功，請更新報價再試', poolReady: '有流動性', poolEmpty: '等待加入流動性', details: '查看詳情', asset: '資產', balance: '餘額', wallet: '錢包地址', nativeAsset: '原生 OKB', lpPositions: 'LP 持倉', principalAmounts: '可移出嘅本金', tradeSettings: '交易設定', allTokens: '選擇代幣', marketType: '交易市場', ordinaryPools: '一般代幣池', poolType: '池類型', lpUpdating: '加入流動性暫未開放，等資金池更新。現有 LP 仍可移除。', pair: '交易對', manage: '管理流動性', specialPool: '礦機碎片專用池', reserves: '池內儲備', received: '實際收到', time: '時間', pageSize: '每頁 10 條', chartHint: '最近 500 筆鏈上成交 · 每份 {symbol} 嘅 OKB 成交價', indexReady: '成交已同步', indexSyncing: '同步新成交中', indexDelayed: '同步暫緩，顯示已儲存成交', marketError: '行情暫時未能讀取，請重試', pageExpired: '記錄已更新，請返第一頁', allLp: '全部 LP', ignixScope: '礦機、金庫同收益領取由 IGNIX 提供。呢度只顯示錢包資產同 LP 本金份額。', mine: '我嘅', connect: '連接錢包', settings: '偏好設定', swap: '兌換', pay: '支付', receive: '預計收到',
@@ -79,7 +81,8 @@ const yue: Messages = { ...zh, dex: '兌換', pool: '流動性池', insufficient
   loading: '讀取鏈上資料…', pending: '等候錢包或鏈上回執…', success: '交易成功，資料已更新',
   noLiquidity: '池暫時未有流動性，先喺 IGNIX 取得份額幣，再喺 Pool 配對 OKB 加入流動性。',
   fixedFee: '贖回費：每單位基礎算力 0.000001 OKB，永久固定', principal: '本金同收益分開 · 加減流動性唔收費',
-  tradingPaused: '礦機金庫每日對賬中，兌換同加入流動性暫停；移除流動性唔受影響。對賬完成後自動恢復。',
+  noBacking: '金庫暫無有效礦機算力支撐，請先喺 IGNIX 存入合資格礦機取得 FABS，再加入流動性。',
+  tradingPaused: '金庫對賬已逾期，兌換同加入流動性暫時唔可用；移除流動性唔受影響。對賬確認後恢復。',
   vaultIncome: '已確認待領 FAB（喺 IGNIX 領取）', vaultIncomeHint: '金庫收益每日確認一次，確認後先計入可領。',
 }
 export function messages(locale: Locale): Messages { return locale === 'en' ? en : locale === 'yue-HK' ? yue : zh }

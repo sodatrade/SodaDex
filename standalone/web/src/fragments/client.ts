@@ -65,13 +65,17 @@ export async function readSnapshot(c: FragmentClient, d: FragmentDeployment, use
     c.readContract({ address: d.pool, abi: tokenAbi, functionName: 'balanceOf', args: [account] }),
     c.getBalance({ address: account }),
   ])
-  // MirrorVault reports zero backing while its daily books are stale; the pool then refuses swaps and adds.
-  const [eligibleWeight, vaultClaimable] = identity.mirrorVault ? await Promise.all([
-    c.readContract({ address: d.vault, abi: mirrorVaultAbi, functionName: 'totalEligibleWeight' }),
-    c.readContract({ address: d.vault, abi: mirrorVaultAbi, functionName: 'claimable', args: [account] }),
-  ]) : [undefined, undefined]
-  const tradingPaused = eligibleWeight === 0n
-  return { ...identity, shares, okb, lpSupply, shareBalance, lpBalance, okbBalance, tradingPaused, vaultClaimable }
+  // A zero eligible weight can mean absent backing or overdue books. Read both
+  // values at one block so a deposit/reconciliation cannot mix the two states.
+  const blockNumber = identity.mirrorVault ? await c.getBlockNumber() : undefined
+  const [eligibleWeight, totalBase, vaultClaimable] = identity.mirrorVault ? await Promise.all([
+    c.readContract({ address: d.vault, abi: mirrorVaultAbi, functionName: 'totalEligibleWeight', blockNumber }),
+    c.readContract({ address: d.vault, abi: mirrorVaultAbi, functionName: 'totalBase', blockNumber }),
+    c.readContract({ address: d.vault, abi: mirrorVaultAbi, functionName: 'claimable', args: [account], blockNumber }),
+  ]) : [undefined, undefined, undefined]
+  const pauseReason: 'noBacking' | 'tradingPaused' | undefined = totalBase === 0n ? 'noBacking' : eligibleWeight === 0n ? 'tradingPaused' : undefined
+  const tradingPaused = pauseReason !== undefined
+  return { ...identity, shares, okb, lpSupply, shareBalance, lpBalance, okbBalance, tradingPaused, pauseReason, vaultClaimable }
 }
 export type Snapshot = Awaited<ReturnType<typeof readSnapshot>>
 export function minimum(amount: bigint, bps: number): bigint {
