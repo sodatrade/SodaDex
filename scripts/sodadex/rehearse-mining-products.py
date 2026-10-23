@@ -48,6 +48,8 @@ def prepared_artifacts(directory, full_launch, with_v2):
 
 
 def main():
+    from mining_source import require_legacy_rehearsal
+    require_legacy_rehearsal(Path(__file__).resolve().parents[2])
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--fabx-source", type=Path, required=True)
     parser.add_argument("--ignix-contracts", type=Path, help="Credential-free canonical source checkout to compile")

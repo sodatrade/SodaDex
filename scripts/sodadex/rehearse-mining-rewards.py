@@ -13,6 +13,8 @@ from mining_source import foundry_env
 
 
 def main():
+    from mining_source import require_legacy_rehearsal
+    require_legacy_rehearsal(Path(__file__).resolve().parents[2])
     root = Path(__file__).resolve().parents[2]
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--fabx-source", type=Path, required=True)

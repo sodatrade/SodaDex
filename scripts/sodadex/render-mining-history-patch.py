@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Render the 1952 source-history patch from pinned V1 and repo-owned library templates."""
 from pathlib import Path
+from mining_source import require_legacy_rehearsal
 import difflib,json,hashlib
 root=Path(__file__).resolve().parents[2]
+require_legacy_rehearsal(root)
 base=root/'.analysis/mining-1952/fabx-paid-rewards-v1'
 changed={}
 p=Path('src/pod/lib/DewebRewardAccounting.sol')

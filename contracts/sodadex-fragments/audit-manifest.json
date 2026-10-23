@@ -1,0 +1,224 @@
+{
+  "scope": "X Layer 196 independent TEST v5 special pool, vault, rewards, income, policy and locker; not a production release",
+  "sourceOwner": "https://github.com/okasplaunchpad/contract",
+  "sourceBaseCommit": "13f0eaf031370a9de44f6a55501dbb3097a7a55a",
+  "baseCommitIsDeployedTree": false,
+  "sourceNote": "The frozen files include uncommitted deployment changes beyond the base commit. The source hashes and compiled artifacts below identify the audited version.",
+  "frozenPackageSha256": "0365ef0847867fa7783ece226bbcb2dee818d117549053c6d941ea37448a4369",
+  "compiler": "0.8.26+commit.8a97fa7a",
+  "settings": {
+    "remappings": [
+      "@openzeppelin/contracts-upgradeable/=node_modules/@openzeppelin/contracts-upgradeable/",
+      "@openzeppelin/contracts/=node_modules/@openzeppelin/contracts/",
+      "@uniswap/v4-core/=node_modules/@uniswap/v4-core/",
+      "@uniswap/v4-periphery/=node_modules/@uniswap/v4-periphery/",
+      "forge-std/=lib/forge-std/src/"
+    ],
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "metadata": {
+      "bytecodeHash": "ipfs"
+    },
+    "evmVersion": "cancun",
+    "libraries": {},
+    "viaIR": true
+  },
+  "deployedSourceKeccak256": {
+    "node_modules/@openzeppelin/contracts/access/Ownable.sol": "0xff6d0bb2e285473e5311d9d3caacb525ae3538a80758c10649a4d61029b017bb",
+    "node_modules/@openzeppelin/contracts/access/Ownable2Step.sol": "0xdcad8898fda432696597752e8ec361b87d85c82cb258115427af006dacf7128c",
+    "node_modules/@openzeppelin/contracts/interfaces/IERC1363.sol": "0xd5ea07362ab630a6a3dee4285a74cf2377044ca2e4be472755ad64d7c5d4b69d",
+    "node_modules/@openzeppelin/contracts/interfaces/IERC165.sol": "0x0afcb7e740d1537b252cb2676f600465ce6938398569f09ba1b9ca240dde2dfc",
+    "node_modules/@openzeppelin/contracts/interfaces/IERC20.sol": "0x1a6221315ce0307746c2c4827c125d821ee796c74a676787762f4778671d4f44",
+    "node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol": "0x74ed01eb66b923d0d0cfe3be84604ac04b76482a55f9dd655e1ef4d367f95bc2",
+    "node_modules/@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol": "0x982c5cb790ab941d1e04f807120a71709d4c313ba0bfc16006447ffbd27fbbd5",
+    "node_modules/@openzeppelin/contracts/utils/Context.sol": "0x493033a8d1b176a037b2cc6a04dad01a5c157722049bbecf632ca876224dd4b2",
+    "node_modules/@openzeppelin/contracts/utils/ReentrancyGuard.sol": "0x11a5a79827df29e915a12740caf62fe21ebe27c08c9ae3e09abe9ee3ba3866d3",
+    "node_modules/@openzeppelin/contracts/utils/introspection/IERC165.sol": "0x8891738ffe910f0cf2da09566928589bf5d63f4524dd734fd9cedbac3274dd5c",
+    "src/mining/soda/SodaPolicy.sol": "0x7dcc58c419675d351b0645b6bc49b5e181890d2b75ed9e43a18b6a31bdb4c15f",
+    "node_modules/@openzeppelin/contracts/interfaces/draft-IERC6093.sol": "0x19fdfb0f3b89a230e7dbd1cf416f1a6b531a3ee5db4da483f946320fc74afc0e",
+    "node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol": "0x86b7b71a6aedefdad89b607378eeab1dcc5389b9ea7d17346d08af01d7190994",
+    "node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol": "0xd6fa4088198f04eef10c5bce8a2f4d60554b7ec4b987f684393c01bf79b94d9f",
+    "node_modules/@openzeppelin/contracts/token/ERC721/IERC721.sol": "0xf78f05f3b8c9f75570e85300d7b4600d7f6f6a198449273f31d44c1641adb46f",
+    "node_modules/@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol": "0x88cd5e3bee2e8c36b8d9058fbcaa81ad5704281b25634122234b55ea853d8055",
+    "node_modules/@openzeppelin/contracts/utils/Panic.sol": "0xf7fe324703a64fc51702311dc51562d5cb1497734f074e4f483bfb6717572d7a",
+    "node_modules/@openzeppelin/contracts/utils/math/Math.sol": "0x1225214420c83ebcca88f2ae2b50f053aaa7df7bd684c3e878d334627f2edfc6",
+    "node_modules/@openzeppelin/contracts/utils/math/SafeCast.sol": "0x195533c86d0ef72bcc06456a4f66a9b941f38eb403739b00f21fd7c1abd1ae54",
+    "src/mining/FabxMinerCustody.sol": "0x3f91d40df10f6d90e532cea454bac92d5f18ef28f500cddf76f3c63bf6ef6c8b",
+    "src/mining/interfaces/IFabxMining.sol": "0x4adbc232b8381d42db3b967a3ce78b7b68a317d3439c8069a24379323eff28a3",
+    "src/mining/soda/IgnixLpRewards.sol": "0x80aa2469701bcdada36c96e64772230b21d6fae9b1de1bdc64e5a12eabd05c59",
+    "src/mining/soda/RewardLedger.sol": "0xa4d932def940f02f45585393cf41d1b09afc0e8c4196fb5268794251a22abb3d",
+    "src/mining/soda/SodaIncentiveVault.sol": "0x4c78ac01a54a85637cb446bf0cf2e39335e068a9c90e4c27e5dd5b05fd13894b",
+    "src/mining/soda/SodaPool.sol": "0xf7911a21a5f789a59a3dece9f5419439a9e7ad5c378130746edb7d38bb52443d",
+    "src/mining/soda/SodaRewards.sol": "0x1a122e7f69107e60112610836e162474875243032bd6447a98599da741fee22e",
+    "src/mining/soda/SodaVault.sol": "0xe826cdbdbb6aa57ba56ae052a3468bd050c2f54d257d0181ca2f2c72e47d31c8",
+    "src/mining/soda/IgnixTreasuryIncome.sol": "0xa7cc60c5de10fbe24a948d3a55569e66e67ccf14b539defe1e014a279f9825dd",
+    "src/mining/soda/SodaIgnixPool.sol": "0x53b1ffe137782ae837b7b282f338476833b472016703df2a15fa49705d60e909",
+    "src/mining/soda/SodaLocker.sol": "0x175f3b785acdfa6e5882f5f2767ad06854dbfee231f0b507b5d3f94148294a23"
+  },
+  "files": {
+    "src/mining/FabxMinerCustody.sol": {
+      "origin": "frozen-deployment-package",
+      "sha256": "d46853543264325b89c0405856eb947b723fe51f178328dccf4f2b0a6e738512"
+    },
+    "src/mining/interfaces/IFabxMining.sol": {
+      "origin": "frozen-deployment-package",
+      "sha256": "d50e4548a34c57f9eec69d7aaf9c9cd738b9e4b5abdf7618947f167a4933925f"
+    },
+    "src/mining/soda/IgnixLpRewards.sol": {
+      "origin": "frozen-deployment-package",
+      "sha256": "7786b62bc5dbc7a0c09952dccc5464531bf1c3b0d64661525aa436885398e23f"
+    },
+    "src/mining/soda/IgnixTreasuryIncome.sol": {
+      "origin": "frozen-deployment-package",
+      "sha256": "5b325ae9952162014e9aabf7efb8824938fd0b8e9803d36684f76d398f782ba4"
+    },
+    "src/mining/soda/RewardLedger.sol": {
+      "origin": "frozen-deployment-package",
+      "sha256": "8dce9e627659735350de82934d768c332494ae7cb99f1293256bf2ba6e14d81b"
+    },
+    "src/mining/soda/SodaIgnixPool.sol": {
+      "origin": "frozen-deployment-package",
+      "sha256": "38e4fac195d912db9a81cf087429426a8b33b3bf87b2d6131459c4fe4c9d019d"
+    },
+    "src/mining/soda/SodaIncentiveVault.sol": {
+      "origin": "frozen-deployment-package",
+      "sha256": "3ec558d7a8f388122a8627ffa963a6d693361b09e845fd471a52d89b950ae914"
+    },
+    "src/mining/soda/SodaLocker.sol": {
+      "origin": "frozen-deployment-package",
+      "sha256": "e49a6732d6c83c57a158cdc8ff6a7dac6a184b4114ca4d7f1a4bb3603a1b0881"
+    },
+    "src/mining/soda/SodaPolicy.sol": {
+      "origin": "frozen-deployment-package",
+      "sha256": "ae60a6da98ee5051748ea540737bfc601b8204cd49b45154289fc141065a08fa"
+    },
+    "src/mining/soda/SodaPool.sol": {
+      "origin": "frozen-deployment-package",
+      "sha256": "e3f5724c36c1cab3099aa22e2c3891b2f1d3a22bd8abe32b8196cae866da22ba"
+    },
+    "src/mining/soda/SodaRewards.sol": {
+      "origin": "frozen-deployment-package",
+      "sha256": "7fa44458a712eeefb7b853e969688f472118929bfa2be1a146e4a9ee864cc89e"
+    },
+    "src/mining/soda/SodaVault.sol": {
+      "origin": "frozen-deployment-package",
+      "sha256": "342d86650b5d1c43b3f7064d9ad3f51027dc10f45c2d453ed1a7cb263fed820d"
+    },
+    "test/mining/soda/SodaIncentiveVault.t.sol": {
+      "origin": "frozen-deployment-package",
+      "sha256": "9d96853cbb9fd0e70ffffd6184974f3c7a2907532dcfb24874737b86efbac03c"
+    },
+    "test/mining/soda/SodaSplitInvariant.t.sol": {
+      "origin": "canonical-13f0eaf-unchanged-fixture",
+      "sha256": "37b6d9c0a06a38756187340fce8fd9040ec42e6087b7cec4cf6943efb91371e4"
+    },
+    "test/mining/MiningProductMocks.sol": {
+      "origin": "canonical-13f0eaf-unchanged-fixture",
+      "sha256": "66c6b8c83cfbd2d5dd9cdecabeab011972e5e207a1e76f9adb41f8523c175c4a"
+    }
+  },
+  "artifacts": {
+    "SodaPolicy": {
+      "path": "artifacts/SodaPolicy.json",
+      "sha256": "850e2b062d18855d00b160f9ea0988ccb3e8a01d380fc7f1a0d5bd77884c7e58",
+      "compilationTarget": {
+        "src/mining/soda/SodaPolicy.sol": "SodaPolicy"
+      }
+    },
+    "SodaIncentiveVault": {
+      "path": "artifacts/SodaIncentiveVault.json",
+      "sha256": "4cab545e5277a37117235bcf31bdf0ea754961ad244c6238e807218eaf4e9d38",
+      "compilationTarget": {
+        "src/mining/soda/SodaIncentiveVault.sol": "SodaIncentiveVault"
+      }
+    },
+    "SodaIgnixPool": {
+      "path": "artifacts/SodaIgnixPool.json",
+      "sha256": "96c515b9f87322308520ef9c559c86ed19bf733f95f7b05f6cf8727b450bcb35",
+      "compilationTarget": {
+        "src/mining/soda/SodaIgnixPool.sol": "SodaIgnixPool"
+      }
+    },
+    "IgnixLpRewards": {
+      "path": "artifacts/IgnixLpRewards.json",
+      "sha256": "fc7660693aa0a5781978e33c8fd2d23ad80b63c560415eb78940dd6226cc9570",
+      "compilationTarget": {
+        "src/mining/soda/IgnixLpRewards.sol": "IgnixLpRewards"
+      }
+    },
+    "IgnixTreasuryIncome": {
+      "path": "artifacts/IgnixTreasuryIncome.json",
+      "sha256": "170894dff21d7ef57d1905bd2e6ccf1f934976a9041e4d2ae92c6626cc437332",
+      "compilationTarget": {
+        "src/mining/soda/IgnixTreasuryIncome.sol": "IgnixTreasuryIncome"
+      }
+    },
+    "SodaLocker": {
+      "path": "artifacts/SodaLocker.json",
+      "sha256": "b86827c8df832ea10d04768a96e5231353059e042c61ac268ca6c3430a8539e7",
+      "compilationTarget": {
+        "src/mining/soda/SodaLocker.sol": "SodaLocker"
+      }
+    }
+  },
+  "dependencies": {
+    "openzeppelin": {
+      "version": "5.4.0",
+      "source": "https://github.com/OpenZeppelin/openzeppelin-contracts/tree/v5.4.0"
+    },
+    "forgeStd": {
+      "commit": "77041d2ce690e692d6e03cc812b57d1ddaa4d505",
+      "source": "https://github.com/foundry-rs/forge-std/tree/77041d2ce690e692d6e03cc812b57d1ddaa4d505"
+    }
+  },
+  "vendorSha256": {
+    "vendor/forge-std/LICENSE-APACHE": "50b6bf8bdb63265ce14953b480b7aaa0271e78f56843b99c184abd3ae5048cd7",
+    "vendor/forge-std/LICENSE-MIT": "6d185dfe089d4de346d391fc5997fbd4739bad1d6556010413c10f420d704ecc",
+    "vendor/forge-std/src/Base.sol": "29297a56d2b1692d4439545b93ed62890da7e9e1060c03005b43151af7984bf0",
+    "vendor/forge-std/src/StdAssertions.sol": "d4c89eec70d267dec6188461fbc74d3dc8c47e518d176a23417533a232ed9780",
+    "vendor/forge-std/src/StdChains.sol": "09a88ace5bc037f4a805c7ae071abf675ce802c8b36810287cd327b7d035fb81",
+    "vendor/forge-std/src/StdCheats.sol": "29af42f9d670fd22e9fc3ebe3c2da194471e93e210361c41d3d26ef04e9dca28",
+    "vendor/forge-std/src/StdConstants.sol": "6c785abd2fb9d42560f867d8e43e729c55f5bda2c06e5ddae27b17e301de4f04",
+    "vendor/forge-std/src/StdError.sol": "82ca17e33a03775e95b4612bd604a8732c73b2982a0278d214e06c68a886dc11",
+    "vendor/forge-std/src/StdInvariant.sol": "f572e991cfe874844b3b75a540e38e2161c29b5d9ab1635a3c4f1a16c548f987",
+    "vendor/forge-std/src/StdJson.sol": "0211b47e93dbeb6a7de6112470a77137038ed73b79b015847f013e49fcd7511f",
+    "vendor/forge-std/src/StdMath.sol": "f04fc0616741563eb32d66c11af7fdca55a7202221e14282268c7be851fc63ab",
+    "vendor/forge-std/src/StdStorage.sol": "c6dbb05b29be5bcbfabf06ea46b64fe9fbdb7542681795614ca3dee248214215",
+    "vendor/forge-std/src/StdStyle.sol": "324c2b0e100e88edbdb75f60f8a4c42f056f8d618ae5f56b1c404df64e8280a7",
+    "vendor/forge-std/src/StdToml.sol": "de3fb35af79a1fd2a2de9bc4ca7866e4102f9d3fbf11f66f3fe82696412d47e2",
+    "vendor/forge-std/src/StdUtils.sol": "c64a4d5023e6d46884734b8cb1b0f424bab26f0ccc920779b58d2f841c4506ae",
+    "vendor/forge-std/src/Test.sol": "b1b48a4dfbd65fed186163326dc8870316679f64a195aa18050f83657d2df39c",
+    "vendor/forge-std/src/Vm.sol": "9068805b59ac1d0ea03a8fa1f15ae49c094e0c6c852a2500e0dd112f264b2cb1",
+    "vendor/forge-std/src/console.sol": "896c5a5a5c235cb11a39876d430e1fc2c621e7950c4637ca58251b84b053f178",
+    "vendor/forge-std/src/console2.sol": "3bbe2e07ec53d8cf9c091667fe10234fcb3e2b45eab2c711002188806f46e779",
+    "vendor/forge-std/src/interfaces/IMulticall3.sol": "6620d9c5ea2e2291440e1dcce5072f948b7ec4d65075876a0d0ac9267d3342e3",
+    "vendor/forge-std/src/safeconsole.sol": "ed11aa2efc83fa8e575215a11dd7a9be385cf49dacbc379630168d7334899e46",
+    "vendor/openzeppelin/LICENSE": "13cd784a6c31361f0e0c6aa3b410a1cb9a079868b7314c13e3eb8a75351746b9",
+    "vendor/openzeppelin/contracts/access/Ownable.sol": "38578bd71c0a909840e67202db527cc6b4e6b437e0f39f0c909da32c1e30cb81",
+    "vendor/openzeppelin/contracts/access/Ownable2Step.sol": "c75345d7b9feef17ae29f2a800ca2f65f8021cf80436a41d6ec00f57f5180f36",
+    "vendor/openzeppelin/contracts/interfaces/IERC1363.sol": "9c3a75a925a6dac9e88b03cddc58d42fe3131b0aaaad84408521f3f7af2f991b",
+    "vendor/openzeppelin/contracts/interfaces/IERC165.sol": "dfb3f56fa928a7c6cae41a7ce2c86b9210fa18d33fa26389099d66a0fa790368",
+    "vendor/openzeppelin/contracts/interfaces/IERC20.sol": "0158e2d3e0e28bedd99eec13dcf1a8aa3a70a5b7e4bb2ad709609c95fcc740d1",
+    "vendor/openzeppelin/contracts/interfaces/draft-IERC6093.sol": "df936240c9a5d342582cbda70dd773b1c1d0e0dda3042b1c17b902ef0c36827b",
+    "vendor/openzeppelin/contracts/token/ERC20/ERC20.sol": "9f906af4cba6e7e091dc12d45e6687e1239cf82d17678198424250fd64ab96bd",
+    "vendor/openzeppelin/contracts/token/ERC20/IERC20.sol": "01b6f5c4fa45fd38822b286ecef6daf983d27306dd6362496fa71b3e4600b72c",
+    "vendor/openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol": "0b7132f17d14d1d84b41b0bb429be62dafdff00fd3470f68724d8018eb07f57a",
+    "vendor/openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol": "ac1fd9fa99b194a8db8dfa9ae8e3ff44feaa8f16668241fd2b66ae8b47d7c082",
+    "vendor/openzeppelin/contracts/token/ERC721/ERC721.sol": "330a87f2bf94083df8ddd341735d712866455042aaca58d33ee1799773e1cae1",
+    "vendor/openzeppelin/contracts/token/ERC721/IERC721.sol": "ff0eb9902bf0ac099205615fac90eacf34fae637571b05aab3ea35dea53d5f17",
+    "vendor/openzeppelin/contracts/token/ERC721/IERC721Receiver.sol": "eafee3ffdc7cb2fba4bf6bd16fb28f8e5b4679742e81c2ad42a1b1df5c179feb",
+    "vendor/openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol": "33223782ea652dca413702ce92f9f59d91d758a035065b24bbedb7dc60c63a78",
+    "vendor/openzeppelin/contracts/token/ERC721/utils/ERC721Utils.sol": "f2041b1685dcf0cf6b968d9b8454e5a46068b1df5ab0e82ba0b269fa2f3099a8",
+    "vendor/openzeppelin/contracts/utils/Context.sol": "847fda5460fee70f56f4200f59b82ae622bb03c79c77e67af010e31b7e2cc5b6",
+    "vendor/openzeppelin/contracts/utils/Panic.sol": "270fc8401c1a13fae6a7a4a2dd6e381b95d658896701e51f0d3e2688acab3dec",
+    "vendor/openzeppelin/contracts/utils/ReentrancyGuard.sol": "32fbb1c908ec1b4de85cc1bb10091aebd5816ffe80dfdd5ca5e084fbea67a462",
+    "vendor/openzeppelin/contracts/utils/Strings.sol": "2db7d21151644c57f75ed3ab55e87f3cf7fbf587a65345650fd740e2cfd50be3",
+    "vendor/openzeppelin/contracts/utils/introspection/ERC165.sol": "61a2b12c96857aaa35f48aeda67a4281637a42494c0b3795be0ae976aa7b3793",
+    "vendor/openzeppelin/contracts/utils/introspection/IERC165.sol": "9055c2994b37dea1a41b7b7926dcb510f05dbe2540b0aafc5fbee9558fffd0ca",
+    "vendor/openzeppelin/contracts/utils/math/Math.sol": "92fee281fd46a1b058b190cf21d6b1a528f0433a907850ae1c9bcf36c5c0cd98",
+    "vendor/openzeppelin/contracts/utils/math/SafeCast.sol": "9769274bf53f26a7c7896c526ea1980dc9bea5bf5c2a5fd04870008c4afc1de9",
+    "vendor/openzeppelin/contracts/utils/math/SignedMath.sol": "1ed50b1056af886752f0fb48a0165d381e69bb4a4b18b893b066dc144a7e08d7"
+  }
+}

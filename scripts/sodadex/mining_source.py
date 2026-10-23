@@ -10,6 +10,15 @@ import tarfile
 FABX_SOURCE = "4caabe00d0e4d198aac4576bc0ad27c8cca5ce54"
 
 
+def require_legacy_rehearsal(root):
+    if not (root / "contracts/mining-rehearsal/foundry.toml").is_file():
+        raise SystemExit(
+            "Retired mining rehearsal: use a separate checkout of "
+            "923ecab6a74eed81ed6d8823725df9941c233233 for historical investigation. "
+            "Current LP audit: contracts/sodadex-fragments/README.md"
+        )
+
+
 def source_snapshot(root, fabx_source):
     source_root = subprocess.check_output(
         ["git", "-C", str(fabx_source), "rev-parse", "--show-toplevel"], text=True

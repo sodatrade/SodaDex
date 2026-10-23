@@ -2,6 +2,8 @@
 
 SodaDEX is a fork of [Uniswap/interface](https://github.com/Uniswap/interface), maintained in [sodatrade/SodaDex](https://github.com/sodatrade/SodaDex).
 
+Contract auditors: start with the [contract scope and v5 special-pool snapshot](contracts/README.md). The snapshot includes the pool, miner-backed share vault, LP rewards, treasury income, required dependencies, reproducible build inputs and chain-196 TEST deployment evidence. Retired mining rehearsal contracts have been removed; their history remains in Git.
+
 The application is labelled **SodaDEX Test**, for personal learning and noncommercial testing. Its independent interface in [`standalone/web`](standalone/README.md) uses a same-origin read/simulation proxy for `https://rpc.ignix.bot/rpc/196`. SodaDEX-branded NFT contracts and two funded v3/v4 test pools are deployed on **X Layer mainnet (chain ID 196)**. Both pools passed real micro swaps in both directions. Current addresses and receipts are in the [deployment address table](deployments/xlayer-test/ADDRESSES.md); the frontend and Worker share [`active.json`](deployments/xlayer-test/active.json) and verified `pools.json`. The preserved upstream application in `apps/web` still uses Uniswap APIs and contract mappings.
 
 The source baseline is `web/5.166.0`, commit `6f54d9a474a6036e7043ed52f2a9359003c96c9c`. Preserve upstream licences, notices, protocol identifiers, and SDK package names.

@@ -1,0 +1,229 @@
+{
+  "chainId": 196,
+  "productionTouched": false,
+  "completed": true,
+  "verifiedBlock": "73891273",
+  "transactions": 19,
+  "nonceStart": 485,
+  "nonceEnd": 503,
+  "owner": "0x6EFa1Fad18900B929Fe6782fd3eaBeac2563416A",
+  "treasury": "0x6EFa1Fad18900B929Fe6782fd3eaBeac2563416A",
+  "contracts": {
+    "SodaPolicy": "0x57d4Fb4F98fe8beD34dA997bE11dE6Dd25546085",
+    "SodaIncentiveVault": "0x77D94C4c34F1E67621aD94Aa20a697E3544aB726",
+    "SodaIgnixPool": "0x6DB7Bb086C285FBE3eB6005C30eaED8c77db4506",
+    "IgnixLpRewards": "0x7F2b9c85592E8C5d73d198565056Af79b22E49ef",
+    "IgnixTreasuryIncome": "0x1c9fff7466EAAE3702bdDe1cCF239946b7b434Fb",
+    "SodaLocker": "0xAe8A0C13921416E673b7c27Ea3E997043398811F"
+  },
+  "runtimeChecks": [
+    {
+      "name": "SodaPolicy",
+      "address": "0x57d4Fb4F98fe8beD34dA997bE11dE6Dd25546085",
+      "rpc": "https://rpc.xlayer.tech",
+      "runtimeHash": "0xdc5354a3abd3ab669eeb4c2295b7b9b0c088c0f0a59de80308f8a6b3f7b6ffd6"
+    },
+    {
+      "name": "SodaPolicy",
+      "address": "0x57d4Fb4F98fe8beD34dA997bE11dE6Dd25546085",
+      "rpc": "https://rpc.ignix.bot/rpc/196",
+      "runtimeHash": "0xdc5354a3abd3ab669eeb4c2295b7b9b0c088c0f0a59de80308f8a6b3f7b6ffd6"
+    },
+    {
+      "name": "SodaIncentiveVault",
+      "address": "0x77D94C4c34F1E67621aD94Aa20a697E3544aB726",
+      "rpc": "https://rpc.xlayer.tech",
+      "runtimeHash": "0xb351ba9c29dd8f370d530d5b5e9e45f9c690d4319063f167975236a0fb00944c"
+    },
+    {
+      "name": "SodaIncentiveVault",
+      "address": "0x77D94C4c34F1E67621aD94Aa20a697E3544aB726",
+      "rpc": "https://rpc.ignix.bot/rpc/196",
+      "runtimeHash": "0xb351ba9c29dd8f370d530d5b5e9e45f9c690d4319063f167975236a0fb00944c"
+    },
+    {
+      "name": "SodaIgnixPool",
+      "address": "0x6DB7Bb086C285FBE3eB6005C30eaED8c77db4506",
+      "rpc": "https://rpc.xlayer.tech",
+      "runtimeHash": "0x0abecae00d1335dad23331aa082e2f0cbcd3123afde4f2ea187f3933a5e5086b"
+    },
+    {
+      "name": "SodaIgnixPool",
+      "address": "0x6DB7Bb086C285FBE3eB6005C30eaED8c77db4506",
+      "rpc": "https://rpc.ignix.bot/rpc/196",
+      "runtimeHash": "0x0abecae00d1335dad23331aa082e2f0cbcd3123afde4f2ea187f3933a5e5086b"
+    },
+    {
+      "name": "IgnixLpRewards",
+      "address": "0x7F2b9c85592E8C5d73d198565056Af79b22E49ef",
+      "rpc": "https://rpc.xlayer.tech",
+      "runtimeHash": "0x3b6b8bdfa8d2f1208675ebce85ce1c2fc6c24a01a2726bea391d988e07870b7c"
+    },
+    {
+      "name": "IgnixLpRewards",
+      "address": "0x7F2b9c85592E8C5d73d198565056Af79b22E49ef",
+      "rpc": "https://rpc.ignix.bot/rpc/196",
+      "runtimeHash": "0x3b6b8bdfa8d2f1208675ebce85ce1c2fc6c24a01a2726bea391d988e07870b7c"
+    },
+    {
+      "name": "IgnixTreasuryIncome",
+      "address": "0x1c9fff7466EAAE3702bdDe1cCF239946b7b434Fb",
+      "rpc": "https://rpc.xlayer.tech",
+      "runtimeHash": "0xeafd37b0e8147c91abaec4dc0a6f37998bc36f158ed7fbf5486cb85ad1cc51c8"
+    },
+    {
+      "name": "IgnixTreasuryIncome",
+      "address": "0x1c9fff7466EAAE3702bdDe1cCF239946b7b434Fb",
+      "rpc": "https://rpc.ignix.bot/rpc/196",
+      "runtimeHash": "0xeafd37b0e8147c91abaec4dc0a6f37998bc36f158ed7fbf5486cb85ad1cc51c8"
+    },
+    {
+      "name": "SodaLocker",
+      "address": "0xAe8A0C13921416E673b7c27Ea3E997043398811F",
+      "rpc": "https://rpc.xlayer.tech",
+      "runtimeHash": "0x6b4fcb304fc301fd547f319890dc868cac8602137d069ba0869a3cebcc2328df"
+    },
+    {
+      "name": "SodaLocker",
+      "address": "0xAe8A0C13921416E673b7c27Ea3E997043398811F",
+      "rpc": "https://rpc.ignix.bot/rpc/196",
+      "runtimeHash": "0x6b4fcb304fc301fd547f319890dc868cac8602137d069ba0869a3cebcc2328df"
+    }
+  ],
+  "secondaryReceipts": [
+    {
+      "hash": "0x3172f007699c0946a93e7632d501aa3e66e95e3cc0ae6d1e5cb9c76dc654cab8",
+      "status": "success",
+      "sameBlock": true,
+      "blockNumber": "73890270"
+    },
+    {
+      "hash": "0xb9c5efe3bc6f7d033dac7a15c4f0532a43e1ad24ee53e2ab1f7ee7422a458c94",
+      "status": "success",
+      "sameBlock": true,
+      "blockNumber": "73890275"
+    },
+    {
+      "hash": "0xf70322760bd0e0beb625975c4addcea09169b27291a43f8f5dbf3c4f5fc81a59",
+      "status": "success",
+      "sameBlock": true,
+      "blockNumber": "73890280"
+    },
+    {
+      "hash": "0x4646d5ab0944f8afc15d85da41ab3dae090400a5bc19204f225fccf86ca10317",
+      "status": "success",
+      "sameBlock": true,
+      "blockNumber": "73890284"
+    },
+    {
+      "hash": "0x413bc0153e22c414cf2c29a81645e5314937259306d46dec34babd0dc5e3dc74",
+      "status": "success",
+      "sameBlock": true,
+      "blockNumber": "73890758"
+    },
+    {
+      "hash": "0xa456418b8b1150112634d15f33ddeac50e96fd110a8b9c876f76c20c299c8829",
+      "status": "success",
+      "sameBlock": true,
+      "blockNumber": "73891191"
+    },
+    {
+      "hash": "0x023cefbc7c02036bd00d786c4985ea1efa78de9cda0d45a39033692aeebf1d32",
+      "status": "success",
+      "sameBlock": true,
+      "blockNumber": "73891196"
+    },
+    {
+      "hash": "0x65167425c145be1e70b39e958f4703d51b2878e9833dc5e3c1c80f98812236de",
+      "status": "success",
+      "sameBlock": true,
+      "blockNumber": "73891211"
+    },
+    {
+      "hash": "0xc7046a504d12ffab1df7260b4d1c101ecca769806430ca6ec53693666d1a9042",
+      "status": "success",
+      "sameBlock": true,
+      "blockNumber": "73891216"
+    },
+    {
+      "hash": "0x6d45423313e2323c7f254f204fd8c3278a0f817f95014910df7823676e05671f",
+      "status": "success",
+      "sameBlock": true,
+      "blockNumber": "73891221"
+    },
+    {
+      "hash": "0xb6ffe24e3b1d63792ccd0280e5f3abcb199756d764b54ace8c3d532965682196",
+      "status": "success",
+      "sameBlock": true,
+      "blockNumber": "73891226"
+    },
+    {
+      "hash": "0xa21bdcbdb6230c31dfa8b502205868eddfeb3c12d2180e567617d47addf0b31b",
+      "status": "success",
+      "sameBlock": true,
+      "blockNumber": "73891232"
+    },
+    {
+      "hash": "0x73b69a9b1658d12d0eb59d3b638426a0b5d3c7ed5c854dc7459a481d55fa0194",
+      "status": "success",
+      "sameBlock": true,
+      "blockNumber": "73891238"
+    },
+    {
+      "hash": "0xbc14f2af3cb8565bf46a257cffc6d054e5460245b81c50672c66dc3f5de72694",
+      "status": "success",
+      "sameBlock": true,
+      "blockNumber": "73891243"
+    },
+    {
+      "hash": "0x1f2fe0c4e7cf31bcf0bccaa39bc928fe5fa8a68ca414e103c212151acf95bba7",
+      "status": "success",
+      "sameBlock": true,
+      "blockNumber": "73891248"
+    },
+    {
+      "hash": "0xf37142a6f2bc51ab62a45fb21fbb67833999c23613004dfaf224677db7e40360",
+      "status": "success",
+      "sameBlock": true,
+      "blockNumber": "73891255"
+    },
+    {
+      "hash": "0xf0b9216edcdafc194a7c2e6c6d4407f36ce2702249e5524cf8559851d955611d",
+      "status": "success",
+      "sameBlock": true,
+      "blockNumber": "73891261"
+    },
+    {
+      "hash": "0xb326fcfc4a12b18a21c09c0f8c02140af4f62ce3d77ec8f6c23d5c59493141fc",
+      "status": "success",
+      "sameBlock": true,
+      "blockNumber": "73891267"
+    },
+    {
+      "hash": "0x2469dab2d1e17a56b60454eb4b82c7702df125af831bb629fa67265c1eddbf18",
+      "status": "success",
+      "sameBlock": true,
+      "blockNumber": "73891273"
+    }
+  ],
+  "splitsChecked": 4,
+  "actualMiningFab": "0.06703125",
+  "holdersFab": "0.05697661",
+  "serviceFab": "0.0067031",
+  "incentiveFab": "0.00335154",
+  "poolFab": "0.00074809",
+  "claimedLpFab": "0.00090974",
+  "claimedLpOkb": "0.000000000000034999",
+  "paidServiceFab": "0.00283592",
+  "paidPlatformOkb": "0.000000000000015",
+  "gasSpentWei": "291923134596156",
+  "nativeInputWei": "10010000000",
+  "totalCostWei": "291933144596156",
+  "totalCostOKB": "0.000291933144596156",
+  "capOKB": "0.00054666149",
+  "seedLockedLp": "1000000000000000",
+  "unlockAt": "1797844309",
+  "oldGenerationUnchanged": true,
+  "frontendCutover": false,
+  "explorerSourceVerification": false
+}
