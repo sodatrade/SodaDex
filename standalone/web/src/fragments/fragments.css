@@ -64,3 +64,7 @@
 @media(max-width:760px){.fragment-header .header-preferences{grid-column:1;grid-row:2;gap:4px}.fragment-header .fragment-actions>.button:last-of-type{grid-column:2;grid-row:2}.fragment-header nav{grid-row:3}.fragment-header .header-preferences select{font-size:16px;max-width:110px;padding:0 4px}.fragment-header .header-preferences>.button{min-height:42px;padding:8px 4px}}
 
 .fragment-fee-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 0;margin-top:4px;color:var(--muted);font-size:13px;line-height:1.5}.fragment-fee-row>span:last-child{color:var(--text);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+.fragment-price-chart .fragment-chart-times{font-size:11px}.fragment-price-chart .fragment-chart-times time:last-child{text-align:right}@media(max-width:480px){.fragment-price-chart svg text{font-size:22px}}
+
+.fragment-chart-help{font-size:11px;line-height:1.6;color:var(--muted);margin:12px 0}.fragment-chart-plot{position:relative}.fragment-chart-point{cursor:crosshair}.fragment-chart-point:focus-visible{outline:none;stroke:var(--accent);stroke-width:2}.fragment-chart-tooltip{position:absolute;top:32px;width:240px;max-width:100%;box-sizing:border-box;display:flex;flex-direction:column;gap:8px;padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text);font-size:12px;pointer-events:none;z-index:1;overflow-wrap:anywhere}.fragment-chart-tooltip time,.fragment-chart-tooltip small{color:var(--muted);font-size:11px}
