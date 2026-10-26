@@ -64,3 +64,18 @@
 @media(max-width:760px){.fragment-header .header-preferences{grid-column:1;grid-row:2;gap:4px}.fragment-header .fragment-actions>.button:last-of-type{grid-column:2;grid-row:2}.fragment-header nav{grid-row:3}.fragment-header .header-preferences select{font-size:16px;max-width:110px;padding:0 4px}.fragment-header .header-preferences>.button{min-height:42px;padding:8px 4px}}
 
 .fragment-fee-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 0;margin-top:4px;color:var(--muted);font-size:13px;line-height:1.5}.fragment-fee-row>span:last-child{color:var(--text);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+.fragment-price-chart .fragment-chart-times{font-size:11px}.fragment-price-chart .fragment-chart-times time:last-child{text-align:right}@media(max-width:480px){.fragment-price-chart svg text{font-size:22px}}
+
+.fragment-chart-help{font-size:11px;line-height:1.6;color:var(--muted);margin:12px 0}
+.fragment-chart-plot{position:relative;--fragment-tooltip-width:min(320px,100%)}
+.fragment-chart-plot>svg,.fragment-chart-point{cursor:crosshair}
+.fragment-chart-point:focus-visible{outline:none;stroke:var(--accent);stroke-width:2}
+.fragment-chart-tooltip{position:absolute;top:0;width:var(--fragment-tooltip-width);box-sizing:border-box;display:flex;flex-direction:column;gap:12px;padding:16px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text);pointer-events:none;z-index:1;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.fragment-chart-tooltip time{color:var(--muted);font-size:12px;line-height:1.5}
+.fragment-chart-tooltip strong{display:flex;align-items:baseline;gap:8px;font-size:21px;line-height:1.35;letter-spacing:-.4px;font-weight:550}
+.fragment-chart-tooltip strong>span{white-space:nowrap}
+.fragment-chart-tooltip strong small{display:inline-block;color:var(--muted);font-size:11px;letter-spacing:0;font-weight:400}
+.fragment-chart-tooltip-details{color:var(--muted);font-size:10px;line-height:1.5}
+@media(max-width:1000px){.fragment-chart-tooltip{position:static;margin-top:12px}}
+@media(max-width:480px){.fragment-chart-tooltip{padding:12px;gap:8px}.fragment-chart-tooltip strong{font-size:19px}.fragment-chart-tooltip time{font-size:11px}}

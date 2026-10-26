@@ -62,17 +62,25 @@ npm --prefix standalone/web test
 
 当前已发布源码、构建文件 hash、真实 RPC 读取和分层验收结果见 [`../deployments/frontend-test.json`](../deployments/frontend-test.json) 及[同站矿机整合记录](../deployments/frontend-unified-mining.json)与各自链接的证据文件。
 
-## 测试发布
+## 发布
 
-`worker/wrangler.jsonc` 与当前碎片测试发布配置 `worker/wrangler.fragments-196-test.jsonc` 均保留 `soda.ignix.bot` 的自定义域名绑定，同时保留 `workers.dev` 地址。没有 Cron 或自动发布 CI。人工发布前，先完成上述检查与浏览器验收，再运行：
+### 正式站发布
+
+正式站使用 `wrangler.fragments-196-production.jsonc`。完成独立 Web / Worker 的测试、lint、typecheck 和浏览器验收后，先将改动合入远端 `main`，再从该提交的干净工作区运行：
 
 ```sh
-npm --prefix standalone/worker run deploy:test
+npm --prefix standalone/worker run deploy:production
 ```
+
+此命令直接查询远端 `main`，拒绝未提交文件和不同于远端的提交；重新构建前端并检查合约清单、网络和 CSP，在上传前再次核对源码。线上 `/release-build.json` 和 Cloudflare 版本消息记录发布提交，便于追溯。不要直接运行 `wrangler deploy` 绕过入口；本地脚本无法阻止其他具有 Cloudflare 发布权限的账号绕过检查。
+
+曲线默认展示最近 50 笔真实成交，纵轴按这些成交缩放；悬停、键盘聚焦或点击成交点可查看详情。完整成交历史保留，历史翻页不会停止曲线更新。
+
+历史 `worker/wrangler.jsonc` 与 `worker/wrangler.fragments-196-test.jsonc` 和正式配置共用 `sodadex-preview` / `soda.ignix.bot`。因此 `deploy:test` 已停止执行，避免旧测试代码和合约配置覆盖正式站；历史配置保留用于本地验证。新建独立测试站需要另行确认隔离名称与域名。没有 Cron 或自动发布 CI。
 
 Cloudflare 凭证使用本机 Wrangler 登录状态，不进入源码或前端构建。静态资源只从 `web/dist` 上传。
 
-指定域名 [soda.ignix.bot](https://soda.ignix.bot) 已绑定现有 `sodadex-preview` 站点；[原测试地址](https://sodadex-preview.jsmsdx2025.workers.dev) 保留。域名绑定不切换合约，站点仍使用独立测试合约。绑定记录见 [`../deployments/domain-soda-ignix-bot.json`](../deployments/domain-soda-ignix-bot.json)。历史版本记录保存在 [`../deployments/frontend-test.json`](../deployments/frontend-test.json)，历史矿机同站整合另见[发布记录](../deployments/frontend-unified-mining.json)。
+指定域名 [soda.ignix.bot](https://soda.ignix.bot) 绑定 `sodadex-preview` 站点；[原 workers.dev 地址](https://sodadex-preview.jsmsdx2025.workers.dev) 保留。当前正式合约以 `worker/wrangler.fragments-196-production.jsonc` 为准。域名初始绑定记录见 [`../deployments/domain-soda-ignix-bot.json`](../deployments/domain-soda-ignix-bot.json)。旧测试版本记录保存在 [`../deployments/frontend-test.json`](../deployments/frontend-test.json)，历史矿机同站整合另见[发布记录](../deployments/frontend-unified-mining.json)。
 
 浏览器读取 `/api/rpc`；Worker 用固定地址 `https://rpc.ignix.bot/rpc/196` 查询 X Layer。代理接受受限读取、自有 V3/V4 池报价，以及当前 PositionManager 的建池、仓位和有限授权模拟。行情及事件分页接口见 [`worker/API.md`](worker/API.md)。真实交易由用户的浏览器钱包签名与广播；代理不签名、不广播，也不接受任意上游地址。节点失败时前端显示连接失败，不回退到其他节点。
 
@@ -124,4 +132,4 @@ npm --prefix standalone/web test
 
 两个旧后台保留原 Worker、Durable Object 类、namespace、账本及已签交易记录。`MINING_SERVICE_RETIRED=true` 强制关闭 admission/execution，alarm 只清除自身，不签名、不广播、不清零费用或预留。私有后台只保留无查询参数的状态与项目快照读取。历史源码、链上合约和验收记录保留，不能用旧的同站整合记录说明当前入口仍开放。
 
-当前发布使用 `build:dex-test`，从碎片测试 Worker 配置读取同一份公开 manifest，只构建 `web/dist` 的 196 DEX；`deploy:test` 校验专用池 manifest、入口、网络与 CSP hash，并使用 `wrangler.fragments-196-test.jsonc`。旧 `build:unified` 脚本仅作历史资料，当前发布拒绝带 `dist/mining` 的构建。退役验证使用 `npm --prefix standalone/mining-service run test:retirement`，只在本地 workerd/SQLite 上验证账本不变和零外部调用。
+当前正式发布使用 `deploy:production`，从正式 Worker 配置读取同一份公开 manifest，并重新运行 `build:dex-production`，只构建 `web/dist` 的 196 DEX；校验专用池 manifest、入口、网络与 CSP hash。`build:dex-test` 仅用于本地测试，`deploy:test` 已禁用。旧 `build:unified` 脚本仅作历史资料，当前发布拒绝带 `dist/mining` 的构建。退役验证使用 `npm --prefix standalone/mining-service run test:retirement`，只在本地 workerd/SQLite 上验证账本不变和零外部调用。
