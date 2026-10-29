@@ -2,6 +2,8 @@
 
 This file provides guidance to AI agents when working with code in this repository. Always run all tests, lint, and typecheck after making changes, and before considering a task to be 'complete'.
 
+The runnable application in this snapshot is `standalone/`. Root `bun install` cannot succeed: the `tools/uniswap-nx` workspace is not in the tree. Use the commands in [Cursor Cloud specific instructions](#cursor-cloud-specific-instructions). Do not treat the upstream `bun web` / `bun g:test` shortcuts below as working until that workspace exists.
+
 ## Project Overview
 
 Uniswap Universe is a monorepo containing all Uniswap front-end interfaces:
@@ -162,36 +164,67 @@ Be cognizant of the app or package within which a given change is being made. Be
 
 ## Cursor Cloud specific instructions
 
-### Environment
+### Branches
 
-- Node.js and Bun are pre-installed and match `.nvmrc` / `.bun-version`.
-- The `tsgo` binary is at `node_modules/.bin/tsgo` (not globally in PATH). The `bun g:typecheck` script handles this automatically.
-- Set `export LEFTHOOK=0` to disable git hooks in Cloud Agent sessions (no TTY for interactive hooks).
-- Set `export SKIP_CONFIG_PULL=true` to disable remote config fetching (no Okta auth for agents)
-- All backend APIs are external (no local databases or Docker needed for development).
+`main` is the production branch and the only long-lived branch. There is no `master`, `dev`, or `develop`. Other remote heads are feature or hotfix branches.
 
-### Web App
+Pushing a branch or opening a pull request does not deploy. `.github/workflows/tag_and_release.yml` runs only on `workflow_dispatch`. Publishing the site is the manual command `npm --prefix standalone/worker run deploy:production`, which refuses a dirty tree and any commit that is not remote `main`. Do not run `deploy:production`, `deploy:test`, or `wrangler deploy`. `deploy:test` is disabled because it targets the production worker. Local dev must stay on `wrangler dev --local`. Do not pass `--remote`.
 
-- **Start dev server**: `bun web dev` → runs on `http://localhost:3000/`
-- **Run tests**: `bunx nx run web:test -- --run` (317 test files, ~2.5 min)
-- **Lint (fast)**: `bunx nx run web:format` (formatting) and `bunx nx run web:lint` (oxlint)
-- **Typecheck**: `bun g:typecheck` runs `tsgo -b` globally (fastest). Per-project: `bunx nx run web:typecheck`.
-- The `web:typecheck:cloud` target typechecks the `apps/web/functions/` (edge functions) separately and may fail independently of the main app.
-- The web app loads live data from Uniswap's public APIs without requiring API keys for basic swap quotes and token exploration.
+### Install
 
-### Extension
+`.cursor/install.sh` is idempotent and does not deploy. It links Bun 1.3.14, Foundry, and Solidity `solc-0.8.26` into `/usr/local/bin` when missing, then installs the four standalone packages and builds the test web bundle:
 
-- **Start dev server**: `bun extension dev` → WXT builds the extension and opens Chrome with it pre-loaded.
-- A pre-built extension is available at `/var/tmp/stretch` and is already loaded in the default Chrome profile (`/home/ubuntu/.config/google-chrome`).
-- The extension wallet is **already onboarded**. To unlock it, use the password from the `EXTENSION_UNLOCK_PASSWORD` environment variable.
-- To type the password programmatically: write it to a temp file with `python3 -c "import os; open('/tmp/ext_pw.txt','w').write(os.environ['EXTENSION_UNLOCK_PASSWORD'])"`, then read/type from that file (the env var value is redacted in shell output but available to processes).
-- The extension opens as a **side panel** in Chrome (not a popup). Click the Uniswap icon in the toolbar or use Ctrl+Shift+U.
-- The wallet contains a small amount of ETH and cBTC on Ethereum mainnet.
-- **Known limitation**: connecting the extension wallet to the web app on `localhost` does not currently work (the `externally_connectable` manifest only allows `app.uniswap.org` and staging origins).
+```bash
+bash .cursor/install.sh
+```
+
+`npm ci` in those packages needs `--legacy-peer-deps`. Without it, `standalone/web` fails because transitive `hardhat-watcher` declares a `hardhat` peer that is not in the lockfile. The script then runs `npm --prefix standalone/web run build:dex-test`, which writes gitignored `standalone/web/dist/` including `preferences-script.json`.
+
+The image Node is v22.23.4, which satisfies standalone `engines` (`>=22.22.2`). `.nvmrc` still pins `v22.22.2` for the upstream monorepo check. Root `bun install` fails before fetch with `Workspace not found "tools/uniswap-nx"`. `bun web dev`, `bun g:test`, `bun g:typecheck`, and mobile/extension commands are not runnable in this snapshot.
+
+### Checks
+
+```bash
+npm --prefix standalone/web run typecheck
+npm --prefix standalone/web run lint
+npm --prefix standalone/web test
+npm --prefix standalone/web run build:dex-test
+npm --prefix standalone/worker run check
+npm --prefix standalone/orders run check
+npm --prefix standalone/mining-service run check
+npm --prefix standalone/mining-service run test:retirement
+forge test --root contracts/sodadex-fragments --use /usr/local/bin/solc-0.8.26 --offline
+forge test --root contracts/sodadex-fragments-production --use /usr/local/bin/solc-0.8.26 --offline --no-match-contract SodaFormalForkTest
+```
+
+Run the web build before `standalone/worker` typecheck. The worker imports `standalone/web/dist/preferences-script.json`.
+
+### Dev server
+
+```bash
+bash .cursor/start.sh
+```
+
+This listens on `http://127.0.0.1:8787` using `standalone/worker/wrangler.fragments-196-test.jsonc` in local mode. `npm --prefix standalone/worker run dev` uses `wrangler.jsonc`, which has no `viem` alias, so that bundle fails. `GET /api/network` and `POST /api/rpc` (`eth_chainId` / `eth_blockNumber`) are read-only checks against X Layer (chain id `0xc4` / 196).
 
 ### Gotchas
 
-- `bun install` runs a `preinstall` script that validates Node/Bun versions and will fail if they don't match `.nvmrc` / `.bun-version`.
-- The `postinstall` script runs `git config core.hooksPath .husky && bun g:prepare`. The `g:prepare` step (`nx run-many -t prepare`) generates codegen files needed for typecheck/build.
-- Mobile requires native tooling (Xcode, CocoaPods, Android SDK) not available in Cloud Agent VMs.
-- When running `bun extension dev`, WXT creates a `web-ext.config.ts` override file (gitignored) to customize browser startup behavior. You can set `startUrls`, `chromiumArgs`, or `WXT_NO_OPEN_BROWSER=true` as needed.
+- Set `LEFTHOOK=0` for commits in Cloud Agent sessions. Hooks have no TTY.
+- Login shells skip `~/.bashrc`. Use the `/usr/local/bin` links; do not rely on Bun or Foundry only being on `~/.bun` or `~/.foundry`.
+- Web Vitest skips Anvil fork files unless `SODADEX_LP_FORK_STATE`, `SODADEX_LP_STATEVIEW_CODE`, and `SODADEX_TRADE_RUNTIMES` point at local fixtures. Those fixtures are not in Git. A skip is not an LP integration pass.
+- `contracts/sodadex-orders` Foundry tests need `python3 scripts/sodadex/build-orders-fixtures.py` and forge-std under gitignored `.analysis/orders/deps`. A fresh clone cannot compile them.
+- `SodaFormalForkTest` needs `SODA_FORMAL_FORK_RPC` and is outside the offline suite.
+- Postgres, Redis, and Docker are not required. Anvil is only for the optional local fork fixtures.
+- Do not rewrite lockfiles to make plain `npm ci` pass, and do not commit `standalone/web/dist`.
+
+### Secret and env var names
+
+Local install, unit tests, and `start.sh` need no secrets. Deploy and keeper runtime use these names (values stay out of Git and out of the frontend bundle):
+
+- Wrangler on the owner machine, or `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` when Wrangler is authenticated from the environment
+- `ORDERS_KEEPER_PRIVATE_KEY` (Cloudflare secret; must match `ORDERS_KEEPER_ADDRESS`)
+- `ORDERS_EXECUTION_ENABLED`, `ORDERS_GAS_BUDGET_WEI`, `ORDERS_POLL_MS`, `ORDERS_PUBLIC_ORIGIN` (orders worker config, not key material)
+- `MINING_SIGNER_PRIVATE_KEY` and `MINING_KEEPER_PRIVATE_KEY` (retired mining keeper; historical)
+- `GITHUB_TOKEN` for the manual tag-and-release workflow only
+
+Fixture paths, not credentials: `SODADEX_LP_FORK_STATE`, `SODADEX_LP_STATEVIEW_CODE`, `SODADEX_TRADE_RUNTIMES`, `SODADEX_V2_RUNTIMES`, `SODADEX_ORDER_FIXTURE_MODULE`, `SODA_FORMAL_FORK_RPC`.
